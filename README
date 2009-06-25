@@ -1,0 +1,16 @@
+README
+
+What is Mockey?
+===================
+
+A testing tool, used to mock end point web services for the purpose of testing web service client applications. 
+
+Features
+====================
+
+ * Use Mockey as a proxy to a real service, to inspect request and response messages
+ * Set up Mockey to go through a corporate proxy server, to reach an endpoint web service
+ * Support for HTTP and HTTPS interactions (if your Proxy server has https or endpoint web service
+ * Ability to 'play back' conversations for when endpoint services are not available
+ * Ability to run EVERYTHING in a sandbox - your application and the endpoint webservices your application is consuming. 
+
