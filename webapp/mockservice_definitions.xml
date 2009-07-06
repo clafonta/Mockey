@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mockservice version="1.0" xml:lang="en-US">
+  <service description ="Dashboard's dev test site. "  hang_time="1000"  name="Relizon" proxyurl="https://oh01ux93.relizon.com:9004/invoke/relizon.tn.b2b.cxml/receiveCXML" url="/service/relizon">
+    <content_type><![CDATA[sampletype of contenttype of TWO]]></content_type>
+    <scenario name="Name one">
+      <scenario_match><![CDATA[tns:nala;a]]></scenario_match>      
+      <scenario_response><![CDATA[<cXML version="1.1.009" payloadID="OF ONE"  timestamp="2004-01-27T12:15:00-EST"> <Response> <Status code="200" text="OK">OK</Status> </Response> </cXML> ]]></scenario_response>
+    </scenario>
+    <scenario name="Name Two">      
+      <scenario_match><![CDATA[tns:nala;a]]></scenario_match>      
+      <scenario_response><![CDATA[<cXML version="1.1.009" payloadID="OF TWO"  timestamp="2004-01-27T12:15:00-EST"> <Response> <Status code="200" text="OK">OK</Status> </Response> </cXML> ]]></scenario_response>
+    </scenario>
+    <scenario name="Name three">      
+      <scenario_match><![CDATA[tns:nala;a of THREE]]></scenario_match>      
+      <scenario_response><![CDATA[<cXML version="1.1.009" payloadID="OF THREE"  timestamp="2004-01-27T12:15:00-EST"> <Response> <Status code="200" text="OK">OK</Status> </Response> </cXML> ]]></scenario_response>
+    </scenario>
+  </service>
+  <service description ="OF TWO DESCRIP"  hang_time="1000"  name="Relizon2" proxyurl="https://oh01ux93.relizon.com:9004/invoke/relizon.tn.b2b.cxml/receiveCXML" url="/service/relizon">
+    <content_type><![CDATA[sampletype of contenttype of ONE]]></content_type>
+    <scenario name="Name one">    
+      <scenario_match><![CDATA[tns:nala;a]]></scenario_match>      
+      <scenario_response><![CDATA[<cXML version="1.1.009" payloadID="OF ONE"  timestamp="2004-01-27T12:15:00-EST"> <Response> <Status code="200" text="OK">OK</Status> </Response> </cXML> ]]></scenario_response>
+    </scenario>
+    <scenario name="Name Two">      
+      <scenario_match><![CDATA[tns:nala;a]]></scenario_match>      
+      <scenario_response><![CDATA[<cXML version="1.1.009" payloadID="OF TWO"  timestamp="2004-01-27T12:15:00-EST"> <Response> <Status code="200" text="OK">OK</Status> </Response> </cXML> ]]></scenario_response>
+    </scenario>
+    <scenario name="Name three">     
+      <scenario_match><![CDATA[tns:nala;a of THREE]]></scenario_match>      
+      <scenario_response><![CDATA[<cXML version="1.1.009" payloadID="OF THREE"  timestamp="2004-01-27T12:15:00-EST"> <Response> <Status code="200" text="OK">OK</Status> </Response> </cXML> ]]></scenario_response>
+    </scenario>
+  </service>
+</mockservice>

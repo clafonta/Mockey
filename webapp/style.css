@@ -1,0 +1,54 @@
+body{	padding-top: 0px;	background: #FFFFFF;	font: 75% Arial,sans-serif;}
+.big{font-size: 300%; font-weight:bold; font-family: Calibri,sans-serif;}
+.tiny{font-size: 80%;}
+h1, h2{margin: 0.5em 0 0.5em 0;color: #06F;font-family: Arial,sans-serif; }
+h1{ font-size:160%; }
+h2 { font-size:120%; }
+img {border:0;}
+.highlight{	color: #ff8c00;}
+.nav{	color: #06F;	text-decoration: none;	font-weight:bold;}
+.group {	border: thin dashed #d3d3d3;	padding: 1em;	margin: 1em;}
+form {border: thin solid #d3d3d3;	padding: 1em;	background-color: #FFFFF0;}
+ul {	list-style: none;	}
+ul li {	margin:0.5em; }
+.edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
+p{margin: 0.5em; padding: 1px;}
+a{color: #00F;text-decoration:underline}
+a#highlight{font-size:120%;}
+div#container{width:750px;margin:0 auto}
+div#main{width: 100%;min-width:600px; margin-top: 10px }
+div{margin-top: 1px }
+div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
+div#logo{text-align: left }
+div#logo a{text-decoration: none; color: #06F; }
+span#greentext {font: 12pt Arial;letter-spacing 4pt;color: #00AA00 margin:6px;}
+ul#minitabs{list-style: none;margin: 0;padding: 7px 0;  border-bottom: 1px solid #CCC;font-weight: bold;  text-align: center;white-space: nowrap}
+ul#minitabs li{display: inline;margin: 0 3px}
+ul#minitabs a{text-decoration: none;padding: 0 0 3px;  border-bottom: 4px solid #FFF;color: #999}
+ul#minitabs a#current{border-color: #F60;color:#06F}
+ul#minitabs a:hover{border-color: #F60;color: #666}
+.info_message, .alert_message {	text-align: center;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; margin-left:20%; margin-right:20%;}
+.info_message {	background-color: #7EFF00;}
+.alert_message{	background-color: #FFD7D7;}
+.code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em; font-family: Courier,sans-serif;}
+.code a{text-align:center;font-size: 1.2em;}
+.code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
+pre{	background-color: White;	border: 1px solid #666;	color: Black;	margin: 1.5em;	overflow: auto;	font-size: 115%;	padding: 1.2em;	font: 120% "Courier New"; }
+form#login {width:160px; padding:6px; position:relative;	border:1px solid grey; background: #06F; color: #FFFFFF }
+div#infotext, div#servicename, div#password {position:relative; float:left; margin-right:1px; background: #EEEEEE; border: none; border-style: none }
+.overlabel {color:#999;}
+.overlabel-apply {	position:absolute;top:3px;left:5px;	z-index:1;	color:#999;}
+label.overlabel {color:#999;}
+label.overlabel-apply {	position:absolute;top:3px;left:5px;	z-index:1;	color:#999;}
+table.basic {border: 1px solid #DDDDDD; background: #f1f1f0;}
+table.basic th {padding: 0px;border-style: none;text-align: right;}
+table.basic td {border-style: none; padding: 0px;}
+table.simple tr:hover{background:#FFFFCC;}
+table.simple caption{padding-bottom:5px;font-weight:bold;}
+table.simple thead th,tfoot td{	background: #f1f1f1;}
+table.simple td, th{vertical-align: top;border-collapse:collapse; padding:1px 1px 1px 1px;}
+table.simple th{text-align: right;}
+table.simple td{text-align: left;}
+
+
+
