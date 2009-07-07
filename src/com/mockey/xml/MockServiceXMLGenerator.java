@@ -65,7 +65,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 				serviceElement.setAttribute("name", mockServiceBean.getServiceName());
 				serviceElement.setAttribute("description", mockServiceBean.getDescription());
 				serviceElement.setAttribute("url", mockServiceBean.getMockServiceUrl());
-				serviceElement.setAttribute("proxyurl", mockServiceBean.getRealServiceUrl());
+				serviceElement.setAttribute("proxyurl", mockServiceBean.getRealServiceUrlWithScheme());
 				serviceElement.setAttribute("hang_time", "" + mockServiceBean.getHangTime());
 				serviceElement.setAttribute("http_header_definition", "" + mockServiceBean.getHttpHeaderDefinition());
 				serviceElement.setAttribute("default_scenario_id", "" + (mockServiceBean.getDefaultScenarioId()!=null ?  mockServiceBean.getDefaultScenarioId(): ""));

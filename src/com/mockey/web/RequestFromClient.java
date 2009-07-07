@@ -1,7 +1,14 @@
 package com.mockey.web;
 
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.HttpRequest;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -9,18 +16,147 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.*;
+
+import com.mockey.MockServiceBean;
 
 /**
- * Wraps httpServletRequest and parses out the information we're looking for. 
+ * Wraps httpServletRequest and parses out the information we're looking for.
  */
 public class RequestFromClient {
+    private static final String[] HEADERS_TO_IGNORE = {"content-length", "host"};
+
     private Log log = LogFactory.getLog(RequestFromClient.class);
-    
     HttpServletRequest rawRequest;
+    Map<String, String[]> parameters = new HashMap<String, String[]>();
+    Map<String, List<String>> headers = new HashMap<String, List<String>>();
+    String requestBody;
+
 
     public RequestFromClient(HttpServletRequest rawRequest) {
         this.rawRequest = rawRequest;
+        parseRequestHeaders();
+        parseRequestBody();
+        parseParameters();
+    }
+
+    /**
+     * Copy all necessary data from the request into a POST to the new server
+     *
+     * @param serviceBean the path on the server to POST to
+     * @return A fully populated HttpRequest object
+     */
+    public HttpRequest generatePostToRealServer(MockServiceBean serviceBean) {
+        //TODO: Cleanup the logic to handle creating a GET vs POST
+        HttpRequest request;
+
+        if (serviceBean.getHttpMethod().equals("GET")) {
+            HttpGet get = new HttpGet(serviceBean.getRealPath());
+            request = get;
+        } else {
+
+
+            // Construct an HTTP Post object
+            HttpPost post = new HttpPost(serviceBean.getRealPath());
+
+            // copy the request body we recieved into the POST
+            post.setEntity(constructHttpPostBody());
+            request = post;
+        }
+
+        // copy the headers into the request to the real server
+        for (Map.Entry<String, List<String>> stringListEntry : headers.entrySet()) {
+            String name = stringListEntry.getKey();
+
+            // ignore certain headers that httpclient will generate for us
+            if (includeHeader(name)) {
+                for (String value : stringListEntry.getValue()) {
+                    request.addHeader(name, value);
+                    log.info("  Header: "+name+" value: "+value);
+                }
+            }
+        }
+        return request;
+    }
+
+    private boolean includeHeader(String name) {
+        for (String header : HEADERS_TO_IGNORE) {
+            if (header.equalsIgnoreCase(name)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Used by the existing code in MockResponseServlet.
+     *
+     * @return All the parameters as a URL encoded string
+     * @throws IOException if the body is not parseable
+     * @deprecated Prefer to use this class as an object and add properties for things we need
+     */
+    public String getParametersAsString() throws IOException {
+        StringBuffer requestMsg = new StringBuffer();
+
+        // CHECK to see if the request is GET/POST with PARAMS instead
+        // of a BODY message
+        if (!hasPostBody()) {
+            // OK..let's build the request message from Params.
+            // Is this a HACK? I dunno yet.
+            log.debug("Request message is EMPTY; building request message out of Parameters. ");
+            // FIRST, let's informe the end user of what we are doing.
+            requestMsg.append("NOTE: Incoming request BODY is EMPTY; Building message request body out of PARAMS. ");
+
+            for (String key : parameters.keySet()) {
+                String[] values = parameters.get(key);
+                for (String value : values) {
+                    requestMsg.append("&").append(key).append("=").append(value);
+                }
+            }
+        }
+
+        return requestMsg.toString();
+    }
+
+    private void parseRequestHeaders() {
+        Enumeration e = rawRequest.getHeaderNames();
+        while (e.hasMoreElements()) {
+            String name = (String) e.nextElement();
+            List<String> values = new ArrayList<String>();
+            Enumeration eValues = rawRequest.getHeaders(name);
+
+            while (eValues.hasMoreElements()) {
+                String value = (String) eValues.nextElement();
+                values.add(value);                
+            }
+            headers.put(name, values);
+
+        }
+    }
+
+    private void parseRequestBody() {
+        StringBuffer buf = new StringBuffer();
+
+        BufferedReader br;
+        try {
+            br = new BufferedReader(rawRequest.getReader());
+
+            String thisLine;
+            while ((thisLine = br.readLine()) != null) {
+                buf.append(thisLine);
+            }
+            if (buf.length() > 0) {
+                requestBody = buf.toString();
+            }
+        } catch (IOException e) {
+            log.error("Unable to parse body from incoming request", e);
+        }
+
+    }
+
+    private void parseParameters() {
+        parameters = rawRequest.getParameterMap();
     }
 
     public String dumpHeaders() {
@@ -34,67 +170,33 @@ public class RequestFromClient {
         return buf.toString();
     }
 
-    
-    public HttpPost generatePostToRealServer(String realPath) {
-        HttpPost post = new HttpPost(realPath);
+    private HttpEntity constructHttpPostBody() {
 
-        StringEntity body;
+        HttpEntity body;
         try {
-            body = new StringEntity(getPostBody());
+            if (requestBody != null) {
+                body = new StringEntity(requestBody);
+            } else {
+                List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+                for (Map.Entry<String, String[]> entry : this.parameters.entrySet()) {
+                    for (String value : entry.getValue()) {
+                        parameters.add(new BasicNameValuePair(entry.getKey(), value));
+                    }
+                }
+                body = new UrlEncodedFormEntity(parameters, HTTP.UTF_8);
+            }
+
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("Unable to generate a POST from the incoming request",e);
+            throw new IllegalStateException("Unable to generate a POST from the incoming request", e);
         }
-        post.setEntity(body);
 
-        return post;
+        return body;
+
     }
 
-    private String getPostBody() {
-        return null;
-    }
 
-    public String getParametersAsString() throws IOException {
-        		// There are several options to look at:
-		// 1. Respond with real service response
-		// 2. Respond with scenario response independent of request message.
-		// 3. Respond with scenario response dependent on matching request
-		// message.
-		//
-		StringBuffer requestMsg = new StringBuffer();
-		String thisLine;
+    private boolean hasPostBody() {
+        return requestBody == null || requestBody.trim().length() == 0;
 
-		// NOTE: Get reader only retrieves the BODY of the message
-		// but no "params".
-		BufferedReader br = new BufferedReader(rawRequest.getReader());
-
-
-
-
-		while ((thisLine = br.readLine()) != null) {
-			requestMsg.append(thisLine);
-		}
-
-		// CHECK to see if the request is GET/POST with PARAMS instead
-		// of a BODY message
-		if (requestMsg.toString().trim().length() == 0) {
-			// OK..let's build the request message from Params.
-			// Is this a HACK? I dunno yet.
-			log.debug("Request message is EMPTY; building request message out of Parameters. ");
-			// FIRST, let's informe the end user of what we are doing.
-			requestMsg.append("NOTE: Incoming request BODY is EMPTY; Building message request body out of PARAMS. ");
-			Enumeration parameterNameEnum = rawRequest.getParameterNames();
-			while (parameterNameEnum.hasMoreElements()) {
-				String paramName = (String) parameterNameEnum.nextElement();
-				String[] paramValues = rawRequest.getParameterValues(paramName);
-				// IF foo has multiple VALUES, then create a message
-				// like "&foo=x&foo=y" to capture someone matching
-				// key value pair. Still, this is a hack; can't predict
-				// what people are going to try to match to.
-				for (int i = 0; i < paramValues.length; i++) {
-                    requestMsg.append("&").append(paramName).append("=").append(paramValues[i]);
-				}
-			}
-
-		}
     }
 }

@@ -59,6 +59,7 @@ public class MockServiceBean implements Item {
 
     private String httpMethod = "GET";
 
+
     public String getHttpMethod() {
         return httpMethod;
     }
@@ -155,7 +156,14 @@ public class MockServiceBean implements Item {
 	}
 
 	public void setRealServiceUrl(String realServiceUrl) {
-		this.realServiceUrl = realServiceUrl;
+        if(realServiceUrl.matches("(?i)^https?://.*")) {
+            this.realServiceScheme = realServiceUrl.substring(0,realServiceUrl.indexOf(":"));
+            this.realServiceUrl = realServiceUrl.substring(realServiceUrl.indexOf("://")+3, realServiceUrl.length());
+        }else{
+            this.realServiceScheme = "http";
+            this.realServiceUrl = realServiceUrl;
+        }
+
 	}
 
 	public boolean isProxyOn() {
@@ -214,11 +222,13 @@ public class MockServiceBean implements Item {
 	}
 
 	public void setRealServiceScheme(String realServiceScheme) {
-		this.realServiceScheme = realServiceScheme;
 	}
 
 	public String getRealServiceScheme() {
 		return realServiceScheme;
 	}
 
+    public String getRealServiceUrlWithScheme() {
+        return getRealServiceUrl() == null ? null : getRealServiceScheme() + "://" + getRealServiceUrl();
+    }
 }

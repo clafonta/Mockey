@@ -2,9 +2,16 @@ package com.mockey.web;
 
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
+import java.io.PrintStream;
+import java.io.IOException;
 
 public class ResponseMessage {
-
+    private Log log = LogFactory.getLog(ResponseMessage.class);
 	private String responseMsg;
 	private boolean valid;
 	private String errorMsg;
@@ -58,6 +65,32 @@ public class ResponseMessage {
 	public StatusLine getStatusLine() {
 		return statusLine;
 	}
-	
-	
+
+
+    public void writeToOutput(HttpServletResponse resp) throws IOException {
+        // copy the headers out
+        for (Header header : headers) {
+
+            // copy the cookies
+            if(header.getName().equals("Set-Cookie")) {
+
+                String[] cookieParts = header.getValue().split("=",2);
+                String cookieName = cookieParts[0];
+                String cookieBody = cookieParts[1];
+
+                String[] cookieBodyParts = cookieBody.split("; ");
+                
+                Cookie cookie = new Cookie(cookieParts[0], cookieBodyParts[0]);
+                resp.addCookie(cookie);
+                
+                log.info("Adding header: "+header.getName() + " value: "+header.getValue());
+            }if(header.getName().equals("Content-Type")) {
+                // copy the content type
+                resp.setContentType(header.getValue());
+            }
+        }
+        
+        PrintStream out = new PrintStream(resp.getOutputStream());
+	    out.println(responseMsg);
+    }
 }

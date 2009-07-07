@@ -12,7 +12,9 @@
     <c:url value="/checkforhistory" var="checkforhistoryUrl">
         <c:param name="serviceId" value="${mockservice.id}" />
     </c:url>
+<!-- TODO: Replace this with jquery equivalent
     <script language="javascript">
     new Ajax.PeriodicalUpdater('log', '<c:out value="${checkforhistoryUrl}"/>', {frequency: 1});
     </script>
+-->
 </p>

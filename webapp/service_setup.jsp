@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <c:set var="actionKey" value="edit_service" scope="request" />
 <c:set var="pageTitle" value="Configure" scope="request" />
@@ -41,6 +41,13 @@
 	                    <p>Use a self descriptive name. For example, if you were to use this for 'authentication' testing, then call it 'Authentication'.</p>
 	                </td>
 	            </tr>
+                <tr>
+                    <th><p>Real service URL: <br /><span style="color:blue;">(optional)</span></p></th>
+                    <td>
+                        <p><input type="text" name="realServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.realServiceUrlWithScheme}"/>" /></p>
+                        <p>You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</p>
+                    </td>
+                </tr>                
 	            <tr><th><p>Service description:</p></th>
                     <td>
                         <p><textarea name="description" style="width:90%;" rows="2" ><c:out value="${mockservice.description}" /></textarea></p>
@@ -54,20 +61,6 @@
 	                    <p>Use something like: <i>/some_service_path/here/more</i> </p>
 	                </td>
 	            </tr>
-	            <tr>
-	                <th><p>Real service URL: <br /><span style="color:blue;">(optional)</span></p></th>
-	                <td>
-	                    <p><input type="text" name="realServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.realServiceUrl}"/>" /></p>
-	                    <p>You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</p>
-	                </td>
-	            </tr>
-	            <tr>
-                    <th><p>Real service scheme: <br /><span style="color:blue;">(optional)</span></p></th>
-                    <td>
-                        <p><input type="text" name="realServiceScheme" maxlength="5" value="<c:out value="${mockservice.realServiceScheme}"/>" /></p>
-                        <p><i>https</i> or <i>http</i></p>
-                    </td>
-                </tr>
 	            <tr>
 	                <th><p>HTTP header definition:</p></th>
 	                <td>

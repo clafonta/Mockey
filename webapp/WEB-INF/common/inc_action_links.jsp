@@ -36,8 +36,9 @@
 	            </tr>
 	            <tr>
 	                <th><p>Mock URL:</p></th>
+                    <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set> 
 	                <td>
-	                    <p><a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a></p>
+	                    <p><a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a><mockey:clipboard id="clip-mockservice" text="${mockUrl}" /></p>
 	                </td>
 	            </tr>
 	            <tr>
@@ -46,10 +47,10 @@
 	                    <p>
 	                        <c:choose>
 	                            <c:when test="${empty mockservice.realServiceUrl}">
-	                                <span <c:if test="${mockservice.proxyOn}">style="color:red;" </c:if>>(undefined)</span>
+	                                <span <c:if test="${mockservice.proxyOn}">style="color:red;" </c:if>(undefined)</span>
 	                            </c:when>
 	                            <c:otherwise>
-	                                <c:out value="${mockservice.realServiceUrl}" />
+	                                <c:out value="${mockservice.realServiceUrlWithScheme}" /><mockey:clipboard id="clip-realservice" text="${mockservice.realServiceUrlWithScheme}" />
 	                            </c:otherwise>
 	                        </c:choose>
 	                    </p>

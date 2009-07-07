@@ -1,7 +1,7 @@
-<%@ taglib prefix="c"  uri="http://java.sun.com/jstl/core" %> 
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
-<c:set var="pageTitle" value="History" scope="request"/>         
-<jsp:include page="/WEB-INF/common/header.jsp" />   
+<c:set var="pageTitle" value="History" scope="request"/>
+<jsp:include page="/WEB-INF/common/header.jsp" />
 <div id="main">
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
     <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>

@@ -1,4 +1,4 @@
-<%@ taglib prefix="c"  uri="http://java.sun.com/jstl/core" %> 
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <c:set var="actionKey" value="service_history" scope="request" />
 <c:set var="pageTitle" value="History" scope="request"/>         

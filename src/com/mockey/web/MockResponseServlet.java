@@ -25,7 +25,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.http.Header;
 
 import com.mockey.ClientExecuteProxy;
 import com.mockey.MockServiceBean;
@@ -64,64 +64,30 @@ public class MockResponseServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {        
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestFromClient request = new RequestFromClient(req);
+        logger.info(request.dumpHeaders());
+        
 		String requestIp = req.getRemoteAddr();
 		String urlPath = req.getRequestURI();
-		MockServiceBean ms = store.getMockServiceByUrl(urlPath);
-        ms.setHttpMethod(req.getMethod());
+		MockServiceBean serviceBean = store.getMockServiceByUrl(urlPath);
+        serviceBean.setHttpMethod(req.getMethod());
 
-        logger.info("Examining Headers");
-        Enumeration headerNames = req.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String name = (String) headerNames.nextElement();
-            logger.info("Header: "+name+" = "+req.getHeader(name));
-        }
-
-		// There are several options to look at:
+        // There are several options to look at:
 		// 1. Respond with real service response
 		// 2. Respond with scenario response independent of request message.
 		// 3. Respond with scenario response dependent on matching request
 		// message.
 		//
-		StringBuffer requestMsg = new StringBuffer();
-		String thisLine;
+        
+        StringBuffer responseMsg = new StringBuffer();
 
-		// NOTE: Get reader only retrieves the BODY of the message
-		// but no "params".
-		BufferedReader br = new BufferedReader(req.getReader());
-		StringBuffer responseMsg = new StringBuffer();
-		resp.setContentType(ms.getHttpHeaderDefinition());
 
-		while ((thisLine = br.readLine()) != null) {
-			requestMsg.append(thisLine);
-		}
-
-		// CHECK to see if the request is GET/POST with PARAMS instead
-		// of a BODY message
-		if (requestMsg.toString().trim().length() == 0) {
-			// OK..let's build the request message from Params.
-			// Is this a HACK? I dunno yet.
-			logger.debug("Request message is EMPTY; building request message out of Parameters. ");
-			// FIRST, let's informe the end user of what we are doing.
-			requestMsg.append("NOTE: Incoming request BODY is EMPTY; Building message request body out of PARAMS. ");
-			Enumeration parameterNameEnum = req.getParameterNames();
-			while (parameterNameEnum.hasMoreElements()) {
-				String paramName = (String) parameterNameEnum.nextElement();
-				String[] paramValues = req.getParameterValues(paramName);
-				// IF foo has multiple VALUES, then create a message
-				// like "&foo=x&foo=y" to capture someone matching
-				// key value pair. Still, this is a hack; can't predict
-				// what people are going to try to match to.
-				for (int i = 0; i < paramValues.length; i++) {
-                    requestMsg.append("&").append(paramName).append("=").append(paramValues[i]);
-				}
-			}
-
-		}
+        String requestMsg = request.getParametersAsString();
 
 		// If no scenarios, then proxy is automatically on.
-		if (ms.getScenarios().size() == 0) {
-			ms.setProxyOn(true);
+		if (serviceBean.getScenarios().size() == 0) {
+			serviceBean.setProxyOn(true);
 		}
 
 		// If proxy on, then
@@ -131,7 +97,7 @@ public class MockResponseServlet extends HttpServlet {
 		// 4) Read the reply from the real service URL.
 		// 5) Save request + response as a historical scenario.
 		ResponseMessage proxyResponse = null;
-		if (ms.isProxyOn()) {
+		if (serviceBean.isProxyOn()) {
 
 			// There are 2 proxy things going on here:
 			// 1. Using Mockey as a 'proxy' to a real service.
@@ -139,19 +105,20 @@ public class MockResponseServlet extends HttpServlet {
 			//
 			// For the proxy server between Mockey and the real service,
 			// we do the following:
-			ProxyServer proxyInfo = store.getProxyInfo();
-			if (proxyInfo.isProxyEnabled()) {
-				ClientExecuteProxy proxyServer = new ClientExecuteProxy();
+			ProxyServer proxyServer = store.getProxyInfo();
+			if (proxyServer.isProxyEnabled()) {
+				ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
 				try {
                     logger.debug("Initiating request through proxy");
-					proxyResponse = proxyServer.execute(proxyInfo, ms, String.valueOf(requestMsg));
-
+					proxyResponse = clientExecuteProxy.execute(proxyServer, serviceBean, request);
+                    proxyResponse.writeToOutput(resp);
+                    return;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
 
-				proxyResponse = getResponseMsg(ms.getRealServiceUrl(), requestMsg.toString(), ms
+				proxyResponse = getResponseMsg(serviceBean.getRealServiceUrl(), requestMsg.toString(), serviceBean
 						.getHttpHeaderDefinition());
 
 			}
@@ -164,8 +131,8 @@ public class MockResponseServlet extends HttpServlet {
 		// 2) Based on scenario selected.
 		//
 		else {
-			if (ms.isReplyWithMatchingRequest()) {
-				List scenarios = ms.getScenarios();
+			if (serviceBean.isReplyWithMatchingRequest()) {
+				List scenarios = serviceBean.getScenarios();
 				Iterator iter = scenarios.iterator();
 				String messageMatchFound = null;
 				while (iter.hasNext()) {
@@ -191,7 +158,7 @@ public class MockResponseServlet extends HttpServlet {
 				responseMsg.append(messageMatchFound);
 
 			} else {
-				MockServiceScenarioBean scenario = ms.getScenario(ms.getDefaultScenarioId());
+				MockServiceScenarioBean scenario = serviceBean.getScenario(serviceBean.getDefaultScenarioId());
 
 				if (scenario != null) {
 
@@ -208,7 +175,7 @@ public class MockResponseServlet extends HttpServlet {
 		mssb.setRequestMessage(requestMsg.toString());
 		mssb.setResponseMessage(responseMsg.toString());
 		mssb.setConsumerId(requestIp);
-		mssb.setServiceId(ms.getId());
+		mssb.setServiceId(serviceBean.getId());
 		store.addHistoricalScenario(mssb);
 
 		//       
@@ -218,9 +185,9 @@ public class MockResponseServlet extends HttpServlet {
 
 		try {
 			// Wait for a minute.
-			logger.debug("Waiting..." + ms.getHangTime() + " miliseconds ");
+			logger.debug("Waiting..." + serviceBean.getHangTime() + " miliseconds ");
 
-			long future = System.currentTimeMillis() + ms.getHangTime();
+			long future = System.currentTimeMillis() + serviceBean.getHangTime();
 
 			while (true) {
 				if (System.currentTimeMillis() > future) {
@@ -232,9 +199,9 @@ public class MockResponseServlet extends HttpServlet {
 		} catch (Exception e) {
 			// Catch interrupt exception
 		}
-
+        resp.setContentType(serviceBean.getHttpHeaderDefinition());
 		PrintStream out = null;
-		if (ms.isProxyOn() && !proxyResponse.isValid()) {
+		if (serviceBean.isProxyOn() && !proxyResponse.isValid()) {
 			resp.setContentType("text/plain");
 			out = new PrintStream(resp.getOutputStream());
 			out.println(proxyResponse.getErrorMsg());

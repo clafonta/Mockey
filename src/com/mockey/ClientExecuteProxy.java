@@ -5,12 +5,10 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -27,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mockey.web.ResponseMessage;
+import com.mockey.web.RequestFromClient;
 
 /**
  * How to send a request via proxy using {@link HttpClient}.
@@ -45,11 +44,11 @@ public class ClientExecuteProxy {
 		proxyInfoBean.setProxyUsername("YOUR_PROXY_USERNAME_HERE");
 		proxyInfoBean.setProxyScheme("http");
 		MockServiceBean serviceBean = new MockServiceBean();
-		serviceBean.setRealServiceScheme("https");
-		serviceBean.setRealServiceUrl("issues.apache.org");
+		
+		serviceBean.setRealServiceUrl("https://issues.apache.org");
 		// serviceBean.sets
 		ClientExecuteProxy p = new ClientExecuteProxy();
-		ResponseMessage rm = p.execute(proxyInfoBean, serviceBean, "");
+		ResponseMessage rm = p.execute(proxyInfoBean, serviceBean, null);
 		System.out.println("executing request to " + serviceBean.getRealServiceUrl() + " via " + proxyInfoBean.getProxyUrl());
 		System.out.println("----------------------------------------");
 		System.out.println(rm.getStatusLine());
@@ -64,7 +63,7 @@ public class ClientExecuteProxy {
 
 	}
 
-	public ResponseMessage execute(ProxyServer proxyInfo, MockServiceBean serviceBean, String requestMsg) throws Exception {
+	public ResponseMessage execute(ProxyServer proxyInfo, MockServiceBean serviceBean, RequestFromClient request) throws Exception {
         log.info("Request: " + String.valueOf(serviceBean));
 
 
@@ -86,7 +85,7 @@ public class ClientExecuteProxy {
         HttpParams params = new BasicHttpParams();
         HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
         HttpProtocolParams.setContentCharset(params, "UTF-8");
-        HttpProtocolParams.setUseExpectContinue(params, true);
+        HttpProtocolParams.setUseExpectContinue(params, false);
 
         ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
 
@@ -98,17 +97,7 @@ public class ClientExecuteProxy {
         httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
 
 
-        HttpResponse rsp = null;
-        if (serviceBean.getHttpMethod().equals("GET")) {
-            HttpGet req = new HttpGet(serviceBean.getRealPath());
-            rsp = httpclient.execute(target, req);
-        }else{
-            HttpPost post = new HttpPost(serviceBean.getRealPath());
-            StringEntity body = new StringEntity(requestMsg);
-            post.setEntity(body);
-
-            rsp = httpclient.execute(target, post);
-        }
+        HttpResponse rsp = httpclient.execute(target, request.generatePostToRealServer(serviceBean));
 
 
         HttpEntity entity = rsp.getEntity();
@@ -116,7 +105,7 @@ public class ClientExecuteProxy {
         responseMessage.setStatusLine(rsp.getStatusLine());
         Header[] headers = rsp.getAllHeaders();
         responseMessage.setHeaders(headers);
-
+        
         if (entity != null) {
             // System.out.println(EntityUtils.toString(entity));
             responseMessage.setResponseMsg(EntityUtils.toString(entity));

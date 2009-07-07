@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -8,7 +8,8 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/style.css" />" />
 <link rel="shortcut icon" href="<c:url value="/images/favicon.ico" />">
 <script type="text/javascript" src="<c:url value="/javascript/util.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/prototype.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/jquery-1.3.2.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
 </head>
 <body>
 <div id="container">

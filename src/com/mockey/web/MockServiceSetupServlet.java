@@ -121,10 +121,14 @@ public class MockServiceSetupServlet extends HttpServlet {
 
 		ms.setServiceName(req.getParameter("serviceName"));
 		ms.setDescription(req.getParameter("description"));
-		ms.setMockServiceUrl(req.getParameter("mockServiceUrl"));
 		ms.setRealServiceUrl(req.getParameter("realServiceUrl"));
-		ms.setHttpHeaderDefinition(req.getParameter("httpHeaderDefinition"));
-		ms.setRealServiceScheme(req.getParameter("realServiceScheme"));
+        if(req.getParameter("mockServiceUrl") != null && req.getParameter("mockServiceUrl").trim().length() > 0) {
+            ms.setMockServiceUrl(req.getParameter("mockServiceUrl"));
+        }else{
+            ms.setMockServiceUrl(ms.getRealPath());
+        }
+        
+		ms.setHttpHeaderDefinition(req.getParameter("httpHeaderDefinition"));		
 		Map errorMap = MockServiceValidator.validate(ms);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {
