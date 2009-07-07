@@ -30,7 +30,7 @@ public class MockServiceStoreImpl implements MockServiceStore {
 
     /** Basic logger */
     private static Logger logger = Logger.getLogger(MockServiceStoreImpl.class);
-    private ProxyServer proxyInfoBean;
+    private ProxyServer proxyInfoBean = new ProxyServer();
     private OrderedMap historyCache = new OrderedMap();
     private OrderedMap mockServiceStore = new OrderedMap();
     private static MockServiceStoreImpl store = new MockServiceStoreImpl();
@@ -91,7 +91,7 @@ public class MockServiceStoreImpl implements MockServiceStore {
             stringBuf.append("Service name: " + element.getServiceName() + "\n");
             stringBuf.append("Service description: " + element.getDescription() + "\n");
             stringBuf.append("Service url: " + element.getMockServiceUrl() + "\n");
-            stringBuf.append("Service proxyurl: " + element.getRealServiceUrl() + "\n");
+            stringBuf.append("Service proxyurl: " + element.getRealServicePath() + "\n");
             List scenarios = element.getScenarios();
             Iterator iter2 = scenarios.iterator();
             while (iter2.hasNext()) {

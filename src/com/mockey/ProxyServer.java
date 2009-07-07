@@ -1,17 +1,22 @@
 package com.mockey;
 
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.auth.Credentials;
+import com.mockey.util.Url;
+
 
 /**
  * Defines a proxy server to communicate with
  */
 public class ProxyServer {
 
-	private boolean proxyEnabled;
-	private String proxyUrl;
-	private int proxyPort;
+	private boolean proxyEnabled = false;
+    private Url proxyUrl;
 	private String proxyUsername;
 	private String proxyPassword;
-	private String proxyScheme;
+
 
 	public boolean isProxyEnabled() {
 		return proxyEnabled;
@@ -21,20 +26,20 @@ public class ProxyServer {
 		this.proxyEnabled = proxyEnabled;
 	}
 
-	public String getProxyUrl() {
-		return proxyUrl;
+	public String getProxyHost() {
+		return proxyUrl.getHost();
 	}
 
 	public void setProxyUrl(String proxyUrl) {
-		this.proxyUrl = proxyUrl;
+		this.proxyUrl = new Url(proxyUrl);
 	}
 
-	public int getProxyPort() {
-		return proxyPort;
-	}
+    public String getProxyUrl() {
+        return proxyUrl != null ? proxyUrl.toString() : null;
+    }
 
-	public void setProxyPort(int proxyPort) {
-		this.proxyPort = proxyPort;
+    public int getProxyPort() {
+		return proxyUrl.getPort();
 	}
 
 	public String getProxyUsername() {
@@ -53,11 +58,18 @@ public class ProxyServer {
 		return this.proxyPassword;
 	}
 
-	public void setProxyScheme(String scheme) {
-		this.proxyScheme = scheme;
+	public String getProxyScheme() {
+		return proxyUrl.getScheme();
 	}
 
-	public String getProxyScheme() {
-		return proxyScheme;
-	}
+    public HttpHost getHttpHost() {
+        return new HttpHost(getProxyHost(), getProxyPort(), getProxyScheme());
+    }
+    public AuthScope getAuthScope() {
+        return new AuthScope(getProxyHost(), getProxyPort());
+    }
+    
+    public Credentials getCredentials() {
+        return new UsernamePasswordCredentials(getProxyUsername(), getProxyPassword());
+    }
 }

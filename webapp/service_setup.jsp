@@ -3,6 +3,7 @@
 <c:set var="actionKey" value="edit_service" scope="request" />
 <c:set var="pageTitle" value="Configure" scope="request" />
 <c:set var="currentTab" value="create" scope="request" />
+<%--@elvariable id="mockservice" type="com.mockey.MockServiceBean"--%>
 <jsp:include page="/WEB-INF/common/header.jsp" />
 <div id="main">
     <%@ include file="/WEB-INF/common/message.jsp"%>    
@@ -17,7 +18,7 @@
             <h1>Service Setup</h1>
             <div style="margin-left:20%; margin-right:20%">
                 <h2 class="overlabel">Step 1 - Create a service name and mock URI <span style="color: green;">- Done!</span></h2>
-                <h2>Step 2 - Create a service scenario <a style="color: red;" href="<c:out value="${scenarioUrl}"/>" title="Create service scenario" border="0" />Create Now</a></h2>
+                <h2>Step 2 - Create a service scenario <a style="color: red;" href="<c:out value="${scenarioUrl}"/>" title="Create service scenario">Create Now</a></h2>
             </div>
         </c:when>
         <c:otherwise>
@@ -44,7 +45,7 @@
                 <tr>
                     <th><p>Real service URL: <br /><span style="color:blue;">(optional)</span></p></th>
                     <td>
-                        <p><input type="text" name="realServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.realServiceUrlWithScheme}"/>" /></p>
+                        <p><input type="text" name="realServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.realServiceUrl}"/>" /></p>
                         <p>You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</p>
                     </td>
                 </tr>                
@@ -58,14 +59,15 @@
 	                <th><p>Mock service URI:</p></th>
 	                <td>
 	                    <p><input type="text" name="mockServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.mockServiceUrl}"/>" /></p>
-	                    <p>Use something like: <i>/some_service_path/here/more</i> </p>
+	                    <p>Use something like: <span style="font-style: italic;">/some_service_path/here/more</span> </p>
 	                </td>
 	            </tr>
 	            <tr>
 	                <th><p>HTTP header definition:</p></th>
 	                <td>
 	                    <p><input type="text" size="40px" name="httpHeaderDefinition" value="<c:out value="${mockservice.httpHeaderDefinition}"/>" /></p>
-	                    <p>For example: <i>text/xml; utf-8</i>, <i>application/json;</i>, etc. </p>
+	                    <p>For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
+                                style="font-style: italic;">application/json;</span>, etc. </p>
 	                </td>
 	            </tr>
             </tbody>

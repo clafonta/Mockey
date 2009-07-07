@@ -15,9 +15,11 @@
  */
 package com.mockey;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServlet;
+import org.apache.http.HttpHost;
+
 import java.util.List;
+
+import com.mockey.util.Url;
 
 /**
  * The mock service definition.  
@@ -39,12 +41,6 @@ public class MockServiceBean implements Item {
 
 	private String description;
 
-	private String mockServiceUrl;
-
-	private String realServiceUrl;
-	
-	private String realServiceScheme;
-
 	private Long defaultScenarioId;
 	
 	private String httpHeaderDefinition = HTTP_HEADER_XML;
@@ -59,6 +55,8 @@ public class MockServiceBean implements Item {
 
     private String httpMethod = "GET";
 
+    private String mockServiceUrl;
+    private Url realServiceUrl;
 
     public String getHttpMethod() {
         return httpMethod;
@@ -118,17 +116,16 @@ public class MockServiceBean implements Item {
 	}
 
 	public String getMockServiceUrl() {
-
 		return mockServiceUrl;
 	}
 
 
     public String getRealHost() {
-        return realServiceUrl.substring(0,realServiceUrl.indexOf("/"));
+        return realServiceUrl.getHost();
     }
 
     public String getRealPath() {
-        return realServiceUrl.substring(realServiceUrl.indexOf("/"));
+        return realServiceUrl.getPath();
     }
 
 	/**
@@ -151,19 +148,12 @@ public class MockServiceBean implements Item {
 		}
 	}
 
-	public String getRealServiceUrl() {
-		return realServiceUrl;
+	public String getRealServicePath() {
+		return realServiceUrl.getPath();
 	}
 
 	public void setRealServiceUrl(String realServiceUrl) {
-        if(realServiceUrl.matches("(?i)^https?://.*")) {
-            this.realServiceScheme = realServiceUrl.substring(0,realServiceUrl.indexOf(":"));
-            this.realServiceUrl = realServiceUrl.substring(realServiceUrl.indexOf("://")+3, realServiceUrl.length());
-        }else{
-            this.realServiceScheme = "http";
-            this.realServiceUrl = realServiceUrl;
-        }
-
+        this.realServiceUrl = new Url(realServiceUrl);
 	}
 
 	public boolean isProxyOn() {
@@ -221,14 +211,15 @@ public class MockServiceBean implements Item {
 		return id;
 	}
 
-	public void setRealServiceScheme(String realServiceScheme) {
-	}
-
 	public String getRealServiceScheme() {
-		return realServiceScheme;
+		return realServiceUrl.getScheme();
 	}
 
-    public String getRealServiceUrlWithScheme() {
-        return getRealServiceUrl() == null ? null : getRealServiceScheme() + "://" + getRealServiceUrl();
+    public String getRealServiceUrl() {
+        return realServiceUrl.toString();
+    }
+
+    public HttpHost getHttpHost() {
+        return new HttpHost(getRealHost(), 443, getRealServiceScheme());
     }
 }

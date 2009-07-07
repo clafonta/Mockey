@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/style.css" />" />
 <link rel="shortcut icon" href="<c:url value="/images/favicon.ico" />">
 <script type="text/javascript" src="<c:url value="/javascript/util.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/jquery-1.3.2.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/jquery.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
 </head>
 <body>

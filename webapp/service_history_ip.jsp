@@ -7,7 +7,7 @@
     <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
     <c:choose>
         <c:when test="${!empty scenarioHistoryList}">
-            <c:forEach var="scenario" items="${scenarioHistoryList}">   
+            <c:forEach var="scenario" items="${scenarioHistoryList}" varStatus="status">
                 <p>
                     <form action="<c:url value="/scenario"/>" method="post">
 	                    <input type="hidden" name="actionTypeGetFlag" value="true" />
@@ -37,7 +37,9 @@
 	                            <tr>
 	                                <td>
 	                                    <p>Response:</p>
-	                                    <p><textarea name="responseMessage" rows="10" cols="80%"><c:out value="${scenario.responseMessage}"/></textarea></p>
+	                                    <p>
+                                            <textarea name="requestMessage" rows="10" cols="80%">${scenario.responseMessage}</textarea>                                            
+                                        </p>
 	                                </td>
 	                            </tr>
 	                        </tbody>   

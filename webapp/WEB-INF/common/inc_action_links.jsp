@@ -50,7 +50,7 @@
 	                                <span <c:if test="${mockservice.proxyOn}">style="color:red;" </c:if>(undefined)</span>
 	                            </c:when>
 	                            <c:otherwise>
-	                                <c:out value="${mockservice.realServiceUrlWithScheme}" /><mockey:clipboard id="clip-realservice" text="${mockservice.realServiceUrlWithScheme}" />
+	                                <c:out value="${mockservice.realServiceUrl}" /><mockey:clipboard id="clip-realservice" text="${mockservice.realServiceUrl}" />
 	                            </c:otherwise>
 	                        </c:choose>
 	                    </p>

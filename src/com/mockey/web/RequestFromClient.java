@@ -46,7 +46,7 @@ public class RequestFromClient {
      * @param serviceBean the path on the server to POST to
      * @return A fully populated HttpRequest object
      */
-    public HttpRequest generatePostToRealServer(MockServiceBean serviceBean) {
+    public HttpRequest postToRealServer(MockServiceBean serviceBean) {
         //TODO: Cleanup the logic to handle creating a GET vs POST
         HttpRequest request;
 
@@ -197,6 +197,32 @@ public class RequestFromClient {
 
     private boolean hasPostBody() {
         return requestBody == null || requestBody.trim().length() == 0;
+    }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("---------- Headers ---------\n");
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            for(String value : entry.getValue()) {
+                if(!includeHeader(entry.getKey())) {
+                    builder.append("IGNORED:  ");
+                }
+                builder.append(entry.getKey()).append(" = ");                
+                builder.append(value);
+            }
+            builder.append("\n");
+        }
+        builder.append("--------- Parameters ------------ \n");
+        for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
+            builder.append(entry.getKey()).append(" = ");
+            for(String value : entry.getValue()) {
+                builder.append(value).append("|");
+            }
+            builder.append("\n");
+        }
+        builder.append("-------- Post BODY --------------\n");
+        builder.append(requestBody);
+        return builder.toString();
     }
 }

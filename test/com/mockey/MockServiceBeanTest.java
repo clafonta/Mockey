@@ -21,15 +21,15 @@ public class MockServiceBeanTest {
         MockServiceBean bean = new MockServiceBean();
 
         bean.setRealServiceUrl("HTtP://www.google.com");
-        assert "www.google.com".equals(bean.getRealServiceUrl()) : "expected www.google.com got "+bean.getRealServiceUrl();
+        assert "www.google.com".equals(bean.getRealServicePath()) : "expected www.google.com got "+bean.getRealServicePath();
         assert "http".equalsIgnoreCase(bean.getRealServiceScheme());
 
         bean.setRealServiceUrl("https://gmail.com");
-        assert "gmail.com".equals(bean.getRealServiceUrl());
+        assert "gmail.com".equals(bean.getRealServicePath());
         assert "https".equals(bean.getRealServiceScheme());
 
         bean.setRealServiceUrl("wired.com");
-        assert "wired.com".equals(bean.getRealServiceUrl());
+        assert "wired.com".equals(bean.getRealServicePath());
         assert "http".equals(bean.getRealServiceScheme());
     }
 }

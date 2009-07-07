@@ -1,3 +1,4 @@
+<script type="text/javascript" src="<c:url value="/javascript/jquery.periodicalupdater.js"  />"></script>
 <p>
     <c:url value="/configure" var="flushUrl">
         <c:param name="serviceId" value="${mockservice.id}" />
@@ -12,9 +13,12 @@
     <c:url value="/checkforhistory" var="checkforhistoryUrl">
         <c:param name="serviceId" value="${mockservice.id}" />
     </c:url>
-<!-- TODO: Replace this with jquery equivalent
     <script language="javascript">
-    new Ajax.PeriodicalUpdater('log', '<c:out value="${checkforhistoryUrl}"/>', {frequency: 1});
+        $.PeriodicalUpdater("<c:out value="${checkforhistoryUrl}"/>",{},
+				function(newData) {
+					$('#log').append(newData);
+				}
+			);
     </script>
--->
+
 </p>

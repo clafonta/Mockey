@@ -70,16 +70,11 @@ public class MockServiceProxyInfoServlet extends HttpServlet {
 
 		proxyInfo.setProxyPassword(req.getParameter("proxyPassword"));
 		proxyInfo.setProxyUsername(req.getParameter("proxyUsername"));
-		proxyInfo.setProxyScheme(req.getParameter("proxyScheme"));
 		proxyInfo.setProxyUrl(req.getParameter("proxyUrl"));		
 		String enabled = req.getParameter("proxyEnabled");
 		boolean proxyEnabled = false;
-		try{
-			
+		try{			
 			proxyEnabled = Boolean.parseBoolean(enabled);
-			int port = Integer.parseInt(req.getParameter("proxyPort"));
-			proxyInfo.setProxyPort(port);
-			
 		}catch(Exception e){
 			e.printStackTrace();
 		}

@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.apache.http.Header;
 
 import com.mockey.ClientExecuteProxy;
 import com.mockey.MockServiceBean;
@@ -70,8 +69,8 @@ public class MockResponseServlet extends HttpServlet {
         
 		String requestIp = req.getRemoteAddr();
 		String urlPath = req.getRequestURI();
-		MockServiceBean serviceBean = store.getMockServiceByUrl(urlPath);
-        serviceBean.setHttpMethod(req.getMethod());
+		MockServiceBean realService = store.getMockServiceByUrl(urlPath);
+        realService.setHttpMethod(req.getMethod());
 
         // There are several options to look at:
 		// 1. Respond with real service response
@@ -86,8 +85,8 @@ public class MockResponseServlet extends HttpServlet {
         String requestMsg = request.getParametersAsString();
 
 		// If no scenarios, then proxy is automatically on.
-		if (serviceBean.getScenarios().size() == 0) {
-			serviceBean.setProxyOn(true);
+		if (realService.getScenarios().size() == 0) {
+			realService.setProxyOn(true);
 		}
 
 		// If proxy on, then
@@ -97,7 +96,7 @@ public class MockResponseServlet extends HttpServlet {
 		// 4) Read the reply from the real service URL.
 		// 5) Save request + response as a historical scenario.
 		ResponseMessage proxyResponse = null;
-		if (serviceBean.isProxyOn()) {
+		if (realService.isProxyOn()) {
 
 			// There are 2 proxy things going on here:
 			// 1. Using Mockey as a 'proxy' to a real service.
@@ -110,19 +109,28 @@ public class MockResponseServlet extends HttpServlet {
 				ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
 				try {
                     logger.debug("Initiating request through proxy");
-					proxyResponse = clientExecuteProxy.execute(proxyServer, serviceBean, request);
+					proxyResponse = clientExecuteProxy.execute(proxyServer, realService, request);
                     proxyResponse.writeToOutput(resp);
+
+                    MockServiceScenarioBean mssb = new MockServiceScenarioBean();
+                    mssb.setScenarioName((new Date()) + " Remote address:" + requestIp);
+                    mssb.setRequestMessage(request.toString());
+                    mssb.setResponseMessage(proxyResponse.getBody());
+                    mssb.setConsumerId(requestIp);
+                    mssb.setServiceId(realService.getId());
+                    store.addHistoricalScenario(mssb);
+                    
                     return;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
 
-				proxyResponse = getResponseMsg(serviceBean.getRealServiceUrl(), requestMsg.toString(), serviceBean
+				proxyResponse = getResponseMsg(realService.getRealServicePath(), requestMsg.toString(), realService
 						.getHttpHeaderDefinition());
 
 			}
-			responseMsg.append(proxyResponse.getResponseMsg());
+			responseMsg.append(proxyResponse.getBody());
 		}
 		// Proxy is NOT on. Therefore we use a scenario to figure out a reply.
 		// Either:
@@ -131,8 +139,8 @@ public class MockResponseServlet extends HttpServlet {
 		// 2) Based on scenario selected.
 		//
 		else {
-			if (serviceBean.isReplyWithMatchingRequest()) {
-				List scenarios = serviceBean.getScenarios();
+			if (realService.isReplyWithMatchingRequest()) {
+				List scenarios = realService.getScenarios();
 				Iterator iter = scenarios.iterator();
 				String messageMatchFound = null;
 				while (iter.hasNext()) {
@@ -158,7 +166,7 @@ public class MockResponseServlet extends HttpServlet {
 				responseMsg.append(messageMatchFound);
 
 			} else {
-				MockServiceScenarioBean scenario = serviceBean.getScenario(serviceBean.getDefaultScenarioId());
+				MockServiceScenarioBean scenario = realService.getScenario(realService.getDefaultScenarioId());
 
 				if (scenario != null) {
 
@@ -175,7 +183,7 @@ public class MockResponseServlet extends HttpServlet {
 		mssb.setRequestMessage(requestMsg.toString());
 		mssb.setResponseMessage(responseMsg.toString());
 		mssb.setConsumerId(requestIp);
-		mssb.setServiceId(serviceBean.getId());
+		mssb.setServiceId(realService.getId());
 		store.addHistoricalScenario(mssb);
 
 		//       
@@ -185,9 +193,9 @@ public class MockResponseServlet extends HttpServlet {
 
 		try {
 			// Wait for a minute.
-			logger.debug("Waiting..." + serviceBean.getHangTime() + " miliseconds ");
+			logger.debug("Waiting..." + realService.getHangTime() + " miliseconds ");
 
-			long future = System.currentTimeMillis() + serviceBean.getHangTime();
+			long future = System.currentTimeMillis() + realService.getHangTime();
 
 			while (true) {
 				if (System.currentTimeMillis() > future) {
@@ -199,9 +207,9 @@ public class MockResponseServlet extends HttpServlet {
 		} catch (Exception e) {
 			// Catch interrupt exception
 		}
-        resp.setContentType(serviceBean.getHttpHeaderDefinition());
+        resp.setContentType(realService.getHttpHeaderDefinition());
 		PrintStream out = null;
-		if (serviceBean.isProxyOn() && !proxyResponse.isValid()) {
+		if (realService.isProxyOn() && !proxyResponse.isValid()) {
 			resp.setContentType("text/plain");
 			out = new PrintStream(resp.getOutputStream());
 			out.println(proxyResponse.getErrorMsg());
@@ -285,7 +293,7 @@ public class MockResponseServlet extends HttpServlet {
 			}
 		}
 
-		responseMessage.setResponseMsg(responseMsg.toString());
+		responseMessage.setBody(responseMsg.toString());
 		return responseMessage;
 	}
 
