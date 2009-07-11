@@ -15,11 +15,10 @@
  */
 package com.mockey;
 
+import com.mockey.util.Url;
 import org.apache.http.HttpHost;
 
 import java.util.List;
-
-import com.mockey.util.Url;
 
 /**
  * The mock service definition.  
@@ -57,6 +56,17 @@ public class MockServiceBean implements Item {
 
     private String mockServiceUrl;
     private Url realServiceUrl;
+
+
+    public MockServiceBean() {
+    }
+
+
+    public MockServiceBean(Url realServiceUrl) {
+        this.realServiceUrl = realServiceUrl;
+        this.setMockServiceUrl(realServiceUrl.getFullUrl());        
+        this.setServiceName("Auto-Generated Service");
+    }
 
     public String getHttpMethod() {
         return httpMethod;
@@ -138,7 +148,7 @@ public class MockServiceBean implements Item {
 	
 	/**
 	 * Method will ensure the service URL starts with '/'. If not, will prepend it to the mock uri
-	 * @param mockServiceUrl
+	 * @param mockServiceUrl the path to the service as it should be accessed in our system
 	 */
 	public void setMockServiceUrl(String mockServiceUrl) {
 		if (mockServiceUrl != null && !mockServiceUrl.trim().startsWith("/")) {
@@ -182,22 +192,23 @@ public class MockServiceBean implements Item {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("Service name:" + this.getServiceName() +"\n");
-		sb.append("Mock URL:" + this.getMockServiceUrl()+"\n");
-		sb.append("Real URL:" + this.getRealServiceUrl()+"\n");
-		sb.append("Scheme:" + this.getRealServiceScheme()+"\n");
-		sb.append("Default scenario ID:" + this.getDefaultScenarioId()+"\n");
-		sb.append("HTTP Content:" + this.getHttpHeaderDefinition()+"\n");
-		sb.append("Hang time:" + this.getHangTime()+"\n");
+        sb.append("Service name:").append(this.getServiceName()).append("\n");
+        sb.append("Mock URL:").append(this.getMockServiceUrl()).append("\n");
+        sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
+        sb.append("Scheme:").append(this.getRealServiceScheme()).append("\n");
+        sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
+        sb.append("HTTP Content:").append(this.getHttpHeaderDefinition()).append("\n");
+        sb.append("Hang time:");
+        sb.append(this.getHangTime());
+        sb.append("\n");
 
-		return sb.toString();
+        return sb.toString();
 	}
 
 	private String cleanUrl(String arg) {
 		int index = arg.indexOf(";");
 		if (index > -1) {
-			String t = arg.substring(0, index);
-			return t;
+            return arg.substring(0, index);
 		} else {
 			return arg;
 		}
@@ -216,10 +227,10 @@ public class MockServiceBean implements Item {
 	}
 
     public String getRealServiceUrl() {
-        return realServiceUrl.toString();
+        return String.valueOf(realServiceUrl);
     }
 
     public HttpHost getHttpHost() {
-        return new HttpHost(getRealHost(), 443, getRealServiceScheme());
+        return new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(), realServiceUrl.getScheme());
     }
 }

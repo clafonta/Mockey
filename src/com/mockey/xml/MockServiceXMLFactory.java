@@ -15,23 +15,25 @@
  */
 package com.mockey.xml;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import com.mockey.MockServiceBean;
+import com.mockey.MockServiceScenarioBean;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.log4j.Logger;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import com.mockey.MockServiceBean;
-import com.mockey.MockServiceScenarioBean;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MockServiceXMLFactory {
 	/** Basic logger */
@@ -40,10 +42,8 @@ public class MockServiceXMLFactory {
 	/**
 	 * Returns a <code>Document</code> object representing a ???
 	 * 
-	 * @param cxmlObject
-	 *            Value object containing values for the appropriate XML element
-	 *            and attributes values.
-	 * @return <code>Document</code> object representing a cXML order request
+	 * @param mockServices List of services to convert into an xml document
+     * @return <code>Document</code> object representing a cXML order request
 	 */
 	public Document getAsDocument(List mockServices) {
 		try {
@@ -70,7 +70,7 @@ public class MockServiceXMLFactory {
 	/**
 	 * Mock object. Used for unit testing.
 	 * 
-	 * @return
+	 * @return a sample list of services
 	 */
 	private static List buildMockObject() {
 		// <?xml version="1.0" encoding="UTF-8"?>
@@ -143,27 +143,26 @@ public class MockServiceXMLFactory {
 	 * @param document
 	 *            the document object.
 	 * @return String.
+     * @throws java.io.IOException when unable to write the xml
+     * @throws javax.xml.transform.TransformerException when unable to transform the document
 	 */
-	public static String documentToString(Document document) throws IOException {
+	public static String documentToString(Document document) throws IOException, TransformerException {
 		String soapRequest = null;
 
 		if (document != null) {
-			OutputFormat format = new OutputFormat(document);
-			StringWriter strOut = new StringWriter();
-			XMLSerializer XMLSerial = new XMLSerializer(strOut, format);
-			XMLSerial.serialize(document.getDocumentElement());
-			soapRequest = strOut.toString();
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+            StreamResult result = new StreamResult(new StringWriter());
+            DOMSource source = new DOMSource(document);
+            transformer.transform(source, result);
+            return result.getWriter().toString();
 		}
 
 		return soapRequest;
 	}
 
-	/**
-	 * Testin only.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, TransformerException {
 		MockServiceXMLFactory g = new MockServiceXMLFactory();
 		Document result = g.getAsDocument(MockServiceXMLFactory.buildMockObject());
 		System.out.println(MockServiceXMLFactory.documentToString(result));

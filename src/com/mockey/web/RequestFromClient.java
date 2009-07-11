@@ -1,31 +1,34 @@
 package com.mockey.web;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.HttpRequest;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
+import com.mockey.MockServiceBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
-
-import com.mockey.MockServiceBean;
 
 /**
  * Wraps httpServletRequest and parses out the information we're looking for.
  */
 public class RequestFromClient {
-    private static final String[] HEADERS_TO_IGNORE = {"content-length", "host"};
+    private static final String[] HEADERS_TO_IGNORE = {"content-length", "host", "accept-encoding"};
 
+    // we will ignore the accept-encoding for now to avoid dealing with GZIP responses
+    // if we decide to accept GZIP'ed data later, here is an example of how to un-gzip
+    // it http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/httpclient/src/examples/org/apache/http/examples/client/ClientGZipContentCompression.java
+    
     private Log log = LogFactory.getLog(RequestFromClient.class);
     HttpServletRequest rawRequest;
     Map<String, String[]> parameters = new HashMap<String, String[]>();
@@ -51,8 +54,7 @@ public class RequestFromClient {
         HttpRequest request;
 
         if (serviceBean.getHttpMethod().equals("GET")) {
-            HttpGet get = new HttpGet(serviceBean.getRealPath());
-            request = get;
+            request = new HttpGet(serviceBean.getRealPath());
         } else {
 
 

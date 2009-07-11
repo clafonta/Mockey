@@ -15,20 +15,20 @@
  */
 package com.mockey;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.
- * 
+ *
  * @author chad.lafontaine
- * 
  */
 public class MockServiceStoreImpl implements MockServiceStore {
 
-    /** Basic logger */
+    /**
+     * Basic logger
+     */
     private static Logger logger = Logger.getLogger(MockServiceStoreImpl.class);
     private ProxyServer proxyInfoBean = new ProxyServer();
     private OrderedMap historyCache = new OrderedMap();
@@ -44,15 +44,16 @@ public class MockServiceStoreImpl implements MockServiceStore {
     }
 
     public MockServiceBean getMockServiceByUrl(String urlPath) {
-
-        int index = urlPath.indexOf("/service");
-        String servicePath = urlPath.substring(index + "/service".length());
-
+        String servicePath;
+        if (urlPath.startsWith("/service")) {
+            int index = urlPath.indexOf("/service");
+            servicePath = urlPath.substring(index + "/service".length());
+        } else {
+            servicePath = urlPath;
+        }
         try {
-            Iterator iter = mockServiceStore.keySet().iterator();
-
-            while (iter.hasNext()) {
-                Long id = (Long) iter.next();
+            for (Object o : mockServiceStore.keySet()) {
+                Long id = (Long) o;
                 MockServiceBean theService = (MockServiceBean) mockServiceStore.get(id);
                 String tempString = theService.getMockServiceUrl();
                 if (tempString.equals(servicePath)) {
@@ -83,22 +84,20 @@ public class MockServiceStoreImpl implements MockServiceStore {
 
     public String toString() {
         StringBuffer stringBuf = new StringBuffer();
-        Iterator iter = this.mockServiceStore.keySet().iterator();
-        while (iter.hasNext()) {
-            Long key = (Long) iter.next();
+        for (Object o : this.mockServiceStore.keySet()) {
+            Long key = (Long) o;
             MockServiceBean element = (MockServiceBean) mockServiceStore.get(key);
-            stringBuf.append("Service ID: " + element.getId() + "\n");
-            stringBuf.append("Service name: " + element.getServiceName() + "\n");
-            stringBuf.append("Service description: " + element.getDescription() + "\n");
-            stringBuf.append("Service url: " + element.getMockServiceUrl() + "\n");
-            stringBuf.append("Service proxyurl: " + element.getRealServicePath() + "\n");
+            stringBuf.append("Service ID: ").append(element.getId()).append("\n");
+            stringBuf.append("Service name: ").append(element.getServiceName()).append("\n");
+            stringBuf.append("Service description: ").append(element.getDescription()).append("\n");
+            stringBuf.append("Service url: ").append(element.getMockServiceUrl()).append("\n");
+            stringBuf.append("Service proxyurl: ").append(element.getRealServicePath()).append("\n");
             List scenarios = element.getScenarios();
-            Iterator iter2 = scenarios.iterator();
-            while (iter2.hasNext()) {
-                MockServiceScenarioBean b = (MockServiceScenarioBean) iter2.next();
-                stringBuf.append("    scenario name: " + b.getScenarioName() + "\n");
-                stringBuf.append("    scenario request: " + b.getRequestMessage() + "\n");
-                stringBuf.append("    scenario response: " + b.getResponseMessage() + "\n");
+            for (Object scenario : scenarios) {
+                MockServiceScenarioBean b = (MockServiceScenarioBean) scenario;
+                stringBuf.append("    scenario name: ").append(b.getScenarioName()).append("\n");
+                stringBuf.append("    scenario request: ").append(b.getRequestMessage()).append("\n");
+                stringBuf.append("    scenario response: ").append(b.getResponseMessage()).append("\n");
 
             }
 
@@ -107,42 +106,40 @@ public class MockServiceStoreImpl implements MockServiceStore {
     }
 
     /**
-     * 
      * @return list of MockServiceScenarioBean objects
      */
-    public List getHistoryScenarios(){
+    public List getHistoryScenarios() {
         return this.historyCache.getOrderedList();
     }
-    
+
     public void deleteHistoricalScenario(Long scenarioId) {
-        
+
         historyCache.remove(scenarioId);
-        
+
     }
-    
+
     public void addHistoricalScenario(MockServiceScenarioBean mssb) {
 
         historyCache.save(mssb);
-        
+
     }
 
-    public void flushHistoryRequestMsgs(Long serviceId){
-        Iterator iter = historyCache.getOrderedList().iterator();
-        while(iter.hasNext()){
-            MockServiceScenarioBean object = (MockServiceScenarioBean)iter.next();
-            if(object.getServiceId().equals(serviceId)){
+    public void flushHistoryRequestMsgs(Long serviceId) {
+        for (Object o : historyCache.getOrderedList()) {
+            MockServiceScenarioBean object = (MockServiceScenarioBean) o;
+            if (object.getServiceId().equals(serviceId)) {
                 this.historyCache.remove(object.getId());
             }
         }
     }
 
-	public ProxyServer getProxyInfo() {
-		return this.proxyInfoBean;
-	}
+    public ProxyServer getProxyInfo() {
+        return this.proxyInfoBean;
+    }
 
-	public void setProxyInfo(ProxyServer proxyInfoBean) {
-		this.proxyInfoBean = proxyInfoBean;
-		
-	}
+    public void setProxyInfo(ProxyServer proxyInfoBean) {
+        this.proxyInfoBean = proxyInfoBean;
+
+    }
 
 }

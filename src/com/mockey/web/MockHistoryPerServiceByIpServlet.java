@@ -15,21 +15,19 @@
  */
 package com.mockey.web;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.mockey.MockServiceBean;
+import com.mockey.MockServiceScenarioBean;
+import com.mockey.MockServiceStore;
+import com.mockey.MockServiceStoreImpl;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mockey.MockServiceBean;
-import com.mockey.MockServiceScenarioBean;
-import com.mockey.MockServiceStore;
-import com.mockey.MockServiceStoreImpl;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <code>MockHistoryPerServiceByIpServlet</code> manages the display of past
@@ -63,13 +61,12 @@ public class MockHistoryPerServiceByIpServlet extends HttpServlet {
 		List scenarios = store.getHistoryScenarios();
 		List scenarioHistoryList = new ArrayList();
 		if(scenarios!=null){
-		    Iterator iter = scenarios.iterator();
-		    while (iter.hasNext()) {
-                MockServiceScenarioBean type = (MockServiceScenarioBean) iter.next();
-                if(type.getServiceId().equals(serviceId) && type.getConsumerId().equals(iprequest)){
+            for (Object scenario : scenarios) {
+                MockServiceScenarioBean type = (MockServiceScenarioBean) scenario;
+                if (type.getServiceId().equals(serviceId) && type.getConsumerId().equals(iprequest)) {
                     scenarioHistoryList.add(type);
                 }
-                
+
             }
 		}
 		

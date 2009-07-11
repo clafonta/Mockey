@@ -17,6 +17,11 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+        <servlet>
+        <servlet-name>spring</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 	<servlet>
 		<servlet-name>MockHomeServlet</servlet-name>
 		<servlet-class>com.mockey.web.MockHomeServlet</servlet-class>
@@ -112,6 +117,10 @@
     <servlet-mapping>
 		<servlet-name>MockServiceExportServlet</servlet-name>
 		<url-pattern>/export/*</url-pattern>
+	</servlet-mapping>
+        <servlet-mapping>
+		<servlet-name>spring</servlet-name>
+		<url-pattern>/p/*</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
