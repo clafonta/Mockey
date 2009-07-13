@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mockey" default="compile" basedir=".">
+	<!-- =================================================================== -->
+	<!-- Base global properties for this build                                                                               -->
+	<!-- =================================================================== -->
+	<property environment="env"/>
+	<property name="src.dir" location="src"/>
+	<property name="webapp.dir" value="webapp"/>
+	<property name="lib.dir" value="${webapp.dir}/WEB-INF/lib"/>
+	<property name="build.dir" location="build"/>
+	<property name="etc.dir" location="etc"/>
+	<property name="dist.dir" location="dist"/>
+	<property name="version.num" value="1.3"/>
+	<property name="classes.dir" location="${build.dir}/WEB-INF/classes"/>
+	<path id="standard.classpath">		
+		<pathelement location="${etc.dir}/servlet-api.jar"/>	
+		<pathelement location="${etc.dir}/jsp-api.jar"/>  
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<pathelement location="${classes.dir}"/>
+	</path>	
+	
+	<!-- Creates the build directories. -->
+	<target name="prepare">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="${build.dir}/WEB-INF/lib"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- Basic compile.                                                                                                                -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="prepare" description="Compiles all Java code">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" deprecation="on" classpathref="standard.classpath" debug="on"/>
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+	</target>	
+
+	<!-- Remove all files created by the compile and tomcat-deploy target-->
+	<target name="clean">
+		<delete dir="bin"/>
+		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+		<delete dir="${env.CATALINA_HOME}/webapps/${ant.project.name}"/>
+		<delete file="${env.CATALINA_HOME}/webapps/${ant.project.name}.war"/>
+		<delete dir="${env.CATALINA_HOME}/work"/>		
+	</target>
+	<!-- =================================================================== -->
+	<!-- Jars up file for distribution                                       -->
+	<!-- =================================================================== -->
+	<target name="dist" depends="clean, webapp" description="Builds a .jar file and places in a dist directory. ">				
+		<zip destfile="${dist.dir}/${ant.project.name}-${version.num}_with_dependencies.zip">	
+			<fileset dir="${dist.dir}" includes="${ant.project.name}.war"/>
+		</zip>
+	</target>	
+	<!-- =================================================================== -->
+	<!-- Jars up a war file for application server                                                                       -->
+	<!-- =================================================================== -->
+	<target name="webapp" depends="compile" description="Builds a WAR file and places in a dist directory. ">
+		<property name="WEBINF" value="${webapp.dir}/WEB-INF"/>
+		<war destfile="${dist.dir}/${ant.project.name}.war" webxml="${WEBINF}/web.xml">
+			<fileset dir="webapp" excludes="**/web.xml"/>
+			<classes dir="${classes.dir}"/>
+			<lib dir="${lib.dir}"/>
+		</war>
+	</target>
+	<!-- =================================================================== -->
+	<!-- Deploys to Tomcat                                                                                                         -->
+	<!-- =================================================================== -->
+	<target name="tomcat" depends="webapp" description="Deploys to Tomcat's webapp directory. Be sure to set env home for Tomcat as CATALINA_HOME.">
+		<copy file="${dist.dir}/${ant.project.name}.war" todir="${env.CATALINA_HOME}/webapps"/>
+	</target>
+	
+	
+	<target name="tomcat-update" depends="compile">
+		<javac srcdir="src" 
+			destdir="webapp/WEB-INF/classes" deprecation="on" 
+			classpathref="standard.classpath" debug="on"
+		/>
+		<copy todir="webapp/WEB-INF/classes">
+			<fileset dir="src">
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>		
+		<antcall target="_tomcat-reload" inheritall="true"/>
+	</target>
+
+	<target name="_tomcat-reload">
+		<taskdef name="tomcatreload" classname="org.apache.catalina.ant.ReloadTask">
+			<classpath>
+			  	<fileset dir="${env.CATALINA_HOME}/server/lib">
+        			<include name="*.jar"/>
+      		</fileset>
+    		</classpath>
+		</taskdef>
+		<tomcatreload url="http://localhost:8080/manager" path="/rulesengine" 
+			username="tomcat" password="tomcat"/>
+	</target>
+	
+	<target name="_tomcat-check">
+		<available file="${env.CATALINA_HOME}" property="tomcat-dir-avail"/>
+		<fail unless="tomcat-dir-avail" 
+			message="Missing tomcat 5 directory or 'CATALINA_HOME' is not set correctly!"/>
+	</target>
+
+</project>
