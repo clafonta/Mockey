@@ -15,7 +15,7 @@ ul li {	margin:0.5em; }
 p{margin: 0.5em; padding: 1px;}
 a{color: #00F;text-decoration:underline}
 a#highlight{font-size:120%;}
-div#container{width:750px;margin:0 auto}
+div#container{width:950px;margin:0 auto}
 div#main{width: 100%;min-width:600px; margin-top: 10px }
 div{margin-top: 1px }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}

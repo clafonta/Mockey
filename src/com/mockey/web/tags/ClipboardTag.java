@@ -1,13 +1,21 @@
 package com.mockey.web.tags;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
-
+/**
+ * 
+ * @author chad.lafontaine
+ */
 public class ClipboardTag extends TagSupport {
-    private String id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6987731112461682834L;
+	private String id;
     private String text;
 
     public String getId() {
@@ -28,6 +36,15 @@ public class ClipboardTag extends TagSupport {
 
     @Override
     public int doStartTag() throws JspException {
+    	
+    	HttpServletRequest request = (HttpServletRequest) pageContext
+		.getRequest();
+
+    	String contxtPth = request.getContextPath();
+    	if(contxtPth!=null && contxtPth.trim().equals("/")){
+    		contxtPth = ""; // App has root for context
+    	}
+
         JspWriter out = pageContext.getOut();
         try {
             out.print("<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" width=\"110\" height=\"14\" id=\""+id+"\" >\n" +
@@ -36,7 +53,7 @@ public class ClipboardTag extends TagSupport {
 "        <param name=\"quality\" value=\"high\" />\n" +
 "        <param name=\"scale\" value=\"noscale\" />\n" +
 "        <param NAME=\"FlashVars\" value=\"text="+text+"\">\n" +
-"        <embed src=\"/flash/clippy.swf\"\n" +
+"        <embed src=\""+contxtPth+"/flash/clippy.swf\"\n" +
 "               width=\"110\"\n" +
 "               height=\"14\"\n" +
 "               name=\"clippy\"\n" +
