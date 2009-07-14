@@ -56,6 +56,13 @@ public class MockResponseServlet extends HttpServlet {
         }
 
         String urlPath = req.getRequestURI();
+
+        String contextRoot = req.getContextPath();
+        if(urlPath.startsWith(contextRoot)) {
+            urlPath = urlPath.substring(contextRoot.length(), urlPath.length());
+        }
+
+
         MockServiceBean realService = store.getMockServiceByUrl(urlPath);
         realService.setHttpMethod(req.getMethod());
 
