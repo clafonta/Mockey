@@ -69,7 +69,15 @@
     <servlet>
         <servlet-name>MockServiceProxyInfoServlet</servlet-name>
         <servlet-class>com.mockey.web.MockServiceProxyInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MockServicePlanSetupServlet</servlet-name>
+        <servlet-class>com.mockey.web.MockServicePlanSetupServlet</servlet-class>
     </servlet>  
+    <servlet-mapping>
+        <servlet-name>MockServicePlanSetupServlet</servlet-name>
+        <url-pattern>/plan/setup</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>MockServiceProxyInfoServlet</servlet-name>
         <url-pattern>/proxy/settings</url-pattern>

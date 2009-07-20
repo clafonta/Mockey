@@ -26,6 +26,14 @@ public interface MockServiceStore {
 
 	public MockServiceBean getMockServiceById(Long serviceId);
 
+	public MockServicePlan getMockServicePlan(Long servicePlanId);
+	/**
+	 * 
+	 * @return a list of MockServicePlan objects. 
+	 */
+	public List getMockServicePlanList();
+	public void saveOrUpdateServicePlan(MockServicePlan servicePlan);
+	public void deleteServicePlan(MockServicePlan servicePlan);
 	/**
 	 * 
 	 * @param urlPath

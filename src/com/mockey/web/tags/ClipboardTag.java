@@ -17,6 +17,7 @@ public class ClipboardTag extends TagSupport {
 	private static final long serialVersionUID = -6987731112461682834L;
 	private String id;
     private String text;
+    private String bgcolor;
 
     public String getId() {
         return id;
@@ -52,6 +53,7 @@ public class ClipboardTag extends TagSupport {
 "        <param name=\"allowScriptAccess\" value=\"always\" />\n" +
 "        <param name=\"quality\" value=\"high\" />\n" +
 "        <param name=\"scale\" value=\"noscale\" />\n" +
+"        <param name=\"BGCOLOR\" value=\""+ this.getBgcolor() +"\" />\n" +
 "        <param NAME=\"FlashVars\" value=\"text="+text+"\">\n" +
 "        <embed src=\""+contxtPth+"/flash/clippy.swf\"\n" +
 "               width=\"110\"\n" +
@@ -59,6 +61,7 @@ public class ClipboardTag extends TagSupport {
 "               name=\"clippy\"\n" +
 "               quality=\"high\"\n" +
 "               allowScriptAccess=\"always\"\n" +
+"               bgcolor=\""+ this.getBgcolor() +"\"\n" +
 "               type=\"application/x-shockwave-flash\"\n" +
 "               pluginspage=\"http://www.macromedia.com/go/getflashplayer\"\n" +
 "               FlashVars=\"text="+text+"\"               \n" +
@@ -69,4 +72,21 @@ public class ClipboardTag extends TagSupport {
         }
         return SKIP_BODY;
     }
+
+	public void setBgcolor(String bgcolor) {
+		this.bgcolor = bgcolor;
+	}
+
+	/**
+	 * 
+	 * @return custom bgcolor, but if null, returns default color #FFFFFF. 
+	 */
+	public String getBgcolor() {
+		if(this.bgcolor == null){
+			return "#FFFFFF";
+		}else{
+			return this.bgcolor;
+		}
+		
+	}
 }

@@ -34,12 +34,13 @@ public class Util {
 	 * @param req
 	 */
 	private static void save(String message,String messageKey, HttpServletRequest req){
-		List msgs = (List)req.getAttribute(messageKey);
+		
+		List msgs = (List)req.getSession().getAttribute(messageKey);
 		if(msgs==null){
 			msgs = new ArrayList();
 		}
 		msgs.add(message);
-		req.setAttribute(messageKey, msgs);
+		req.getSession().setAttribute(messageKey, msgs);
 	}
 	
 	/**

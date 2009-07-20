@@ -33,6 +33,10 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>bgcolor</name>
+            <required>false</required>
+        </attribute>
 
     </tag>
 

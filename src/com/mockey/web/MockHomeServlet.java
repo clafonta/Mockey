@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mockey.MockServicePlan;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 
@@ -35,6 +36,8 @@ public class MockHomeServlet extends HttpServlet {
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		req.setAttribute("services", store.getOrderedList());
+		req.setAttribute("plans", store.getMockServicePlanList());
+		req.setAttribute("plan", new MockServicePlan());
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 
 		dispatch.forward(req, resp);

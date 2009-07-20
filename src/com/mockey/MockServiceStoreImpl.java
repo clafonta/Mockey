@@ -33,6 +33,8 @@ public class MockServiceStoreImpl implements MockServiceStore {
     private ProxyServer proxyInfoBean = new ProxyServer();
     private OrderedMap historyCache = new OrderedMap();
     private OrderedMap mockServiceStore = new OrderedMap();
+    private OrderedMap servicePlanStore = new OrderedMap();
+    
     private static MockServiceStoreImpl store = new MockServiceStoreImpl();
 
     public static MockServiceStoreImpl getInstance() {
@@ -141,5 +143,27 @@ public class MockServiceStoreImpl implements MockServiceStore {
         this.proxyInfoBean = proxyInfoBean;
 
     }
+
+	public void deleteServicePlan(MockServicePlan servicePlan) {
+		if(servicePlan!=null){
+			this.servicePlanStore.remove(servicePlan.getId());
+		}
+		
+	}
+
+	public MockServicePlan getMockServicePlan(Long servicePlanId) {
+		return (MockServicePlan)this.servicePlanStore.get(servicePlanId);
+	}
+
+		
+	@SuppressWarnings("unchecked")
+	public List getMockServicePlanList() {
+		return this.servicePlanStore.getOrderedList();
+	}
+
+	public void saveOrUpdateServicePlan(MockServicePlan servicePlan) {
+		this.servicePlanStore.save(servicePlan);
+		
+	}
 
 }
