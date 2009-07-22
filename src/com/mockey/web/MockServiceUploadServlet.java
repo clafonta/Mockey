@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import com.mockey.MockServiceBean;
+import com.mockey.MockServicePlan;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 import com.mockey.xml.MockServiceFileReader;
@@ -94,13 +95,21 @@ public class MockServiceUploadServlet extends HttpServlet {
 					String strXMLDefintion = new String(data);
 
 					MockServiceFileReader msfr = new MockServiceFileReader();
-					MockServiceStore mockServiceStore = msfr.readDefinition(strXMLDefintion);
-					List uploadedServices = mockServiceStore.getOrderedList();
+					MockServiceStore mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
+					// SERVICES
+					List uploadedServices = mockServiceStoreTemporary.getOrderedList();
 					Iterator iter2 = uploadedServices.iterator();
 					while (iter2.hasNext()) {
 						MockServiceBean object = (MockServiceBean) iter2.next();
 						store.saveOrUpdate(object);
 						
+					}
+					// PLANS
+					List servicePlans = mockServiceStoreTemporary.getMockServicePlanList();
+					Iterator iter3 = servicePlans.iterator();
+					while(iter3.hasNext()){
+						MockServicePlan servicePlan = (MockServicePlan)iter3.next();
+						store.saveOrUpdateServicePlan(servicePlan);
 					}
 					Util.saveSuccessMessage("Service definitions uploaded.", req);
 					

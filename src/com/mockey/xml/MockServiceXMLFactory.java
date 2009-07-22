@@ -15,11 +15,8 @@
  */
 package com.mockey.xml;
 
-import com.mockey.MockServiceBean;
-import com.mockey.MockServiceScenarioBean;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,14 +27,15 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.mockey.MockServiceStore;
+import com.mockey.MockServiceStoreTest;
 
 public class MockServiceXMLFactory {
-	/** Basic logger */
-	private static Logger logger = Logger.getLogger(MockServiceXMLFactory.class);
+	
 
 	/**
 	 * Returns a <code>Document</code> object representing a ???
@@ -45,7 +43,7 @@ public class MockServiceXMLFactory {
 	 * @param mockServices List of services to convert into an xml document
      * @return <code>Document</code> object representing a cXML order request
 	 */
-	public Document getAsDocument(List mockServices) {
+	public Document getAsDocument(MockServiceStore store) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware(true);
@@ -54,9 +52,8 @@ public class MockServiceXMLFactory {
 			Document document = docBuilder.newDocument();
 
 			MockServiceXMLGenerator xmlGeneratorSupport = new MockServiceXMLGenerator();
-
-			logger.debug("Building XML representation to services of size: " + mockServices.size());
-			Element xmlRootElement = xmlGeneratorSupport.getElement(document, mockServices);
+			
+			Element xmlRootElement = xmlGeneratorSupport.getElement(document, store);
 			document.appendChild(xmlRootElement);
 
 			return document;
@@ -67,75 +64,7 @@ public class MockServiceXMLFactory {
 		}
 	}
 
-	/**
-	 * Mock object. Used for unit testing.
-	 * 
-	 * @return a sample list of services
-	 */
-	private static List buildMockObject() {
-		// <?xml version="1.0" encoding="UTF-8"?>
-		// <!--
-		// This contains a list of one or more mock-services.
-		// Each mock-service can contain one or more scenarios.
-		// $Id: MockServiceXMLFactory.java,v 1.1 2005/05/04 21:51:14 clafonta
-		// Exp $
-		// -->
-		// <mockservice>
-		// <services>
-		// <service name="relizon" description="" url="/mockservice/relizon">
-		// <scenarios>
-		// <scenario name="a">
-		// <scenario_request>some request message</scenario_request>
-		// <scenario_response>some response message</scenario_response>
-		// </scenario>
-		// <scenario name="b">
-		// <scenario_request>some request message</scenario_request>
-		// <scenario_response>some response message</scenario_response>
-		// </scenario>
-		// <scenario name="c">
-		// <scenario_request>some request message</scenario_request>
-		// <scenario_response>some response message</scenario_response>
-		// </scenario>
-		// </scenarios>
-		// </service>
-		// </services>
-		// </mockservice>
-
-		List beans = new ArrayList();
-		MockServiceBean bean = new MockServiceBean();
-		bean.setServiceName("testname");
-		bean.setDescription("test description");
-		bean.setRealServiceUrl("http://someservice:8000/eai");
-		bean.setMockServiceUrl("/service/relizon");
-		MockServiceScenarioBean mssb = new MockServiceScenarioBean();
-		mssb.setScenarioName("a");
-		mssb.setRequestMessage("request message a");
-		mssb.setResponseMessage("response message a");
-		bean.updateScenario(mssb);
-		mssb = new MockServiceScenarioBean();
-		mssb.setScenarioName("b");
-		mssb.setRequestMessage("request message b");
-		mssb.setResponseMessage("response message b");
-		bean.updateScenario(mssb);
-		beans.add(bean);
-		MockServiceBean bean2 = new MockServiceBean();
-		bean2.setServiceName("testname2");
-		bean2.setDescription("test description2");
-		bean2.setRealServiceUrl("http://someservice:8000/eai2");
-		bean2.setMockServiceUrl("/service/relizon2");
-		MockServiceScenarioBean mssb2 = new MockServiceScenarioBean();
-		mssb2.setScenarioName("a");
-		mssb2.setRequestMessage("request message a");
-		mssb2.setResponseMessage("response message a");
-		bean2.updateScenario(mssb);
-		mssb2 = new MockServiceScenarioBean();
-		mssb2.setScenarioName("b");
-		mssb2.setRequestMessage("request message b");
-		mssb2.setResponseMessage("response message b");
-		bean2.updateScenario(mssb);
-		beans.add(bean2);
-		return beans;
-	}
+	
 
 	/**
 	 * Convert document to string. Helper method.
@@ -164,7 +93,7 @@ public class MockServiceXMLFactory {
 
 	public static void main(String[] args) throws IOException, TransformerException {
 		MockServiceXMLFactory g = new MockServiceXMLFactory();
-		Document result = g.getAsDocument(MockServiceXMLFactory.buildMockObject());
+		Document result = g.getAsDocument(new MockServiceStoreTest()); // MockServiceXMLFactory.buildMockObject());
 		System.out.println(MockServiceXMLFactory.documentToString(result));
 	}
 }

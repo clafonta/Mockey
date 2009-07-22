@@ -43,7 +43,8 @@ public class MockServiceExportServlet extends HttpServlet {
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		MockServiceXMLFactory g = new MockServiceXMLFactory();
-		Document result = g.getAsDocument(store.getOrderedList());
+		MockServiceStore store = MockServiceStoreImpl.getInstance();
+		Document result = g.getAsDocument(store);
         String fileOutput;
         try {
             fileOutput = MockServiceXMLFactory.documentToString(result);

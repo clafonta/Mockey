@@ -16,6 +16,7 @@
 package com.mockey.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +44,8 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 
 	private Log log = LogFactory.getLog(MockServicePlanSetupServlet.class);
 
-	private static MockServiceStore store = MockServiceStoreImpl.getInstance();
-	
+	private MockServiceStore store = MockServiceStoreImpl.getInstance();
+
 	/**
 	 * 
 	 * 
@@ -61,32 +62,49 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 		log.debug("Service Plan setup/delete");
 		MockServicePlan servicePlan = null;
 		Long servicePlanId = null;
+		List allServices = store.getOrderedList();
 		try {
 			servicePlanId = new Long(req.getParameter("plan_id"));
 			servicePlan = store.getMockServicePlan(servicePlanId);
 		} catch (Exception e) {
 			// Do nothing
 		}
+		String action = req.getParameter("action");
+		if ("delete".equals(action) && servicePlan != null) {
 
-		if (req.getParameter("delete") != null && servicePlan != null) {
-			
 			store.deleteServicePlan(servicePlan);
 			String contextRoot = req.getContextPath();
 			resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));
 			return;
-		}
-		if (req.getParameter("set") != null && servicePlan != null) {
-			
+		} else if ("set".equals(action) && servicePlan != null) {
+
 			setPlan(servicePlan);
 			Util.saveSuccessMessage("Service plan " + servicePlan.getName() + " is set.", req);
 			String contextRoot = req.getContextPath();
 			resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));
 			return;
+		} else if ("edit".equals(action)) {
+			req.setAttribute("mode", "edit");
+			
+			if (servicePlan != null) {
+				allServices = new ArrayList();
+				Iterator iter = servicePlan.getPlanItemList().iterator();
+				while (iter.hasNext()) {
+					PlanItem pi = (PlanItem) iter.next();
+					MockServiceBean msb = store.getMockServiceById(pi.getServiceId());
+					if (msb != null) {
+						msb.setDefaultScenarioId(pi.getScenarioId());
+						msb.setProxyOn(pi.isProxyOn());
+						allServices.add(msb);
+					}
+				}
+			}
+
 		}
-		if(servicePlan==null){
+		if (servicePlan == null) {
 			servicePlan = new MockServicePlan();
 		}
-		req.setAttribute("services", store.getOrderedList());
+		req.setAttribute("services", allServices);
 		req.setAttribute("plans", store.getMockServicePlanList());
 		req.setAttribute("plan", servicePlan);
 		RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
@@ -105,6 +123,7 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
+	@SuppressWarnings("unchecked")
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		MockServicePlan servicePlan = new MockServicePlan();
 		Long servicePlanId = null;
@@ -120,30 +139,36 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 		servicePlan.setName(req.getParameter("plan_name"));
 		servicePlan.setDescription(req.getParameter("plan_description"));
 		String[] planItems = req.getParameterValues("plan_item");
+		boolean createPlan = true;
 		if (planItems != null) {
 			for (int i = 0; i < planItems.length; i++) {
 
 				String serviceId = planItems[i];
 				String ssIdKey = "plan_item_scenario_" + serviceId;
-				String proxyOnString = "proxyOn_" + serviceId;
-				
+				String proxyOnKey = "proxyOn_" + serviceId;
 				String scenarioId = req.getParameter(ssIdKey);
+				String serviceOnlyButtonKey = req.getParameter("update_service_" + serviceId);
+				if (serviceOnlyButtonKey != null) {
+					createPlan = false;
+					MockServiceBean msb = store.getMockServiceById(Long.parseLong(serviceId));
+					msb.setDefaultScenarioId(Long.parseLong(scenarioId));
+					msb.setProxyOn(Boolean.parseBoolean(req.getParameter(proxyOnKey)));
+					store.saveOrUpdate(msb);
+					Util.saveSuccessMessage("Service \"" + msb.getServiceName() + "\" updated.", req);
+					break;
+				}
 				if (scenarioId != null) {
 					PlanItem planItem = new PlanItem();
 					planItem.setScenarioId(new Long(scenarioId));
 					planItem.setServiceId(new Long(serviceId));
-					planItem.setProxyOn(Boolean.parseBoolean(proxyOnString));
+					planItem.setProxyOn(Boolean.parseBoolean(req.getParameter(proxyOnKey)));
 					servicePlan.addPlanItem(planItem);
 				}
 			}
 		}
 
-		String updateServiceAction = req.getParameter("update_service");
-		String createOrUpdatePlan = req.getParameter("create_or_update_plan");
-		if(updateServiceAction!=null){
-			Util.saveSuccessMessage("Service updated.", req);
-			this.setPlan(servicePlan);
-		}else if(createOrUpdatePlan!=null){
+		if (createPlan) {
+			// Save changes for all services as a plan.
 			Map errorMap = MockServicePlanValidator.validate(servicePlan);
 
 			if ((errorMap != null) && (errorMap.size() == 0)) {
@@ -156,30 +181,28 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 				Util.saveErrorMessage("Service plan not added/updated.", req);
 
 			}
-		}else {
-			
 		}
-		
+
 		req.setAttribute("services", store.getOrderedList());
 		req.setAttribute("plans", store.getMockServicePlanList());
 		req.setAttribute("plan", servicePlan);
 		RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
 		dispatch.forward(req, resp);
 	}
-	
-	private void setPlan(MockServicePlan servicePlan){
+
+	@SuppressWarnings( { "unchecked" })
+	private void setPlan(MockServicePlan servicePlan) {
 		List planItems = servicePlan.getPlanItemList();
 		Iterator iter = planItems.iterator();
-		while(iter.hasNext()){
-			PlanItem pi = (PlanItem)iter.next();
+		while (iter.hasNext()) {
+			PlanItem pi = (PlanItem) iter.next();
 			MockServiceBean msb = store.getMockServiceById(pi.getServiceId());
-			if(msb!=null){
+			if (msb != null) {
 				msb.setDefaultScenarioId(pi.getScenarioId());
 				msb.setProxyOn(pi.isProxyOn());
 				store.saveOrUpdate(msb);
 			}
 		}
-	
-		
+
 	}
 }

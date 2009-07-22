@@ -8,13 +8,106 @@
         <%@ include file="/WEB-INF/common/message.jsp" %>        
         <c:choose>
 	        <c:when test="${!empty services}">
-	            
+	           
 	            <form action="<c:url value="/plan/setup"/>" method="post">
-		        <table class="simple" width="100%">
+	            <div>
+                  <a name="plan"></a> 
+                  <h1>Service Plans</h1>
+                   <c:url value="/plan/setup" var="createPlanUrl">
+                                <c:param name="action" value="edit" />
+                             </c:url>
+                             <a href="<c:out value="${createPlanUrl}"/>">Create a plan</a>
+                  <c:choose>
+                    <c:when test="${!empty plans}">
+                    
+                           <c:forEach var="planItem" items="${plans}">
+                             <c:url value="/plan/setup" var="planUrl">
+                                <c:param name="plan_id" value="${planItem.id}" />
+                                <c:param name="action" value="edit" />
+                             </c:url>
+                             <c:url value="/plan/setup" var="deletePlanUrl">
+                                <c:param name="plan_id" value="${planItem.id}" />
+                                <c:param name="action" value="delete" />
+                             </c:url>
+                             <c:url value="/plan/setup" var="setPlanUrl">
+                                <c:param name="plan_id" value="${planItem.id}" />
+                                <c:param name="action" value="set" />
+                             </c:url>
+                             <p>
+                               <b><c:out value="${planItem.name}"/></b> (
+                               <a href="<c:out value="${planUrl}"/>">edit</a> | <a href="<c:out value="${deletePlanUrl}"/>">delete</a> | <a href="<c:out value="${setPlanUrl}"/>">set plan</a>):
+                               <c:out value="${planItem.description}"/></p>
+                    
+                           </c:forEach>
+                    
+                    </c:when>
+                    <c:otherwise>
+                      <p class="alert_message">There are no service plans defined. </p>
+                      <p>
+                      A Service Plan is a saved state of all service configurations. For example, all 
+                      happy scenarios for each service can be the 'Happy Path' plan, and all non-happy scenarios 
+                      as an 'Unhappy Path' plan.
+                      </p>
+                    </c:otherwise>
+                  </c:choose>
+                </div>     
+		<c:if test="${mode eq 'edit'}">
+			
+			<h1 class="highlight">Edit Service Plan: <c:out value="${plan.name}" /></h1>
+			
+
+			<c:if test="${!empty plan.id}">
+				<input type="hidden" name="plan_id"
+					value="<c:out value="${plan.id}"/>" />
+			</c:if>
+			
+			
+			<table width="100%">
+				<tbody>
+					<tr>
+						<th width="20%">
+						<p>Plan Name:</p>
+						</th>
+						<td>
+						<p><input type="text" style="width: 60%;" name="plan_name"
+							value="<c:out value="${plan.name}"/>" /></p>
+						</td>
+					</tr>
+					<tr>
+						<th width="20%">
+						<p>Plan Description:</p>
+						</th>
+						<td>
+						<p><textarea name="plan_description" style="width: 80%;"
+							rows="3"><c:out value="${plan.description}" /></textarea></p>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+						<p align="right"><c:choose>
+							<c:when test="${!empty plan.id}">
+								<input type="submit" name="create_or_update_plan"
+									value="Update Plan" class="button" />
+							</c:when>
+							<c:otherwise>
+								<input type="submit" name="create_or_update_plan"
+									value="Save as a Plan" class="button" />
+							</c:otherwise>
+						</c:choose> <a href="<c:url value="/home" />">Cancel</a>
+						</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+		</c:if>
+                <h1>Mock Services</h1>
+		        <table class="simple" width="100%" cellspacing="0">
 			        <thead>
 			            <tr>
-						 <th width="20%" style="text-align:left;">Mock Service</th>
-						 <th width="60%" colspan="2" style="text-align:left;">Mock Service URL</th>
+						 <th width="15%" style="text-align:left;">Mock Service Name</th>
+						 <th style="text-align:left;">Mock Service Settings</th>
 			            </tr>
 			        </thead>
 		            <tbody>
@@ -30,13 +123,21 @@
                         </c:url>
 						<tr>
 						    <a name="<c:out value="${mockservice.id}"/>"/>
-							<td><a href="<c:out value="${configureUrl}"/>" title="Configure service response"><c:out value="${mockservice.serviceName}" /></a></td>
+							<td class="contact">
+							<a href="<c:out value="${configureUrl}"/>" title="Configure service response">
+							<c:out value="${mockservice.serviceName}" /></a> <br /><br />
+							<a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a><br /> 
+                                <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a>
+							</td>
 							<td>
-							  <a href="<mockey:url value="${mockservice.serviceUrl}"/>" title="Mock service URL"><mockey:url value="${mockservice.serviceUrl}"/></a>
+							  <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set> 
+							  Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a><mockey:clipboard id="clip-mockservice" text="${mockUrl}" bgcolor="#FFFFF0"/>
 							  <br />
 							  <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
 							  <p <c:if test='${!mockservice.proxyOn}'>class="overlabel"</c:if>>
-			                  <input type="radio" name="proxyOn_<c:out value="${mockservice.id}"/>" value="true" <c:if test='${mockservice.proxyOn}'>checked</c:if> /> <b>Proxy</b>
+			                  <input type="radio" name="proxyOn_<c:out value="${mockservice.id}"/>" value="true" <c:if test='${mockservice.proxyOn}'>checked</c:if> /> 
+			                  <b>Proxy</b> to this URL: <span class="highlight">
+			                    <c:out value="${mockservice.realServiceUrl}" /></span><mockey:clipboard id="clip-mockservice" text="${mockservice.realServiceUrl}" bgcolor="#FFFFF0"/>
 			                    <c:if test="${empty mockservice.realServiceUrl and mockservice.proxyOn}">
 			                      <div>
 			                        <p class="alert_message">You need to <a href="<c:out value="${setupUrl}"/>" title="edit">define a real URL</a></p>
@@ -50,7 +151,7 @@
                                     <div>
                                         <p class="alert_message">You need to <a href="<c:out value="${scenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
                                          a scenario before using "Scenario".</p>
-                                        <input type="hidden" name="proxyOn_<c:out value="${mockservice.id}"/>" value="true" />
+                                        <input type="hidden" name="proxyOn_<c:out value="${mockservice.id}"/>" value="false" />
                                     </div>
                                 </c:if>
                              </p>
@@ -67,84 +168,24 @@
                                         <c:param name="serviceId" value="${mockservice.id}" />
                                         <c:param name="scenarioId" value="${scenario.id}" />
                                       </c:url> 
-                                      <a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario"><c:out value="${scenario.scenarioName}" /></a>
+                                      <a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario"  <c:if test='${mockservice.proxyOn}'>class="overlabel"</c:if>><c:out value="${scenario.scenarioName}" /></a>
                                     </li>
                                   </c:forEach>
                                 </ul>
                               </span>
-                              <input type="submit" name="update_service" value="Update" class="button" />
-							</td>
-							<td>								  
-								<a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> | 
-								<a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a>
+                              <c:choose>
+                              <c:when test="${mode eq 'edit'}">
+                              </c:when>
+                              <c:otherwise>
+                              <input type="submit" name="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />
+                              </c:otherwise>
+                              </c:choose>
 							</td>
 						</tr>    
 						</c:forEach>
 		            </tbody>
 		        </table>	
-		        <div>
-		          <a name="plan"></a> 
-		          <h2>Service Plans</h2>
-		          <c:choose>
-                    <c:when test="${!empty plans}">
-                    
-                           <c:forEach var="planItem" items="${plans}">
-                             <c:url value="/plan/setup" var="planUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                             </c:url>
-                             <c:url value="/plan/setup" var="deletePlanUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                                <c:param name="delete" value="true" />
-                             </c:url>
-                              <c:url value="/plan/setup" var="setPlanUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                                <c:param name="set" value="true" />
-                             </c:url>
-                             <p>
-                               <b><c:out value="${planItem.name}"/></b> (
-                               <a href="<c:out value="${planUrl}"/>">edit</a> | <a href="<c:out value="${deletePlanUrl}"/>">delete</a> | <a href="<c:out value="${setPlanUrl}"/>">set plan</a>):
-                               <c:out value="${planItem.description}"/></p>
-                    
-                           </c:forEach>
-                    
-                    </c:when>
-                    <c:otherwise>
-                      <p class="alert_message">There are no service plans defined. </p>
-                    </c:otherwise>
-                  </c:choose>
-		          <c:if test="${!empty plan.id}">
-		            <input type="hidden" name="plan_id" value="<c:out value="${plan.id}"/>"/>
-		          </c:if>
-		          <table class="example" width="100%">
-                <tbody>
-                    <tr>
-                        <th width="20%"><p>Plan Name:</p></th>
-                        <td><p><input type="text" style="width:60%;" name="plan_name" value="<c:out value="${plan.name}"/>" /></p></td>
-                    </tr>
-                    <tr>
-                        <th width="20%"><p>Plan Description:</p></th>
-                        <td><p><textarea name="plan_description" style="width:80%;" rows="3" ><c:out value="${plan.description}" /></textarea></p></td>
-                    </tr>
-                    <tr><td></td>
-                    <td>
-                    <p align="right">
-                        <c:choose>
-                            <c:when test="${!empty plan.id}">
-                                <input type="submit" name="create_or_update_plan" value="Update Plan" class="button" />
-                                <a href="<c:url value="/home#plan"/>">Create Another</a>
-                            </c:when>                           
-                            <c:otherwise>
-                                <input type="submit" name="create_or_update_plan" value="Save as a Plan" class="button" />
-                            </c:otherwise>
-                        </c:choose>
-                        <a href="<c:url value="/setup?serviceId=${mockservice.id}" />">Cancel</a>
-                    </p>
-                    </td>
-                    </tr>
-                    </tbody>
-                    </table>
-		          
-		        </div>	   
+		        
 		        </form>    
 	        </c:when>
 	        <c:otherwise>

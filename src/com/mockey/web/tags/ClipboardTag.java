@@ -62,8 +62,7 @@ public class ClipboardTag extends TagSupport {
 "               quality=\"high\"\n" +
 "               allowScriptAccess=\"always\"\n" +
 "               bgcolor=\""+ this.getBgcolor() +"\"\n" +
-"               type=\"application/x-shockwave-flash\"\n" +
-"               pluginspage=\"http://www.macromedia.com/go/getflashplayer\"\n" +
+"               type=\"application/x-shockwave-flash\"\n" +               
 "               FlashVars=\"text="+text+"\"               \n" +
 "        />\n" +
 "        </object>");

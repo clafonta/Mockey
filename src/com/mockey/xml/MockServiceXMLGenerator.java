@@ -24,7 +24,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.mockey.MockServiceBean;
+import com.mockey.MockServicePlan;
 import com.mockey.MockServiceScenarioBean;
+import com.mockey.MockServiceStore;
+import com.mockey.PlanItem;
 
 public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 	/** Basic logger */
@@ -41,13 +44,14 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 	 *         <code>null</code>, then empty element is returned e.g.
 	 *         &lt;cXML/&gt;
 	 */
-	public Element getElement(Document document, List mockServiceBeans) {
+	@SuppressWarnings("unchecked")
+	public Element getElement(Document document, MockServiceStore store) {
 		
 		Element rootElement = document.createElement("mockservice");
 		this.setAttribute(rootElement, "xml:lang", "en-US");
 		this.setAttribute(rootElement, "version", "1.0");
 
-		Iterator iterator = mockServiceBeans.iterator();
+		Iterator iterator = store.getOrderedList().iterator();
 		logger.debug("building DOM:");
 		while (iterator.hasNext()) {
 			MockServiceBean mockServiceBean = (MockServiceBean) iterator.next();
@@ -62,6 +66,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 				// defined with the same ID.
 				// serviceElement.setAttribute("id", mockServiceBean.getId());
 				// *************************************
+				serviceElement.setAttribute("id", ""+mockServiceBean.getId());
 				serviceElement.setAttribute("name", mockServiceBean.getServiceName());
 				serviceElement.setAttribute("description", mockServiceBean.getDescription());
 				serviceElement.setAttribute("url", mockServiceBean.getMockServiceUrl());
@@ -95,6 +100,34 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 					scenarioElement.appendChild(scenarioResponseElement);
 					serviceElement.appendChild(scenarioElement);
 				}
+			}
+		}
+		
+		// SERVICE PLANS
+		
+		List servicePlans = store.getMockServicePlanList();
+		if(servicePlans!=null){
+			Iterator iter = servicePlans.iterator();
+			while(iter.hasNext()){
+				MockServicePlan servicePlan = (MockServicePlan)iter.next();
+				Element servicePlanElement = document.createElement("service_plan");
+				servicePlanElement.setAttribute("name", servicePlan.getName());
+				servicePlanElement.setAttribute("description", servicePlan.getDescription());
+				servicePlanElement.setAttribute("id", ""+servicePlan.getId());
+				
+				Iterator planItemIter = servicePlan.getPlanItemList().iterator();
+				while(planItemIter.hasNext()){
+					PlanItem  pi = (PlanItem)planItemIter.next();
+					Element planItemElement = document.createElement("plan_item");
+					planItemElement.setAttribute("service_id", ""+pi.getServiceId());
+					planItemElement.setAttribute("scenario_id", ""+pi.getScenarioId());
+					planItemElement.setAttribute("proxy_on", ""+pi.isProxyOn());
+					
+					servicePlanElement.appendChild(planItemElement);
+				}
+				
+				rootElement.appendChild(servicePlanElement);
+				
 			}
 		}
 

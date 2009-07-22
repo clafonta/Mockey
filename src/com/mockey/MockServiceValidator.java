@@ -44,7 +44,7 @@ public class MockServiceValidator {
 
         if ((ms.getServiceName() == null) || (ms.getServiceName().trim().length() < 1)
                 || (ms.getServiceName().trim().length() > 250)) {
-            errorMap.put("name", "Service name must not be empty or greater than 250 chars.");
+            errorMap.put("serviceName", "Service name must not be empty or greater than 250 chars.");
         }
 
         // if ((ms.getDescription() == null) ||
@@ -57,6 +57,11 @@ public class MockServiceValidator {
         if ((ms.getMockServiceUrl() == null) || (ms.getMockServiceUrl().trim().length() < 1)
                 || (ms.getMockServiceUrl().trim().length() > 250)) {
             errorMap.put("serviceUrl", "Service URL must not be empty or greater than 250 chars.");
+        }
+        
+        if ((ms.getHttpHeaderDefinition() == null) || (ms.getHttpHeaderDefinition().trim().length() < 1)
+                ) {
+            errorMap.put("httpHeaderDefinition", "Select a header definition");
         }
 
         // Make sure there doesn't exist a service

@@ -21,28 +21,28 @@ import org.apache.http.HttpHost;
 import java.util.List;
 
 /**
- * The mock service definition.  
+ * The mock service definition.
  * 
  * @author chad.lafontaine
- *
+ * 
  */
 public class MockServiceBean implements Item {
 
-	public final static String HTTP_HEADER_XML = "text/xml";
+	public final static String HTTP_HEADER_XML = "text/xml;";
 
-	public final static String HTTP_HEADER_HTML = "text/html";
+	public final static String HTTP_HEADER_HTML = "text/html;";
 
-	public final static String HTTP_HEADER_PLAIN = "text/plain";
+	public final static String HTTP_HEADER_PLAIN = "text/plain;";
 
 	private Long id;
-	
+
 	private String serviceName;
 
 	private String description;
 
 	private Long defaultScenarioId;
 	
-	private String httpHeaderDefinition = HTTP_HEADER_XML;
+	private String httpHeaderDefinition;
 
 	private int hangTime = 500;
 
@@ -52,31 +52,29 @@ public class MockServiceBean implements Item {
 
 	private boolean replyWithMatchingRequest = false;
 
-    private String httpMethod = "GET";
+	private String httpMethod = "GET";
 
-    private String mockServiceUrl;
-    private Url realServiceUrl;
+	private String mockServiceUrl;
+	private Url realServiceUrl;
 
+	public MockServiceBean() {
+	}
 
-    public MockServiceBean() {
-    }
+	public MockServiceBean(Url realServiceUrl) {
+		this.realServiceUrl = realServiceUrl;
+		this.setMockServiceUrl(realServiceUrl.getFullUrl());
+		this.setServiceName("Auto-Generated Service");
+	}
 
+	public String getHttpMethod() {
+		return httpMethod;
+	}
 
-    public MockServiceBean(Url realServiceUrl) {
-        this.realServiceUrl = realServiceUrl;
-        this.setMockServiceUrl(realServiceUrl.getFullUrl());        
-        this.setServiceName("Auto-Generated Service");
-    }
+	public void setHttpMethod(String httpMethod) {
+		this.httpMethod = httpMethod;
+	}
 
-    public String getHttpMethod() {
-        return httpMethod;
-    }
-
-    public void setHttpMethod(String httpMethod) {
-        this.httpMethod = httpMethod;
-    }
-
-    public Long getDefaultScenarioId() {
+	public Long getDefaultScenarioId() {
 		return defaultScenarioId;
 	}
 
@@ -113,7 +111,7 @@ public class MockServiceBean implements Item {
 	}
 
 	public MockServiceScenarioBean getScenario(Long scenarioId) {
-		return (MockServiceScenarioBean)scenarios.get(scenarioId);
+		return (MockServiceScenarioBean) scenarios.get(scenarioId);
 	}
 
 	public void deleteScenario(Long scenarioId) {
@@ -121,7 +119,7 @@ public class MockServiceBean implements Item {
 	}
 
 	public void updateScenario(MockServiceScenarioBean mss) {
-		
+
 		this.scenarios.save(mss);
 	}
 
@@ -129,29 +127,33 @@ public class MockServiceBean implements Item {
 		return mockServiceUrl;
 	}
 
+	public String getRealHost() {
+		return realServiceUrl.getHost();
+	}
 
-    public String getRealHost() {
-        return realServiceUrl.getHost();
-    }
-
-    public String getRealPath() {
-        return realServiceUrl.getPath();
-    }
+	public String getRealPath() {
+		return realServiceUrl.getPath();
+	}
 
 	/**
-	 * Helper method. 
-	 * @return returns a the full URI path to this service, pre-pending "/service" to the mock service URL 
+	 * Helper method.
+	 * 
+	 * @return returns a the full URI path to this service, pre-pending
+	 *         "/service" to the mock service URL
 	 */
 	public String getServiceUrl() {
 		return ("/service" + cleanUrl(this.getMockServiceUrl()));
 	}
-	
+
 	/**
-	 * Method will ensure the service URL starts with '/'. If not, will prepend it to the mock uri
-	 * @param mockServiceUrl the path to the service as it should be accessed in our system
+	 * Method will ensure the service URL starts with '/'. If not, will prepend
+	 * it to the mock uri
+	 * 
+	 * @param mockServiceUrl
+	 *            the path to the service as it should be accessed in our system
 	 */
 	public void setMockServiceUrl(String mockServiceUrl) {
-		if (mockServiceUrl != null && !mockServiceUrl.trim().startsWith("/")) {
+		if (mockServiceUrl != null && !mockServiceUrl.trim().startsWith("/") && mockServiceUrl.trim().length()>0) {
 			this.mockServiceUrl = "/" + mockServiceUrl.trim();
 		} else {
 			this.mockServiceUrl = mockServiceUrl;
@@ -163,7 +165,7 @@ public class MockServiceBean implements Item {
 	}
 
 	public void setRealServiceUrl(String realServiceUrl) {
-        this.realServiceUrl = new Url(realServiceUrl);
+		this.realServiceUrl = new Url(realServiceUrl);
 	}
 
 	public boolean isProxyOn() {
@@ -192,23 +194,23 @@ public class MockServiceBean implements Item {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-        sb.append("Service name:").append(this.getServiceName()).append("\n");
-        sb.append("Mock URL:").append(this.getMockServiceUrl()).append("\n");
-        sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
-        sb.append("Scheme:").append(this.getRealServiceScheme()).append("\n");
-        sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
-        sb.append("HTTP Content:").append(this.getHttpHeaderDefinition()).append("\n");
-        sb.append("Hang time:");
-        sb.append(this.getHangTime());
-        sb.append("\n");
+		sb.append("Service name:").append(this.getServiceName()).append("\n");
+		sb.append("Mock URL:").append(this.getMockServiceUrl()).append("\n");
+		sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
+		sb.append("Scheme:").append(this.getRealServiceScheme()).append("\n");
+		sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
+		sb.append("HTTP Content:").append(this.getHttpHeaderDefinition()).append("\n");
+		sb.append("Hang time:");
+		sb.append(this.getHangTime());
+		sb.append("\n");
 
-        return sb.toString();
+		return sb.toString();
 	}
 
 	private String cleanUrl(String arg) {
 		int index = arg.indexOf(";");
 		if (index > -1) {
-            return arg.substring(0, index);
+			return arg.substring(0, index);
 		} else {
 			return arg;
 		}
@@ -226,11 +228,15 @@ public class MockServiceBean implements Item {
 		return realServiceUrl.getScheme();
 	}
 
-    public String getRealServiceUrl() {
-        return String.valueOf(realServiceUrl);
-    }
+	public String getRealServiceUrl() {
+		if (this.realServiceUrl != null) {
+			return String.valueOf(realServiceUrl);
+		} else {
+			return "";
+		}
+	}
 
-    public HttpHost getHttpHost() {
-        return new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(), realServiceUrl.getScheme());
-    }
+	public HttpHost getHttpHost() {
+		return new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(), realServiceUrl.getScheme());
+	}
 }

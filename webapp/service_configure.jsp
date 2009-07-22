@@ -72,7 +72,7 @@
                                                             <c:param name="serviceId" value="${mockservice.id}" />
                                                             <c:param name="scenarioId" value="${scenario.id}" />
                                                         </c:url> 
-                                                        <a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario"><c:out value="${scenario.scenarioName}" /></a>
+                                                        <a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario" <c:if test='${mockservice.proxyOn}'>class="overlabel"</c:if>><c:out value="${scenario.scenarioName}" /></a>
                                                     </li>
 
                                                 </c:forEach>

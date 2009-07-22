@@ -16,8 +16,6 @@
 package com.mockey.web;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -26,14 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.MockServiceBean;
-import com.mockey.MockServiceScenarioBean;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 
 public class MockServiceConfigureServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6213235739994307983L;
-	private static MockServiceStore store = MockServiceStoreImpl.getInstance();
+	private MockServiceStore store = MockServiceStoreImpl.getInstance();
 
 	/**
 	 * 
@@ -120,29 +117,5 @@ public class MockServiceConfigureServlet extends HttpServlet {
 		dispatch.forward(req, resp);
 	}
 
-	/**
-	 * 
-	 * 
-	 * @param responseType
-	 * @param ms
-	 *            DOCUMENT ME!
-	 * 
-	 * @return
-	 */
-	private boolean isValidScenarioId(Long scenarioId, MockServiceBean ms) {
-		if ((scenarioId != null)) {
-			Iterator iter = ms.getScenarios().iterator();
-
-			while (iter.hasNext()) {
-				MockServiceScenarioBean mss = (MockServiceScenarioBean) iter
-						.next();
-
-				if (scenarioId.equals(mss.getId())) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
+	
 }

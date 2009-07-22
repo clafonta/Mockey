@@ -1,6 +1,5 @@
 package com.mockey.util;
 
-
 public class Url {
 	String scheme;
 	int port = 80;
@@ -73,13 +72,15 @@ public class Url {
 
 	public String getFullUrl() {
 		StringBuilder builder = new StringBuilder();
-
-		builder.append(scheme).append("://").append(host);
-		if (!isDefaultPort()) {
-			builder.append(":").append(port);
+		if (scheme != null && host != null && host.trim().length()>0) {
+			builder.append(scheme).append("://").append(host);
+			if (!isDefaultPort()) {
+				builder.append(":").append(port);
+			}
 		}
-
-		builder.append(path);
+		if(path!=null){
+			builder.append(path);
+		}
 		return builder.toString();
 	}
 
@@ -90,40 +91,43 @@ public class Url {
 
 	/**
 	 * 
-	 * @param uri - 
-	 * @param req - Context path, from HttpServletRequest.getContextPath()
+	 * @param uri
+	 *            -
+	 * @param req
+	 *            - Context path, from HttpServletRequest.getContextPath()
 	 * @return - returns path relative to context. For example, if uri = home,
-	 *         then will return /Mockey/home or /home, depending on context path.
+	 *         then will return /Mockey/home or /home, depending on context
+	 *         path.
 	 */
 	public static String getContextAwarePath(String uri, String contextRoot) {
 		String relativePath = "";
-		if(contextRoot!=null ){
-			if(!contextRoot.startsWith("/")){
+		if (contextRoot != null) {
+			if (!contextRoot.startsWith("/")) {
 				contextRoot = "/" + contextRoot;
 			}
-		}else {
+		} else {
 			contextRoot = "/";
 		}
-		
-		if(!contextRoot.endsWith("/") && !uri.startsWith("/")) {
-			
-			relativePath = contextRoot + "/"+ uri;
-		}else if(contextRoot.endsWith("/") && !uri.startsWith("/")){
+
+		if (!contextRoot.endsWith("/") && !uri.startsWith("/")) {
+
+			relativePath = contextRoot + "/" + uri;
+		} else if (contextRoot.endsWith("/") && !uri.startsWith("/")) {
 			relativePath = contextRoot + uri;
-		}else if(contextRoot.trim().equals("/") && uri.startsWith("/")){
-			
+		} else if (contextRoot.trim().equals("/") && uri.startsWith("/")) {
+
 			relativePath = uri;
-		}else if(contextRoot.endsWith("/") && uri.startsWith("/")){
+		} else if (contextRoot.endsWith("/") && uri.startsWith("/")) {
 			contextRoot = contextRoot.substring(0, contextRoot.length());
 			relativePath = contextRoot + uri;
-		}else {
+		} else {
 			relativePath = contextRoot + uri;
 		}
 		return relativePath;
 	}
-	
-	public static void main(String[] args){
-		System.out.println("/mockey/home =? " +  Url.getContextAwarePath("/home", "/mockey"));
+
+	public static void main(String[] args) {
+		System.out.println("/mockey/home =? " + Url.getContextAwarePath("/home", "/mockey"));
 		System.out.println("/mockey/home =? " + Url.getContextAwarePath("/", "/mockey"));
 		System.out.println("/mockey/home =? " + Url.getContextAwarePath("/home/", "mockey"));
 		System.out.println("/mockey/home =? " + Url.getContextAwarePath("/home/", "/mockey"));

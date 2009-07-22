@@ -1,7 +1,7 @@
-body{	padding-top: 0px;	background: #FFFFFF;	font: 75% Arial,sans-serif;}
-.big{font-size: 300%; font-weight:bold; font-family: Calibri,sans-serif;}
+body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
+.big{font-size: 300%; font-weight:bold;}
 .tiny{font-size: 80%;}
-h1, h2{margin: 0.5em 0 0.5em 0;color: #06F;font-family: Arial,sans-serif; }
+h1, h2{margin: 0.5em 0 0.5em 0;color: #06F;}
 h1{ font-size:160%; }
 h2 { font-size:120%; }
 img {border:0;}
@@ -34,7 +34,6 @@ ul#minitabs a:hover{border-color: #F60;color: #666}
 .code a{text-align:center;font-size: 1.2em;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
 pre{	background-color: White;	border: 1px solid #666;	color: Black;	margin: 1.5em;	overflow: auto;	font-size: 115%;	padding: 1.2em;	font: 120% "Courier New"; }
-form#login {width:160px; padding:6px; position:relative;	border:1px solid grey; background: #06F; color: #FFFFFF }
 div#infotext, div#servicename, div#password {position:relative; float:left; margin-right:1px; background: #EEEEEE; border: none; border-style: none }
 .overlabel {color:#999;}
 .overlabel-apply {	position:absolute;top:3px;left:5px;	z-index:1;	color:#999;}
@@ -43,19 +42,8 @@ label.overlabel-apply {	position:absolute;top:3px;left:5px;	z-index:1;	color:#99
 table.basic {border: 1px solid #DDDDDD; background: #f1f1f0;}
 table.basic th {padding: 0px;border-style: none;text-align: right;}
 table.basic td {border-style: none; padding: 0px;}
-table.simple tr:hover{background:#FFFFCC;}
-table.simple caption{padding-bottom:5px;font-weight:bold;}
-table.simple thead th,tfoot td{	background: #f1f1f1;}
-table.simple td, th{vertical-align: top;border-collapse:collapse; padding:1px 1px 1px 1px;}
-table.simple th{text-align: right;}
-table.simple td{text-align: left;}
-table.example {
-background-color:#E5EECC;
-background-image:url(images/bgfadegreen.gif);
-background-repeat:repeat-x;
-border:1px solid #D4D4D4;
-color:#000000;
-padding:8px 10px;
-}
-
-
+table.example {background-color:#E5EECC;background-image:url(images/bgfadegreen.gif);background-repeat:repeat-x;border:1px solid #D4D4D4;color:#000000;padding:8px 10px;}
+table.simple{border-collapse: collapse;border-spacing: 0px; }
+table.simple th{ background-color: #f1f1f0;border: 1px #DDDDDD solid;font-weight: bold;padding-left: 8px; }
+table.simple td{ border-bottom: 1px #DDDDDD dotted; text-align: left;font-weight: normal;font-size: .9em;margin-top:5px;padding-top: 10px;
+padding-bottom: 4px;padding-left: 8px;padding-right: 0px; }

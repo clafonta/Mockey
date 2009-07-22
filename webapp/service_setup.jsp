@@ -65,7 +65,18 @@
 	            <tr>
 	                <th><p>HTTP header definition:</p></th>
 	                <td>
-	                    <p><input type="text" size="40px" name="httpHeaderDefinition" value="<c:out value="${mockservice.httpHeaderDefinition}"/>" /></p>
+	                    <p>
+	                      <select name="httpHeaderDefinition">
+	                        <option value="" <c:if test="${mockservice.httpHeaderDefinition eq ''}">selected="selected"</c:if>>[select]</option>
+                            <option value="text/xml;" <c:if test="${mockservice.httpHeaderDefinition eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
+                            <option value="text/plain;" <c:if test="${mockservice.httpHeaderDefinition eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
+                            <option value="text/css;" <c:if test="${mockservice.httpHeaderDefinition eq 'text/css;'}">selected="selected"</c:if>>text/css;</option>
+                            <option value="application/json;" <c:if test="${mockservice.httpHeaderDefinition eq 'application/json;'}">selected="selected"</c:if>>application/json;</option>
+                            <option value="text/html;charset=utf-8" <c:if test="${mockservice.httpHeaderDefinition eq 'text/html;charset=utf-8'}">selected="selected"</c:if>>text/html;charset=utf-8</option>
+                            <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpHeaderDefinition eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
+                            <!-- <option value="other" <c:if test="${mockservice.httpHeaderDefinition eq 'other'}">selected="selected"</c:if>>other</option>  -->
+                          </select>	                    
+	                    <!--  <input type="text" size="60px" name="httpHeaderDefinition_other" value="<c:out value="${mockservice.httpHeaderDefinition}"/>" /></p>  -->
 	                    <p>For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
                                 style="font-style: italic;">application/json;</span>, etc. </p>
 	                </td>

@@ -19,9 +19,11 @@ import org.apache.commons.digester.Digester;
 import org.xml.sax.InputSource;
 
 import com.mockey.MockServiceBean;
+import com.mockey.MockServicePlan;
 import com.mockey.MockServiceScenarioBean;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
+import com.mockey.PlanItem;
 
 /**
  * 
@@ -35,6 +37,10 @@ public class MockServiceParser {
 	private final static String SERVICE = ROOT + "/service";
 
 	private final static String SCENARIO = SERVICE + "/scenario";
+	
+	private final static String PLAN = ROOT + "/service_plan";
+	
+	private final static String PLAN_ITEM = PLAN + "/plan_item";
 
 	private final static String SCENARIO_MATCH = SCENARIO + "/scenario_match";
 
@@ -58,6 +64,7 @@ public class MockServiceParser {
 		digester.setValidating(false);
 		digester.addObjectCreate(ROOT, MockServiceStoreImpl.class);
 		digester.addObjectCreate(SERVICE, MockServiceBean.class);
+		digester.addSetProperties(SERVICE, "id", "id");//    
 		digester.addSetProperties(SERVICE, "name", "serviceName");//           
 		digester.addSetProperties(SERVICE, "description", "description");
 		digester.addSetProperties(SERVICE, "http_header_definition", "httpHeaderDefinition");
@@ -80,6 +87,18 @@ public class MockServiceParser {
 		digester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
 		digester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
 		digester.addSetNext(SCENARIO, "updateScenario");
+		
+		// PLAN
+		digester.addObjectCreate(PLAN, MockServicePlan.class);
+		digester.addSetProperties(PLAN, "name", "name");//     
+		digester.addSetProperties(PLAN, "description", "description");//
+		digester.addSetProperties(PLAN, "id", "id");
+		digester.addSetNext(PLAN, "saveOrUpdateServicePlan");
+		digester.addObjectCreate(PLAN_ITEM, PlanItem.class);
+		digester.addSetProperties(PLAN_ITEM, "service_id", "serviceId");
+		digester.addSetProperties(PLAN_ITEM, "scenario_id", "scenarioId");
+		digester.addSetProperties(PLAN_ITEM, "proxy_on", "proxyOn");
+		digester.addSetNext(PLAN_ITEM, "addPlanItem");
 		MockServiceStore c = (MockServiceStore) digester.parse(inputSource);
 		return c;
 
