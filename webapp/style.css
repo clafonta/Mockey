@@ -45,5 +45,5 @@ table.basic td {border-style: none; padding: 0px;}
 table.example {background-color:#E5EECC;background-image:url(images/bgfadegreen.gif);background-repeat:repeat-x;border:1px solid #D4D4D4;color:#000000;padding:8px 10px;}
 table.simple{border-collapse: collapse;border-spacing: 0px; }
 table.simple th{ background-color: #f1f1f0;border: 1px #DDDDDD solid;font-weight: bold;padding-left: 8px; }
-table.simple td{ border-bottom: 1px #DDDDDD dotted; text-align: left;font-weight: normal;font-size: .9em;margin-top:5px;padding-top: 10px;
+table.simple td{ border-bottom: 1px #DDDDDD dotted; text-align: left;font-weight: normal;margin-top:5px;padding-top: 10px;
 padding-bottom: 4px;padding-left: 8px;padding-right: 0px; }

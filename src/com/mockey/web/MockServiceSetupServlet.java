@@ -16,6 +16,8 @@
 package com.mockey.web;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -24,12 +26,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mockey.MockServiceBean;
+import com.mockey.MockServicePlan;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 import com.mockey.MockServiceValidator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.mockey.PlanItem;
+import com.mockey.util.Url;
 
 public class MockServiceSetupServlet extends HttpServlet {
     private Log log = LogFactory.getLog(MockServiceSetupServlet.class);
@@ -52,7 +58,28 @@ public class MockServiceSetupServlet extends HttpServlet {
 		if (req.getParameter("delete") != null && serviceId != null) {
 			MockServiceBean bean = store.getMockServiceById(serviceId);
 			store.delete(bean);
-			resp.sendRedirect("home");
+			Util.saveSuccessMessage("Service '"+bean.getServiceName()+"' was deleted.", req);
+			// Check to see if any plans need an update. 
+			List planList = store.getMockServicePlanList();
+			Iterator iter = planList.iterator();
+			String errorMessage = null;
+			while(iter.hasNext()){
+				MockServicePlan msp = (MockServicePlan)iter.next();
+				Iterator planItemIter = msp.getPlanItemList().iterator();
+				while(planItemIter.hasNext()){
+					PlanItem planItem = (PlanItem)planItemIter.next();
+					if(planItem.getServiceId().equals(serviceId)){
+						errorMessage = "Warning: the deleted service is referenced in service plans.";
+						
+						break;
+					}
+				}
+			}
+			if(errorMessage!=null){
+			Util.saveErrorMessage(errorMessage, req);
+			}
+			String contextRoot = req.getContextPath();
+			resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));
 			return;
 		}
 

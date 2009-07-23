@@ -7,6 +7,16 @@
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>    
     <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>    
     <div>
-        <%@ include file="/WEB-INF/common/inc_history_poller.jsp"%>
+       <c:choose>
+         <c:when test="${!empty ip_addresses}">
+         <p>This is a list of IP addresses who called your service. Click on the IP to see all the messages exchanged between Mockey and this IP.</p>
+         <c:forEach var="ip_address" items="${ip_addresses}">
+         <c:out value="${ip_address}" escapeXml="false"/>
+         </c:forEach>
+         </c:when>
+         <c:otherwise>
+         No history. 
+         </c:otherwise>
+         </c:choose>
     </div>   
 <jsp:include page="/WEB-INF/common/footer.jsp" />

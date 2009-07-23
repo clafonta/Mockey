@@ -151,7 +151,9 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 				if (serviceOnlyButtonKey != null) {
 					createPlan = false;
 					MockServiceBean msb = store.getMockServiceById(Long.parseLong(serviceId));
-					msb.setDefaultScenarioId(Long.parseLong(scenarioId));
+					if(scenarioId!=null){
+						msb.setDefaultScenarioId(Long.parseLong(scenarioId));
+					}
 					msb.setProxyOn(Boolean.parseBoolean(req.getParameter(proxyOnKey)));
 					store.saveOrUpdate(msb);
 					Util.saveSuccessMessage("Service \"" + msb.getServiceName() + "\" updated.", req);
@@ -159,7 +161,9 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 				}
 				if (scenarioId != null) {
 					PlanItem planItem = new PlanItem();
-					planItem.setScenarioId(new Long(scenarioId));
+					if(scenarioId!=null){
+						planItem.setScenarioId(new Long(scenarioId));
+					}
 					planItem.setServiceId(new Long(serviceId));
 					planItem.setProxyOn(Boolean.parseBoolean(req.getParameter(proxyOnKey)));
 					servicePlan.addPlanItem(planItem);

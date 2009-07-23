@@ -16,6 +16,11 @@
 package com.mockey.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.MockServiceBean;
+import com.mockey.MockServiceScenarioBean;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 
@@ -39,10 +45,33 @@ public class MockHistoryPerServiceServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String serviceId = req.getParameter("serviceId");
-
+        String serviceIdAsString = req.getParameter("serviceId");
+        Long serviceId = new Long(serviceIdAsString);
         MockServiceBean ms = store.getMockServiceById(new Long(serviceId));
         req.setAttribute("mockservice", ms);
+        
+        List htmlOutput = new ArrayList();
+        List scenarioList = store.getHistoryScenarios();
+		Map visitedAddresses = new HashMap();
+		if (scenarioList != null && scenarioList.size() > 0) {
+			Iterator iter = scenarioList.iterator();
+			while (iter.hasNext()) {
+				MockServiceScenarioBean item = (MockServiceScenarioBean) iter.next();
+				if (item.getServiceId().equals(serviceId) && visitedAddresses.get(item.getConsumerId()) == null) {
+					StringBuffer sb = new StringBuffer();
+					sb.append("<div class=\"normal\">");
+					sb.append("IP: <a href=\"detail?serviceId=" + serviceId + "&iprequest="
+							+ item.getConsumerId() + "\">" + item.getConsumerId() + "</a>");
+					sb.append("</div>");
+					htmlOutput.add(sb.toString());
+					visitedAddresses.put(item.getConsumerId(), new Boolean(true));
+				}
+			}
+		} else {
+			htmlOutput.add("Empty - no requests have been made.");
+		}
+		
+		req.setAttribute("ip_addresses", htmlOutput);
         RequestDispatcher dispatch = req.getRequestDispatcher("/service_history.jsp");
         dispatch.forward(req, resp);
     }
