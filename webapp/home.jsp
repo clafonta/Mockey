@@ -13,10 +13,14 @@
 	            <div>
                   <a name="plan"></a> 
                   <h1>Service Plans</h1>
-                   <c:url value="/plan/setup" var="createPlanUrl">
-                                <c:param name="action" value="edit" />
-                             </c:url>
-                             <a href="<c:out value="${createPlanUrl}"/>">Create a plan</a>
+                  <hr />
+                  <c:url value="/plan/setup" var="createPlanUrl">
+                    <c:param name="action" value="edit" />
+                 </c:url>
+                  <p>
+                      A Service Plan is a saved state of all Mock Service configurations. For example, all 
+                      happy scenarios per service can be saved as a 'Happy Path' plan and all non-happy scenarios 
+                      as an 'Unhappy Path' plan. <a href="<c:out value="${createPlanUrl}"/>">Create a Plan</a> </p>
                   <c:choose>
                     <c:when test="${!empty plans}">
                     
@@ -42,12 +46,7 @@
                     
                     </c:when>
                     <c:otherwise>
-                      <p class="alert_message">There are no service plans defined. </p>
-                      <p>
-                      A Service Plan is a saved state of all service configurations. For example, all 
-                      happy scenarios for each service can be the 'Happy Path' plan, and all non-happy scenarios 
-                      as an 'Unhappy Path' plan.
-                      </p>
+                      <p class="highlight">There are no service plans defined. But that's OK. </p>                      
                     </c:otherwise>
                   </c:choose>
                 </div>     
@@ -102,12 +101,23 @@
 			</table>
 			<br />
 		</c:if>
+		        <div>
                 <h1>Mock Services</h1>
+                <hr />
+                <p>
+                      Here's a list of all the mock services. A mock service can be a proxy to a real service, enabling you to inspect request and response messages
+                      being exchanged. You can set up Mockey to go through a corporate proxy server (see <a href="<c:url value="/proxy/settings" />">Proxy Settings</a>). 
+                      There's support for HTTP and HTTPS interactions (if your proxy server or endpoint service is https). Be sure to check out your service's History
+                      to inspect and save a past conversation as a Service Scenario.                       
+                      </p>
+                      </div>
 		        <table class="simple" width="100%" cellspacing="0">
 			        <thead>
 			            <tr>
 						 <th width="15%" style="text-align:left;">Mock Service Name</th>
 						 <th style="text-align:left;">Mock Service Settings</th>
+						 
+
 			            </tr>
 			        </thead>
 		            <tbody>
@@ -115,26 +125,32 @@
 						<c:url value="/configure" var="configureUrl">
 							<c:param name="serviceId" value="${mockservice.id}" />
 						</c:url>
-						<c:url value="/setup" var="setupUrl">
-							<c:param name="serviceId" value="${mockservice.id}" />
-						</c:url>
-						<c:url value="/history/list" var="historyUrl">
-                            <c:param name="serviceId" value="${mockservice.id}" />
-                        </c:url>
+						
 						<tr>
 						    <a name="<c:out value="${mockservice.id}"/>"/>
-							<td class="contact">
-							<a href="<c:out value="${configureUrl}"/>" title="Configure service response">
-							<c:out value="${mockservice.serviceName}" /></a> <br /><br />
-							<a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a><br /> 
-                                <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a>
+							<td valign="top">
+							
+                            <c:url value="/setup" var="setupUrl">
+                                <c:param name="serviceId" value="${mockservice.id}" />
+                             </c:url>
+                             <c:url value="/history/list" var="historyUrl">
+                                <c:param name="serviceId" value="${mockservice.id}" />
+                             </c:url>
+                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
+                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a>                         
+                                <br /><br />
+							<h2><a href="<c:out value="${configureUrl}"/>" title="Configure service response">
+							
+							
+							<c:out value="${mockservice.serviceName}" /></a></h2>
+							
 							</td>
-							<td>
+							<td colspan="2">
 							  <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set> 
 							  Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a><mockey:clipboard id="clip-mockservice" text="${mockUrl}" bgcolor="#FFFFF0"/>
 							  <br />
 							  <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
-							  <p <c:if test='${!mockservice.proxyOn}'>class="overlabel"</c:if>>
+							  <p>
 			                  <input type="radio" name="proxyOn_<c:out value="${mockservice.id}"/>" value="true" <c:if test='${mockservice.proxyOn}'>checked</c:if> /> 
 			                  <b>Proxy</b> to this URL: <span class="highlight">
 			                    <c:out value="${mockservice.realServiceUrl}" /></span><mockey:clipboard id="clip-mockservice" text="${mockservice.realServiceUrl}" bgcolor="#FFFFF0"/>
@@ -144,7 +160,7 @@
 			                      </div>
 			                    </c:if>
 			                  </p>
-                              <p <c:if test='${mockservice.proxyOn}'>class="overlabel"</c:if>>
+                              <p>
                                 <input type="radio" name="proxyOn_<c:out value="${mockservice.id}"/>" value="false" <c:if test='${!mockservice.proxyOn}'>checked</c:if> /> 
                                 <b>Scenario -</b> Pick the type of scenario. 
                                 <c:if test="${empty mockservice.scenarios and !mockservice.proxyOn}">
