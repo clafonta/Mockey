@@ -38,7 +38,7 @@
 	                                <td>
 	                                    <p>Response:</p>
 	                                    <p>
-                                            <textarea name="requestMessage" rows="10" cols="80%">${scenario.responseMessage}</textarea>                                            
+                                            <textarea name="responseMessage" rows="10" cols="80%">${scenario.responseMessage}</textarea>                                            
                                         </p>
 	                                </td>
 	                            </tr>
