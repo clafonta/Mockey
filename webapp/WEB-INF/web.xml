@@ -74,6 +74,14 @@
         <servlet-name>MockServicePlanSetupServlet</servlet-name>
         <servlet-class>com.mockey.web.MockServicePlanSetupServlet</servlet-class>
     </servlet>  
+    <servlet>
+        <servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
+        <servlet-class>com.mockey.web.MockServiceScenarioUpdateServlet</servlet-class>
+    </servlet>  
+    <servlet-mapping>
+        <servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
+        <url-pattern>/service_scenario</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>MockServicePlanSetupServlet</servlet-name>
         <url-pattern>/plan/setup</url-pattern>

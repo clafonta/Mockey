@@ -9,7 +9,9 @@
         <c:choose>
 	        <c:when test="${!empty services}">
 	           
+	            <c:if test="${mode eq 'edit'}">
 	            <form action="<c:url value="/plan/setup"/>" method="post">
+	            </c:if>
 	            <div>
                   <a name="plan"></a> 
                   <h1>Service Plans</h1>
@@ -146,6 +148,15 @@
 							
 							</td>
 							<td colspan="2">
+							<c:choose>
+							<c:when test="${mode ne 'edit'}">
+							<form action="<c:url value="/service_scenario"/>" method="post">
+							<input type="hidden" name="serviceId" value="${mockservice.id}" />
+							</c:when>
+							<c:otherwise>
+							
+							</c:otherwise>
+							</c:when>
 							  <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set> 
 							  Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a><mockey:clipboard id="clip-mockservice" text="${mockUrl}" bgcolor="#FFFFF0"/>
 							  <br />
@@ -164,10 +175,14 @@
                                 <input type="radio" name="proxyOn_<c:out value="${mockservice.id}"/>" value="false" <c:if test='${!mockservice.proxyOn}'>checked</c:if> /> 
                                 <b>Scenario -</b> Pick the type of scenario. 
                                 <c:if test="${empty mockservice.scenarios and !mockservice.proxyOn}">
+                                <c:url value="/scenario" var="scenarioUrl">
+                                    <c:param name="serviceId" value="${mockservice.id}" />                                    
+                                </c:url>
                                     <div>
                                         <p class="alert_message">You need to <a href="<c:out value="${scenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
                                          a scenario before using "Scenario".</p>
                                         <input type="hidden" name="proxyOn_<c:out value="${mockservice.id}"/>" value="false" />
+                                        
                                     </div>
                                 </c:if>
                              </p>
@@ -194,6 +209,7 @@
                               </c:when>
                               <c:otherwise>
                               <input type="submit" name="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />
+                              </form>
                               </c:otherwise>
                               </c:choose>
 							</td>
@@ -201,8 +217,9 @@
 						</c:forEach>
 		            </tbody>
 		        </table>	
-		        
+		        <c:if test="${mode eq 'edit'}">
 		        </form>    
+		        </c:if>
 	        </c:when>
 	        <c:otherwise>
 			  <p class="alert_message">There are no mock services defined. <a href="<c:url value="setup"/>">Create one.</a></p>
