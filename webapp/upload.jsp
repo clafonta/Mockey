@@ -5,10 +5,10 @@
 <div id="main">
     <h3>Upload your service definition(s):</h3>
     <%@ include file="/WEB-INF/common/message.jsp"%>
-    <form style="margin-left:20%; margin-right:20%;" action="<c:url value="/upload"/>" method="POST" enctype="multipart/form-data">
+    <form id="multi_form" style="margin-left:20%; margin-right:20%;" action="<c:url value="/upload"/>" method="POST" enctype="multipart/form-data">
         <p><input class="normal" type="file" name="file"/></p>
         <input type="submit" name="upload" value="Upload" class="button"/>
-        <input type="submit" name="cancel" value="Cancel" class="button"/>
+        <a href="<c:url value="/home" />">Cancel</a>
     </form>
 </div>
 <jsp:include page="/WEB-INF/common/footer.jsp" />

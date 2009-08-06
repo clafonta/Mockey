@@ -4,6 +4,7 @@
 <jsp:include page="/WEB-INF/common/header.jsp" />
 <div id="main">
 	<h2>The Big Picture</h2>
+	<p><strong>Mockey</strong> is a tool for testing application interactions over http.</p>
     <p><img src="<c:url value="/images/bigpicture.png" />" /></p>
    	<h2>Export/Upload - huh?</h2>
     <p>There isn't a database for this web tool, everything is kept in memory. 

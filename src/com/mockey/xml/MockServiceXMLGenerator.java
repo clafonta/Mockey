@@ -34,7 +34,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 	private static Logger logger = Logger.getLogger(MockServiceXMLGenerator.class);
 
 	/**
-	 * Returns an element representing a mockservice.xml
+	 * Returns an element representing a mock service definitions file in XML. 
 	 * 
 	 * @param document
 	 *            parent DOM object of this element.
@@ -74,8 +74,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 				serviceElement.setAttribute("hang_time", "" + mockServiceBean.getHangTime());
 				serviceElement.setAttribute("http_header_definition", "" + mockServiceBean.getHttpHeaderDefinition());
 				serviceElement.setAttribute("default_scenario_id", "" + (mockServiceBean.getDefaultScenarioId()!=null ?  mockServiceBean.getDefaultScenarioId(): ""));
-				serviceElement.setAttribute("reply_matching_request", "" + mockServiceBean.isReplyWithMatchingRequest());
-				serviceElement.setAttribute("proxy_on", "" + mockServiceBean.isProxyOn());
+				serviceElement.setAttribute("service_response_type", "" + mockServiceBean.getServiceResponseType());
 
 				List scenarios = mockServiceBean.getScenarios();
 				Iterator iter = scenarios.iterator();
@@ -121,7 +120,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 					Element planItemElement = document.createElement("plan_item");
 					planItemElement.setAttribute("service_id", ""+pi.getServiceId());
 					planItemElement.setAttribute("scenario_id", ""+pi.getScenarioId());
-					planItemElement.setAttribute("proxy_on", ""+pi.isProxyOn());
+					planItemElement.setAttribute("service_response_type", ""+pi.getServiceResponseType());
 					
 					servicePlanElement.appendChild(planItemElement);
 				}

@@ -1,5 +1,7 @@
-<c:if test="${!empty mockservice.scenarios}">
-	<p>
+<p>
+<h2>Service Scenarios</h2>
+	<c:choose>
+	  <c:when test="${not empty mockservice.scenarios}">	  
 		<p>Available scenarios:</p> 
 		<ul class="group">
 			<c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status">   
@@ -10,5 +12,9 @@
 				<li><a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario"> <c:out value="${scenario.scenarioName}" /></a></li> 
 			</c:forEach>
 		</ul>
-	</p>
-</c:if>
+		</c:when>
+	  <c:otherwise>
+	  <p class="alert_message">No scenarios defined, yet.</p>
+	  </c:otherwise>
+	</c:choose>
+</p>

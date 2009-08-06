@@ -38,9 +38,9 @@
 						</td>
                     </tr>      
 					<tr>
-						<th><p>HTTP response message:</p></th>
+						<th><p>Scenario response message:</p></th>
 						<td>
-							<p><textarea name="responseMessage" rows="10" style="width:100%;"><c:out value="${mockscenario.responseMessage}" /></textarea></p>
+							<p><textarea name="responseMessage" rows="30" style="width:100%;"><c:out value="${mockscenario.responseMessage}" /></textarea></p>
 						    <p>The message you want your mock service to reply with. Feel free to cut and paste XML, free form text, etc.</p>
 						</td>
 					</tr>

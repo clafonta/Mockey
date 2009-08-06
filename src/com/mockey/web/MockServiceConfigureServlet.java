@@ -29,93 +29,71 @@ import com.mockey.MockServiceStoreImpl;
 
 public class MockServiceConfigureServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 6213235739994307983L;
-	private MockServiceStore store = MockServiceStoreImpl.getInstance();
+    private static final long serialVersionUID = 6213235739994307983L;
+    private MockServiceStore store = MockServiceStoreImpl.getInstance();
 
-	/**
-	 * 
-	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * 
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
-	 */
-	public void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+    /**
+     * 
+     * 
+     * @param req
+     *            basic request
+     * @param resp
+     *            basic resp
+     * 
+     * @throws ServletException
+     *             basic
+     * @throws IOException
+     *             basic
+     */
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		Long serviceId = new Long(req.getParameter("serviceId"));
-		MockServiceBean ms = store.getMockServiceById(serviceId);
-		String hangTime = req.getParameter("hangTime");
-		String proxyOn = req.getParameter("proxyOn");
-		String replyWithMatchingRequest = req
-				.getParameter("replyWithMatchingRequest");
+        Long serviceId = new Long(req.getParameter("serviceId"));
+        MockServiceBean ms = store.getMockServiceById(serviceId);
+        String hangTime = req.getParameter("hangTime");
+        String serviceResponseType = req.getParameter("serviceResponseType");
 
-		try {
-			if (replyWithMatchingRequest != null) {
-				boolean replyWithMatchingRequestBool = Boolean.valueOf(
-						replyWithMatchingRequest).booleanValue();
-				ms.setReplyWithMatchingRequest(replyWithMatchingRequestBool);
-			}
-		} catch (Exception e) {
-			// DO NOTHING. If previously set, then
-			// should not override it.
-		}
+        try {
+            ms.setServiceResponseType((new Integer(serviceResponseType)).intValue());
+        } catch (Exception e) {
 
-		// PROXY SETTING
-		try {
-			if (proxyOn != null) {
-				boolean proxyOnAsBool = Boolean.valueOf(proxyOn).booleanValue();
-				ms.setProxyOn(proxyOnAsBool);
-			}
-		} catch (Exception e) {
-			// DO NOTHING. If previously set, then
-			// should not override it.
-		}
+        }
 
-		// HANG TIME
-		try {
-			if (hangTime != null) {
-				int hangTimeAsInt = Integer.parseInt(hangTime);
-				ms.setHangTime(hangTimeAsInt);
-			}
-		} catch (Exception e) {
-			ms.setHangTime(0);
+        // HANG TIME
+        try {
+            if (hangTime != null) {
+                int hangTimeAsInt = Integer.parseInt(hangTime);
+                ms.setHangTime(hangTimeAsInt);
+            }
+        } catch (Exception e) {
+            ms.setHangTime(0);
 
-		}
+        }
 
-		// SETTING DEFAULT SCENARIO ID
-		try {
-			ms.setDefaultScenarioId(new Long(req
-					.getParameter("defaultScenarioId")));
+        // SETTING DEFAULT SCENARIO ID
+        try {
+            ms.setDefaultScenarioId(new Long(req.getParameter("defaultScenarioId")));
 
-		} catch (Exception e) {
-			// DO NOTHING. If default scenario was set before, nothing
-			// should override it.
-		}
+        } catch (Exception e) {
+            // DO NOTHING. If default scenario was set before, nothing
+            // should override it.
+        }
 
-		store.saveOrUpdate(ms);
+        store.saveOrUpdate(ms);
 
-		// And...check if flush cached requests has been checked.
-		String clearRequest = req.getParameter("clearRequests");
+        // And...check if flush cached requests has been checked.
+        String clearRequest = req.getParameter("clearRequests");
 
-		if (clearRequest != null) {
-			store.flushHistoryRequestMsgs(serviceId);
-		}
+        if (clearRequest != null) {
+            store.flushHistoryRequestMsgs(serviceId);
+        }
 
-		req.setAttribute("mockservice", ms);
+        req.setAttribute("mockservice", ms);
 
-		if (req.getParameter("update") != null) {
-			Util.saveSuccessMessage("Configuration updated", req);
-		}
-		RequestDispatcher dispatch = req
-				.getRequestDispatcher("/service_configure.jsp");
-		dispatch.forward(req, resp);
-	}
+        if (req.getParameter("update") != null) {
+            Util.saveSuccessMessage("Configuration updated", req);
+        }
+        RequestDispatcher dispatch = req.getRequestDispatcher("/service_configure.jsp");
+        dispatch.forward(req, resp);
+    }
 
-	
 }

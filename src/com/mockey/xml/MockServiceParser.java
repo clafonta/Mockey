@@ -71,9 +71,8 @@ public class MockServiceParser {
 		digester.addSetProperties(SERVICE, "hang_time", "hangTime");//  
 		digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrl");
 		digester.addSetProperties(SERVICE, "url", "mockServiceUrl");
-		digester.addSetProperties(SERVICE, "proxy_on", "proxyOn");
+		digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
 		digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
-		digester.addSetProperties(SERVICE, "reply_matching_request", "replyWithMatchingRequest");
 		
 		//serviceElement.setAttribute("reply_matching_request", "" + mockServiceBean.isReplyWithMatchingRequest());
 		//serviceElement.setAttribute("proxy_on", "" + mockServiceBean.isProxyOn());
@@ -97,7 +96,7 @@ public class MockServiceParser {
 		digester.addObjectCreate(PLAN_ITEM, PlanItem.class);
 		digester.addSetProperties(PLAN_ITEM, "service_id", "serviceId");
 		digester.addSetProperties(PLAN_ITEM, "scenario_id", "scenarioId");
-		digester.addSetProperties(PLAN_ITEM, "proxy_on", "proxyOn");
+		digester.addSetProperties(PLAN_ITEM, "service_response_type", "serviceResponseType");
 		digester.addSetNext(PLAN_ITEM, "addPlanItem");
 		MockServiceStore c = (MockServiceStore) digester.parse(inputSource);
 		return c;

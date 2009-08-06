@@ -23,31 +23,41 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.mockey.MockServiceBean;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 
 public class MockServiceScenarioUpdateServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -2964632050151431391L;
+    private static final long serialVersionUID = -2964632050151431391L;
+    private Logger log = Logger.getLogger(MockServiceScenarioUpdateServlet.class);
 
-	
-	private MockServiceStore store = MockServiceStoreImpl.getInstance();
+    private MockServiceStore store = MockServiceStoreImpl.getInstance();
 
-	
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	    String serviceId = req.getParameter("serviceId");
-	    String scenarioId = req.getParameter("scenarioId");
-	    String proxyOn = req.getParameter("proxyOn");
-	    MockServiceBean service = store.getMockServiceById(new Long(serviceId));
-	    Boolean proxy = new Boolean(proxyOn);
-	    service.setProxyOn(proxy.booleanValue());
-	    service.setDefaultScenarioId(new Long(scenarioId));
-	    store.saveOrUpdate(service);
-	    String returnHTML = "Updated";
-	    PrintStream out = new PrintStream(resp.getOutputStream());
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String serviceId = req.getParameter("serviceId");
+        String scenarioId = req.getParameter("scenario_" + serviceId);
+        String serviceResponseType = req.getParameter("serviceResponseType_" + serviceId);
+        MockServiceBean service = store.getMockServiceById(new Long(serviceId));
+        try {
+            service.setServiceResponseType((new Integer(serviceResponseType)).intValue());
+        } catch (Exception e) {
+            log.debug("Updating service without a 'service response type' value");
+        }
+
+        try {
+            service.setDefaultScenarioId(new Long(scenarioId));
+        } catch (Exception e) {
+            // Do nothing.
+            log.debug("Updating service without a 'default scenario ID' value");
+        }
+        store.saveOrUpdate(service);
+        String returnHTML = "Updated";
+        PrintStream out = new PrintStream(resp.getOutputStream());
         out.println(returnHTML);
-	    
-	}
+
+    }
 }

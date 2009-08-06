@@ -19,52 +19,51 @@
                     <tr>
                         <th width="180px"><p>Hang time:</p></th>
                         <td>
-                            <p><input type="text" name="hangTime" maxlength="5" size="5" value="<c:out value="${mockservice.hangTime}"/>" /> milliseconds</p>
+                            <p><input type="text" name="hangTime" maxlength="20" size="20" value="<c:out value="${mockservice.hangTime}"/>" /> milliseconds</p>
                         </td>
                     </tr>
                     <tr>
                         <th><p>Proxy or scenario?</p></th>
                         <td>
-	                        <p <c:if test='${!mockservice.proxyOn}'>class="overlabel"</c:if>>
-	                            <input type="radio" name="proxyOn" value="true" <c:if test='${mockservice.proxyOn}'>checked</c:if> /> 
+	                        <p>
+	                            <input type="radio" name="serviceResponseType" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> /> 
 	                            <b>Proxy response -</b> Pass your request to the <i>real</i> service URL, reply
 	                                with the real service's response message, and record the event. 
-	                                <c:if test="${empty mockservice.realServiceUrl and mockservice.proxyOn}">
+	                                <c:if test="${empty mockservice.realServiceUrl and mockservice.serviceResponseType eq 0}">
 	                                    <div>
 	                                        <p class="alert_message">You need to <a href="<c:out value="${setupUrl}"/>" title="edit">define a real URL</a></p>
 	                                    </div>
 	                                </c:if>
 	                        </p>
-	                        <p <c:if test='${mockservice.proxyOn}'>class="overlabel"</c:if>>
-	                            <input type="radio" name="proxyOn" value="false" <c:if test='${!mockservice.proxyOn}'>checked</c:if> /> 
-	                            <b>Scenario -</b> Pick the type of scenario. 
-	                            <c:if test="${empty mockservice.scenarios and !mockservice.proxyOn}">
+	                        <p>
+	                            <input type="radio" name="serviceResponseType" value="2" <c:if test='${mockservice.serviceResponseType eq 2}'>checked</c:if> /> 
+	                            <b>Dynamic Scenario -</b> Reply with Scenario based on an the content of an incoming message. 
+	                                
+	                        </p>
+	                        <p>
+	                            <input type="radio" name="serviceResponseType" value="1" <c:if test='${mockservice.serviceResponseType eq 1}'>checked</c:if> /> 
+	                            <b>Static Scenario -</b> Pick the type of scenario. 
+	                            <c:if test="${empty mockservice.scenarios and mockservice.serviceResponseType ne 1}">
 	                                <div>
 	                                    <p class="alert_message">You need to <a href="<c:out value="${scenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
-	                                     a scenario before using "Scenario".</p>
-	                                    <input type="hidden" name="proxyOn" value="true" />
+	                                     a scenario before using "Static or Dynamic Scenario".</p>
+	                                    <input type="hidden" name="serviceResponseType" value="true" />
 	                                </div>
 	                            </c:if>
 	                        </p>
                         </td>
                    </tr>
-                    <c:if test="${!mockservice.proxyOn}">
+                    <c:if test="${mockservice.serviceResponseType ne 0}">
                         <c:if test="${!empty mockservice.scenarios}">
                             <tr>
-                                <th><p>Choose dynamic matching or specific scenario</p></th>
-                                <td>
-									<p <c:if test='${!mockservice.replyWithMatchingRequest}'>class="overlabel"</c:if>>
-									    <input type="radio" name="replyWithMatchingRequest" value="true" <c:if test='${mockservice.replyWithMatchingRequest}'>checked</c:if>></input>
-									    <b>Matching scenario:</b> This option will return the response from the scenario with a matching request message.
-									</p>
-                                    <p <c:if test='${mockservice.replyWithMatchingRequest}'>class="overlabel"</c:if>>
-                                        <input type="radio" name="replyWithMatchingRequest" value="false" <c:if test='${!mockservice.replyWithMatchingRequest}'>checked</c:if> />
-                                        <b>From scenario:</b> 
+                                <th><p>Choose static scenario</p></th>
+                                <td>									
+                                    <p>                                         
                                         <span>
                                             <ul class="group">
                                                 <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
                                                     <li>
-                                                        <c:if test='${!mockservice.replyWithMatchingRequest}'>
+                                                        <c:if test='${mockservice.serviceResponseType eq 1}'>
                                                             <input type="radio" name="defaultScenarioId" value="<c:out value="${scenario.id}"/>"
                                                             <c:if test='${mockservice.defaultScenarioId eq scenario.id}'>checked</c:if> />
                                                         </c:if> 
@@ -72,7 +71,7 @@
                                                             <c:param name="serviceId" value="${mockservice.id}" />
                                                             <c:param name="scenarioId" value="${scenario.id}" />
                                                         </c:url> 
-                                                        <a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario" <c:if test='${mockservice.proxyOn}'>class="overlabel"</c:if>><c:out value="${scenario.scenarioName}" /></a>
+                                                        <a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario" <c:if test='${mockservice.serviceResponseType eq 0}'>class="overlabel"</c:if>><c:out value="${scenario.scenarioName}" /></a>
                                                     </li>
 
                                                 </c:forEach>

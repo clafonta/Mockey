@@ -2,22 +2,19 @@ body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
 .big{font-size: 300%; font-weight:bold;}
 .tiny{font-size: 80%;}
 h1, h2{margin: 0.5em 0 0.5em 0;color: #06F; }
-hr{	
-  border: 0;
-  width: 100%;
-height: 2px;
-background-color: #06F;
-}
+hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
 h1{ font-size:160%; }
 h2 { font-size:120%; }
 img {border:0;}
-.highlight{	color: #ff8c00;}
+.highlight{color: #ff0073;}
 .nav{	color: #06F;	text-decoration: none;	font-weight:bold;}
-.group {	border: thin dashed #d3d3d3;	padding: 1em;	margin: 1em;}
-form {border: thin solid #d3d3d3;	padding: 1em;	background-color: #FFFFF0;}
+.group {	border: thin dashed #bdbdbd;	padding: 1em;	margin: 1em;}
+form {	padding: 0em 1em 0em 1em;	border: thin solid #bdbdbd;	background-color: #ffff99;}
+form#multi_form{	padding: 1em;}
 ul {	list-style: none;	}
 ul li {	margin:0.5em; }
 .edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
+p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
 p{margin: 0.5em; padding: 1px;}
 a{color: #00F;text-decoration:underline}
 a#highlight{font-size:120%;}
@@ -33,9 +30,14 @@ ul#minitabs li{display: inline;margin: 0 3px}
 ul#minitabs a{text-decoration: none;padding: 0 0 3px;  border-bottom: 4px solid #FFF;color: #999}
 ul#minitabs a#current{border-color: #F60;color:#06F}
 ul#minitabs a:hover{border-color: #F60;color: #666}
-.info_message, .alert_message {	text-align: center;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; margin-left:20%; margin-right:20%;}
-.info_message {	background-color: #7EFF00;}
-.alert_message{	background-color: #FFD7D7;}
+.alert_message {	text-align: center;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
+.info_message {	
+	text-align: center;
+	color: black;
+	border: thin solid #d3d3d3;
+	padding: 0.2em;
+	background-color: #7eff00;
+}
 .code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em; font-family: Courier,sans-serif;}
 .code a{text-align:center;font-size: 1.2em;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
@@ -45,19 +47,19 @@ div#infotext, div#servicename, div#password {position:relative; float:left; marg
 .overlabel-apply {	position:absolute;top:3px;left:5px;	z-index:1;	color:#999;}
 label.overlabel {color:#999;}
 label.overlabel-apply {	position:absolute;top:3px;left:5px;	z-index:1;	color:#999;}
-table.basic {border: 1px solid #DDDDDD; background: #f1f1f0;}
+table.basic {border: thin solid #bdbdbd; background: #f1f1f0;}
 table.basic th {padding: 0px;border-style: none;text-align: right;}
 table.basic td {border-style: none; padding: 0px;}
 table.example {background-color:#E5EECC;background-image:url(images/bgfadegreen.gif);background-repeat:repeat-x;border:1px solid #D4D4D4;color:#000000;padding:8px 10px;}
 table.simple{border-collapse: collapse;border-spacing: 0px; }
-table.simple th{ background-color: #f1f1f0;border: 1px #DDDDDD solid;font-weight: bold;padding-left: 8px; }
+table.simple th{ border-bottom: 1px inset #DDDDDD; font-weight: bold;padding-left: 8px; }
 table.simple td{
 	border-bottom: 1px inset #DDDDDD;
 	text-align: left;
 	font-weight: normal;
 	margin-top: 5px;
 	padding-top: 10px;
-	padding-bottom: 4px;
+	padding-bottom: 10px;
 	padding-left: 8px;
 	padding-right: 0px;
 }

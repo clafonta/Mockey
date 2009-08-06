@@ -14,16 +14,16 @@
 	<c:url value="/history/list" var="historyUrl">
         <c:param name="serviceId" value="${mockservice.id}" />
     </c:url>
-	<p style="text-align:right;"> 	    
-	    <a href="<c:out value="${setupUrl}"/>" title="Edit service settings" <c:if test="${actionKey == 'edit_service'}"> class="nav" </c:if>>edit service definition</a> |
-	    <a href="<c:out value="${scenarioCreateUrl}"/>" title="Edit service settings">create scenario</a> |
-	    <a href="<c:out value="${scenarioListUrl}"/>" title="Scenarios" <c:if test="${actionKey == 'scenario_list'}"> class="nav" </c:if>>edit scenarios</a> |
-	    <a href="<c:out value="${configureUrl}"/>" title="Configure service response scenario" <c:if test="${actionKey == 'conf_service'}"> class="nav" </c:if>>select service scenario response</a> |  
-	    <a href="<c:out value="${historyUrl}"/>" title="History of request made to this service" <c:if test="${actionKey == 'service_history'}"> class="nav" </c:if>>requests history</a>
-	</p>
-	<p>
+	<p style="text-align:center;" id="action_links"> 	    
+	    <a href="<c:out value="${setupUrl}"/>" title="Edit service settings" <c:if test="${actionKey == 'edit_service'}"> class="nav" </c:if>>Edit Service Definition</a> |
+	    <a href="<c:out value="${scenarioCreateUrl}"/>" title="Edit service settings">Create Scenario</a> |
+	    <a href="<c:out value="${scenarioListUrl}"/>" title="Scenarios" <c:if test="${actionKey == 'scenario_list'}"> class="nav" </c:if>>Edit Scenarios</a> |
+	    <a href="<c:out value="${configureUrl}"/>" title="Configure service response scenario" <c:if test="${actionKey == 'conf_service'}"> class="nav" </c:if>>Service Response Style</a> |  
+	    <a href="<c:out value="${historyUrl}"/>" title="History of request made to this service" <c:if test="${actionKey == 'service_history'}"> class="nav" </c:if>>History</a>
+	
 		<table class="basic" width="100%">
 	        <tbody>
+	            <tr><th colspan=2" style="text-align:center;">Service Definition</th></tr>
 	            <tr><th width="180px"><p>Service Name:</p></th>
 	            <td>
 	                <p>
@@ -47,7 +47,7 @@
 	                    <p>
 	                        <c:choose>
 	                            <c:when test="${empty mockservice.realServiceUrl}">
-	                                <span <c:if test="${mockservice.proxyOn}">style="color:red;" </c:if>(undefined)</span>
+	                                <span <c:if test="${mockservice.serviceResponseType eq 0}">style="color:red;" </c:if>>(undefined)</span>
 	                            </c:when>
 	                            <c:otherwise>
 	                                <c:out value="${mockservice.realServiceUrl}" /><mockey:clipboard id="clip-realservice" text="${mockservice.realServiceUrl}" bgcolor="#F1F1F0" /> 

@@ -8,32 +8,16 @@
 <div id="main">
     <%@ include file="/WEB-INF/common/message.jsp"%>    
     <c:choose>
-        <c:when test="${!empty mockservice.scenarios and !empty mockservice.id}">
+        <c:when test="${!empty mockservice.id}">
             <h1>Service Setup: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
-        </c:when>
-        <c:when test="${!empty mockservice.id and !empty mockservice.scenarios }">
-            <c:url value="/scenario" var="scenarioUrl">
-                <c:param name="serviceId" value="${mockservice.id}" />
-            </c:url>
-            <h1>Service Setup</h1>
-            <div style="margin-left:20%; margin-right:20%">
-                <h2 class="overlabel">Step 1 - Create a service name and mock URI <span style="color: green;">- Done!</span></h2>
-                <h2>Step 2 - Create a service scenario <a style="color: red;" href="<c:out value="${scenarioUrl}"/>" title="Create service scenario">Create Now</a></h2>
-            </div>
-        </c:when>
+        </c:when>        
         <c:otherwise>
-            <h1>Service Setup</h1>
-            <div style="margin-left:20%; margin-right:20%">
-                <h2>Step 1 - Create a service name and mock URI</h2>
-                <h2 class="overlabel">Step 2 - Create a service scenario</h2>
-            </div>
+            <h1>Service Setup</h1>            
         </c:otherwise>
     </c:choose>
     <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
     <form action="<c:url value="/setup"/>" method="POST">
         <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" /> 
-     
-        <br />
         <table class="simple" width="100%">
             <tbody>
 	            <tr><th><p>Service name:</p></th>

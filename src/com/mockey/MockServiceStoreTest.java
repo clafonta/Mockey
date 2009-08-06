@@ -57,12 +57,13 @@ public class MockServiceStoreTest implements MockServiceStore {
 		msp.setName("happy path");
 		msp.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ");
 		PlanItem planItem = new PlanItem();
-		planItem.setProxyOn(true);
+		planItem.setServiceResponseType(MockServiceBean.SERVICE_RESPONSE_TYPE_PROXY);
+		
 		planItem.setScenarioId(new Long(123));
 		planItem.setServiceId(new Long(234));
 		msp.addPlanItem(planItem);
 		planItem = new PlanItem();
-		planItem.setProxyOn(true);
+		planItem.setServiceResponseType(MockServiceBean.SERVICE_RESPONSE_TYPE_PROXY);
 		planItem.setScenarioId(new Long(98));
 		planItem.setServiceId(new Long(97877));
 		msp.addPlanItem(planItem);
@@ -73,12 +74,12 @@ public class MockServiceStoreTest implements MockServiceStore {
 		msp.setName("trial and tribulation");
 		msp.setDescription("battle of beetles in bottles");
 		planItem = new PlanItem();
-		planItem.setProxyOn(false);
+		planItem.setServiceResponseType(MockServiceBean.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO);
 		planItem.setScenarioId(new Long(1));
 		planItem.setServiceId(new Long(2));
 		msp.addPlanItem(planItem);
 		planItem = new PlanItem();
-		planItem.setProxyOn(true);
+		planItem.setServiceResponseType(MockServiceBean.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO);
 		planItem.setScenarioId(new Long(3));
 		planItem.setServiceId(new Long(4));
 		msp.addPlanItem(planItem);

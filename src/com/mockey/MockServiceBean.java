@@ -15,10 +15,11 @@
  */
 package com.mockey;
 
-import com.mockey.util.Url;
+import java.util.List;
+
 import org.apache.http.HttpHost;
 
-import java.util.List;
+import com.mockey.util.Url;
 
 /**
  * The mock service definition.
@@ -28,215 +29,193 @@ import java.util.List;
  */
 public class MockServiceBean implements Item {
 
-	public final static String HTTP_HEADER_XML = "text/xml;";
+    public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
+    public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
+    public final static int SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO = 2;
+    private Long id;
+    private String serviceName;
+    private String description;
+    private Long defaultScenarioId;
+    private String httpHeaderDefinition;
+    private int hangTime = 500;
+    private OrderedMap scenarios = new OrderedMap();
+    private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
+    private String httpMethod = "GET";
+    private String mockServiceUrl;
+    private Url realServiceUrl;
 
-	public final static String HTTP_HEADER_HTML = "text/html;";
+    public MockServiceBean() {
+    }
 
-	public final static String HTTP_HEADER_PLAIN = "text/plain;";
+    public MockServiceBean(Url realServiceUrl) {
+        this.realServiceUrl = realServiceUrl;
+        this.setMockServiceUrl(realServiceUrl.getFullUrl());
+        this.setServiceName("Auto-Generated Service");
+    }
 
-	private Long id;
+    public String getHttpMethod() {
+        return httpMethod;
+    }
 
-	private String serviceName;
+    public void setHttpMethod(String httpMethod) {
+        this.httpMethod = httpMethod;
+    }
 
-	private String description;
+    public Long getDefaultScenarioId() {
+        return defaultScenarioId;
+    }
 
-	private Long defaultScenarioId;
-	
-	private String httpHeaderDefinition;
+    public void setDefaultScenarioId(Long defaultScenarioId) {
+        this.defaultScenarioId = defaultScenarioId;
+    }
 
-	private int hangTime = 500;
+    public String getDescription() {
+        return description;
+    }
 
-	private OrderedMap scenarios = new OrderedMap();
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	private boolean proxyOn = false;
+    public String getServiceName() {
+        return serviceName;
+    }
 
-	private boolean replyWithMatchingRequest = false;
+    public void setServiceName(String name) {
+        this.serviceName = name;
+    }
 
-	private String httpMethod = "GET";
+    public int getHangTime() {
+        return hangTime;
+    }
 
-	private String mockServiceUrl;
-	private Url realServiceUrl;
+    public void setHangTime(int hangTime) {
+        this.hangTime = hangTime;
+    }
 
-	public MockServiceBean() {
-	}
+    public List getScenarios() {
+        return scenarios.getOrderedList();
+    }
 
-	public MockServiceBean(Url realServiceUrl) {
-		this.realServiceUrl = realServiceUrl;
-		this.setMockServiceUrl(realServiceUrl.getFullUrl());
-		this.setServiceName("Auto-Generated Service");
-	}
+    public MockServiceScenarioBean getScenario(Long scenarioId) {
+        return (MockServiceScenarioBean) scenarios.get(scenarioId);
+    }
 
-	public String getHttpMethod() {
-		return httpMethod;
-	}
+    public void deleteScenario(Long scenarioId) {
+        this.scenarios.remove(scenarioId);
+    }
 
-	public void setHttpMethod(String httpMethod) {
-		this.httpMethod = httpMethod;
-	}
+    public void updateScenario(MockServiceScenarioBean mss) {
 
-	public Long getDefaultScenarioId() {
-		return defaultScenarioId;
-	}
+        this.scenarios.save(mss);
+    }
 
-	public void setDefaultScenarioId(Long defaultScenarioId) {
-		this.defaultScenarioId = defaultScenarioId;
-	}
+    public String getMockServiceUrl() {
+        return mockServiceUrl;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getRealHost() {
+        return realServiceUrl.getHost();
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getRealPath() {
+        return realServiceUrl.getPath();
+    }
 
-	public String getServiceName() {
-		return serviceName;
-	}
+    /**
+     * Helper method.
+     * 
+     * @return returns a the full URI path to this service, pre-pending
+     *         "/service" to the mock service URL
+     */
+    public String getServiceUrl() {
+        return ("/service" + cleanUrl(this.getMockServiceUrl()));
+    }
 
-	public void setServiceName(String name) {
-		this.serviceName = name;
-	}
+    /**
+     * Method will ensure the service URL starts with '/'. If not, will prepend
+     * it to the mock uri
+     * 
+     * @param mockServiceUrl
+     *            the path to the service as it should be accessed in our system
+     */
+    public void setMockServiceUrl(String mockServiceUrl) {
+        if (mockServiceUrl != null && !mockServiceUrl.trim().startsWith("/") && mockServiceUrl.trim().length() > 0) {
+            this.mockServiceUrl = "/" + mockServiceUrl.trim();
+        } else {
+            this.mockServiceUrl = mockServiceUrl;
+        }
+    }
 
-	public int getHangTime() {
-		return hangTime;
-	}
+    public String getRealServicePath() {
+        return realServiceUrl.getPath();
+    }
 
-	public void setHangTime(int hangTime) {
-		this.hangTime = hangTime;
-	}
+    public void setRealServiceUrl(String realServiceUrl) {
+        this.realServiceUrl = new Url(realServiceUrl);
+    }
+    
+    public String getHttpHeaderDefinition() {
+        return httpHeaderDefinition;
+    }
 
-	public List getScenarios() {
-		return scenarios.getOrderedList();
-	}
+    public void setHttpHeaderDefinition(String httpHeaderDefinition) {
+        this.httpHeaderDefinition = httpHeaderDefinition;
+    }
 
-	public MockServiceScenarioBean getScenario(Long scenarioId) {
-		return (MockServiceScenarioBean) scenarios.get(scenarioId);
-	}
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Service name:").append(this.getServiceName()).append("\n");
+        sb.append("Mock URL:").append(this.getMockServiceUrl()).append("\n");
+        sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
+        sb.append("Scheme:").append(this.getRealServiceScheme()).append("\n");
+        sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
+        sb.append("HTTP Content:").append(this.getHttpHeaderDefinition()).append("\n");
+        sb.append("Hang time:");
+        sb.append(this.getHangTime());
+        sb.append("\n");
 
-	public void deleteScenario(Long scenarioId) {
-		this.scenarios.remove(scenarioId);
-	}
+        return sb.toString();
+    }
 
-	public void updateScenario(MockServiceScenarioBean mss) {
+    private String cleanUrl(String arg) {
+        int index = arg.indexOf(";");
+        if (index > -1) {
+            return arg.substring(0, index);
+        } else {
+            return arg;
+        }
+    }
 
-		this.scenarios.save(mss);
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getMockServiceUrl() {
-		return mockServiceUrl;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getRealHost() {
-		return realServiceUrl.getHost();
-	}
+    public String getRealServiceScheme() {
+        return realServiceUrl.getScheme();
+    }
 
-	public String getRealPath() {
-		return realServiceUrl.getPath();
-	}
+    public String getRealServiceUrl() {
+        if (this.realServiceUrl != null) {
+            return String.valueOf(realServiceUrl);
+        } else {
+            return "";
+        }
+    }
 
-	/**
-	 * Helper method.
-	 * 
-	 * @return returns a the full URI path to this service, pre-pending
-	 *         "/service" to the mock service URL
-	 */
-	public String getServiceUrl() {
-		return ("/service" + cleanUrl(this.getMockServiceUrl()));
-	}
+    public HttpHost getHttpHost() {
+        return new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(), realServiceUrl.getScheme());
+    }
 
-	/**
-	 * Method will ensure the service URL starts with '/'. If not, will prepend
-	 * it to the mock uri
-	 * 
-	 * @param mockServiceUrl
-	 *            the path to the service as it should be accessed in our system
-	 */
-	public void setMockServiceUrl(String mockServiceUrl) {
-		if (mockServiceUrl != null && !mockServiceUrl.trim().startsWith("/") && mockServiceUrl.trim().length()>0) {
-			this.mockServiceUrl = "/" + mockServiceUrl.trim();
-		} else {
-			this.mockServiceUrl = mockServiceUrl;
-		}
-	}
+    public void setServiceResponseType(int serviceResponseType) {
+        this.serviceResponseType = serviceResponseType;
+    }
 
-	public String getRealServicePath() {
-		return realServiceUrl.getPath();
-	}
-
-	public void setRealServiceUrl(String realServiceUrl) {
-		this.realServiceUrl = new Url(realServiceUrl);
-	}
-
-	public boolean isProxyOn() {
-		return proxyOn;
-	}
-
-	public void setProxyOn(boolean proxyOn) {
-		this.proxyOn = proxyOn;
-	}
-
-	public boolean isReplyWithMatchingRequest() {
-		return replyWithMatchingRequest;
-	}
-
-	public void setReplyWithMatchingRequest(boolean replyWithMatchingRequest) {
-		this.replyWithMatchingRequest = replyWithMatchingRequest;
-	}
-
-	public String getHttpHeaderDefinition() {
-		return httpHeaderDefinition;
-	}
-
-	public void setHttpHeaderDefinition(String httpHeaderDefinition) {
-		this.httpHeaderDefinition = httpHeaderDefinition;
-	}
-
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("Service name:").append(this.getServiceName()).append("\n");
-		sb.append("Mock URL:").append(this.getMockServiceUrl()).append("\n");
-		sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
-		sb.append("Scheme:").append(this.getRealServiceScheme()).append("\n");
-		sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
-		sb.append("HTTP Content:").append(this.getHttpHeaderDefinition()).append("\n");
-		sb.append("Hang time:");
-		sb.append(this.getHangTime());
-		sb.append("\n");
-
-		return sb.toString();
-	}
-
-	private String cleanUrl(String arg) {
-		int index = arg.indexOf(";");
-		if (index > -1) {
-			return arg.substring(0, index);
-		} else {
-			return arg;
-		}
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getRealServiceScheme() {
-		return realServiceUrl.getScheme();
-	}
-
-	public String getRealServiceUrl() {
-		if (this.realServiceUrl != null) {
-			return String.valueOf(realServiceUrl);
-		} else {
-			return "";
-		}
-	}
-
-	public HttpHost getHttpHost() {
-		return new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(), realServiceUrl.getScheme());
-	}
+    public int getServiceResponseType() {
+        return serviceResponseType;
+    }
 }

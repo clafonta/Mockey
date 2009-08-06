@@ -3,7 +3,7 @@ package com.mockey;
 public class PlanItem  {
 	private Long serviceId;
 	private Long scenarioId;
-	private boolean proxyOn;
+	private int serviceResponseType;
 	public Long getServiceId() {
 		return serviceId;
 	}
@@ -16,11 +16,11 @@ public class PlanItem  {
 	public void setScenarioId(Long scenarioId) {
 		this.scenarioId = scenarioId;
 	}
-	public boolean isProxyOn() {
-		return proxyOn;
-	}
-	public void setProxyOn(boolean proxyOn) {
-		this.proxyOn = proxyOn;
-	}
+    public void setServiceResponseType(int serviceResponseType) {
+        this.serviceResponseType = serviceResponseType;
+    }
+    public int getServiceResponseType() {
+        return serviceResponseType;
+    }
 	
 }
