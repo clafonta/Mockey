@@ -16,6 +16,7 @@
 package com.mockey.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import org.xml.sax.SAXException;
 
 import com.mockey.MockServiceBean;
 import com.mockey.MockServicePlan;
+import com.mockey.MockServiceScenarioBean;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 import com.mockey.xml.MockServiceFileReader;
@@ -40,91 +42,157 @@ import com.mockey.xml.MockServiceFileReader;
 /**
  * 
  * @author Chad.Lafontaine
- *
+ * 
  */
 public class MockServiceUploadServlet extends HttpServlet {
-	
-	private static final long serialVersionUID = 2874257060865115637L;
-	private static MockServiceStore store = MockServiceStoreImpl.getInstance();
-	private static Logger logger = Logger.getLogger(MockServiceUploadServlet.class);
 
-	/**
-	 * 
-	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
-	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
-		dispatch.forward(req, resp);
-	}
+    private static final long serialVersionUID = 2874257060865115637L;
+    private static MockServiceStore store = MockServiceStoreImpl.getInstance();
+    private static Logger logger = Logger.getLogger(MockServiceUploadServlet.class);
 
-	/**
-	 * 
-	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
-	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		try {
-			// Create a new file upload handler
-			DiskFileUpload upload = new DiskFileUpload();
-			logger.debug("Upload servlet");
-			// Parse the request
-			List items = upload.parseRequest(req);
-			Iterator iter = items.iterator();
-			while (iter.hasNext()) {
-				FileItem item = (FileItem) iter.next();
+    /**
+     * 
+     * 
+     * @param req
+     *            basic request
+     * @param resp
+     *            basic resp
+     * @throws ServletException
+     *             basic
+     * @throws IOException
+     *             basic
+     */
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
+        dispatch.forward(req, resp);
+    }
 
-				if (!item.isFormField()) {
-					logger.debug("Upload servlet: found file " + item.getFieldName());
+    /**
+     * 
+     * 
+     * @param req
+     *            basic request
+     * @param resp
+     *            basic resp
+     * @throws ServletException
+     *             basic
+     * @throws IOException
+     *             basic
+     */
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List conflicts = new ArrayList();
+        List additions = new ArrayList();
+        try {
+            // Create a new file upload handler
+            DiskFileUpload upload = new DiskFileUpload();
+            logger.debug("Upload servlet");
 
-					byte[] data = item.get();
-					String strXMLDefintion = new String(data);
+            // Parse the request
+            List items = upload.parseRequest(req);
+            Iterator iter = items.iterator();
+            while (iter.hasNext()) {
+                FileItem item = (FileItem) iter.next();
 
-					MockServiceFileReader msfr = new MockServiceFileReader();
-					MockServiceStore mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
-					// SERVICES
-					List uploadedServices = mockServiceStoreTemporary.getOrderedList();
-					Iterator iter2 = uploadedServices.iterator();
-					while (iter2.hasNext()) {
-						MockServiceBean object = (MockServiceBean) iter2.next();
-						store.saveOrUpdate(object);
-						
-					}
-					// PLANS
-					List servicePlans = mockServiceStoreTemporary.getMockServicePlanList();
-					Iterator iter3 = servicePlans.iterator();
-					while(iter3.hasNext()){
-						MockServicePlan servicePlan = (MockServicePlan)iter3.next();
-						store.saveOrUpdateServicePlan(servicePlan);
-					}
-					Util.saveSuccessMessage("Service definitions uploaded.", req);
-					
-				}
-			}
-		} catch (FileUploadException e) {
-			Util.saveErrorMessage("Unable to upload file.", req);
-		}
+                if (!item.isFormField()) {
+                    logger.debug("Upload servlet: found file " + item.getFieldName());
 
-		catch (SAXException e) {			
-			Util.saveErrorMessage("Unable to parse file.", req);
-			
-		}
+                    byte[] data = item.get();
+                    String strXMLDefintion = new String(data);
 
-		RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
-		dispatch.forward(req, resp);
-	}
+                    MockServiceFileReader msfr = new MockServiceFileReader();
+                    MockServiceStore mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
+
+                    // When loading a definition file, by default, we should
+                    // compare uploaded Service’s mock URL to what's currently
+                    // in memory.
+                    //
+                    // 1) MATCHING MOCK URL
+                    // If there is an existing/matching mockURL, then this isn't
+                    // a new service and we DON'T want to overwrite. But, we
+                    // want new Scenarios if they exist. A new scenario is based
+                    // on
+                    //
+                    // 2) NO MATCHING MOCK URL
+                    // If there is no matching service URL, then create a new
+                    // service and associated scenarios.
+                    List uploadedServices = mockServiceStoreTemporary.getOrderedList();
+                    Iterator iter2 = uploadedServices.iterator();
+                    while (iter2.hasNext()) {
+                        MockServiceBean uploadedServiceBean = (MockServiceBean) iter2.next();
+                        List serviceBeansInMemory = store.getOrderedList();
+                        Iterator iter3 = serviceBeansInMemory.iterator();
+                        boolean existingServiceWithMatchingMockUrl = false;                        
+                        MockServiceBean inMemoryServiceBean = null;
+                        while (iter3.hasNext()) {
+                            inMemoryServiceBean = (MockServiceBean) iter3.next();
+                            if (inMemoryServiceBean.getMockServiceUrl().equals(uploadedServiceBean.getMockServiceUrl())) {
+                                existingServiceWithMatchingMockUrl = true;
+                                conflicts.add("<b>Service not added</b>: Matching mock URL '"
+                                        + uploadedServiceBean.getMockServiceUrl() + "' with" + " service name '"
+                                        + uploadedServiceBean.getServiceName() + "'");
+                                break;
+                            }
+                        }
+                        if (!existingServiceWithMatchingMockUrl) {
+                            // We null it, to not stomp on any services
+                            uploadedServiceBean.setId(null);
+                            store.saveOrUpdate(uploadedServiceBean);
+                            additions.add("<b>Service Added</b>: '" + uploadedServiceBean.getServiceName() + "'");
+                            
+                        } else {
+                            // Just save scenarios
+                            Iterator uIter = uploadedServiceBean.getScenarios().iterator();
+                            Iterator mIter = inMemoryServiceBean.getScenarios().iterator();
+                            while (uIter.hasNext()) {
+                                MockServiceScenarioBean uBean = (MockServiceScenarioBean) uIter.next();
+                                boolean existingScenario = false;
+                                MockServiceScenarioBean mBean = null;
+                                while (mIter.hasNext()) {
+                                    mBean = (MockServiceScenarioBean) mIter.next();
+                                    if (mBean.getScenarioName().equals(uBean.getScenarioName())) {
+                                        existingScenario = true;
+                                        break;
+                                    }
+                                }
+                                if (!existingScenario) {
+                                    uBean.setServiceId(inMemoryServiceBean.getId());
+                                    inMemoryServiceBean.updateScenario(uBean);
+                                    store.saveOrUpdate(inMemoryServiceBean);
+                                    additions.add("<b>Scenario Added</b>: '" + uBean.getScenarioName()
+                                            + "' added to existing service '" + inMemoryServiceBean.getServiceName()
+                                            + "'");
+                                } else {
+                                    conflicts.add("<b>Scenario not added</b>: '" + mBean.getScenarioName()
+                                            + "', already defined in service '" + inMemoryServiceBean.getServiceName()
+                                            + "'");
+                                }
+
+                            }
+                        }
+
+                    }
+                    // PLANS
+                    List servicePlans = mockServiceStoreTemporary.getMockServicePlanList();
+                    Iterator iter3 = servicePlans.iterator();
+                    while (iter3.hasNext()) {
+                        MockServicePlan servicePlan = (MockServicePlan) iter3.next();
+                        store.saveOrUpdateServicePlan(servicePlan);
+                    }
+                    Util.saveSuccessMessage("Service definitions uploaded.", req);
+
+                }
+            }
+        } catch (FileUploadException e) {
+            Util.saveErrorMessage("Unable to upload file.", req);
+        }
+
+        catch (SAXException e) {
+            Util.saveErrorMessage("Unable to parse file.", req);
+
+        }
+        req.setAttribute("conflicts", conflicts);
+        req.setAttribute("additions", additions);
+        RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
+        dispatch.forward(req, resp);
+    }
 }

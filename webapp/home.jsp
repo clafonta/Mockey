@@ -135,15 +135,32 @@
 							<td colspan="2">							
 								<c:if test="${mode ne 'edit_plan'}">
 									
+		    <script type="text/javascript">
+				$(document).ready(function() {
+					$("#update_service_<c:out value="${mockservice.id}"/>").click(function(){
+						$scenario = $("input[name='scenario_<c:out value="${mockservice.id}"/>']:checked").val();
+						$serviceResponseType = $("input[name='serviceResponseType_<c:out value="${mockservice.id}"/>']:checked").val();
+						$serviceId = document.getElementById("serviceId_<c:out value="${mockservice.id}"/>").value;
+						$.post("<c:url value="/service_scenario"/>", {serviceResponseType_<c:out value="${mockservice.id}"/>:$serviceResponseType, serviceId:$serviceId,scenario_<c:out value="${mockservice.id}"/>:$scenario}, function(xml) {
+							$("#weatherReport_<c:out value="${mockservice.id}"/>").html(
+									$("report", xml).text()
+							);
+							alert("Service <c:out value="${mockservice.serviceName}"/> updated.");
+						});
+					});
+				});
+			</script>
+			<div id="__weatherReport_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
+										<div id="updateStatus_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
 										<form id="multi_form" action="<c:url value="/service_scenario"/>" method="post">
-										<input type="hidden" name="serviceId" value="${mockservice.id}" />
+										<input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
 								</c:if>							
 							  <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set> 
 							  Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a><mockey:clipboard id="clip-mockservice" text="${mockUrl}" bgcolor="#ffff99"/>
 							  <br />
 							  <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
 							  <p>
-			                  <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> /> 
+			                  <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="serviceResponseType_<c:out value="${mockservice.id}"/>" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> /> 
 			                  <b>Proxy</b> to this URL: <span class="highlight">
 			                    <c:out value="${mockservice.realServiceUrl}" /></span><mockey:clipboard id="clip-mockservice" text="${mockservice.realServiceUrl}" bgcolor="#ffff99"/>
 			                    <c:if test="${empty mockservice.realServiceUrl and mockservice.serviceResponseType eq 0}">
@@ -180,7 +197,7 @@
 	                                  <c:when test="${not empty mockservice.scenarios}">	                                
 	                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
 	                                    <li>
-	                                      <input type="radio" name="scenario_<c:out value="${mockservice.id}"/>" value="<c:out value="${scenario.id}"/>"
+	                                      <input type="radio" name="scenario_<c:out value="${mockservice.id}"/>" id="scenario_<c:out value="${mockservice.id}"/>" value="<c:out value="${scenario.id}"/>"
 	                                      <c:if test='${mockservice.defaultScenarioId eq scenario.id}'>checked</c:if> />
 	                                      <c:url value="/scenario" var="scenarioEditUrl">
 	                                        <c:param name="serviceId" value="${mockservice.id}" />
@@ -201,7 +218,7 @@
                                 </ul>
                               </span>                              
                               <c:if test="${mode ne 'edit_plan'}">                              
-	                              <input type="submit" name="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />
+	                              <input type="button" name="update_service_<c:out value="${mockservice.id}"/>" id="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />
 	                              </form>
 	                              
                               </c:if>

@@ -64,7 +64,7 @@ public class MockServiceParser {
 		digester.setValidating(false);
 		digester.addObjectCreate(ROOT, MockServiceStoreImpl.class);
 		digester.addObjectCreate(SERVICE, MockServiceBean.class);
-		digester.addSetProperties(SERVICE, "id", "id");//    
+		//digester.addSetProperties(SERVICE, "id", "id");//    
 		digester.addSetProperties(SERVICE, "name", "serviceName");//           
 		digester.addSetProperties(SERVICE, "description", "description");
 		digester.addSetProperties(SERVICE, "http_header_definition", "httpHeaderDefinition");
@@ -73,10 +73,7 @@ public class MockServiceParser {
 		digester.addSetProperties(SERVICE, "url", "mockServiceUrl");
 		digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
 		digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
-		
-		//serviceElement.setAttribute("reply_matching_request", "" + mockServiceBean.isReplyWithMatchingRequest());
-		//serviceElement.setAttribute("proxy_on", "" + mockServiceBean.isProxyOn());
-
+	
 		digester.addSetNext(SERVICE, "saveOrUpdate");
 
 		digester.addObjectCreate(SCENARIO, MockServiceScenarioBean.class);

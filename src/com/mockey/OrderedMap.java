@@ -10,7 +10,7 @@ class OrderedMap extends HashMap implements Map{
 	
 	private static final long serialVersionUID = -1654150132938363942L;
 
-    public void save(Item item){
+    public Item save(Item item){
 		if(item!=null){
 			if(item.getId()!=null){
 				this.put(item.getId(), item);
@@ -20,6 +20,7 @@ class OrderedMap extends HashMap implements Map{
 				this.put(nextNumber, item);
 			}
 		}
+		return item;
 	}
 	
 	

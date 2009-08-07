@@ -17,6 +17,7 @@ package com.mockey.web;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -56,8 +57,12 @@ public class MockServiceScenarioUpdateServlet extends HttpServlet {
         }
         store.saveOrUpdate(service);
         String returnHTML = "Updated";
-        PrintStream out = new PrintStream(resp.getOutputStream());
-        out.println(returnHTML);
+
+        PrintWriter out = resp.getWriter();
+        
+        out.println("<weather><report>" + returnHTML + "</report></weather>");
+        out.flush();
+        out.close();
 
     }
 }

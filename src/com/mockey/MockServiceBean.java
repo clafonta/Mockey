@@ -15,7 +15,7 @@
  */
 package com.mockey;
 
-import java.util.List;
+import java.util.*;
 
 import org.apache.http.HttpHost;
 
@@ -106,7 +106,7 @@ public class MockServiceBean implements Item {
     }
 
     public void updateScenario(MockServiceScenarioBean mss) {
-
+        mss.setServiceId(this.id);
         this.scenarios.save(mss);
     }
 
@@ -154,7 +154,7 @@ public class MockServiceBean implements Item {
     public void setRealServiceUrl(String realServiceUrl) {
         this.realServiceUrl = new Url(realServiceUrl);
     }
-    
+
     public String getHttpHeaderDefinition() {
         return httpHeaderDefinition;
     }
@@ -189,6 +189,15 @@ public class MockServiceBean implements Item {
 
     public void setId(Long id) {
         this.id = id;
+
+        // Recursively set this ID to child Scenarios, if any exist.
+        Iterator iter = getScenarios().iterator();
+        while (iter.hasNext()) {
+            MockServiceScenarioBean mssb = (MockServiceScenarioBean) iter.next();
+            mssb.setServiceId(this.id);
+            this.updateScenario(mssb);
+        }
+
     }
 
     public Long getId() {
