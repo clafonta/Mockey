@@ -34,6 +34,8 @@ public class MockServiceStoreImpl implements MockServiceStore {
     private OrderedMap historyCache = new OrderedMap();
     private OrderedMap mockServiceStore = new OrderedMap();
     private OrderedMap servicePlanStore = new OrderedMap();
+    private Long univeralErrorServiceId = null;
+    private Long univeralErrorScenarioId = null;
     
     private static MockServiceStoreImpl store = new MockServiceStoreImpl();
 
@@ -166,5 +168,25 @@ public class MockServiceStoreImpl implements MockServiceStore {
 		this.servicePlanStore.save(servicePlan);
 		
 	}
+
+    public MockServiceScenarioBean getUniversalErrorResponse() {
+        MockServiceScenarioBean uErrorBean = null;
+        MockServiceBean msb = getMockServiceById(this.univeralErrorServiceId);
+        if(msb!=null){
+            uErrorBean = msb.getScenario(this.univeralErrorScenarioId);
+        }
+        return uErrorBean;
+    }
+
+   
+    public void setUniversalErrorScenarioId(Long scenarioId) {
+        this.univeralErrorScenarioId = scenarioId;
+        
+    }
+
+    public void setUniversalErrorServiceId(Long serviceId) {
+        this.univeralErrorServiceId = serviceId;
+        
+    }
 
 }

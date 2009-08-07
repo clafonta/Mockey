@@ -101,7 +101,18 @@ public class MockServiceUploadServlet extends HttpServlet {
 
                     MockServiceFileReader msfr = new MockServiceFileReader();
                     MockServiceStore mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
-
+                    if (store.getUniversalErrorResponse() != null
+                            && mockServiceStoreTemporary.getUniversalErrorResponse() != null) {
+                        conflicts.add("<b>Universal error message</b>: one already defined with name '"
+                                + store.getUniversalErrorResponse().getScenarioName() + "'");
+                    } else if (store.getUniversalErrorResponse() == null
+                            && mockServiceStoreTemporary.getUniversalErrorResponse() != null) {
+                        
+                        store.setUniversalErrorScenarioId(mockServiceStoreTemporary.getUniversalErrorResponse().getId());
+                        store.setUniversalErrorServiceId(mockServiceStoreTemporary.getUniversalErrorResponse().getServiceId());
+                        additions.add("<b>Universal error response defined.</b>");
+                                
+                    }
                     // When loading a definition file, by default, we should
                     // compare uploaded Service’s mock URL to what's currently
                     // in memory.
@@ -121,7 +132,7 @@ public class MockServiceUploadServlet extends HttpServlet {
                         MockServiceBean uploadedServiceBean = (MockServiceBean) iter2.next();
                         List serviceBeansInMemory = store.getOrderedList();
                         Iterator iter3 = serviceBeansInMemory.iterator();
-                        boolean existingServiceWithMatchingMockUrl = false;                        
+                        boolean existingServiceWithMatchingMockUrl = false;
                         MockServiceBean inMemoryServiceBean = null;
                         while (iter3.hasNext()) {
                             inMemoryServiceBean = (MockServiceBean) iter3.next();
@@ -138,7 +149,7 @@ public class MockServiceUploadServlet extends HttpServlet {
                             uploadedServiceBean.setId(null);
                             store.saveOrUpdate(uploadedServiceBean);
                             additions.add("<b>Service Added</b>: '" + uploadedServiceBean.getServiceName() + "'");
-                            
+
                         } else {
                             // Just save scenarios
                             Iterator uIter = uploadedServiceBean.getScenarios().iterator();

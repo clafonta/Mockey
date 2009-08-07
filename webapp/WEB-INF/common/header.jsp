@@ -10,6 +10,8 @@
 <script type="text/javascript" src="<c:url value="/javascript/util.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/jquery-impromptu.2.7.min.js" />"></script>
+
 <script type="text/javascript">
 
 </script>

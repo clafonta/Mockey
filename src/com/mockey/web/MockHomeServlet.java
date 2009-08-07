@@ -38,6 +38,7 @@ public class MockHomeServlet extends HttpServlet {
 		req.setAttribute("services", store.getOrderedList());
 		req.setAttribute("plans", store.getMockServicePlanList());
 		req.setAttribute("plan", new MockServicePlan());
+		req.setAttribute("universalError", store.getUniversalErrorResponse());
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 
 		dispatch.forward(req, resp);

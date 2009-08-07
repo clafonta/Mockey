@@ -16,7 +16,6 @@
 package com.mockey.web;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
@@ -40,6 +39,7 @@ public class MockServiceScenarioUpdateServlet extends HttpServlet {
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String serviceId = req.getParameter("serviceId");
+        String hangTime = req.getParameter("hangTime_" + serviceId);
         String scenarioId = req.getParameter("scenario_" + serviceId);
         String serviceResponseType = req.getParameter("serviceResponseType_" + serviceId);
         MockServiceBean service = store.getMockServiceById(new Long(serviceId));
@@ -49,6 +49,11 @@ public class MockServiceScenarioUpdateServlet extends HttpServlet {
             log.debug("Updating service without a 'service response type' value");
         }
 
+        try{
+            service.setHangTime( (new Integer(hangTime).intValue()));
+        }catch(Exception e){
+            log.debug("Updating service without a 'hang time' value");
+        }
         try {
             service.setDefaultScenarioId(new Long(scenarioId));
         } catch (Exception e) {

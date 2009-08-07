@@ -21,7 +21,7 @@
 </c:if> 
 <c:if test="${not empty additions}">
 	<h2>Additions</h2>
-	<ul>
+	<ul class="addition_message">
 		<c:forEach var="addition" begin="0" items="${additions}">
 			<li><c:out value="${addition}" escapeXml="false" /></li>
 		</c:forEach>

@@ -29,6 +29,7 @@ public class MockServiceScenarioBean implements Item {
     private String responseMessage;
     private String matchStringArg = null;
     private String consumerId;
+    
 
     public String getConsumerId() {
         return consumerId;
@@ -93,5 +94,5 @@ public class MockServiceScenarioBean implements Item {
 
     public Long getServiceId() {
         return serviceId;
-    }
+    }    
 }

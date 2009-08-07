@@ -72,6 +72,7 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 		String action = req.getParameter("action");
 		if ("delete_plan".equals(action) && servicePlan != null) {
 
+		    Util.saveErrorMessage("Service plan <b>"+servicePlan.getName()+"</b> deleted.", req);
 			store.deleteServicePlan(servicePlan);
 			String contextRoot = req.getContextPath();
 			resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));
@@ -93,6 +94,7 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 					PlanItem pi = (PlanItem) iter.next();
 					MockServiceBean msb = store.getMockServiceById(pi.getServiceId());
 					if (msb != null) {
+					    msb.setHangTime(pi.getHangTime());
 						msb.setDefaultScenarioId(pi.getScenarioId());
 						msb.setServiceResponseType(pi.getServiceResponseType());
 						allServices.add(msb);
@@ -107,6 +109,7 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 		req.setAttribute("services", allServices);
 		req.setAttribute("plans", store.getMockServicePlanList());
 		req.setAttribute("plan", servicePlan);
+		req.setAttribute("universalError", store.getUniversalErrorResponse());
 		RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
 		dispatch.forward(req, resp);
 	}
@@ -146,6 +149,8 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 				String serviceId = planItems[i];
 				String ssIdKey = "scenario_" + serviceId;
 				String serviceResponseTypeKey = "serviceResponseType_" + serviceId;
+				String hangTime = "hangTime_" + serviceId;
+				int hangTimeInt = 500;
 				String scenarioId = req.getParameter(ssIdKey);
 				String serviceOnlyButtonKey = req.getParameter("update_service_" + serviceId);
 				int serviceResponseTypeKeyInt = 0;
@@ -154,6 +159,11 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 				}catch(Exception e){
 				    
 				}
+				try{
+				    hangTimeInt = Integer.parseInt(req.getParameter(hangTime));
+                }catch(Exception e){
+                    
+                }
 				
 				if (serviceOnlyButtonKey != null) {
 					createPlan = false;
@@ -170,6 +180,7 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 				if (scenarioId != null) {
 						planItem.setScenarioId(new Long(scenarioId));	
 				}
+				planItem.setHangTime(hangTimeInt);
 				planItem.setServiceId(new Long(serviceId));
 				planItem.setServiceResponseType(serviceResponseTypeKeyInt);
                 servicePlan.addPlanItem(planItem);
@@ -195,6 +206,7 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 		req.setAttribute("services", store.getOrderedList());
 		req.setAttribute("plans", store.getMockServicePlanList());
 		req.setAttribute("plan", servicePlan);
+		req.setAttribute("universalError", store.getUniversalErrorResponse());
 		RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
 		dispatch.forward(req, resp);
 	}
@@ -207,6 +219,7 @@ public class MockServicePlanSetupServlet extends HttpServlet {
 			PlanItem pi = (PlanItem) iter.next();
 			MockServiceBean msb = store.getMockServiceById(pi.getServiceId());
 			if (msb != null) {
+			    msb.setHangTime(pi.getHangTime());
 				msb.setDefaultScenarioId(pi.getScenarioId());
 				msb.setServiceResponseType(pi.getServiceResponseType());
 				store.saveOrUpdate(msb);

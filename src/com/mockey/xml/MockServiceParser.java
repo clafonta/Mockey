@@ -63,6 +63,9 @@ public class MockServiceParser {
 		Digester digester = new Digester();
 		digester.setValidating(false);
 		digester.addObjectCreate(ROOT, MockServiceStoreImpl.class);
+		digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");//   
+		digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");//   
+		
 		digester.addObjectCreate(SERVICE, MockServiceBean.class);
 		//digester.addSetProperties(SERVICE, "id", "id");//    
 		digester.addSetProperties(SERVICE, "name", "serviceName");//           
@@ -91,6 +94,7 @@ public class MockServiceParser {
 		digester.addSetProperties(PLAN, "id", "id");
 		digester.addSetNext(PLAN, "saveOrUpdateServicePlan");
 		digester.addObjectCreate(PLAN_ITEM, PlanItem.class);
+		digester.addSetProperties(PLAN_ITEM, "hang_time", "hangTime");
 		digester.addSetProperties(PLAN_ITEM, "service_id", "serviceId");
 		digester.addSetProperties(PLAN_ITEM, "scenario_id", "scenarioId");
 		digester.addSetProperties(PLAN_ITEM, "service_response_type", "serviceResponseType");

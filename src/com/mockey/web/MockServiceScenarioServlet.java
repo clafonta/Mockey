@@ -32,140 +32,154 @@ import com.mockey.MockServiceStoreImpl;
 
 public class MockServiceScenarioServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -5920793024759540668L;
-	private static MockServiceStore store = MockServiceStoreImpl.getInstance();
+    private static final long serialVersionUID = -5920793024759540668L;
+    private static MockServiceStore store = MockServiceStoreImpl.getInstance();
 
-	public void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		Long serviceId = new Long(req.getParameter("serviceId")); 
-		Long scenarioId = null;
-		try {
-			scenarioId = new Long(req.getParameter("scenarioId"));
-		}catch(Exception e){
-			// 
-		}
-		
-		// HACK: saving large message scenarios via GET will reach
-		// the threshold for parameter size, thus we need to override
-		// certain POST action types, and redirect them to the GET
-		// method.
-		String actionTypeGetFlag = req.getParameter("actionTypeGetFlag");
+        Long serviceId = new Long(req.getParameter("serviceId"));
+        Long scenarioId = null;
+        try {
+            scenarioId = new Long(req.getParameter("scenarioId"));
+        } catch (Exception e) {
+            // 
+        }
 
-		if (req.getParameter("delete") != null && serviceId != null
-				&& scenarioId != null) {
-			MockServiceBean ms = store.getMockServiceById(serviceId);
-			ms.deleteScenario(scenarioId);
-			store.saveOrUpdate(ms);
-			resp.sendRedirect("setup?id=" + serviceId);
-			return;
-		}
-		if (req.getParameter("cancel") != null) {
-			resp.sendRedirect("setup?id=" + serviceId);
-			return;
-		}
+        // HACK: saving large message scenarios via GET will reach
+        // the threshold for parameter size, thus we need to override
+        // certain POST action types, and redirect them to the GET
+        // method.
+        String actionTypeGetFlag = req.getParameter("actionTypeGetFlag");
 
-		if (actionTypeGetFlag != null) {
-			doGet(req, resp);
-		} else {
-			super.service(req, resp);
-		}
+        if (req.getParameter("delete") != null && serviceId != null && scenarioId != null) {
+            MockServiceBean ms = store.getMockServiceById(serviceId);
+            ms.deleteScenario(scenarioId);
+            store.saveOrUpdate(ms);
+            resp.sendRedirect("setup?id=" + serviceId);
+            return;
+        }
+        if (req.getParameter("cancel") != null) {
+            resp.sendRedirect("setup?id=" + serviceId);
+            return;
+        }
 
-	}
+        if (actionTypeGetFlag != null) {
+            doGet(req, resp);
+        } else {
+            super.service(req, resp);
+        }
 
-	/**
-	 * 
-	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
-	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+    }
 
-		Long serviceId = new Long(req.getParameter("serviceId"));
-		Long scenarioId = null;
-		try {
-			scenarioId = new Long(req.getParameter("scenarioId"));
-		} catch (Exception e) {
-			//
-		}
+    /**
+     * 
+     * 
+     * @param req
+     *            basic request
+     * @param resp
+     *            basic resp
+     * @throws ServletException
+     *             basic
+     * @throws IOException
+     *             basic
+     */
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		
-		String responseMsg = req.getParameter("responseMessage");
+        Long serviceId = new Long(req.getParameter("serviceId"));
+        Long scenarioId = null;
+        try {
+            scenarioId = new Long(req.getParameter("scenarioId"));
+        } catch (Exception e) {
+            //
+        }
 
-		MockServiceBean ms = store.getMockServiceById(serviceId);
+        String responseMsg = req.getParameter("responseMessage");
 
-		MockServiceScenarioBean mss = ms.getScenario(scenarioId);
-		if (mss == null) {
-			mss = new MockServiceScenarioBean();
-		}
-		
-		if (responseMsg != null) {
-			mss.setResponseMessage(responseMsg);
-		}
+        MockServiceBean ms = store.getMockServiceById(serviceId);
 
-		req.setAttribute("mockservice", ms);
-		req.setAttribute("mockscenario", mss);
+        MockServiceScenarioBean mss = ms.getScenario(scenarioId);
+        if (mss == null) {
+            mss = new MockServiceScenarioBean();
+        }
 
-		RequestDispatcher dispatch = req
-				.getRequestDispatcher("/service_scenario_setup.jsp");
-		dispatch.forward(req, resp);
-	}
+        if (responseMsg != null) {
+            mss.setResponseMessage(responseMsg);
+        }
 
-	/**
-	 * 
-	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
-	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+        req.setAttribute("mockservice", ms);
+        req.setAttribute("mockscenario", mss);
+        req.setAttribute("universalErrorScenario", store.getUniversalErrorResponse());
+        RequestDispatcher dispatch = req.getRequestDispatcher("/service_scenario_setup.jsp");
+        dispatch.forward(req, resp);
+    }
 
-		Long serviceId = new Long(req.getParameter("serviceId"));
-		MockServiceBean ms = store.getMockServiceById(serviceId);
+    /**
+     * 
+     * 
+     * @param req
+     *            basic request
+     * @param resp
+     *            basic resp
+     * @throws ServletException
+     *             basic
+     * @throws IOException
+     *             basic
+     */
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		MockServiceScenarioBean mss = null;
-		try {
-			mss = ms.getScenario(new Long(req.getParameter("scenarioId")));
-		} catch (Exception e) {
-			//
-		}
+        Long serviceId = new Long(req.getParameter("serviceId"));
+        MockServiceBean ms = store.getMockServiceById(serviceId);
 
-		if (mss == null) {
-			mss = new MockServiceScenarioBean();
-		}
-		mss.setScenarioName(req.getParameter("scenarioName"));		
-		mss.setResponseMessage(req.getParameter("responseMessage"));
-		mss.setMatchStringArg(req.getParameter("matchStringArg"));
+        MockServiceScenarioBean mss = null;
+        try {
+            mss = ms.getScenario(new Long(req.getParameter("scenarioId")));
+        } catch (Exception e) {
+            //
+        }
 
-		Map errorMap = MockServiceScenarioValidator.validate(mss);
+        if (mss == null) {
+            mss = new MockServiceScenarioBean();
+        }
 
-		if ((errorMap != null) && (errorMap.size() == 0)) {
+        mss.setScenarioName(req.getParameter("scenarioName"));
+        mss.setResponseMessage(req.getParameter("responseMessage"));
+        mss.setMatchStringArg(req.getParameter("matchStringArg"));
 
-			Util.saveSuccessMessage("Service updated", req);
-			ms.updateScenario(mss);
-			store.saveOrUpdate(ms);
+        Map errorMap = MockServiceScenarioValidator.validate(mss);
 
-		}
+        if ((errorMap != null) && (errorMap.size() == 0)) {
 
-		req.setAttribute("mockscenario", mss);
-		req.setAttribute("mockservice", ms);
-		Util.saveErrorMap(errorMap, req);
+            mss = ms.updateScenario(mss);
 
-		RequestDispatcher dispatch = req
-				.getRequestDispatcher("/service_scenario_setup.jsp");
-		dispatch.forward(req, resp);
-	}
+            // Error response for this service.
+            if (req.getParameter("errorScenario") != null) {
+                ms.setErrorScenarioId(mss.getId());
+            } else if (ms.getErrorScenarioId() == mss.getId()) {
+                ms.setErrorScenarioId(null);
+            }
+
+            // Universal error response, for all services.
+            if (req.getParameter("universalErrorScenario") != null) {
+                store.setUniversalErrorScenarioId(mss.getId());
+                store.setUniversalErrorServiceId(serviceId);
+                
+            } else if (store.getUniversalErrorResponse() != null
+                    && store.getUniversalErrorResponse().getId() == mss.getId()) {
+                store.setUniversalErrorScenarioId(null);
+                store.setUniversalErrorServiceId(null);
+            }
+
+            store.saveOrUpdate(ms);
+            Util.saveSuccessMessage("Service updated", req);
+
+        }
+
+        req.setAttribute("mockscenario", mss);
+        req.setAttribute("mockservice", ms);
+        req.setAttribute("universalErrorScenario", store.getUniversalErrorResponse());
+        Util.saveErrorMap(errorMap, req);
+
+        RequestDispatcher dispatch = req.getRequestDispatcher("/service_scenario_setup.jsp");
+        dispatch.forward(req, resp);
+    }
 }

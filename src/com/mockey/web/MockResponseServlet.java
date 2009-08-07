@@ -132,7 +132,41 @@ public class MockResponseServlet extends HttpServlet {
 
                 return;
             } catch (Exception e) {
-                throw new ServletException(e);
+                // We're here for various reasons.
+                // 1) timeout from calling real service.
+                // 2) unable to parse real response.
+                // 3) magic!
+                // Before we throw an exception, check:
+                // (A) does this mock service have a default error response. If
+                // no, then
+                // (B) see if Mockey has a universal error response
+                // If neither, then throw the exception.
+                String rMsg = null;
+                // FIND SERVICE ERROR, IF EXIST.
+                Iterator iter = realService.getScenarios().iterator();
+                while(iter.hasNext()){
+                    MockServiceScenarioBean mssb = (MockServiceScenarioBean)iter.next();
+                    if(mssb.getId() == realService.getErrorScenarioId()){
+                        rMsg = mssb.getResponseMessage();
+                        break;
+                    }
+                }
+                // FIND UNIVERSAL ERROR
+                if(rMsg == null){
+                    MockServiceScenarioBean mssb = store.getUniversalErrorResponse();
+                    if(mssb!=null){
+                        rMsg = mssb.getResponseMessage();
+                    }
+                }
+                if(rMsg!=null){
+                    resp.setContentType(realService.getHttpHeaderDefinition());
+                    PrintStream out = new PrintStream(resp.getOutputStream());
+                    out.println(rMsg);
+                }else {
+                    throw new ServletException(e);
+                }
+                
+                
             }
 
         }
@@ -166,7 +200,7 @@ public class MockResponseServlet extends HttpServlet {
             }
             responseMsg.append(messageMatchFound);
 
-        } else if (realService.getServiceResponseType() == MockServiceBean.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO){
+        } else if (realService.getServiceResponseType() == MockServiceBean.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
             MockServiceScenarioBean scenario = realService.getScenario(realService.getDefaultScenarioId());
 
             if (scenario != null) {

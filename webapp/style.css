@@ -7,6 +7,7 @@ h1{ font-size:160%; }
 h2 { font-size:120%; }
 img {border:0;}
 .highlight{color: #ff0073;}
+.highlight_pos{color: #06F;}
 .nav{	color: #06F;	text-decoration: none;	font-weight:bold;}
 .group {	border: thin dashed #bdbdbd;	padding: 1em;	margin: 1em;}
 form {	padding: 0em 1em 0em 1em;	border: thin solid #bdbdbd;	background-color: #ffff99;}
@@ -31,8 +32,11 @@ ul#minitabs a{text-decoration: none;padding: 0 0 3px;  border-bottom: 4px solid 
 ul#minitabs a#current{border-color: #F60;color:#06F}
 ul#minitabs a:hover{border-color: #F60;color: #666}
 .conflict_message {text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
-.alert_message {	text-align: center;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
+.addition_message {text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #7eff00;}
+.alert_message {margin-left: 20%; margin-right: 20%;	text-align: center;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
 .info_message {	
+
+	margin-left: 20%; margin-right: 20%;
 	text-align: center;
 	color: black;
 	border: thin solid #d3d3d3;
@@ -63,4 +67,57 @@ table.simple td{
 	padding-bottom: 10px;
 	padding-left: 8px;
 	padding-right: 0px;
+}
+.jqifade{
+      position: absolute;
+      background-color: #aaaaaa;
+}
+div.jqi{
+      width: 400px;      
+      position: absolute;
+      background-color: #ffffff;      
+      text-align: left;
+      border: solid 1px #eeeeee;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      padding: 7px;
+}
+div.jqi .jqicontainer{
+      font-weight: bold;
+}
+div.jqi .jqiclose{
+      position: absolute;
+      top: 4px; right: -2px;
+      width: 18px;
+      cursor: default;
+      color: #bbbbbb;
+      font-weight: bold;
+}
+div.jqi .jqimessage{
+      padding: 10px;
+      line-height: 20px;
+      color: #444444;
+}
+div.jqi .jqibuttons{
+      text-align: center;
+      padding: 5px 0 5px 0;
+      border: solid 1px #eeeeee;
+      background-color: #f4f4f4;
+}
+div.jqi button{
+      padding: 3px 10px;
+      margin: 0 10px;
+      background-color: #2F6073;
+      border: solid 1px #f4f4f4;
+      color: #ffffff;
+      font-weight: bold;
+}
+div.jqi button:hover{
+      background-color: #728A8C;
+}
+div.jqi button.jqidefaultbutton{
+      background-color: #F60;
+}
+.jqiwarning .jqi .jqibuttons{
+      background-color: #F60;
 }

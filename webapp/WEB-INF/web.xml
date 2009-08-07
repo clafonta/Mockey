@@ -77,15 +77,7 @@
     <servlet>
         <servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
         <servlet-class>com.mockey.web.MockServiceScenarioUpdateServlet</servlet-class>
-    </servlet>  
-     <servlet>
-        <servlet-name>AjaxServlet</servlet-name>
-        <servlet-class>com.mockey.web.AjaxServlet</servlet-class>
-    </servlet>  
-    <servlet-mapping>
-        <servlet-name>AjaxServlet</servlet-name>
-        <url-pattern>/ajax</url-pattern>
-    </servlet-mapping>
+    </servlet>    
     <servlet-mapping>
         <servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
         <url-pattern>/service_scenario</url-pattern>

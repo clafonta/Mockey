@@ -5,13 +5,37 @@
 <div id="main">
 	<h2>The Big Picture</h2>
 	<p><strong>Mockey</strong> is a tool for testing application interactions over http.</p>
-    <p><img src="<c:url value="/images/bigpicture.png" />" /></p>
+	<p><img src="<c:url value="/images/bigpicture.png" />" /></p>
+	<h2><Mock Service</h2>
+	<p>
+	 A mock service can be a proxy to a real service, enabling you to inspect request and response messages
+	 being exchanged. You can set up Mockey to go through a corporate proxy server (see <a href="<c:url value="/proxy/settings" />">Proxy Settings</a>). 
+	 There's support for HTTP and HTTPS interactions (if your proxy server or endpoint service is https). Be sure to check out your service's History
+	 to inspect and save a past conversation as a Service Scenario.                       
+    </p>
+    
+    <h2>Service Plan</h2>
+     <p>
+                      A Service Plan is a saved state of all Mock Service configurations. For example, all 
+                      happy scenarios per service can be saved as a 'Happy Path' plan and all non-happy scenarios 
+                      as an 'Unhappy Path' plan. </p>
    	<h2>Export/Upload - huh?</h2>
     <p>There isn't a database for this web tool, everything is kept in memory. 
     After you get everything set up, <strong>export</strong> your configuration
     to a <strong>mockservice.xml</strong> file. Conversely, upon the next web 
     app restart, <strong>upload</strong> your <strong>mockservice.xml</strong> configuration. 
      </p>
+    
+    <h2>Service Error Response</h2>
+     <p>A service scenario flagged as a 'Service Error Response' will be returned by Mockey if an error occurs 
+    when calling the service. An error can be caused by a timeout, from calling a real service, or inability 
+    to parse data. </p>
+    <h2>Universal Error Response</h2>
+    <p>A service scenario flagged as a 'Universal Error Response' will be returned by Mockey if an error occurs 
+    when calling a service <i>and</i> a scenario is not defined as a Service Error Response. The purpose of this 
+    feature is to provide one place to define a universal error message, without the need to create an error
+    scenario for each service.  </p>
+    
     <h2>Good Things to Test</h2>
     <p>Here's a short list of things Mockey is good for. 
     <ul>

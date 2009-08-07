@@ -3,6 +3,7 @@ package com.mockey;
 public class PlanItem  {
 	private Long serviceId;
 	private Long scenarioId;
+	private int hangTime;
 	private int serviceResponseType;
 	public Long getServiceId() {
 		return serviceId;
@@ -21,6 +22,12 @@ public class PlanItem  {
     }
     public int getServiceResponseType() {
         return serviceResponseType;
+    }
+    public void setHangTime(int hangTime) {
+        this.hangTime = hangTime;
+    }
+    public int getHangTime() {
+        return hangTime;
     }
 	
 }

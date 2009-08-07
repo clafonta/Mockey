@@ -144,4 +144,19 @@ public class MockServiceStoreTest implements MockServiceStore {
 
 	}
 
-}
+    public MockServiceScenarioBean getUniversalErrorResponse() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setUniversalErrorScenarioId(Long scenarioId) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void setUniversalErrorServiceId(Long serviceId) {
+        // TODO Auto-generated method stub
+        
+    }
+
+ }

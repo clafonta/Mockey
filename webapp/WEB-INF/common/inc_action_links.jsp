@@ -18,7 +18,6 @@
 	    <a href="<c:out value="${setupUrl}"/>" title="Edit service settings" <c:if test="${actionKey == 'edit_service'}"> class="nav" </c:if>>Edit Service Definition</a> |
 	    <a href="<c:out value="${scenarioCreateUrl}"/>" title="Edit service settings">Create Scenario</a> |
 	    <a href="<c:out value="${scenarioListUrl}"/>" title="Scenarios" <c:if test="${actionKey == 'scenario_list'}"> class="nav" </c:if>>Edit Scenarios</a> |
-	    <a href="<c:out value="${configureUrl}"/>" title="Configure service response scenario" <c:if test="${actionKey == 'conf_service'}"> class="nav" </c:if>>Service Response Style</a> |  
 	    <a href="<c:out value="${historyUrl}"/>" title="History of request made to this service" <c:if test="${actionKey == 'service_history'}"> class="nav" </c:if>>History</a>
 	
 		<table class="basic" width="100%">

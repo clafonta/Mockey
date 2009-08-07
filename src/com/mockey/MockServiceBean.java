@@ -36,6 +36,7 @@ public class MockServiceBean implements Item {
     private String serviceName;
     private String description;
     private Long defaultScenarioId;
+    private Long errorScenarioId;
     private String httpHeaderDefinition;
     private int hangTime = 500;
     private OrderedMap scenarios = new OrderedMap();
@@ -105,9 +106,9 @@ public class MockServiceBean implements Item {
         this.scenarios.remove(scenarioId);
     }
 
-    public void updateScenario(MockServiceScenarioBean mss) {
+    public MockServiceScenarioBean updateScenario(MockServiceScenarioBean mss) {
         mss.setServiceId(this.id);
-        this.scenarios.save(mss);
+        return (MockServiceScenarioBean)this.scenarios.save(mss);
     }
 
     public String getMockServiceUrl() {
@@ -226,5 +227,13 @@ public class MockServiceBean implements Item {
 
     public int getServiceResponseType() {
         return serviceResponseType;
+    }
+
+    public void setErrorScenarioId(Long errorScenarioId) {
+        this.errorScenarioId = errorScenarioId;
+    }
+
+    public Long getErrorScenarioId() {
+        return errorScenarioId;
     }
 }

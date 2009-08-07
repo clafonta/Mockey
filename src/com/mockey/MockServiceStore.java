@@ -34,6 +34,9 @@ public interface MockServiceStore {
 	public List getMockServicePlanList();
 	public void saveOrUpdateServicePlan(MockServicePlan servicePlan);
 	public void deleteServicePlan(MockServicePlan servicePlan);
+	public MockServiceScenarioBean getUniversalErrorResponse();
+	public void setUniversalErrorServiceId(Long serviceId);
+	public void setUniversalErrorScenarioId(Long scenarioId);
 	/**
 	 * 
 	 * @param urlPath

@@ -48,8 +48,13 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 	public Element getElement(Document document, MockServiceStore store) {
 		
 		Element rootElement = document.createElement("mockservice");
+		MockServiceScenarioBean mssb = store.getUniversalErrorResponse();		
 		this.setAttribute(rootElement, "xml:lang", "en-US");
 		this.setAttribute(rootElement, "version", "1.0");
+		if(mssb!=null){
+            this.setAttribute(rootElement,"universal_error_service_id", ""+mssb.getServiceId());
+            this.setAttribute(rootElement,"universal_error_scenario_id", ""+mssb.getId());
+        }
 
 		Iterator iterator = store.getOrderedList().iterator();
 		logger.debug("building DOM:");
@@ -118,6 +123,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 				while(planItemIter.hasNext()){
 					PlanItem  pi = (PlanItem)planItemIter.next();
 					Element planItemElement = document.createElement("plan_item");
+					planItemElement.setAttribute("hang_time", ""+pi.getHangTime());
 					planItemElement.setAttribute("service_id", ""+pi.getServiceId());
 					planItemElement.setAttribute("scenario_id", ""+pi.getScenarioId());
 					planItemElement.setAttribute("service_response_type", ""+pi.getServiceResponseType());

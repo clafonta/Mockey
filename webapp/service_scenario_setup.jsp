@@ -3,10 +3,11 @@
 <c:set var="actionKey" value="edit_scenario" scope="request" />
 <c:set var="pageTitle" value="Scenario Setup" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
-    <div id="main">        
+    <div id="main">
+    	<%@ include file="/WEB-INF/common/message.jsp" %>        
         <h1>Edit scenario for service: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
         <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
-        <%@ include file="/WEB-INF/common/message.jsp" %>
+        
         <form action="<c:out value="${scenarioUrl}"/>" method="post">
             <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
 			<c:if test="${!empty mockscenario.id}">
@@ -42,6 +43,18 @@
 						<td>
 							<p><textarea name="responseMessage" rows="30" style="width:100%;"><c:out value="${mockscenario.responseMessage}" /></textarea></p>
 						    <p>The message you want your mock service to reply with. Feel free to cut and paste XML, free form text, etc.</p>
+						</td>
+					</tr>
+					<tr>
+						<th><p>Service Error Response</p></th>
+						<td>
+							<p><input type="checkbox" name="errorScenario" value="true" <c:if test='${mockservice.errorScenarioId eq mockscenario.id and !empty mockservice.errorScenarioId}'>checked</c:if>> The response if an error occurs when calling this service.</p>							
+						</td>
+					</tr>
+					<tr>
+						<th><p>Universal Error Response</p></th>
+						<td>							
+							<p><input type="checkbox" name="universalErrorScenario" value="true" <c:if test='${(!empty universalErrorScenario) and universalErrorScenario.id eq mockscenario.id }'>checked</c:if>> The response for all services if an error occurs (if an error scenario is not defined for that service).</p>
 						</td>
 					</tr>
                 </tbody>
