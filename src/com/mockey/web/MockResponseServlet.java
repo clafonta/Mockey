@@ -99,7 +99,8 @@ public class MockResponseServlet extends HttpServlet {
         if (realService.getScenarios().size() == 0) {
             realService.setServiceResponseType(MockServiceBean.SERVICE_RESPONSE_TYPE_PROXY);
         }
-
+        
+        
         // If proxy on, then
         // 1) Capture request message.
         // 2) Set up a connection to the real service URL
@@ -121,14 +122,7 @@ public class MockResponseServlet extends HttpServlet {
                 logger.debug("Initiating request through proxy");
                 proxyResponse = clientExecuteProxy.execute(proxyServer, realService, request);
                 proxyResponse.writeToOutput(resp);
-
-                MockServiceScenarioBean mssb = new MockServiceScenarioBean();
-                mssb.setScenarioName((new Date()) + " Remote address:" + requestIp);
-                mssb.setRequestMessage(request.toString());
-                mssb.setResponseMessage(proxyResponse.getBody());
-                mssb.setConsumerId(requestIp);
-                mssb.setServiceId(realService.getId());
-                store.addHistoricalScenario(mssb);
+                responseMsg.append(proxyResponse.getBody());
 
                 return;
             } catch (Exception e) {
@@ -141,30 +135,32 @@ public class MockResponseServlet extends HttpServlet {
                 // no, then
                 // (B) see if Mockey has a universal error response
                 // If neither, then throw the exception.
-                String rMsg = null;
+                
+                boolean serviceErrorDefined = false;
                 // FIND SERVICE ERROR, IF EXIST.
                 Iterator iter = realService.getScenarios().iterator();
                 while(iter.hasNext()){
-                    MockServiceScenarioBean mssb = (MockServiceScenarioBean)iter.next();
-                    if(mssb.getId() == realService.getErrorScenarioId()){
-                        rMsg = mssb.getResponseMessage();
+                    MockServiceScenarioBean scenario = (MockServiceScenarioBean)iter.next();
+                    if(scenario.getId() == realService.getErrorScenarioId()){
+                        responseMsg.append(scenario.getResponseMessage());
+                        serviceErrorDefined = true;
                         break;
                     }
                 }
-                // FIND UNIVERSAL ERROR
-                if(rMsg == null){
-                    MockServiceScenarioBean mssb = store.getUniversalErrorResponse();
-                    if(mssb!=null){
-                        rMsg = mssb.getResponseMessage();
+                // No service error defined, therefore, let's use the universal error.
+                if(!serviceErrorDefined){
+                    MockServiceScenarioBean universalError = store.getUniversalErrorResponse();
+                    if(universalError!=null){
+                        responseMsg.append(universalError.getResponseMessage());
+                    }else{
+                        responseMsg.append(e.getMessage());
                     }
                 }
-                if(rMsg!=null){
-                    resp.setContentType(realService.getHttpHeaderDefinition());
-                    PrintStream out = new PrintStream(resp.getOutputStream());
-                    out.println(rMsg);
-                }else {
-                    throw new ServletException(e);
-                }
+                
+                resp.setContentType(realService.getHttpHeaderDefinition());
+                PrintStream out = new PrintStream(resp.getOutputStream());
+                out.println(responseMsg.toString());
+            
                 
                 
             }
@@ -212,13 +208,14 @@ public class MockResponseServlet extends HttpServlet {
 
         }
 
-        MockServiceScenarioBean mssb = new MockServiceScenarioBean();
-        mssb.setScenarioName((new Date()) + " Remote address:" + requestIp);
-        mssb.setRequestMessage(requestMsg);
-        mssb.setResponseMessage(responseMsg.toString());
-        mssb.setConsumerId(requestIp);
-        mssb.setServiceId(realService.getId());
-        store.addHistoricalScenario(mssb);
+        // HISTORY
+        MockServiceScenarioBean historyRequestResponse = new MockServiceScenarioBean();
+        historyRequestResponse.setScenarioName((new Date()) + " Remote address:" + requestIp);
+        historyRequestResponse.setRequestMessage(request.toString());
+        historyRequestResponse.setConsumerId(requestIp);
+        historyRequestResponse.setServiceId(realService.getId());
+        historyRequestResponse.setResponseMessage(responseMsg.toString());
+        store.addHistoricalScenario(historyRequestResponse);
 
         try {
             // Wait for a minute.

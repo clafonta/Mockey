@@ -7,6 +7,14 @@
     <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
     <c:choose>
         <c:when test="${!empty scenarioHistoryList}">
+            <p>
+             <c:url value="/history/detail" var="deleteAllScenarioUrl">
+	                                       <c:param name="serviceId" value="${mockservice.id}" />
+	                                       <c:param name="iprequest" value="${iprequest}" />
+	                                       <c:param name="action" value="delete_all" />
+	                                    </c:url>
+	                                   <a href="<c:out value="${deleteAllScenarioUrl}"/>">Clear All</a>
+            </p>
             <c:forEach var="scenario" items="${scenarioHistoryList}" varStatus="status">
                 <p>
                     <form action="<c:url value="/scenario"/>" method="post">

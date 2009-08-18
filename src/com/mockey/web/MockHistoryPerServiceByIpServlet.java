@@ -52,9 +52,10 @@ public class MockHistoryPerServiceByIpServlet extends HttpServlet {
 		String action = req.getParameter("action");
 		if(action!=null && "delete".equals(action)){
 		    // Delete from history
-		    Long scenarioId = new Long(req.getParameter("scenarioId"));
-		    
+		    Long scenarioId = new Long(req.getParameter("scenarioId"));		    
 		    store.deleteHistoricalScenario(scenarioId);
+		}else if(action!=null && "delete_all".equals(action)){
+		    store.flushHistoryRequestMsgs(serviceId);
 		}
 
 		MockServiceBean ms = store.getMockServiceById(serviceId);
