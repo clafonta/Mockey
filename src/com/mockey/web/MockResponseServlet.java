@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.Header;
 import org.apache.log4j.Logger;
 
 import com.mockey.ClientExecuteProxy;
@@ -64,9 +65,10 @@ public class MockResponseServlet extends HttpServlet {
      *             basic
      */
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestFromClient request = new RequestFromClient(req);
-        logger.info(request.dumpHeaders());
-
+        RequestFromClient mockeyRequestFromClient = new RequestFromClient(req);
+        logger.info(mockeyRequestFromClient.getHeaderInfo());
+        logger.info(mockeyRequestFromClient.getParameterInfo());
+        boolean replied = false;
         String requestIp = req.getRemoteAddr();
 
         // on macs sometimes localhost resolves to the IPV6 format IP
@@ -89,25 +91,30 @@ public class MockResponseServlet extends HttpServlet {
         // 2. Respond with scenario response independent of request message.
         // 3. Respond with scenario response dependent on matching request
         // message.
-        //
-
-        StringBuffer responseMsg = new StringBuffer();
-
-        String requestMsg = request.getParametersAsString();
+        String clientRequest = new String();
+        if (!mockeyRequestFromClient.hasPostBody()) {
+            // OK..let's build the request message from Params.
+            // Is this a HACK? I dunno yet.
+            logger.debug("Request message is EMPTY; building request message out of Parameters. ");
+            clientRequest = mockeyRequestFromClient.buildParameterRequest();
+        }else {
+            clientRequest = mockeyRequestFromClient.getBodyInfo();
+        }
+        
 
         // If no scenarios, then proxy is automatically on.
         if (realService.getScenarios().size() == 0) {
             realService.setServiceResponseType(MockServiceBean.SERVICE_RESPONSE_TYPE_PROXY);
         }
-        
-        
+
         // If proxy on, then
         // 1) Capture request message.
         // 2) Set up a connection to the real service URL
         // 3) Forward the request message to the real service URL
         // 4) Read the reply from the real service URL.
         // 5) Save request + response as a historical scenario.
-        ResponseMessage proxyResponse;
+        ResponseMessage mockeyResponseMessage = null;
+        
         if (realService.getServiceResponseType() == MockServiceBean.SERVICE_RESPONSE_TYPE_PROXY) {
 
             // There are 2 proxy things going on here:
@@ -118,13 +125,13 @@ public class MockResponseServlet extends HttpServlet {
             // we do the following:
             ProxyServer proxyServer = store.getProxyInfo();
             ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
+
             try {
                 logger.debug("Initiating request through proxy");
-                proxyResponse = clientExecuteProxy.execute(proxyServer, realService, request);
-                proxyResponse.writeToOutput(resp);
-                responseMsg.append(proxyResponse.getBody());
+                mockeyResponseMessage = clientExecuteProxy.execute(proxyServer, realService, mockeyRequestFromClient);
+                mockeyResponseMessage.writeToOutput(resp);
+                replied = true;            
 
-                return;
             } catch (Exception e) {
                 // We're here for various reasons.
                 // 1) timeout from calling real service.
@@ -135,34 +142,33 @@ public class MockResponseServlet extends HttpServlet {
                 // no, then
                 // (B) see if Mockey has a universal error response
                 // If neither, then throw the exception.
-                
+                mockeyResponseMessage = new ResponseMessage();
                 boolean serviceErrorDefined = false;
                 // FIND SERVICE ERROR, IF EXIST.
                 Iterator iter = realService.getScenarios().iterator();
-                while(iter.hasNext()){
-                    MockServiceScenarioBean scenario = (MockServiceScenarioBean)iter.next();
-                    if(scenario.getId() == realService.getErrorScenarioId()){
-                        responseMsg.append(scenario.getResponseMessage());
+                while (iter.hasNext()) {
+                    MockServiceScenarioBean scenario = (MockServiceScenarioBean) iter.next();
+                    if (scenario.getId() == realService.getErrorScenarioId()) {
+                        mockeyResponseMessage.setBody(scenario.getResponseMessage());
                         serviceErrorDefined = true;
                         break;
                     }
                 }
-                // No service error defined, therefore, let's use the universal error.
-                if(!serviceErrorDefined){
+                // No service error defined, therefore, let's use the universal
+                // error.
+                if (!serviceErrorDefined) {
                     MockServiceScenarioBean universalError = store.getUniversalErrorResponse();
-                    if(universalError!=null){
-                        responseMsg.append(universalError.getResponseMessage());
-                    }else{
-                        responseMsg.append(e.getMessage());
+                    if (universalError != null) {
+                        mockeyResponseMessage.setBody(universalError.getResponseMessage());
+                    } else {
+                        mockeyResponseMessage.setBody(e.getMessage());
                     }
                 }
-                
+
                 resp.setContentType(realService.getHttpHeaderDefinition());
                 PrintStream out = new PrintStream(resp.getOutputStream());
-                out.println(responseMsg.toString());
-            
-                
-                
+                out.println(mockeyResponseMessage.getBody());
+
             }
 
         }
@@ -173,49 +179,66 @@ public class MockResponseServlet extends HttpServlet {
         // 2) Based on scenario selected.
         //
         else if (realService.getServiceResponseType() == MockServiceBean.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
-            List scenarios = realService.getScenarios();
+            mockeyResponseMessage = new ResponseMessage();
+            List<MockServiceScenarioBean> scenarios = realService.getScenarios();
             Iterator iter = scenarios.iterator();
             String messageMatchFound = null;
             while (iter.hasNext()) {
                 MockServiceScenarioBean scenario = (MockServiceScenarioBean) iter.next();
-                logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + requestMsg);
-
-                int indexValue = requestMsg.indexOf(scenario.getMatchStringArg());
+                logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + clientRequest);
+                int indexValue = -1;
+                if(mockeyRequestFromClient.hasPostBody()){
+                    indexValue =  mockeyRequestFromClient.getBodyInfo().indexOf(scenario.getMatchStringArg());
+                }else {
+                    indexValue = clientRequest.indexOf(scenario.getMatchStringArg());
+                }
+                
                 if ((indexValue > -1)) {
-                    logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' in message: \n" + requestMsg);
-
+                    logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
                     messageMatchFound = scenario.getResponseMessage();
-
                     break;
                 }
             }
             if (messageMatchFound == null) {
                 messageMatchFound = "Big fat ERROR:[Be sure to view source to see more...] \n"
                         + "Your setting is 'match scenario' but there is no matching scenario to incoming message: \n"
-                        + requestMsg;
+                        + clientRequest;
             }
-            responseMsg.append(messageMatchFound);
+            mockeyResponseMessage.setBody(messageMatchFound);
+            
 
         } else if (realService.getServiceResponseType() == MockServiceBean.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
             MockServiceScenarioBean scenario = realService.getScenario(realService.getDefaultScenarioId());
-
+            mockeyResponseMessage = new ResponseMessage();
+            
             if (scenario != null) {
-
-                responseMsg.append(scenario.getResponseMessage());
+                mockeyResponseMessage.setBody(scenario.getResponseMessage());
+                
             } else {
-                responseMsg.append("NO SCENARIO SELECTED");
+                mockeyResponseMessage.setBody("NO SCENARIO SELECTED");
+                
             }
 
         }
-
-        // HISTORY
-        MockServiceScenarioBean historyRequestResponse = new MockServiceScenarioBean();
+        // **********************
+        // History
+        // **********************
+        RequestResponseTransaction reqRespX = new RequestResponseTransaction();
+        MockServiceScenarioBean historyRequestResponse = new MockServiceScenarioBean();        
         historyRequestResponse.setScenarioName((new Date()) + " Remote address:" + requestIp);
-        historyRequestResponse.setRequestMessage(request.toString());
         historyRequestResponse.setConsumerId(requestIp);
         historyRequestResponse.setServiceId(realService.getId());
-        historyRequestResponse.setResponseMessage(responseMsg.toString());
-        store.addHistoricalScenario(historyRequestResponse);
+        reqRespX.setServiceInfo(historyRequestResponse);
+        
+        if(mockeyRequestFromClient.hasPostBody()){
+            reqRespX.setClientRequestBody("[No post body provided by client]");
+        }else {
+            reqRespX.setClientRequestBody(mockeyRequestFromClient.getBodyInfo());
+        }
+        reqRespX.setClientRequestHeaders(mockeyRequestFromClient.getHeaderInfo());
+        reqRespX.setClientRequestParameters(mockeyRequestFromClient.getParameterInfo());
+        reqRespX.setResponseMessage(mockeyResponseMessage);        
+        store.addHistoricalScenario(reqRespX);
 
         try {
             // Wait for a minute.
@@ -233,9 +256,12 @@ public class MockResponseServlet extends HttpServlet {
         } catch (Exception e) {
             // Catch interrupt exception
         }
-        resp.setContentType(realService.getHttpHeaderDefinition());
-        PrintStream out;
-        out = new PrintStream(resp.getOutputStream());
-        out.println(responseMsg);
+        if (!replied) {
+            resp.setContentType(realService.getHttpHeaderDefinition());
+            PrintStream out;
+            out = new PrintStream(resp.getOutputStream());
+            out.println(mockeyResponseMessage.getBody());
+        }
     }
+   
 }

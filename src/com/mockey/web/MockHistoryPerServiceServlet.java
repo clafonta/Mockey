@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.MockServiceBean;
-import com.mockey.MockServiceScenarioBean;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 
@@ -56,15 +55,15 @@ public class MockHistoryPerServiceServlet extends HttpServlet {
 		if (scenarioList != null && scenarioList.size() > 0) {
 			Iterator iter = scenarioList.iterator();
 			while (iter.hasNext()) {
-				MockServiceScenarioBean item = (MockServiceScenarioBean) iter.next();
-				if (item.getServiceId().equals(serviceId) && visitedAddresses.get(item.getConsumerId()) == null) {
+			    RequestResponseTransaction item = (RequestResponseTransaction) iter.next();
+				if (item.getServiceInfo().getServiceId().equals(serviceId) && visitedAddresses.get(item.getServiceInfo().getConsumerId()) == null) {
 					StringBuffer sb = new StringBuffer();
 					sb.append("<div class=\"normal\">");
 					sb.append("IP: <a href=\"detail?serviceId=" + serviceId + "&iprequest="
-							+ item.getConsumerId() + "\">" + item.getConsumerId() + "</a>");
+							+ item.getServiceInfo().getConsumerId() + "\">" + item.getServiceInfo().getConsumerId() + "</a>");
 					sb.append("</div>");
 					htmlOutput.add(sb.toString());
-					visitedAddresses.put(item.getConsumerId(), new Boolean(true));
+					visitedAddresses.put(item.getServiceInfo().getConsumerId(), new Boolean(true));
 				}
 			}
 		} else {

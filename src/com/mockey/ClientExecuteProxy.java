@@ -1,8 +1,9 @@
 package com.mockey;
 
-import org.apache.http.Header;
-import org.apache.http.HttpVersion;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -15,11 +16,9 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-import com.mockey.web.ResponseMessage;
 import com.mockey.web.RequestFromClient;
+import com.mockey.web.ResponseMessage;
 
 /**
  * How to send a request via proxy using {@link HttpClient}.

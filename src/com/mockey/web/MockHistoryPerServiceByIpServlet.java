@@ -15,19 +15,19 @@
  */
 package com.mockey.web;
 
-import com.mockey.MockServiceBean;
-import com.mockey.MockServiceScenarioBean;
-import com.mockey.MockServiceStore;
-import com.mockey.MockServiceStoreImpl;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import com.mockey.MockServiceBean;
+import com.mockey.MockServiceStore;
+import com.mockey.MockServiceStoreImpl;
 
 /**
  * <code>MockHistoryPerServiceByIpServlet</code> manages the display of past
@@ -63,8 +63,8 @@ public class MockHistoryPerServiceByIpServlet extends HttpServlet {
 		List scenarioHistoryList = new ArrayList();
 		if(scenarios!=null){
             for (Object scenario : scenarios) {
-                MockServiceScenarioBean type = (MockServiceScenarioBean) scenario;
-                if (type.getServiceId().equals(serviceId) && type.getConsumerId().equals(iprequest)) {
+                RequestResponseTransaction type = (RequestResponseTransaction) scenario;
+                if (type.getServiceInfo().getServiceId().equals(serviceId) && type.getServiceInfo().getConsumerId().equals(iprequest)) {
                     scenarioHistoryList.add(type);
                 }
 

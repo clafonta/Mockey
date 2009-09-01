@@ -15,9 +15,11 @@
  */
 package com.mockey;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
-import java.util.List;
+import com.mockey.web.RequestResponseTransaction;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.
@@ -111,9 +113,9 @@ public class MockServiceStoreImpl implements MockServiceStore {
     }
 
     /**
-     * @return list of MockServiceScenarioBean objects
+     * @return list of RequestResponseTransaction objects
      */
-    public List getHistoryScenarios() {
+    public List<RequestResponseTransaction> getHistoryScenarios() {
         return this.historyCache.getOrderedList();
     }
 
@@ -123,7 +125,7 @@ public class MockServiceStoreImpl implements MockServiceStore {
 
     }
 
-    public void addHistoricalScenario(MockServiceScenarioBean mssb) {
+    public void addHistoricalScenario(RequestResponseTransaction mssb) {
 
         historyCache.save(mssb);
 
@@ -131,8 +133,8 @@ public class MockServiceStoreImpl implements MockServiceStore {
 
     public void flushHistoryRequestMsgs(Long serviceId) {
         for (Object o : historyCache.getOrderedList()) {
-            MockServiceScenarioBean object = (MockServiceScenarioBean) o;
-            if (object.getServiceId().equals(serviceId)) {
+            RequestResponseTransaction object = (RequestResponseTransaction) o;
+            if (object.getServiceInfo().getServiceId().equals(serviceId)) {
                 this.historyCache.remove(object.getId());
             }
         }

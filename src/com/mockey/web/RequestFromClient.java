@@ -23,18 +23,20 @@ import java.util.*;
  * Wraps httpServletRequest and parses out the information we're looking for.
  */
 public class RequestFromClient {
-    private static final String[] HEADERS_TO_IGNORE = {"content-length", "host", "accept-encoding"};
+    private static final String[] HEADERS_TO_IGNORE = { "content-length", "host", "accept-encoding" };
 
-    // we will ignore the accept-encoding for now to avoid dealing with GZIP responses
-    // if we decide to accept GZIP'ed data later, here is an example of how to un-gzip
-    // it http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/httpclient/src/examples/org/apache/http/examples/client/ClientGZipContentCompression.java
-    
+    // we will ignore the accept-encoding for now to avoid dealing with GZIP
+    // responses
+    // if we decide to accept GZIP'ed data later, here is an example of how to
+    // un-gzip
+    // it
+    // http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/httpclient/src/examples/org/apache/http/examples/client/ClientGZipContentCompression.java
+
     private Log log = LogFactory.getLog(RequestFromClient.class);
-    HttpServletRequest rawRequest;
-    Map<String, String[]> parameters = new HashMap<String, String[]>();
-    Map<String, List<String>> headers = new HashMap<String, List<String>>();
-    String requestBody;
-
+    private HttpServletRequest rawRequest;
+    private Map<String, String[]> parameters = new HashMap<String, String[]>();
+    private Map<String, List<String>> headers = new HashMap<String, List<String>>();
+    private String requestBody;
 
     public RequestFromClient(HttpServletRequest rawRequest) {
         this.rawRequest = rawRequest;
@@ -45,18 +47,18 @@ public class RequestFromClient {
 
     /**
      * Copy all necessary data from the request into a POST to the new server
-     *
-     * @param serviceBean the path on the server to POST to
+     * 
+     * @param serviceBean
+     *            the path on the server to POST to
      * @return A fully populated HttpRequest object
      */
     public HttpRequest postToRealServer(MockServiceBean serviceBean) {
-        //TODO: Cleanup the logic to handle creating a GET vs POST
+        // TODO: Cleanup the logic to handle creating a GET vs POST
         HttpRequest request;
 
         if (serviceBean.getHttpMethod().equals("GET")) {
             request = new HttpGet(serviceBean.getRealPath());
         } else {
-
 
             // Construct an HTTP Post object
             HttpPost post = new HttpPost(serviceBean.getRealPath());
@@ -74,7 +76,7 @@ public class RequestFromClient {
             if (includeHeader(name)) {
                 for (String value : stringListEntry.getValue()) {
                     request.addHeader(name, value);
-                    log.info("  Header: "+name+" value: "+value);
+                    log.info("  Header: " + name + " value: " + value);
                 }
             }
         }
@@ -90,34 +92,18 @@ public class RequestFromClient {
         return true;
     }
 
-
     /**
-     * Used by the existing code in MockResponseServlet.
-     *
-     * @return All the parameters as a URL encoded string
-     * @throws IOException if the body is not parseable
-     * @deprecated Prefer to use this class as an object and add properties for things we need
+     *  
+     * @return All the parameters as a URL encoded string            
      */
-    public String getParametersAsString() throws IOException {
+    public String buildParameterRequest(){
         StringBuffer requestMsg = new StringBuffer();
-
-        // CHECK to see if the request is GET/POST with PARAMS instead
-        // of a BODY message
-        if (!hasPostBody()) {
-            // OK..let's build the request message from Params.
-            // Is this a HACK? I dunno yet.
-            log.debug("Request message is EMPTY; building request message out of Parameters. ");
-            // FIRST, let's informe the end user of what we are doing.
-            requestMsg.append("NOTE: Incoming request BODY is EMPTY; Building message request body out of PARAMS. ");
-
-            for (String key : parameters.keySet()) {
-                String[] values = parameters.get(key);
-                for (String value : values) {
-                    requestMsg.append("&").append(key).append("=").append(value);
-                }
+        for (String key : parameters.keySet()) {
+            String[] values = parameters.get(key);
+            for (String value : values) {
+                requestMsg.append("&").append(key).append("=").append(value);
             }
         }
-
         return requestMsg.toString();
     }
 
@@ -130,7 +116,7 @@ public class RequestFromClient {
 
             while (eValues.hasMoreElements()) {
                 String value = (String) eValues.nextElement();
-                values.add(value);                
+                values.add(value);
             }
             headers.put(name, values);
 
@@ -161,13 +147,13 @@ public class RequestFromClient {
         parameters = rawRequest.getParameterMap();
     }
 
-    public String dumpHeaders() {
+    public String getHeaderInfo() {
         StringBuffer buf = new StringBuffer();
 
         Enumeration headerNames = rawRequest.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String name = (String) headerNames.nextElement();
-            buf.append("Header: ").append(name).append(" = ").append(rawRequest.getHeader(name));
+            buf.append(name).append(" = ").append(rawRequest.getHeader(name)).append("\n");
         }
         return buf.toString();
     }
@@ -196,35 +182,47 @@ public class RequestFromClient {
 
     }
 
+    /**
+     * 
+     * @return - true if incoming request is posting a body
+     */
+    public boolean hasPostBody() {
+        return requestBody != null && requestBody.trim().length() > 0;
+    }
 
-    private boolean hasPostBody() {
-        return requestBody == null || requestBody.trim().length() == 0;
+    /**
+     * 
+     * @return the body content of this request.
+     */
+    public String getBodyInfo() {
+        return requestBody;
+    }
+
+    /**
+     * 
+     * @return the parameters of this request
+     */
+    public String getParameterInfo() {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
+            builder.append(entry.getKey()).append(" = ");
+            for (String value : entry.getValue()) {
+                builder.append(value);
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("---------- Headers ---------\n");
-        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-            for(String value : entry.getValue()) {
-                if(!includeHeader(entry.getKey())) {
-                    builder.append("IGNORED:  ");
-                }
-                builder.append(entry.getKey()).append(" = ");                
-                builder.append(value);
-            }
-            builder.append("\n");
-        }
+        builder.append(getHeaderInfo());
         builder.append("--------- Parameters ------------ \n");
-        for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
-            builder.append(entry.getKey()).append(" = ");
-            for(String value : entry.getValue()) {
-                builder.append(value).append("|");
-            }
-            builder.append("\n");
-        }
+        builder.append(getParameterInfo());
         builder.append("-------- Post BODY --------------\n");
-        builder.append(requestBody);
+        builder.append(getBodyInfo());
         return builder.toString();
     }
 }

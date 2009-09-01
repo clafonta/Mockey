@@ -17,6 +17,8 @@ package com.mockey;
 
 import java.util.List;
 
+import com.mockey.web.RequestResponseTransaction;
+
 /**
  * Storage interface to service and scenario definitions. 
  * @author chad.lafontaine
@@ -31,7 +33,7 @@ public interface MockServiceStore {
 	 * 
 	 * @return a list of MockServicePlan objects. 
 	 */
-	public List getMockServicePlanList();
+	public List<MockServicePlan> getMockServicePlanList();
 	public void saveOrUpdateServicePlan(MockServicePlan servicePlan);
 	public void deleteServicePlan(MockServicePlan servicePlan);
 	public MockServiceScenarioBean getUniversalErrorResponse();
@@ -64,15 +66,15 @@ public interface MockServiceStore {
 	 * 
 	 * @return list of MockServiceBean objects, ordered by id
 	 */
-	public List getOrderedList();
+	public List<MockServiceBean> getOrderedList();
 
 	/**
 	 * 
 	 * @return list of MockServiceScenarioBean objects
 	 */
-	public List getHistoryScenarios();
+	public List<RequestResponseTransaction> getHistoryScenarios();
 	
-	public void addHistoricalScenario(MockServiceScenarioBean mockServiceScenarioBean);
+	public void addHistoricalScenario(RequestResponseTransaction requestResponseX);
 	
 	public void deleteHistoricalScenario(Long scenarioId);
  

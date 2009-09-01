@@ -33,20 +33,36 @@
 	                                    </c:url>
 	                                    <a href="<c:out value="${deleteScenarioUrl}"/>"><img src="<c:url value="/images/cross.png"/>"</a>
 	                                    </p>
-	                                    <p><b>Time and IP:</b> <c:out value="${scenario.scenarioName}"/> <input type="submit" name="Save" value="Save" /></p>
+	                                    <p><b>Time and IP:</b> <c:out value="${scenario.serviceInfo.scenarioName}"/> </p>
 	                                </td>
 	                            </tr>
 	                            <tr>
 	                                <td>
-	                                    <p>Request:</p>
-	                                    <p><textarea name="requestMessage" rows="10" cols="80%"><c:out value="${scenario.requestMessage}"/></textarea></p>
-	                                </td>
+	                                    <h3>Request:</h3>
+	                                    <p>Header</p>
+	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${scenario.clientRequestHeaders}"/></textarea></p>
+	                                    <p>Parameters</p>
+	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${scenario.clientRequestParameters}"/></textarea></p>
+	                                    <p>Body</p>
+	                                    <p><textarea name="requestMessage" rows="10" cols="80%"><c:out value="${scenario.clientRequestBody}"/></textarea></p>
 	                            </tr>
 	                            <tr>
 	                                <td>
-	                                    <p>Response:</p>
+	                                    <h3>Response: </h3>
+	                                    <p>Status</p>
 	                                    <p>
-                                            <textarea name="responseMessage" rows="10" cols="80%">${scenario.responseMessage}</textarea>                                            
+                                            <textarea name="responseStatus" rows="1" cols="80%">${scenario.responseMessage.statusLine}</textarea>                                            
+                                        </p>
+	                                    <p>Header</p>	                                    
+	                                    <p>
+                                            <textarea name="responseHeader" rows="10" cols="80%">${scenario.responseMessage.headerInfo}</textarea>                                            
+                                        </p>
+                                        <p>Body</p>
+	                                    <p>
+                                            <textarea name="responseMessage" rows="10" cols="80%">${scenario.responseMessage.body}</textarea>                                            
+                                        </p>
+                                        <p>
+                                        <input type="submit" name="Save" value="Save as Scenario" />
                                         </p>
 	                                </td>
 	                            </tr>

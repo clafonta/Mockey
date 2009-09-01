@@ -94,7 +94,7 @@ public class MockServiceBean implements Item {
         this.hangTime = hangTime;
     }
 
-    public List getScenarios() {
+    public List<MockServiceScenarioBean> getScenarios() {
         return scenarios.getOrderedList();
     }
 
