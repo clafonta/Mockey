@@ -42,15 +42,17 @@ public class MockServiceBean implements Item {
     private OrderedMap scenarios = new OrderedMap();
     private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
     private String httpMethod = "GET";
-    private String mockServiceUrl;
     private Url realServiceUrl;
 
+    /**
+     * Empty constructor needed for XML parsing of service definitions, 
+     * 
+     */
     public MockServiceBean() {
     }
 
     public MockServiceBean(Url realServiceUrl) {
-        this.realServiceUrl = realServiceUrl;
-        this.setMockServiceUrl(realServiceUrl.getFullUrl());
+        this.realServiceUrl = realServiceUrl;        
         this.setServiceName("Auto-Generated Service");
     }
 
@@ -112,7 +114,12 @@ public class MockServiceBean implements Item {
     }
 
     public String getMockServiceUrl() {
-        return mockServiceUrl;
+        if(this.realServiceUrl!=null){
+            return realServiceUrl.getFullUrl();    
+        }else {
+            return "";
+        }
+        
     }
 
     public String getRealHost() {
@@ -130,29 +137,33 @@ public class MockServiceBean implements Item {
      *         "/service" to the mock service URL
      */
     public String getServiceUrl() {
-        return ("/service" + cleanUrl(this.getMockServiceUrl()));
+        return (Url.SERVLET_MAPPING_NAME + this.getMockServiceUrl());
     }
 
-    /**
-     * Method will ensure the service URL starts with '/'. If not, will prepend
-     * it to the mock uri
-     * 
-     * @param mockServiceUrl
-     *            the path to the service as it should be accessed in our system
-     */
-    public void setMockServiceUrl(String mockServiceUrl) {
-        if (mockServiceUrl != null && !mockServiceUrl.trim().startsWith("/") && mockServiceUrl.trim().length() > 0) {
-            this.mockServiceUrl = "/" + mockServiceUrl.trim();
-        } else {
-            this.mockServiceUrl = mockServiceUrl;
-        }
-    }
+//    /**
+//     * Method will ensure the service URL starts with '/'. If not, will prepend
+//     * it to the mock uri
+//     * 
+//     * @param mockServiceUrl
+//     *            the path to the service as it should be accessed in our system
+//     */
+//    public void setMockServiceUrl(String mockServiceUrl) {
+//        if (mockServiceUrl != null && !mockServiceUrl.trim().startsWith("/") && mockServiceUrl.trim().length() > 0) {
+//            this.mockServiceUrl = "/" + mockServiceUrl.trim();
+//        } else {
+//            this.mockServiceUrl = mockServiceUrl;
+//        }
+//    }
 
     public String getRealServicePath() {
         return realServiceUrl.getPath();
     }
 
-    public void setRealServiceUrl(String realServiceUrl) {
+    public void setRealServiceUrl(Url realServiceUrl) {
+        this.realServiceUrl = realServiceUrl;
+    }
+    
+    public void setRealServiceUrlByString(String realServiceUrl) {
         this.realServiceUrl = new Url(realServiceUrl);
     }
 
@@ -177,15 +188,6 @@ public class MockServiceBean implements Item {
         sb.append("\n");
 
         return sb.toString();
-    }
-
-    private String cleanUrl(String arg) {
-        int index = arg.indexOf(";");
-        if (index > -1) {
-            return arg.substring(0, index);
-        } else {
-            return arg;
-        }
     }
 
     public void setId(Long id) {

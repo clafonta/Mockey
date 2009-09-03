@@ -27,7 +27,7 @@
 	                </td>
 	            </tr>
                 <tr>
-                    <th><p>Real service URL: <br /><span style="color:blue;">(optional)</span></p></th>
+                    <th><p>Real service URL: </p></th>
                     <td>
                         <p><input type="text" name="realServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.realServiceUrl}"/>" /></p>
                         <p>You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</p>
@@ -42,8 +42,7 @@
 	            <tr>
 	                <th><p>Mock service URI:</p></th>
 	                <td>
-	                    <p><input type="text" name="mockServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.mockServiceUrl}"/>" /></p>
-	                    <p>Use something like: <span style="font-style: italic;">/some_service_path/here/more</span> </p>
+	                    <p><c:out value="${mockservice.mockServiceUrl}"/> </p>	                    
 	                </td>
 	            </tr>
 	            <tr>

@@ -3,6 +3,7 @@ package com.mockey;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mockey.util.Url;
 import com.mockey.web.RequestResponseTransaction;
 
 public class MockServiceStoreTest implements MockServiceStore {
@@ -86,11 +87,11 @@ public class MockServiceStoreTest implements MockServiceStore {
 
     public List getOrderedList() {
         List beans = new ArrayList();
-        MockServiceBean bean = new MockServiceBean();
+        MockServiceBean bean = new MockServiceBean(new Url("http://someservice:8000/eai2"));
         bean.setServiceName("testname");
         bean.setDescription("test description");
-        bean.setRealServiceUrl("http://someservice:8000/eai");
-        bean.setMockServiceUrl("/service/relizon");
+        
+        
         MockServiceScenarioBean mssb = new MockServiceScenarioBean();
         mssb.setScenarioName("a");
         mssb.setRequestMessage("request message a");
@@ -102,11 +103,11 @@ public class MockServiceStoreTest implements MockServiceStore {
         mssb.setResponseMessage("response message b");
         bean.updateScenario(mssb);
         beans.add(bean);
-        MockServiceBean bean2 = new MockServiceBean();
+        MockServiceBean bean2 = new MockServiceBean(new Url("http://someservice:8000/eai2"));
         bean2.setServiceName("testname2");
         bean2.setDescription("test description2");
-        bean2.setRealServiceUrl("http://someservice:8000/eai2");
-        bean2.setMockServiceUrl("/service/relizon2");
+        
+       
         MockServiceScenarioBean mssb2 = new MockServiceScenarioBean();
         mssb2.setScenarioName("a");
         mssb2.setRequestMessage("request message a");

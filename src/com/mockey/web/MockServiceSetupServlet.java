@@ -111,7 +111,7 @@ public class MockServiceSetupServlet extends HttpServlet {
 			ms = store.getMockServiceById(serviceId);
 		}
 		if (ms == null) {
-			ms = new MockServiceBean();
+			ms = new MockServiceBean(null);
 		}
 
 		req.setAttribute("mockservice", ms);
@@ -133,7 +133,9 @@ public class MockServiceSetupServlet extends HttpServlet {
 	 *             basic
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		MockServiceBean ms = new MockServiceBean();
+	    String realSrvUrl = req.getParameter("realServiceUrl");
+	    Url urlObj = new Url(realSrvUrl);
+		MockServiceBean ms = new MockServiceBean(urlObj);
 		Long serviceId = null;
 		
 		try {
@@ -145,16 +147,9 @@ public class MockServiceSetupServlet extends HttpServlet {
 		if(serviceId!=null){
 			ms = this.store.getMockServiceById(serviceId);
 		}
-
+		ms.setRealServiceUrl(urlObj);
 		ms.setServiceName(req.getParameter("serviceName"));
 		ms.setDescription(req.getParameter("description"));
-		ms.setRealServiceUrl(req.getParameter("realServiceUrl"));
-        if(req.getParameter("mockServiceUrl") != null && req.getParameter("mockServiceUrl").trim().length() > 0) {
-            ms.setMockServiceUrl(req.getParameter("mockServiceUrl"));
-        }else{
-            ms.setMockServiceUrl(ms.getRealPath());
-        }
-        
 		ms.setHttpHeaderDefinition(req.getParameter("httpHeaderDefinition"));		
 		Map errorMap = MockServiceValidator.validate(ms);
 

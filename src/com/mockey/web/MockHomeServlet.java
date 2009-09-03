@@ -16,6 +16,7 @@
 package com.mockey.web;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mockey.MockServicePlan;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
+import com.mockey.util.Url;
 
 public class MockHomeServlet extends HttpServlet {
 
@@ -48,6 +50,21 @@ public class MockHomeServlet extends HttpServlet {
 
         RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 
+        // HINT Message
+        URL serverURLObj = new URL(req.getScheme(), // http
+                req.getServerName(), // host
+                req.getServerPort(), // port
+                "");
+
+        String hintRecordUrl = serverURLObj.toString();
+
+        String contextRoot = req.getContextPath();
+        if (contextRoot != null && contextRoot.length() > 0 ) {
+            hintRecordUrl = hintRecordUrl + contextRoot;
+        }
+        hintRecordUrl = hintRecordUrl + Url.SERVLET_MAPPING_NAME + "http://www.google.com";
+
+        req.setAttribute("hintRecordUrl", hintRecordUrl);
         dispatch.forward(req, resp);
     }
 

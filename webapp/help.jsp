@@ -14,11 +14,8 @@
 	 There's support for HTTP and HTTPS interactions (if your proxy server or endpoint service is https). Be sure to check out your service's History
 	 to inspect and save a past conversation as a Service Scenario.                       
     </p>
-    <h2>Flush</h2>
-    <p>
-    This blows everything away, start with a clean slate. 
-    </p>
-    <h2>Record Stuff</h2>
+    
+    <h2>Get Started - Record Stuff</h2>
     <p>
     You can use Mockey to record things by doing the following:
 	    <div class="code">
@@ -26,14 +23,17 @@
 	    </div>
     Let's say you just started Mockey and haven't defined any services. Try this: 
 	    <div class="code">
-	    http://localhost:8090/Mockey/service/http://www.google.com
+	    http://localhost:8080/Mockey/service/http://www.google.com
 	    </div>
 	Mockey will proxy to the desired URL/service, record it, and create a new service for you. Be sure to check the
 	history link and save scenarios.
 	
 	
     </p>
-   
+   <h2>Flush</h2>
+    <p>
+    This blows everything away, start with a clean slate. 
+    </p>
     <h2>Service Plan</h2>
      <p>
                       A Service Plan is a saved state of all Mock Service configurations. For example, all 

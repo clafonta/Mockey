@@ -72,8 +72,7 @@ public class MockServiceParser {
 		digester.addSetProperties(SERVICE, "description", "description");
 		digester.addSetProperties(SERVICE, "http_header_definition", "httpHeaderDefinition");
 		digester.addSetProperties(SERVICE, "hang_time", "hangTime");//  
-		digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrl");
-		digester.addSetProperties(SERVICE, "url", "mockServiceUrl");
+		digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrlByString");
 		digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
 		digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
 	

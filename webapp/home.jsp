@@ -255,7 +255,14 @@ $(document).ready(function() {
     </div>
 	        </c:when>
 	        <c:otherwise>
-			  <p class="alert_message">There are no mock services defined. <a href="<c:url value="setup"/>">Create one.</a></p>
+			  <p class="alert_message">There are no mock services defined. <a href="<c:url value="setup"/>">Create one.</a>
+			  <br />
+			  <br />
+			  Or start recording, like this: <br />
+			  <a href="<c:out value="${hintRecordUrl}"/>"><c:out value="${hintRecordUrl}"/></a>
+			  </p>
+			  
+			  
 			</c:otherwise>
         </c:choose>
         

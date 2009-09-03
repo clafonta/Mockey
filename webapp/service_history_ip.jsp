@@ -38,6 +38,7 @@
 	                            </tr>
 	                            <tr>
 	                                <td>
+	                                  <div class="conflict_message"/>
 	                                    <h3>Request:</h3>
 	                                    <p>Header</p>
 	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${scenario.clientRequestHeaders}"/></textarea></p>
@@ -45,9 +46,12 @@
 	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${scenario.clientRequestParameters}"/></textarea></p>
 	                                    <p>Body</p>
 	                                    <p><textarea name="requestMessage" rows="10" cols="80%"><c:out value="${scenario.clientRequestBody}"/></textarea></p>
+	                                   </div>
+	                                </td>
 	                            </tr>
 	                            <tr>
-	                                <td>
+	                                <td >
+	                                  <div class="addition_message">
 	                                    <h3>Response: </h3>
 	                                    <p>Status</p>
 	                                    <p>
@@ -62,8 +66,9 @@
                                             <textarea name="responseMessage" rows="10" cols="80%"><c:out value="${scenario.responseMessage.body}"/></textarea>                                            
                                         </p>
                                         <p>
-                                        <input type="submit" name="Save" value="Save as Scenario" />
+                                        <input type="submit" name="Save" value="Save Response as a Scenario" />
                                         </p>
+                                        </div>
 	                                </td>
 	                            </tr>
 	                        </tbody>   

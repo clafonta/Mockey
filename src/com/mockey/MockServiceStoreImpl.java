@@ -50,20 +50,14 @@ public class MockServiceStoreImpl implements MockServiceStore {
     }
 
     public MockServiceBean getMockServiceByUrl(String urlPath) {
-        String servicePath;
-        if (urlPath.startsWith("/service")) {
-            int index = urlPath.indexOf("/service");
-            servicePath = urlPath.substring(index + "/service".length());
-        } else {
-            servicePath = urlPath;
-        }
-        logger.debug("Service path is: " +servicePath);
+       
+       
         try {
             for (Object o : mockServiceStore.keySet()) {
                 Long id = (Long) o;
                 MockServiceBean theService = (MockServiceBean) mockServiceStore.get(id);
                 String tempString = theService.getMockServiceUrl();
-                if (tempString.equals(servicePath)) {
+                if (tempString.equals(urlPath)) {
                     return theService;
                 }
             }
@@ -72,7 +66,7 @@ public class MockServiceStoreImpl implements MockServiceStore {
             logger.error("Unable to retrieve service w/ url pattern: " + urlPath, e);
 
         }
-        logger.debug("Didn't find service with Service path: " +servicePath);
+        logger.debug("Didn't find service with Service path: " +urlPath);
         return null;
     }
 

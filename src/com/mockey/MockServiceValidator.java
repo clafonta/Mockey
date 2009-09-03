@@ -46,23 +46,7 @@ public class MockServiceValidator {
                 || (ms.getServiceName().trim().length() > 250)) {
             errorMap.put("serviceName", "Service name must not be empty or greater than 250 chars.");
         }
-
-        // if ((ms.getDescription() == null) ||
-        // (ms.getDescription().trim().length() < 1) ||
-        // (ms.getDescription().trim().length() > 1000)) {
-        // errorMap.put("description",
-        // "Service description must not be empty or greater than 1000 chars.");
-        // }
-
-        if ((ms.getMockServiceUrl() == null) || (ms.getMockServiceUrl().trim().length() < 1)
-                || (ms.getMockServiceUrl().trim().length() > 250)) {
-            errorMap.put("serviceUrl", "Service URL must not be empty or greater than 250 chars.");
-        }
         
-        if ((ms.getHttpHeaderDefinition() == null) || (ms.getHttpHeaderDefinition().trim().length() < 1)
-                ) {
-            errorMap.put("httpHeaderDefinition", "Select a header definition");
-        }
 
         // Make sure there doesn't exist a service
         // w/ the same serviceURL.
