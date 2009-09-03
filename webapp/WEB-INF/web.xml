@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app id="mockey" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	<display-name>Mockey</display-name>
 	<servlet>
 		<servlet-name>MockStartUpServlet</servlet-name>
@@ -17,11 +16,6 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-        <servlet>
-        <servlet-name>spring</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
 	<servlet>
 		<servlet-name>MockHomeServlet</servlet-name>
 		<servlet-class>com.mockey.web.MockHomeServlet</servlet-class>
@@ -45,7 +39,7 @@
 	<servlet>
 		<servlet-name>MockServiceScenarioListServlet</servlet-name>
 		<servlet-class>com.mockey.web.MockServiceScenarioListServlet</servlet-class>
-	</servlet>	
+	</servlet>
 	<servlet>
 		<servlet-name>MockServiceConfigureServlet</servlet-name>
 		<servlet-class>com.mockey.web.MockServiceConfigureServlet</servlet-class>
@@ -63,33 +57,33 @@
 		<servlet-class>com.mockey.web.MockServiceScenarioServlet</servlet-class>
 	</servlet>
 	<servlet>
-        <servlet-name>MockHistoryPerServiceServlet</servlet-name>
-        <servlet-class>com.mockey.web.MockHistoryPerServiceServlet</servlet-class>
-    </servlet>	
-    <servlet>
-        <servlet-name>MockServiceProxyInfoServlet</servlet-name>
-        <servlet-class>com.mockey.web.MockServiceProxyInfoServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MockServicePlanSetupServlet</servlet-name>
-        <servlet-class>com.mockey.web.MockServicePlanSetupServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
-        <servlet-class>com.mockey.web.MockServiceScenarioUpdateServlet</servlet-class>
-    </servlet>    
-    <servlet-mapping>
-        <servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
-        <url-pattern>/service_scenario</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MockServicePlanSetupServlet</servlet-name>
-        <url-pattern>/plan/setup</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MockServiceProxyInfoServlet</servlet-name>
-        <url-pattern>/proxy/settings</url-pattern>
-    </servlet-mapping>
+		<servlet-name>MockHistoryPerServiceServlet</servlet-name>
+		<servlet-class>com.mockey.web.MockHistoryPerServiceServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>MockServiceProxyInfoServlet</servlet-name>
+		<servlet-class>com.mockey.web.MockServiceProxyInfoServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>MockServicePlanSetupServlet</servlet-name>
+		<servlet-class>com.mockey.web.MockServicePlanSetupServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
+		<servlet-class>com.mockey.web.MockServiceScenarioUpdateServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
+		<url-pattern>/service_scenario</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>MockServicePlanSetupServlet</servlet-name>
+		<url-pattern>/plan/setup</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>MockServiceProxyInfoServlet</servlet-name>
+		<url-pattern>/proxy/settings</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>MockHomeServlet</servlet-name>
 		<url-pattern>/home</url-pattern>
@@ -99,9 +93,9 @@
 		<url-pattern>/history/list</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-        <servlet-name>MockHistoryPerServiceByIpServlet</servlet-name>
-        <url-pattern>/history/detail</url-pattern>
-    </servlet-mapping>
+		<servlet-name>MockHistoryPerServiceByIpServlet</servlet-name>
+		<url-pattern>/history/detail</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>MockHistoryHtmlServlet</servlet-name>
 		<url-pattern>/checkforhistory</url-pattern>
@@ -126,17 +120,13 @@
 		<servlet-name>MockResponseServlet</servlet-name>
 		<url-pattern>/service/*</url-pattern>
 	</servlet-mapping>
-    <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>MockServiceUploadServlet</servlet-name>
 		<url-pattern>/upload/*</url-pattern>
 	</servlet-mapping>
-    <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>MockServiceExportServlet</servlet-name>
 		<url-pattern>/export/*</url-pattern>
-	</servlet-mapping>
-        <servlet-mapping>
-		<servlet-name>spring</servlet-name>
-		<url-pattern>/p/*</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
@@ -147,8 +137,8 @@
 		<error-code>404</error-code>
 		<location>/404.jsp</location>
 	</error-page>
-		<error-page>
+	<error-page>
 		<error-code>500</error-code>
 		<location>/500.jsp</location>
-	</error-page>	
+	</error-page>
 </web-app>

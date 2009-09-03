@@ -231,7 +231,7 @@ public class MockResponseServlet extends HttpServlet {
         historyRequestResponse.setServiceId(realService.getId());
         reqRespX.setServiceInfo(historyRequestResponse);
         
-        if(mockeyRequestFromClient.hasPostBody()){
+        if(!mockeyRequestFromClient.hasPostBody()){
             reqRespX.setClientRequestBody("[No post body provided by client]");
         }else {
             reqRespX.setClientRequestBody(mockeyRequestFromClient.getBodyInfo());

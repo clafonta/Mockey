@@ -1,6 +1,18 @@
 package com.mockey.web;
 
-import com.mockey.MockServiceBean;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -13,11 +25,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
+import com.mockey.MockServiceBean;
 
 /**
  * Wraps httpServletRequest and parses out the information we're looking for.
@@ -93,10 +101,10 @@ public class RequestFromClient {
     }
 
     /**
-     *  
-     * @return All the parameters as a URL encoded string            
+     * 
+     * @return All the parameters as a URL encoded string
      */
-    public String buildParameterRequest(){
+    public String buildParameterRequest() {
         StringBuffer requestMsg = new StringBuffer();
         for (String key : parameters.keySet()) {
             String[] values = parameters.get(key);
@@ -124,19 +132,28 @@ public class RequestFromClient {
     }
 
     private void parseRequestBody() {
-        StringBuffer buf = new StringBuffer();
-
-        BufferedReader br;
+        
         try {
-            br = new BufferedReader(rawRequest.getReader());
+            InputStream is = rawRequest.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            StringBuilder sb = new StringBuilder();
 
-            String thisLine;
-            while ((thisLine = br.readLine()) != null) {
-                buf.append(thisLine);
+            String line = null;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            if (buf.length() > 0) {
-                requestBody = buf.toString();
-            }
+            requestBody = sb.toString();
+            
         } catch (IOException e) {
             log.error("Unable to parse body from incoming request", e);
         }
