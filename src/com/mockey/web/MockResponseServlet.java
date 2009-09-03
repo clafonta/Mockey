@@ -35,6 +35,7 @@ import com.mockey.MockServiceScenarioBean;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
 import com.mockey.ProxyServer;
+import com.mockey.util.Url;
 
 /**
  * Responsible for serving mock responses. Based on configuration, returns
@@ -49,7 +50,7 @@ public class MockResponseServlet extends HttpServlet {
     private static final long serialVersionUID = 8401356766354139506L;
     private MockServiceStore store = MockServiceStoreImpl.getInstance();
     private Logger logger = Logger.getLogger(MockResponseServlet.class);
-
+    private static final String SERVLET_MAPPING_NAME = "/service";
     /**
      * Parses the caller's remote address, parses the URL, (the URI) then
      * determines the appropriate mockservice for the definition of the response
@@ -83,7 +84,26 @@ public class MockResponseServlet extends HttpServlet {
             urlPath = urlPath.substring(contextRoot.length(), urlPath.length());
         }
 
+        logger.debug("Looking for service with URL: "  + urlPath);
+        logger.debug("The store ID: " + this.store.toString());
         MockServiceBean realService = store.getMockServiceByUrl(urlPath);
+        if(realService == null){
+            //1. Strip out this servlet's mapping. 
+            String newServicePath = null;
+            if (urlPath.startsWith(SERVLET_MAPPING_NAME)) {
+                int index = urlPath.indexOf(SERVLET_MAPPING_NAME);
+                newServicePath = urlPath.substring(index + SERVLET_MAPPING_NAME.length());
+            } else {
+                newServicePath = urlPath;
+            }
+            // 2. Strip out leading path separator. 
+            if(newServicePath.startsWith("/")) {
+                newServicePath = newServicePath.substring(1,newServicePath.length());
+            }
+            Url url = new Url(newServicePath);
+            realService = new MockServiceBean(url);
+            store.saveOrUpdate(realService);
+        }
         realService.setHttpMethod(req.getMethod());
 
         // There are several options to look at:

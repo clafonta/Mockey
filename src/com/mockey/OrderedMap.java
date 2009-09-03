@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 /**
  * Keeps an ordered map of items, order based on 'when defined and added to this object'
  * 
@@ -30,8 +32,10 @@ import java.util.Map;
 public class OrderedMap extends HashMap implements Map{
 	
 	private static final long serialVersionUID = -1654150132938363942L;
-
+	private static Logger logger = Logger.getLogger(OrderedMap.class);
     public Item save(Item item){
+        
+        
 		if(item!=null){
 			if(item.getId()!=null){
 				this.put(item.getId(), item);
@@ -41,6 +45,7 @@ public class OrderedMap extends HashMap implements Map{
 				this.put(nextNumber, item);
 			}
 		}
+		logger.debug("Saving to store with ID:"  + item.getId());
 		return item;
 	}
 	

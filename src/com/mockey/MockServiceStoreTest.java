@@ -161,4 +161,9 @@ public class MockServiceStoreTest implements MockServiceStore {
 
     }
 
+    public void deleteAll() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

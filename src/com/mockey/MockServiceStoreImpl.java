@@ -57,6 +57,7 @@ public class MockServiceStoreImpl implements MockServiceStore {
         } else {
             servicePath = urlPath;
         }
+        logger.debug("Service path is: " +servicePath);
         try {
             for (Object o : mockServiceStore.keySet()) {
                 Long id = (Long) o;
@@ -71,10 +72,12 @@ public class MockServiceStoreImpl implements MockServiceStore {
             logger.error("Unable to retrieve service w/ url pattern: " + urlPath, e);
 
         }
+        logger.debug("Didn't find service with Service path: " +servicePath);
         return null;
     }
 
     public void saveOrUpdate(MockServiceBean mockServiceBean) {
+        
         mockServiceStore.save(mockServiceBean);
         
     }
@@ -90,7 +93,9 @@ public class MockServiceStoreImpl implements MockServiceStore {
     }
 
     public String toString() {
+        
         StringBuffer stringBuf = new StringBuffer();
+        stringBuf.append(super.toString());
         for (Object o : this.mockServiceStore.keySet()) {
             Long key = (Long) o;
             MockServiceBean element = (MockServiceBean) mockServiceStore.get(key);
@@ -188,6 +193,13 @@ public class MockServiceStoreImpl implements MockServiceStore {
 
     public void setUniversalErrorServiceId(Long serviceId) {
         this.univeralErrorServiceId = serviceId;
+        
+    }
+
+    public void deleteAll() {
+        historyCache = new OrderedMap();
+        mockServiceStore = new OrderedMap();
+        servicePlanStore = new OrderedMap();
         
     }
 

@@ -3,6 +3,9 @@ package com.mockey.web.spring;
 import com.mockey.MockServiceBean;
 import com.mockey.MockServiceStore;
 import com.mockey.util.Url;
+import com.mockey.web.MockResponseServlet;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
@@ -18,10 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 public class AnyPathProxyController extends AbstractController{
     @Autowired(required = true)
     private MockServiceStore mockServiceStore;
-
+    private Logger logger = Logger.getLogger(AnyPathProxyController.class);
 
     public void setMockServiceStore(MockServiceStore mockServiceStore) {
         this.mockServiceStore = mockServiceStore;
+        logger.debug("This store ID: " + this.mockServiceStore.toString());
     }
 
     @Override
@@ -41,12 +45,13 @@ public class AnyPathProxyController extends AbstractController{
         MockServiceBean existingService = mockServiceStore.getMockServiceByUrl(service.getMockServiceUrl());
 
         if (existingService == null) {
+            logger.debug("Not found. Saving new service with URL: "  + service.getMockServiceUrl());
             mockServiceStore.saveOrUpdate(service);
         } else {
+            logger.debug("Found! service with URL: "  + existingService.getMockServiceUrl());
             service = existingService;
         }
-
-        //TODO: we should move the logic in the ResponseServlet to here
+      
         request.getRequestDispatcher("/service"+service.getMockServiceUrl()).forward(request,response);
         return null;
     }

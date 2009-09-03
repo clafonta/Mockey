@@ -48,6 +48,7 @@ public interface MockServiceStore {
 
 	public void saveOrUpdate(MockServiceBean mockServiceBean);
 
+	public void deleteAll();
 	public void delete(MockServiceBean mockServiceBean);
 
 	/**

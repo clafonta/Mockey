@@ -51,15 +51,15 @@
 	                                    <h3>Response: </h3>
 	                                    <p>Status</p>
 	                                    <p>
-                                            <textarea name="responseStatus" rows="1" cols="80%">${scenario.responseMessage.statusLine}</textarea>                                            
+                                            <textarea name="responseStatus" rows="1" cols="80%"><c:out value="${scenario.responseMessage.statusLine}"/></textarea>                                            
                                         </p>
 	                                    <p>Header</p>	                                    
 	                                    <p>
-                                            <textarea name="responseHeader" rows="10" cols="80%">${scenario.responseMessage.headerInfo}</textarea>                                            
+                                            <textarea name="responseHeader" rows="10" cols="80%"><c:out value="${scenario.responseMessage.headerInfo}"/></textarea>                                            
                                         </p>
                                         <p>Body</p>
 	                                    <p>
-                                            <textarea name="responseMessage" rows="10" cols="80%">${scenario.responseMessage.body}</textarea>                                            
+                                            <textarea name="responseMessage" rows="10" cols="80%"><c:out value="${scenario.responseMessage.body}"/></textarea>                                            
                                         </p>
                                         <p>
                                         <input type="submit" name="Save" value="Save as Scenario" />

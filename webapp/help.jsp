@@ -6,14 +6,34 @@
 	<h2>The Big Picture</h2>
 	<p><strong>Mockey</strong> is a tool for testing application interactions over http.</p>
 	<p><img src="<c:url value="/images/bigpicture.png" />" /></p>
-	<h2><Mock Service</h2>
+	
+	<h2>Mock Service</h2>
 	<p>
 	 A mock service can be a proxy to a real service, enabling you to inspect request and response messages
 	 being exchanged. You can set up Mockey to go through a corporate proxy server (see <a href="<c:url value="/proxy/settings" />">Proxy Settings</a>). 
 	 There's support for HTTP and HTTPS interactions (if your proxy server or endpoint service is https). Be sure to check out your service's History
 	 to inspect and save a past conversation as a Service Scenario.                       
     </p>
-    
+    <h2>Flush</h2>
+    <p>
+    This blows everything away, start with a clean slate. 
+    </p>
+    <h2>Record Stuff</h2>
+    <p>
+    You can use Mockey to record things by doing the following:
+	    <div class="code">
+	    [mockey_ip]:[port]/Mockey/service/[whatever_service_you_want_to_record]
+	    </div>
+    Let's say you just started Mockey and haven't defined any services. Try this: 
+	    <div class="code">
+	    http://localhost:8090/Mockey/service/http://www.google.com
+	    </div>
+	Mockey will proxy to the desired URL/service, record it, and create a new service for you. Be sure to check the
+	history link and save scenarios.
+	
+	
+    </p>
+   
     <h2>Service Plan</h2>
      <p>
                       A Service Plan is a saved state of all Mock Service configurations. For example, all 

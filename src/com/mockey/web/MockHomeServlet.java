@@ -29,19 +29,26 @@ import com.mockey.MockServiceStoreImpl;
 
 public class MockHomeServlet extends HttpServlet {
 
-	
-	private static final long serialVersionUID = -5485332140449853235L;
-	
-	private static MockServiceStore store = MockServiceStoreImpl.getInstance();
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private static final long serialVersionUID = -5485332140449853235L;
 
-		req.setAttribute("services", store.getOrderedList());
-		req.setAttribute("plans", store.getMockServicePlanList());
-		req.setAttribute("plan", new MockServicePlan());
-		req.setAttribute("universalError", store.getUniversalErrorResponse());
-		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
+    private static MockServiceStore store = MockServiceStoreImpl.getInstance();
 
-		dispatch.forward(req, resp);
-	}
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String action = req.getParameter("action");
+        if (action != null && "deleteAllServices".equals(action)) {
+            MockServiceStore store = MockServiceStoreImpl.getInstance();
+            store.deleteAll();
+        } else {
+            req.setAttribute("services", store.getOrderedList());
+            req.setAttribute("plans", store.getMockServicePlanList());
+            req.setAttribute("plan", new MockServicePlan());
+            req.setAttribute("universalError", store.getUniversalErrorResponse());
+        }
+
+        RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
+
+        dispatch.forward(req, resp);
+    }
 
 }
