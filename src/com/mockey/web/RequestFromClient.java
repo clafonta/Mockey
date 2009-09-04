@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +25,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -59,17 +64,18 @@ public class RequestFromClient {
      * @param serviceBean
      *            the path on the server to POST to
      * @return A fully populated HttpRequest object
+     * @throws URISyntaxException 
+     * @throws UnsupportedEncodingException 
      */
-    public HttpRequest postToRealServer(MockServiceBean serviceBean) {
+    public HttpRequest postToRealServer(MockServiceBean serviceBean) throws URISyntaxException, UnsupportedEncodingException {
         // TODO: Cleanup the logic to handle creating a GET vs POST
         HttpRequest request;
-
+        URI uri = URIUtils.createURI(serviceBean.getUrl().getScheme(), serviceBean.getUrl().getHost(), -1, serviceBean.getUrl().getPath(), 
+                this.buildParameterRequest(), null);
         if (serviceBean.getHttpMethod().equals("GET")) {
-            request = new HttpGet(serviceBean.getRealPath());
+            request = new HttpGet(uri);
         } else {
-
-            // Construct an HTTP Post object
-            HttpPost post = new HttpPost(serviceBean.getRealPath());
+            HttpPost post = new HttpPost(uri);
 
             // copy the request body we recieved into the POST
             post.setEntity(constructHttpPostBody());
@@ -101,16 +107,42 @@ public class RequestFromClient {
     }
 
     /**
+     * Parameter key and value(s).
+     * 
+     * @return
+     */
+    public Map<String, String[]> getParameters() {
+        return this.parameters;
+    }
+
+    /**
      * 
      * @return All the parameters as a URL encoded string
+     * @throws UnsupportedEncodingException 
      */
-    public String buildParameterRequest() {
+    public String buildParameterRequest() throws UnsupportedEncodingException {
         StringBuffer requestMsg = new StringBuffer();
+        //Checking for this case: /someurl?wsdl
+        boolean first = true;
         for (String key : parameters.keySet()) {
             String[] values = parameters.get(key);
-            for (String value : values) {
-                requestMsg.append("&").append(key).append("=").append(value);
+      
+            if(!first){
+                requestMsg.append("&");  
             }
+            if (values != null && values.length > 0) {
+                for (String value : values) {
+                    if(value.trim().length() > 0){
+                        requestMsg.append(key).append("=").append(URLEncoder.encode(value,"UTF-8"));
+                    }else {
+                        requestMsg.append(key);
+                    }
+                }
+            } 
+            if(first){
+                first = false;
+            }
+
         }
         return requestMsg.toString();
     }
@@ -132,7 +164,7 @@ public class RequestFromClient {
     }
 
     private void parseRequestBody() {
-        
+
         try {
             InputStream is = rawRequest.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -153,7 +185,7 @@ public class RequestFromClient {
                 }
             }
             requestBody = sb.toString();
-            
+
         } catch (IOException e) {
             log.error("Unable to parse body from incoming request", e);
         }

@@ -97,7 +97,7 @@ public class MockServiceStoreImpl implements MockServiceStore {
             stringBuf.append("Service name: ").append(element.getServiceName()).append("\n");
             stringBuf.append("Service description: ").append(element.getDescription()).append("\n");
             stringBuf.append("Service url: ").append(element.getMockServiceUrl()).append("\n");
-            stringBuf.append("Service proxyurl: ").append(element.getRealServicePath()).append("\n");
+            stringBuf.append("Service proxyurl: ").append(element.getUrl().getPath()).append("\n");
             List scenarios = element.getScenarios();
             for (Object scenario : scenarios) {
                 MockServiceScenarioBean b = (MockServiceScenarioBean) scenario;

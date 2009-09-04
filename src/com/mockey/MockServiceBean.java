@@ -15,7 +15,8 @@
  */
 package com.mockey;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.http.HttpHost;
 
@@ -122,13 +123,13 @@ public class MockServiceBean implements Item {
         
     }
 
-    public String getRealHost() {
-        return realServiceUrl.getHost();
-    }
-
-    public String getRealPath() {
-        return realServiceUrl.getPath();
-    }
+//    public String getRealHost() {
+//        return realServiceUrl.getHost();
+//    }
+//
+//    public String getRealPath() {
+//        return realServiceUrl.getPath();
+//    }
 
     /**
      * Helper method.
@@ -155,9 +156,10 @@ public class MockServiceBean implements Item {
 //        }
 //    }
 
-    public String getRealServicePath() {
-        return realServiceUrl.getPath();
+    public Url getUrl(){
+        return this.realServiceUrl;
     }
+
 
     public void setRealServiceUrl(Url realServiceUrl) {
         this.realServiceUrl = realServiceUrl;
@@ -180,7 +182,7 @@ public class MockServiceBean implements Item {
         sb.append("Service name:").append(this.getServiceName()).append("\n");
         sb.append("Mock URL:").append(this.getMockServiceUrl()).append("\n");
         sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
-        sb.append("Scheme:").append(this.getRealServiceScheme()).append("\n");
+        sb.append("Scheme:").append(this.getUrl().getScheme()).append("\n");
         sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
         sb.append("HTTP Content:").append(this.getHttpHeaderDefinition()).append("\n");
         sb.append("Hang time:");
@@ -205,10 +207,6 @@ public class MockServiceBean implements Item {
 
     public Long getId() {
         return id;
-    }
-
-    public String getRealServiceScheme() {
-        return realServiceUrl.getScheme();
     }
 
     public String getRealServiceUrl() {

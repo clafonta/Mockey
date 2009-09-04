@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.Header;
 import org.apache.log4j.Logger;
 
 import com.mockey.ClientExecuteProxy;
@@ -50,7 +49,7 @@ public class MockResponseServlet extends HttpServlet {
     private static final long serialVersionUID = 8401356766354139506L;
     private MockServiceStore store = MockServiceStoreImpl.getInstance();
     private Logger logger = Logger.getLogger(MockResponseServlet.class);
-    
+
     /**
      * Parses the caller's remote address, parses the URL, (the URI) then
      * determines the appropriate mockservice for the definition of the response
@@ -85,8 +84,8 @@ public class MockResponseServlet extends HttpServlet {
         }
         Url urlObj = new Url(urlPath);
         MockServiceBean realService = store.getMockServiceByUrl(urlObj.getFullUrl());
-        if(realService == null){
-            
+        if (realService == null) {
+
             realService = new MockServiceBean(urlObj);
             store.saveOrUpdate(realService);
         }
@@ -103,10 +102,9 @@ public class MockResponseServlet extends HttpServlet {
             // Is this a HACK? I dunno yet.
             logger.debug("Request message is EMPTY; building request message out of Parameters. ");
             clientRequest = mockeyRequestFromClient.buildParameterRequest();
-        }else {
+        } else {
             clientRequest = mockeyRequestFromClient.getBodyInfo();
         }
-        
 
         // If no scenarios, then proxy is automatically on.
         if (realService.getScenarios().size() == 0) {
@@ -120,7 +118,7 @@ public class MockResponseServlet extends HttpServlet {
         // 4) Read the reply from the real service URL.
         // 5) Save request + response as a historical scenario.
         ResponseMessage mockeyResponseMessage = null;
-        
+
         if (realService.getServiceResponseType() == MockServiceBean.SERVICE_RESPONSE_TYPE_PROXY) {
 
             // There are 2 proxy things going on here:
@@ -136,7 +134,7 @@ public class MockResponseServlet extends HttpServlet {
                 logger.debug("Initiating request through proxy");
                 mockeyResponseMessage = clientExecuteProxy.execute(proxyServer, realService, mockeyRequestFromClient);
                 mockeyResponseMessage.writeToOutput(resp);
-                replied = true;            
+                replied = true;
 
             } catch (Exception e) {
                 // We're here for various reasons.
@@ -167,9 +165,10 @@ public class MockResponseServlet extends HttpServlet {
                     if (universalError != null) {
                         mockeyResponseMessage.setBody(universalError.getResponseMessage());
                     } else {
-                        mockeyResponseMessage.setBody("No scenario defined. Also, we encountered this error: "+e.getClass()+ ": " +e.getMessage());
+                        mockeyResponseMessage.setBody("No scenario defined. Also, we encountered this error: "
+                                + e.getClass() + ": " + e.getMessage());
                     }
-                }                
+                }
             }
 
         }
@@ -186,14 +185,16 @@ public class MockResponseServlet extends HttpServlet {
             String messageMatchFound = null;
             while (iter.hasNext()) {
                 MockServiceScenarioBean scenario = (MockServiceScenarioBean) iter.next();
-                logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + clientRequest);
+                logger
+                        .debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n"
+                                + clientRequest);
                 int indexValue = -1;
-                if(mockeyRequestFromClient.hasPostBody()){
-                    indexValue =  mockeyRequestFromClient.getBodyInfo().indexOf(scenario.getMatchStringArg());
-                }else {
+                if (mockeyRequestFromClient.hasPostBody()) {
+                    indexValue = mockeyRequestFromClient.getBodyInfo().indexOf(scenario.getMatchStringArg());
+                } else {
                     indexValue = clientRequest.indexOf(scenario.getMatchStringArg());
                 }
-                
+
                 if ((indexValue > -1)) {
                     logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
                     messageMatchFound = scenario.getResponseMessage();
@@ -206,18 +207,17 @@ public class MockResponseServlet extends HttpServlet {
                         + clientRequest;
             }
             mockeyResponseMessage.setBody(messageMatchFound);
-            
 
         } else if (realService.getServiceResponseType() == MockServiceBean.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
             MockServiceScenarioBean scenario = realService.getScenario(realService.getDefaultScenarioId());
             mockeyResponseMessage = new ResponseMessage();
-            
+
             if (scenario != null) {
                 mockeyResponseMessage.setBody(scenario.getResponseMessage());
-                
+
             } else {
                 mockeyResponseMessage.setBody("NO SCENARIO SELECTED");
-                
+
             }
 
         }
@@ -225,20 +225,20 @@ public class MockResponseServlet extends HttpServlet {
         // History
         // **********************
         RequestResponseTransaction reqRespX = new RequestResponseTransaction();
-        MockServiceScenarioBean historyRequestResponse = new MockServiceScenarioBean();        
+        MockServiceScenarioBean historyRequestResponse = new MockServiceScenarioBean();
         historyRequestResponse.setScenarioName((new Date()) + " Remote address:" + requestIp);
         historyRequestResponse.setConsumerId(requestIp);
         historyRequestResponse.setServiceId(realService.getId());
         reqRespX.setServiceInfo(historyRequestResponse);
-        
-        if(!mockeyRequestFromClient.hasPostBody()){
+
+        if (!mockeyRequestFromClient.hasPostBody()) {
             reqRespX.setClientRequestBody("[No post body provided by client]");
-        }else {
+        } else {
             reqRespX.setClientRequestBody(mockeyRequestFromClient.getBodyInfo());
         }
         reqRespX.setClientRequestHeaders(mockeyRequestFromClient.getHeaderInfo());
         reqRespX.setClientRequestParameters(mockeyRequestFromClient.getParameterInfo());
-        reqRespX.setResponseMessage(mockeyResponseMessage);        
+        reqRespX.setResponseMessage(mockeyResponseMessage);
         store.addHistoricalScenario(reqRespX);
 
         try {
@@ -264,5 +264,5 @@ public class MockResponseServlet extends HttpServlet {
             out.println(mockeyResponseMessage.getBody());
         }
     }
-   
+
 }

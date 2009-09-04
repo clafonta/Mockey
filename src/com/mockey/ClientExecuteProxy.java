@@ -1,5 +1,7 @@
 package com.mockey;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -22,41 +24,44 @@ import com.mockey.web.ResponseMessage;
 
 /**
  * How to send a request via proxy using {@link HttpClient}.
- *
+ * 
  * @since 4.0
  */
 public class ClientExecuteProxy {
     private Log log = LogFactory.getLog(ClientExecuteProxy.class);
 
-//    public static void main(String[] args) throws Exception {
-//        ProxyServer proxyInfoBean = new ProxyServer();
-//        proxyInfoBean.setProxyEnabled(true);
-//        proxyInfoBean.setProxyPassword("YOUR_PROXY_PASSWORD_HERE");
-//        proxyInfoBean.setProxyPort(8080); // YOUR_PROXY_PORT
-//        proxyInfoBean.setProxyUrl("YOUR_PROXY_URL_HERE");
-//        proxyInfoBean.setProxyUsername("YOUR_PROXY_USERNAME_HERE");
-//        proxyInfoBean.setProxyScheme("http");
-//        MockServiceBean serviceBean = new MockServiceBean();
-//
-//        serviceBean.setRealServiceUrl("https://issues.apache.org");
-//        // serviceBean.sets
-//        ClientExecuteProxy p = new ClientExecuteProxy();
-//        ResponseMessage rm = p.execute(proxyInfoBean, serviceBean, null);
-//        System.out.println("executing request to " + serviceBean.getRealServicePath() + " via " + proxyInfoBean.getProxyUrl());
-//        System.out.println("----------------------------------------");
-//        System.out.println(rm.getStatusLine());
-//        Header[] headers = rm.getHeaders();
-//
-//        for (int i = 0; i < headers.length; i++) {
-//            System.out.println(headers[i]);
-//        }
-//        System.out.println("----------------------------------------");
-//        ;
-//        System.out.println(rm.getBody());
-//
-//    }
+    // public static void main(String[] args) throws Exception {
+    // ProxyServer proxyInfoBean = new ProxyServer();
+    // proxyInfoBean.setProxyEnabled(true);
+    // proxyInfoBean.setProxyPassword("YOUR_PROXY_PASSWORD_HERE");
+    // proxyInfoBean.setProxyPort(8080); // YOUR_PROXY_PORT
+    // proxyInfoBean.setProxyUrl("YOUR_PROXY_URL_HERE");
+    // proxyInfoBean.setProxyUsername("YOUR_PROXY_USERNAME_HERE");
+    // proxyInfoBean.setProxyScheme("http");
+    // MockServiceBean serviceBean = new MockServiceBean();
+    //
+    // serviceBean.setRealServiceUrl("https://issues.apache.org");
+    // // serviceBean.sets
+    // ClientExecuteProxy p = new ClientExecuteProxy();
+    // ResponseMessage rm = p.execute(proxyInfoBean, serviceBean, null);
+    // System.out.println("executing request to " +
+    // serviceBean.getRealServicePath() + " via " +
+    // proxyInfoBean.getProxyUrl());
+    // System.out.println("----------------------------------------");
+    // System.out.println(rm.getStatusLine());
+    // Header[] headers = rm.getHeaders();
+    //
+    // for (int i = 0; i < headers.length; i++) {
+    // System.out.println(headers[i]);
+    // }
+    // System.out.println("----------------------------------------");
+    // ;
+    // System.out.println(rm.getBody());
+    //
+    // }
 
-    public ResponseMessage execute(ProxyServer proxyServer, MockServiceBean serviceBean, RequestFromClient request) throws Exception {
+    public ResponseMessage execute(ProxyServer proxyServer, MockServiceBean serviceBean, RequestFromClient request)
+            throws Exception {
         log.info("Request: " + String.valueOf(serviceBean));
 
         // general setup
@@ -72,26 +77,24 @@ public class ClientExecuteProxy {
         HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
         HttpProtocolParams.setContentCharset(params, "UTF-8");
         HttpProtocolParams.setUseExpectContinue(params, false);
-
         ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
         DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
-
+        
         if (proxyServer.isProxyEnabled()) {
             // make sure to use a proxy that supports CONNECT
-            httpclient.getCredentialsProvider().setCredentials(proxyServer.getAuthScope(),proxyServer.getCredentials());
+            httpclient.getCredentialsProvider()
+                    .setCredentials(proxyServer.getAuthScope(), proxyServer.getCredentials());
             httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyServer.getHttpHost());
         }
-
 
         // execute the call to the real host
         HttpResponse response = httpclient.execute(serviceBean.getHttpHost(), request.postToRealServer(serviceBean));
         ResponseMessage responseMessage = new ResponseMessage(response);
-        
+
         // When HttpClient instance is no longer needed,
         // shut down the connection manager to ensure
         // immediate deallocation of all system resources
         httpclient.getConnectionManager().shutdown();
-
 
         // Parse out the response information we're looking for
 
