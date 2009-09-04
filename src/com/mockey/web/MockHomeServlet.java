@@ -56,15 +56,20 @@ public class MockHomeServlet extends HttpServlet {
                 req.getServerPort(), // port
                 "");
 
-        String hintRecordUrl = serverURLObj.toString();
-
         String contextRoot = req.getContextPath();
-        if (contextRoot != null && contextRoot.length() > 0 ) {
-            hintRecordUrl = hintRecordUrl + contextRoot;
-        }
-        hintRecordUrl = hintRecordUrl + Url.SERVLET_MAPPING_NAME + "http://www.google.com";
+        String hintRecordURL1 = serverURLObj.toString();
+        String hintRecordURL2 = serverURLObj.toString();
 
-        req.setAttribute("hintRecordUrl", hintRecordUrl);
+        
+        if (contextRoot != null && contextRoot.length() > 0 ) {
+            hintRecordURL1 = hintRecordURL1 + contextRoot;
+            hintRecordURL2 = hintRecordURL2 + contextRoot;
+        }
+        hintRecordURL1 = hintRecordURL1 + Url.MOCK_SERVICE_PATH + "http://www.google.com/search?q=flavor";
+        hintRecordURL1 = hintRecordURL1 + Url.MOCK_SERVICE_PATH + "http://e-services.doh.go.th/dohweb/dohwebservice.asmx?wsdl";
+//
+        req.setAttribute("hintRecordUrl1", hintRecordURL1);
+        req.setAttribute("hintRecordUrl2", hintRecordURL2);
         dispatch.forward(req, resp);
     }
 

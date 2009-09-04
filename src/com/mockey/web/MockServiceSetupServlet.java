@@ -58,6 +58,8 @@ public class MockServiceSetupServlet extends HttpServlet {
 		if (req.getParameter("delete") != null && serviceId != null) {
 			MockServiceBean bean = store.getMockServiceById(serviceId);
 			store.delete(bean);
+			store.flushHistoryRequestMsgs(serviceId);
+			
 			Util.saveSuccessMessage("Service '"+bean.getServiceName()+"' was deleted.", req);
 			// Check to see if any plans need an update. 
 			List planList = store.getMockServicePlanList();

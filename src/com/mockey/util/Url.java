@@ -13,7 +13,7 @@ public class Url {
     /**
      * The name of the mock service servlet name
      */
-    public static final String SERVLET_MAPPING_NAME = "/service/";
+    public static final String MOCK_SERVICE_PATH = "/service/";
     private Logger logger = Logger.getLogger(Url.class);
     private String scheme;
     private int port = 80;
@@ -68,10 +68,10 @@ public class Url {
      */
     public void parse(String url) {
         // extract the scheme
-        int beginIndex = url.indexOf(SERVLET_MAPPING_NAME);
-        if(beginIndex>-1){
-            url = url.substring(SERVLET_MAPPING_NAME.length());
-            
+        int beginIndex = url.indexOf(MOCK_SERVICE_PATH);
+        if (beginIndex > -1) {
+            url = url.substring(MOCK_SERVICE_PATH.length());
+
         }
         if (url.matches("(?i)^https?://.*")) {
             this.scheme = url.substring(0, url.indexOf(":"));
@@ -207,15 +207,21 @@ public class Url {
         // System.out.println("/home =? " + Url.getContextAwarePath("home",
         // ""));
 
-        System.out.println("A) " + new Url("http://www.google.com:80").toString());
-        System.out.println("B) " + new Url("htp://www.google0").toString());
-        System.out.println("C) " + new Url("http://www.google.com:43").toString());
-        System.out.println("D) " + new Url("http://google.com").toString());
-        System.out.println("E) " + new Url("https://www.google.com").toString());
-        System.out.println("F) " + new Url("www.google.com:80").toString());
-        System.out.println("G) " + new Url("https://www.google.com:9000").toString());
-        System.out.println("H) " + new Url("google.com:80").toString());
-        System.out.println("I) " + new Url("http://www.google.com:443").toString());
-        System.out.println("J) " + new Url("https://www.google.com:443").toString());
+        // System.out.println("A) " + new
+        // Url("http://www.google.com:80").toString());
+        // System.out.println("B) " + new Url("htp://www.google0").toString());
+        // System.out.println("C) " + new
+        // Url("http://www.google.com:43").toString());
+        // System.out.println("D) " + new Url("http://google.com").toString());
+        // System.out.println("E) " + new
+        // Url("https://www.google.com").toString());
+        // System.out.println("F) " + new Url("www.google.com:80").toString());
+        // System.out.println("G) " + new
+        // Url("https://www.google.com:9000").toString());
+        // System.out.println("H) " + new Url("google.com:80").toString());
+        // System.out.println("I) " + new
+        // Url("http://www.google.com:443").toString());
+        // System.out.println("J) " + new
+        // Url("https://www.google.com:443").toString());
     }
 }

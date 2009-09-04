@@ -138,7 +138,7 @@ public class MockServiceBean implements Item {
      *         "/service" to the mock service URL
      */
     public String getServiceUrl() {
-        return (Url.SERVLET_MAPPING_NAME + this.getMockServiceUrl());
+        return (Url.MOCK_SERVICE_PATH + this.getMockServiceUrl());
     }
 
 //    /**
