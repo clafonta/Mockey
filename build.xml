@@ -18,6 +18,9 @@
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
+        <fileset dir="lib/dist">
+            <include name="*.jar" />
+        </fileset>
 		<pathelement location="${classes.dir}"/>
 	</path>	
 	
@@ -50,10 +53,32 @@
 		<delete file="${env.CATALINA_HOME}/webapps/${ant.project.name}.war"/>
 		<delete dir="${env.CATALINA_HOME}/work"/>		
 	</target>
+
+    <target name="one-jar" depends="webapp" description="Generates an executable jar file with the war file embedded">
+        <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpath="lib/build/one-jar-ant-task.jar" onerror="report"/>
+        <one-jar destfile="${dist.dir}/mockey.jar"  manifest="src/manifest.mf">
+        <main>
+            <!-- Construct main.jar from classes and source code -->
+            <fileset dir="${classes.dir}">
+                <include  name="**/runner/*.class" />
+                <include  name="**/centerkey/**/*.class" />
+            </fileset>
+        </main>
+        <lib>
+            <fileset dir="lib/dist" >
+                <include name="*.jar" />
+            </fileset>
+        </lib>
+        <fileset dir="${dist.dir}">
+            <include name="*.war" />
+        </fileset>
+        </one-jar>
+      </target>
+
 	<!-- =================================================================== -->
 	<!-- Jars up file for distribution                                       -->
 	<!-- =================================================================== -->
-	<target name="dist" depends="clean, webapp" description="Builds a .jar file and places in a dist directory. ">				
+	<target name="dist" depends="clean, webapp, one-jar" description="Builds a .jar file and places in a dist directory. ">				
 		<zip destfile="${dist.dir}/${ant.project.name}-${version.num}_with_dependencies.zip">	
 			<fileset dir="${dist.dir}" includes="${ant.project.name}.war"/>
 		</zip>
