@@ -66,7 +66,7 @@ public class MockHomeServlet extends HttpServlet {
             hintRecordURL2 = hintRecordURL2 + contextRoot;
         }
         hintRecordURL1 = hintRecordURL1 + Url.MOCK_SERVICE_PATH + "http://www.google.com/search?q=flavor";
-        hintRecordURL1 = hintRecordURL1 + Url.MOCK_SERVICE_PATH + "http://e-services.doh.go.th/dohweb/dohwebservice.asmx?wsdl";
+        hintRecordURL2 = hintRecordURL2 + Url.MOCK_SERVICE_PATH + "http://e-services.doh.go.th/dohweb/dohwebservice.asmx?wsdl";
 //
         req.setAttribute("hintRecordUrl1", hintRecordURL1);
         req.setAttribute("hintRecordUrl2", hintRecordURL2);

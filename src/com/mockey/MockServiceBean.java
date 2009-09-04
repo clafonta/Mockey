@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2008-2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,6 +97,7 @@ public class MockServiceBean implements Item {
         this.hangTime = hangTime;
     }
 
+    @SuppressWarnings("unchecked")
     public List<MockServiceScenarioBean> getScenarios() {
         return scenarios.getOrderedList();
     }
@@ -196,9 +197,9 @@ public class MockServiceBean implements Item {
         this.id = id;
 
         // Recursively set this ID to child Scenarios, if any exist.
-        Iterator iter = getScenarios().iterator();
+        Iterator<MockServiceScenarioBean> iter = getScenarios().iterator();
         while (iter.hasNext()) {
-            MockServiceScenarioBean mssb = (MockServiceScenarioBean) iter.next();
+            MockServiceScenarioBean mssb = iter.next();
             mssb.setServiceId(this.id);
             this.updateScenario(mssb);
         }

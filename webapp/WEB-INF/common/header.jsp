@@ -33,7 +33,7 @@ if(confirm(message)) location.href = url;
     <li><a <c:if test="${currentTab == 'export'}">id ="current"</c:if> href="<c:url value="/export" />">Export Service Definitions</a> | </li>
     <li><a <c:if test="${currentTab == 'proxy'}">id ="current"</c:if> href="<c:url value="/proxy/settings" />">Proxy Settings</a> | </li>    
     <li><a href="javascript:decision('Are you sure? This will delete everything. You may want to export your stuff first.', '<c:url value="/home?action=deleteAllServices" />')">Flush</a> | </li>
-    <li><a <c:if test="${currentTab == 'help'}">id ="current"</c:if> href="<c:url value="/help.jsp" />">Help</a></li>
+    <li><a <c:if test="${currentTab == 'help'}">id ="current"</c:if> href="<c:url value="/help" />">Help</a></li>
     
 </ul>
 </div>

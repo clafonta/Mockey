@@ -23,19 +23,12 @@
 						</td>
                     </tr>
                     <tr>
-						<th><p>Match argument: <span style="color:blue;">(optional)</span></p></th>
+						<th><p><a href="<c:url value="help#static_dynamic"/>">Match argument</a>: <span style="color:blue;">(optional)</span></p></th>
 						<td>
 						  <p>
 						      <textarea name="matchStringArg" style="width:100%;" rows="2" ><c:out value="${mockscenario.matchStringArg}" /></textarea>
 						  </p>
-						  <p>
-						You'll need this for 'dynamic message responses'. The mock service tool will search an
-						    incoming request message for this <i>matching argument</i>. If the incoming request message
-						    contains this string argument, then this scenario's response message will be the response.
-						    If more than one scenario is defined with this matching argument, then the first
-						    matched scenario's response message will be returned. If no scenario is found with a 
-						    matching argument, a plain text error message will display.
-						  </p>
+						  
 						</td>
                     </tr>      
 					<tr>

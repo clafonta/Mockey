@@ -31,6 +31,15 @@ ul#minitabs li{display: inline;margin: 0 3px}
 ul#minitabs a{text-decoration: none;padding: 0 0 3px;  border-bottom: 4px solid #FFF;color: #999}
 ul#minitabs a#current{border-color: #F60;color:#06F}
 ul#minitabs a:hover{border-color: #F60;color: #666}
+.hint_message {
+	margin: 2em;
+	padding-left: 1em;
+	padding-right: 1em;	
+	text-align: left;
+	color: black;
+	border: thin solid #d3d3d3;
+	background-color: #f5f5dc;
+}
 .conflict_message {text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
 .addition_message {text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #7eff00;}
 .alert_message {margin-left: 20%; margin-right: 20%;	text-align: center;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
