@@ -86,7 +86,7 @@
      </p>
     
     <h2>Service Error Response</h2>
-     <p><b>You define this.</b> It is a service scenario flagged as a 'Service Error Response' will be returned by Mockey if an error occurs 
+     <p><b>You define this.</b> It is a service scenario flagged as a 'Service Error Response', it will be returned by Mockey if an error occurs 
     when calling the service. An error can be caused by a timeout, from calling a real service, or inability 
     to parse data. </p>
     <h2>Universal Error Response</h2>

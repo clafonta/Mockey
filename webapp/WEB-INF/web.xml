@@ -41,10 +41,6 @@
 		<servlet-class>com.mockey.web.MockServiceScenarioListServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>MockServiceConfigureServlet</servlet-name>
-		<servlet-class>com.mockey.web.MockServiceConfigureServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>MockServiceSetupServlet</servlet-name>
 		<servlet-class>com.mockey.web.MockServiceSetupServlet</servlet-class>
 	</servlet>
@@ -119,11 +115,7 @@
 	<servlet-mapping>
 		<servlet-name>MockServiceScenarioServlet</servlet-name>
 		<url-pattern>/scenario</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>MockServiceConfigureServlet</servlet-name>
-		<url-pattern>/configure</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>	
 	<servlet-mapping>
 		<servlet-name>MockResponseServlet</servlet-name>
 		<url-pattern>/service/*</url-pattern>

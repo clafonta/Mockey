@@ -13,12 +13,10 @@
 	<property name="version.num" value="1.3"/>
 	<property name="classes.dir" location="${build.dir}/WEB-INF/classes"/>
 	<path id="standard.classpath">		
-		<pathelement location="${etc.dir}/servlet-api.jar"/>	
-		<pathelement location="${etc.dir}/jsp-api.jar"/>  
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
-        <fileset dir="lib/dist">
+        <fileset dir="${etc.dir}">
             <include name="*.jar" />
         </fileset>
 		<pathelement location="${classes.dir}"/>
@@ -55,8 +53,8 @@
 	</target>
 
     <target name="one-jar" depends="webapp" description="Generates an executable jar file with the war file embedded">
-        <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpath="lib/build/one-jar-ant-task.jar" onerror="report"/>
-        <one-jar destfile="${dist.dir}/mockey.jar"  manifest="src/manifest.mf">
+        <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpathref="standard.classpath" onerror="report"/>
+        <one-jar destfile="${dist.dir}/${ant.project.name}.jar"  manifest="src/manifest.mf">
         <main>
             <!-- Construct main.jar from classes and source code -->
             <fileset dir="${classes.dir}">
@@ -65,7 +63,7 @@
             </fileset>
         </main>
         <lib>
-            <fileset dir="lib/dist" >
+            <fileset dir="${etc.dir}" >
                 <include name="*.jar" />
             </fileset>
         </lib>
@@ -78,10 +76,13 @@
 	<!-- =================================================================== -->
 	<!-- Jars up file for distribution                                       -->
 	<!-- =================================================================== -->
-	<target name="dist" depends="clean, webapp, one-jar" description="Builds a .jar file and places in a dist directory. ">				
+	<target name="dist" depends="clean, webapp, one-jar" description="Builds a .war and executable .jar file, e.g. 'java -jar Mockey.jar'">				
 		<zip destfile="${dist.dir}/${ant.project.name}-${version.num}_with_dependencies.zip">	
 			<fileset dir="${dist.dir}" includes="${ant.project.name}.war"/>
 		</zip>
+		<echo message="Success! Now try this:"/>
+		<echo message="                    >cd dist"/>
+		<echo message="                    >java -jar Mockey.jar"/>
 	</target>	
 	<!-- =================================================================== -->
 	<!-- Jars up a war file for application server                                                                       -->
