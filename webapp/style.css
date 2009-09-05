@@ -42,11 +42,11 @@ ul#minitabs a:hover{border-color: #F60;color: #666}
 }
 .conflict_message {text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
 .addition_message {text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #7eff00;}
-.alert_message {margin-left: 20%; margin-right: 20%;	text-align: center;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
+.alert_message {margin-left: 20%; margin-right: 20%;	text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
 .info_message {	
 
 	margin-left: 20%; margin-right: 20%;
-	text-align: center;
+	text-align: left;
 	color: black;
 	border: thin solid #d3d3d3;
 	padding: 0.2em;

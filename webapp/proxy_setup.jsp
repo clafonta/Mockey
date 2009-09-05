@@ -29,7 +29,7 @@
                         </td>
                    </tr>
                     <tr <c:if test='${!proxyInfo.proxyEnabled}'>class="overlabel"</c:if>>
-                        <th width="180px"><p>Proxy URL</p></th>
+                        <th width="180px"><p>Proxy URL (and :port if needed)</p></th>
                         <td>
                             <p><input type="text" name="proxyUrl" size="80"  value="<c:out value="${proxyInfo.proxyUrl}"/>" /> </p>
                         </td>

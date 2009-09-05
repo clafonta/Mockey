@@ -41,13 +41,13 @@
 					<tr>
 						<th><p>Service Error Response</p></th>
 						<td>
-							<p><input type="checkbox" name="errorScenario" value="true" <c:if test='${mockservice.errorScenarioId eq mockscenario.id and !empty mockservice.errorScenarioId}'>checked</c:if>> The response if an error occurs when calling this service.</p>							
+							<p><input type="checkbox" name="errorScenario" value="true" <c:if test='${mockservice.errorScenarioId eq mockscenario.id and !empty mockservice.errorScenarioId}'>checked</c:if>> Make this the response if an error occurs when calling this service.</p>							
 						</td>
 					</tr>
 					<tr>
 						<th><p>Universal Error Response</p></th>
 						<td>							
-							<p><input type="checkbox" name="universalErrorScenario" value="true" <c:if test='${(!empty universalErrorScenario) and universalErrorScenario.id eq mockscenario.id }'>checked</c:if>> The response for all services if an error occurs (if an error scenario is not defined for that service).</p>
+							<p><input type="checkbox" name="universalErrorScenario" value="true" <c:if test='${(!empty universalErrorScenario) and universalErrorScenario.id eq mockscenario.id }'>checked</c:if>> Make this the response for <b>all</b> services if an error occurs (if an error scenario is not defined for that service).</p>
 						</td>
 					</tr>
                 </tbody>
