@@ -150,7 +150,7 @@ $(document).ready(function() {
 			                  <b>Dynamic Scenario</b> 
 			                  </p>
                               <p>
-                                <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" value="1" <c:if test='${mockservice.serviceResponseType eq 1}'>checked</c:if> /> 
+                                <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="staticScenario_<c:out value="${mockservice.id}"/>" value="1" <c:if test='${mockservice.serviceResponseType eq 1}'>checked</c:if> /> 
                                 <b>Static Scenario</b> 
                                 <c:if test="${empty mockservice.scenarios and mockservice.serviceResponseType ne 0}">
                                 <c:url value="/scenario" var="scenarioUrl">
@@ -173,7 +173,7 @@ $(document).ready(function() {
 	                                  <c:when test="${not empty mockservice.scenarios}">	                                
 	                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
 	                                    <li>
-	                                      <input type="radio" name="scenario_<c:out value="${mockservice.id}"/>" id="scenario_<c:out value="${mockservice.id}"/>" value="<c:out value="${scenario.id}"/>"
+	                                      <input type="radio" onclick="$('#staticScenario_<c:out value="${mockservice.id}"/>').attr('checked', true);" name="scenario_<c:out value="${mockservice.id}"/>" id="scenario_<c:out value="${mockservice.id}"/>" value="<c:out value="${scenario.id}"/>"
 	                                      <c:if test='${mockservice.defaultScenarioId eq scenario.id}'>checked</c:if> />
 	                                      <c:url value="/scenario" var="scenarioEditUrl">
 	                                        <c:param name="serviceId" value="${mockservice.id}" />

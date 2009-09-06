@@ -11,6 +11,7 @@
 <script type="text/javascript" src="<c:url value="/javascript/jquery.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-impromptu.2.7.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/xmlTidy.js" />"></script>
 
  <script LANGUAGE="Javascript">
 <!---
@@ -18,6 +19,31 @@ function decision(message, url){
 if(confirm(message)) location.href = url;
 }
 // --->
+
+$(document).ready(function() {
+
+	var makeExactlyAsTallAsItNeedsToBe = function(textArea) {
+		var content = $(textArea).val() == undefined ? "" : $(textArea).val();
+		var numOfRowsOfContent = 1;
+		try { numOfRowsOfContent = content.match(/[^\n]*\n[^\n]*/gi).length; } catch(e) {}
+		var maxSize = 40;
+		textArea.rows = numOfRowsOfContent<maxSize?numOfRowsOfContent+1:maxSize;
+	}
+	$('textarea').each( function() {
+		makeExactlyAsTallAsItNeedsToBe(this);
+		$(this).keyup( function(e) {
+			makeExactlyAsTallAsItNeedsToBe(this);
+		});
+		$(this).change( function(e) {
+			makeExactlyAsTallAsItNeedsToBe(this);
+		});
+		$(this).bind( "reformatted", function(e) {
+			makeExactlyAsTallAsItNeedsToBe(this);
+		});
+	});
+
+});
+
 </script>
 </head>
 <body>

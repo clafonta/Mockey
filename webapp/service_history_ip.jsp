@@ -2,6 +2,27 @@
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <c:set var="pageTitle" value="History" scope="request"/>
 <jsp:include page="/WEB-INF/common/header.jsp" />
+<script>
+$(document).ready(function() {
+
+	$('.mockeyResponse').each( function() {
+		var formatButton = $(this).find(".formatButton")[0];
+		$(formatButton).click( function() {
+			var contentTextArea = $(this).parent().parent().find(".responseContent")[0];
+			var theId = this.id;
+			formatXmlInTextArea(contentTextArea);
+			return false;
+		});
+		var formatXmlInTextArea = function(textArea) {
+			var unFormatted = $(textArea).val();
+			var formatted = format_xml(unFormatted);
+			$(textArea).val(formatted);
+			$(textArea).trigger("reformatted");
+		}
+	});
+
+});
+</script>
 <div id="main">
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
     <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
@@ -31,7 +52,7 @@
 	                                       <c:param name="scenarioId" value="${scenario.id}" />
 	                                       <c:param name="action" value="delete" />
 	                                    </c:url>
-	                                    <a href="<c:out value="${deleteScenarioUrl}"/>"><img src="<c:url value="/images/cross.png"/>"</a>
+	                                    <a href="<c:out value="${deleteScenarioUrl}"/>"><img src="<c:url value="/images/cross.png"/>"></a>
 	                                    </p>
 	                                    <p><b>Time and IP:</b> <c:out value="${scenario.serviceInfo.scenarioName}"/> </p>
 	                                </td>
@@ -51,7 +72,7 @@
 	                            </tr>
 	                            <tr>
 	                                <td >
-	                                  <div class="addition_message">
+	                                  <div id="scenario${scenario.id}" class="addition_message mockeyResponse">
 	                                    <h3>Response: </h3>
 	                                    <p>Status</p>
 	                                    <p>
@@ -63,12 +84,13 @@
                                         </p>
                                         <p>Body</p>
 	                                    <p>
-                                            <textarea name="responseMessage" rows="10" cols="80%"><c:out value="${scenario.responseMessage.body}"/></textarea>                                            
+	                                        <button class="formatButton" style="border: 1px solid #006; background: #ccf; margin-left: 60%; border-bottom-width:0;">Format Body</button>
+                                            <textarea style="margin-top: 0px;" name="responseMessage" class="responseContent" rows="10" cols="80%"><c:out value="${scenario.responseMessage.body}"/></textarea>                                            
                                         </p>
                                         <p>
                                         <input type="submit" name="Save" value="Save Response as a Scenario" />
                                         </p>
-                                        </div>
+                                      </div>
 	                                </td>
 	                            </tr>
 	                        </tbody>   
