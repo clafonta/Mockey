@@ -44,6 +44,22 @@ $(document).ready(function() {
 
 });
 
+$(document).ready(function() {
+    $('#flush').click(
+        function () {
+             $.prompt(
+                    'Are you sure? This will delete everything. You may want to export your stuff first.', {
+                        callback: function (proceed) {
+                            if(proceed) document.location="<c:url value="/home?action=deleteAllServices" />";
+                        },
+                        buttons: {
+                            'Delete Everything': true,
+                            Cancel: false
+                        }
+                    }
+                );
+        })
+});
 </script>
 </head>
 <body>
@@ -58,8 +74,6 @@ $(document).ready(function() {
     <li><a <c:if test="${currentTab == 'upload'}">id ="current"</c:if> href="<c:url value="/upload" />">Upload Service Definitions</a> | </li>
     <li><a <c:if test="${currentTab == 'export'}">id ="current"</c:if> href="<c:url value="/export" />">Export Service Definitions</a> | </li>
     <li><a <c:if test="${currentTab == 'proxy'}">id ="current"</c:if> href="<c:url value="/proxy/settings" />">Proxy Settings</a> | </li>    
-    <li><a href="javascript:decision('Are you sure? This will delete everything. You may want to export your stuff first.', '<c:url value="/home?action=deleteAllServices" />')">Flush</a> | </li>
-    <li><a <c:if test="${currentTab == 'help'}">id ="current"</c:if> href="<c:url value="/help" />">Help</a></li>
-    
-</ul>
+    <li><a id="flush">Flush</a> | </li>
+    <li><a <c:if test="${currentTab == 'help'}">id ="current"</c:if> href="<c:url value="/help" />">Help</a></li></ul>
 </div>

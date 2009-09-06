@@ -107,7 +107,7 @@ $(document).ready(function() {
 			$("#responseMessage_<c:out value="${mockservice.id}"/>").html(
 					$("report", xml).text()
 			);
-			$.prompt("Service '<c:out value="${mockservice.serviceName}"/>' updated.");
+			$.prompt("Service '<c:out value="${mockservice.serviceName}"/>' updated.", { timeout: 2000});
 		});
 	});
 });
@@ -255,7 +255,7 @@ $(document).ready(function() {
     </div>
 	        </c:when>
 	        <c:otherwise>
-			  <p class="alert_message">There are no mock services defined. You can <a href="<c:url value="setup"/>">create one</a> or start <a href="<c:url value="help#record"/>">recording</a>. </p>			  
+			  <p class="alert_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. </p>			  
 			  
 			  
 			</c:otherwise>
