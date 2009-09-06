@@ -73,7 +73,7 @@ public class ClientExecuteProxy {
     //
     // }
 
-    public ResponseMessage execute(ProxyServer proxyServer, MockServiceBean serviceBean, RequestFromClient request)
+    public ResponseMessage execute(ProxyServerModel proxyServer, MockServiceBean serviceBean, RequestFromClient request)
             throws Exception {
         log.info("Request: " + String.valueOf(serviceBean));
 

@@ -55,13 +55,13 @@ public interface MockServiceStore {
 	 * Support for proxy server 
 	 * @return
 	 */
-	public ProxyServer getProxyInfo();
+	public ProxyServerModel getProxyInfo();
 	
 	/**
 	 * 
 	 * @param proxyInfoBean
 	 */
-	public void setProxyInfo(ProxyServer proxyInfoBean);
+	public void setProxyInfo(ProxyServerModel proxyInfoBean);
 	
 	/**
 	 * 

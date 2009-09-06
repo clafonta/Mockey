@@ -32,7 +32,7 @@ public class MockServiceStoreImpl implements MockServiceStore {
      * Basic logger
      */
     private static Logger logger = Logger.getLogger(MockServiceStoreImpl.class);
-    private ProxyServer proxyInfoBean = new ProxyServer();
+    private ProxyServerModel proxyInfoBean = new ProxyServerModel();
     private OrderedMap historyCache = new OrderedMap();
     private OrderedMap mockServiceStore = new OrderedMap();
     private OrderedMap servicePlanStore = new OrderedMap();
@@ -139,11 +139,11 @@ public class MockServiceStoreImpl implements MockServiceStore {
         }
     }
 
-    public ProxyServer getProxyInfo() {
+    public ProxyServerModel getProxyInfo() {
         return this.proxyInfoBean;
     }
 
-    public void setProxyInfo(ProxyServer proxyInfoBean) {
+    public void setProxyInfo(ProxyServerModel proxyInfoBean) {
         this.proxyInfoBean = proxyInfoBean;
 
     }

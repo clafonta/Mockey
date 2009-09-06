@@ -122,7 +122,7 @@ public class MockServiceStoreTest implements MockServiceStore {
         return beans;
     }
 
-    public ProxyServer getProxyInfo() {
+    public ProxyServerModel getProxyInfo() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -137,7 +137,7 @@ public class MockServiceStoreTest implements MockServiceStore {
 
     }
 
-    public void setProxyInfo(ProxyServer proxyInfoBean) {
+    public void setProxyInfo(ProxyServerModel proxyInfoBean) {
         // TODO Auto-generated method stub
 
     }
