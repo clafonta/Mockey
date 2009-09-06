@@ -48,7 +48,7 @@ $(document).ready(function() {
     $('#flush').click(
         function () {
              $.prompt(
-                    'Are you sure? This will delete everything. You may want to export your stuff first.', {
+                    'Are you sure? This will delete everything. You may want to <a href="<c:url value="/export" />">export your stuff</a> first.', {
                         callback: function (proceed) {
                             if(proceed) document.location="<c:url value="/home?action=deleteAllServices" />";
                         },
