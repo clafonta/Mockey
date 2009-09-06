@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.mockey.model.Item;
+
 /**
  * Keeps an ordered map of items, order based on 'when defined and added to this object'
  * 

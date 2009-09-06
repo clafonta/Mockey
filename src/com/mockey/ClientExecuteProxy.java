@@ -32,8 +32,10 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
-import com.mockey.web.RequestFromClient;
-import com.mockey.web.ResponseMessage;
+import com.mockey.model.ProxyServerModel;
+import com.mockey.model.RequestFromClient;
+import com.mockey.model.ResponseMessage;
+import com.mockey.model.Service;
 
 /**
  * How to send a request via proxy using {@link HttpClient}.
@@ -73,7 +75,7 @@ public class ClientExecuteProxy {
     //
     // }
 
-    public ResponseMessage execute(ProxyServerModel proxyServer, MockServiceBean serviceBean, RequestFromClient request)
+    public ResponseMessage execute(ProxyServerModel proxyServer, Service serviceBean, RequestFromClient request)
             throws Exception {
         log.info("Request: " + String.valueOf(serviceBean));
 

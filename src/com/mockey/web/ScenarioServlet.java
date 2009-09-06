@@ -1,0 +1,185 @@
+/*
+ * Copyright 2002-2006 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mockey.web;
+
+import java.io.IOException;
+import java.util.Map;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.mockey.ScenarioValidator;
+import com.mockey.model.Service;
+import com.mockey.model.Scenario;
+import com.mockey.storage.IMockeyStorage;
+import com.mockey.storage.XmlMockeyStorage;
+
+public class ScenarioServlet extends HttpServlet {
+
+    private static final long serialVersionUID = -5920793024759540668L;
+    private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        Long serviceId = new Long(req.getParameter("serviceId"));
+        Long scenarioId = null;
+        try {
+            scenarioId = new Long(req.getParameter("scenarioId"));
+        } catch (Exception e) {
+            // 
+        }
+
+        // HACK: saving large message scenarios via GET will reach
+        // the threshold for parameter size, thus we need to override
+        // certain POST action types, and redirect them to the GET
+        // method.
+        String actionTypeGetFlag = req.getParameter("actionTypeGetFlag");
+
+        if (req.getParameter("delete") != null && serviceId != null && scenarioId != null) {
+            Service ms = store.getMockServiceById(serviceId);
+            ms.deleteScenario(scenarioId);
+            store.saveOrUpdate(ms);
+            resp.sendRedirect("setup?id=" + serviceId);
+            return;
+        }
+        if (req.getParameter("cancel") != null) {
+            resp.sendRedirect("setup?id=" + serviceId);
+            return;
+        }
+
+        if (actionTypeGetFlag != null) {
+            doGet(req, resp);
+        } else {
+            super.service(req, resp);
+        }
+
+    }
+
+    /**
+     * 
+     * 
+     * @param req
+     *            basic request
+     * @param resp
+     *            basic resp
+     * @throws ServletException
+     *             basic
+     * @throws IOException
+     *             basic
+     */
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        Long serviceId = new Long(req.getParameter("serviceId"));
+        Long scenarioId = null;
+        try {
+            scenarioId = new Long(req.getParameter("scenarioId"));
+        } catch (Exception e) {
+            //
+        }
+
+        String responseMsg = req.getParameter("responseMessage");
+
+        Service ms = store.getMockServiceById(serviceId);
+
+        Scenario mss = ms.getScenario(scenarioId);
+        if (mss == null) {
+            mss = new Scenario();
+        }
+
+        if (responseMsg != null) {
+            mss.setResponseMessage(responseMsg);
+        }
+
+        req.setAttribute("mockservice", ms);
+        req.setAttribute("mockscenario", mss);
+        req.setAttribute("universalErrorScenario", store.getUniversalErrorResponse());
+        RequestDispatcher dispatch = req.getRequestDispatcher("/service_scenario_setup.jsp");
+        dispatch.forward(req, resp);
+    }
+
+    /**
+     * 
+     * 
+     * @param req
+     *            basic request
+     * @param resp
+     *            basic resp
+     * @throws ServletException
+     *             basic
+     * @throws IOException
+     *             basic
+     */
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        Long serviceId = new Long(req.getParameter("serviceId"));
+        Service ms = store.getMockServiceById(serviceId);
+
+        Scenario mss = null;
+        try {
+            mss = ms.getScenario(new Long(req.getParameter("scenarioId")));
+        } catch (Exception e) {
+            //
+        }
+
+        if (mss == null) {
+            mss = new Scenario();
+        }
+
+        mss.setScenarioName(req.getParameter("scenarioName"));
+        mss.setResponseMessage(req.getParameter("responseMessage"));
+        mss.setMatchStringArg(req.getParameter("matchStringArg"));
+
+        Map errorMap = ScenarioValidator.validate(mss);
+
+        if ((errorMap != null) && (errorMap.size() == 0)) {
+
+            mss = ms.updateScenario(mss);
+
+            // Error response for this service.
+            if (req.getParameter("errorScenario") != null) {
+                ms.setErrorScenarioId(mss.getId());
+            } else if (ms.getErrorScenarioId() == mss.getId()) {
+                ms.setErrorScenarioId(null);
+            }
+
+            // Universal error response, for all services.
+            if (req.getParameter("universalErrorScenario") != null) {
+                store.setUniversalErrorScenarioId(mss.getId());
+                store.setUniversalErrorServiceId(serviceId);
+                
+            } else if (store.getUniversalErrorResponse() != null
+                    && store.getUniversalErrorResponse().getId() == mss.getId()) {
+                store.setUniversalErrorScenarioId(null);
+                store.setUniversalErrorServiceId(null);
+            }
+
+            store.saveOrUpdate(ms);
+            Util.saveSuccessMessage("Service updated", req);
+
+        }
+
+        req.setAttribute("mockscenario", mss);
+        req.setAttribute("mockservice", ms);
+        req.setAttribute("universalErrorScenario", store.getUniversalErrorResponse());
+        Util.saveErrorMap(errorMap, req);
+
+        RequestDispatcher dispatch = req.getRequestDispatcher("/service_scenario_setup.jsp");
+        dispatch.forward(req, resp);
+    }
+}

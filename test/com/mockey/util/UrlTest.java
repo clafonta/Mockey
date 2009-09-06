@@ -2,6 +2,8 @@ package com.mockey.util;
 
 import org.testng.annotations.Test;
 
+import com.mockey.model.Url;
+
 
 @Test
 public class UrlTest {

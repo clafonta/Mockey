@@ -2,13 +2,15 @@ package com.mockey;
 
 import org.testng.annotations.Test;
 
+import com.mockey.model.Service;
+
 
 @Test
 public class MockServiceBeanTest {
 
     @Test
     public void parsesRealServiceUrlIntoHostAndPath() {
-        MockServiceBean bean = new MockServiceBean();
+        Service bean = new Service();
 
         bean.setRealServiceUrlByString("mfasa-qa2.chase.com/auth/fcc/login");
 
@@ -18,7 +20,7 @@ public class MockServiceBeanTest {
 
     @Test
     public void parsesSchemeFromRealServiceUrl() {
-        MockServiceBean bean = new MockServiceBean();
+        Service bean = new Service();
 
         bean.setRealServiceUrlByString("HTtP://www.google.com");
         assert "www.google.com".equals(bean.getUrl().getHost()) : "expected www.google.com got "+bean.getUrl().getHost();
