@@ -86,7 +86,7 @@ public class ResponseServlet extends HttpServlet {
             urlPath = urlPath.substring(contextRoot.length(), urlPath.length());
         }
         Url urlObj = new Url(urlPath);
-        Service realService = store.getMockServiceByUrl(urlObj.getFullUrl());
+        Service realService = store.getServiceByUrl(urlObj.getFullUrl());
         if (realService == null) {
 
             realService = new Service(urlObj);

@@ -110,9 +110,9 @@ public class Service implements Item {
         this.scenarios.remove(scenarioId);
     }
 
-    public Scenario updateScenario(Scenario mss) {
-        mss.setServiceId(this.id);
-        return (Scenario)this.scenarios.save(mss);
+    public Scenario updateScenario(Scenario scenario) {
+        scenario.setServiceId(this.id);
+        return (Scenario)this.scenarios.save(scenario);
     }
 
     public String getMockServiceUrl() {
@@ -197,13 +197,10 @@ public class Service implements Item {
         this.id = id;
 
         // Recursively set this ID to child Scenarios, if any exist.
-        Iterator<Scenario> iter = getScenarios().iterator();
-        while (iter.hasNext()) {
-            Scenario mssb = iter.next();
-            mssb.setServiceId(this.id);
-            this.updateScenario(mssb);
+        for (Scenario scenario : getScenarios()) {
+            scenario.setServiceId(this.id);
+            this.updateScenario(scenario);
         }
-
     }
 
     public Long getId() {

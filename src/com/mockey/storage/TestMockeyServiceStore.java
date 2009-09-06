@@ -43,7 +43,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return null;
     }
 
-    public Service getMockServiceByUrl(String urlPath) {
+    public Service getServiceByUrl(String urlPath) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -53,7 +53,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return null;
     }
 
-    public List getMockServicePlanList() {
+    public List getServicePlans() {
         List planList = new ArrayList();
         ServicePlan msp = new ServicePlan();
         msp.setId(new Long(1));
@@ -90,7 +90,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return planList;
     }
 
-    public List getOrderedList() {
+    public List getOrderedListOfServices() {
         List beans = new ArrayList();
         Service bean = new Service(new Url("http://someservice:8000/eai2"));
         bean.setServiceName("testname");

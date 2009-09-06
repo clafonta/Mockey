@@ -55,7 +55,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
         return (Service) mockServiceStore.get(id);
     }
 
-    public Service getMockServiceByUrl(String urlPath) {
+    public Service getServiceByUrl(String urlPath) {
        
        
         try {
@@ -88,7 +88,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
         }
     }
 
-    public List getOrderedList() {
+    public List getOrderedListOfServices() {
         return this.mockServiceStore.getOrderedList();
     }
 
@@ -167,7 +167,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
 
 		
 	@SuppressWarnings("unchecked")
-	public List getMockServicePlanList() {
+	public List getServicePlans() {
 		return this.servicePlanStore.getOrderedList();
 	}
 

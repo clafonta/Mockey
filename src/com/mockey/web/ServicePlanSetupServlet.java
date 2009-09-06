@@ -60,7 +60,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
         log.debug("Service Plan setup/delete");
         ServicePlan servicePlan = null;
         Long servicePlanId = null;
-        List allServices = store.getOrderedList();
+        List<Service> allServices = store.getOrderedListOfServices();
         try {
             servicePlanId = new Long(req.getParameter("plan_id"));
             servicePlan = store.getMockServicePlan(servicePlanId);
@@ -105,7 +105,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
             servicePlan = new ServicePlan();
         }
         req.setAttribute("services", allServices);
-        req.setAttribute("plans", store.getMockServicePlanList());
+        req.setAttribute("plans", store.getServicePlans());
         req.setAttribute("plan", servicePlan);
         req.setAttribute("universalError", store.getUniversalErrorResponse());
         RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
@@ -192,8 +192,8 @@ public class ServicePlanSetupServlet extends HttpServlet {
 
         }
 
-        req.setAttribute("services", store.getOrderedList());
-        req.setAttribute("plans", store.getMockServicePlanList());
+        req.setAttribute("services", store.getOrderedListOfServices());
+        req.setAttribute("plans", store.getServicePlans());
         req.setAttribute("plan", servicePlan);
         req.setAttribute("universalError", store.getUniversalErrorResponse());
         RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");

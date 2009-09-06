@@ -56,13 +56,13 @@ public class ServiceSetupServlet extends HttpServlet {
 		}
 
 		if (req.getParameter("delete") != null && serviceId != null) {
-			Service bean = store.getMockServiceById(serviceId);
-			store.delete(bean);
+			Service service = store.getMockServiceById(serviceId);
+			store.delete(service);
 			store.flushHistoryRequestMsgs(serviceId);
 			
-			Util.saveSuccessMessage("Service '"+bean.getServiceName()+"' was deleted.", req);
+			Util.saveSuccessMessage("Service '"+service.getServiceName()+"' was deleted.", req);
 			// Check to see if any plans need an update. 
-			List planList = store.getMockServicePlanList();
+			List<ServicePlan> planList = store.getServicePlans();
 			Iterator iter = planList.iterator();
 			String errorMessage = null;
 			while(iter.hasNext()){
@@ -107,16 +107,16 @@ public class ServiceSetupServlet extends HttpServlet {
 		}catch(Exception e){
 			// Do nothing
 		}
-		Service ms = null;
+		Service service = null;
 
 		if (serviceId != null) {
-			ms = store.getMockServiceById(serviceId);
+			service = store.getMockServiceById(serviceId);
 		}
-		if (ms == null) {
-			ms = new Service(null);
+		if (service == null) {
+			service = new Service(null);
 		}
 
-		req.setAttribute("mockservice", ms);
+		req.setAttribute("mockservice", service);
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("/service_setup.jsp");
 		dispatch.forward(req, resp);
@@ -137,7 +137,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 	    String realSrvUrl = req.getParameter("realServiceUrl");
 	    Url urlObj = new Url(realSrvUrl);
-		Service ms = new Service(urlObj);
+		Service service = new Service(urlObj);
 		Long serviceId = null;
 		
 		try {
@@ -147,26 +147,26 @@ public class ServiceSetupServlet extends HttpServlet {
 			// Do nothing
 		}
 		if(serviceId!=null){
-			ms = this.store.getMockServiceById(serviceId);
+			service = this.store.getMockServiceById(serviceId);
 		}
-		ms.setRealServiceUrl(urlObj);
-		ms.setServiceName(req.getParameter("serviceName"));
-		ms.setDescription(req.getParameter("description"));
-		ms.setHttpHeaderDefinition(req.getParameter("httpHeaderDefinition"));		
-		Map errorMap = ServiceValidator.validate(ms);
+		service.setRealServiceUrl(urlObj);
+		service.setServiceName(req.getParameter("serviceName"));
+		service.setDescription(req.getParameter("description"));
+		service.setHttpHeaderDefinition(req.getParameter("httpHeaderDefinition"));		
+		Map errorMap = ServiceValidator.validate(service);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {
 			// no errors, so create service.
 			
 			Util.saveSuccessMessage("Service updated.", req);
-			store.saveOrUpdate(ms);
+			store.saveOrUpdate(service);
 			
 		} else {
 			Util.saveErrorMessage("Service not added/updated.", req);
 			Util.saveErrorMap(errorMap, req);
 			
 		}
-		req.setAttribute("mockservice", ms);
+		req.setAttribute("mockservice", service);
 		RequestDispatcher dispatch = req.getRequestDispatcher("/service_setup.jsp");
 		dispatch.forward(req, resp);
 	}

@@ -37,9 +37,10 @@ public interface IMockeyStorage {
 	 * 
 	 * @return a list of MockServicePlan objects. 
 	 */
-	public List<ServicePlan> getMockServicePlanList();
+	public List<ServicePlan> getServicePlans();
 	public void saveOrUpdateServicePlan(ServicePlan servicePlan);
 	public void deleteServicePlan(ServicePlan servicePlan);
+	
 	public Scenario getUniversalErrorResponse();
 	public void setUniversalErrorServiceId(Long serviceId);
 	public void setUniversalErrorScenarioId(Long scenarioId);
@@ -48,12 +49,12 @@ public interface IMockeyStorage {
 	 * @param urlPath
 	 * @return MockServiceBean if urlPath equals a mock URI, null otherwise.
 	 */
-	public Service getMockServiceByUrl(String urlPath);
+	public Service getServiceByUrl(String urlPath);
 
-	public void saveOrUpdate(Service mockServiceBean);
+	public void saveOrUpdate(Service service);
 
 	public void deleteAll();
-	public void delete(Service mockServiceBean);
+	public void delete(Service service);
 
 	/**
 	 * Support for proxy server 
@@ -69,9 +70,9 @@ public interface IMockeyStorage {
 	
 	/**
 	 * 
-	 * @return list of MockServiceBean objects, ordered by id
+	 * @return list of Service objects, ordered by id
 	 */
-	public List<Service> getOrderedList();
+	public List<Service> getOrderedListOfServices();
 
 	/**
 	 * 

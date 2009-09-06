@@ -126,11 +126,11 @@ public class UploadConfigurationServlet extends HttpServlet {
                     // 2) NO MATCHING MOCK URL
                     // If there is no matching service URL, then create a new
                     // service and associated scenarios.
-                    List uploadedServices = mockServiceStoreTemporary.getOrderedList();
+                    List uploadedServices = mockServiceStoreTemporary.getOrderedListOfServices();
                     Iterator iter2 = uploadedServices.iterator();
                     while (iter2.hasNext()) {
                         Service uploadedServiceBean = (Service) iter2.next();
-                        List serviceBeansInMemory = store.getOrderedList();
+                        List serviceBeansInMemory = store.getOrderedListOfServices();
                         Iterator iter3 = serviceBeansInMemory.iterator();
                         boolean existingServiceWithMatchingMockUrl = false;
                         Service inMemoryServiceBean = null;
@@ -183,7 +183,7 @@ public class UploadConfigurationServlet extends HttpServlet {
 
                     }
                     // PLANS
-                    List servicePlans = mockServiceStoreTemporary.getMockServicePlanList();
+                    List servicePlans = mockServiceStoreTemporary.getServicePlans();
                     Iterator iter3 = servicePlans.iterator();
                     while (iter3.hasNext()) {
                         ServicePlan servicePlan = (ServicePlan) iter3.next();

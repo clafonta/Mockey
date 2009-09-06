@@ -42,8 +42,8 @@ public class HomeServlet extends HttpServlet {
             IMockeyStorage store = XmlMockeyStorage.getInstance();
             store.deleteAll();
         } else {
-            req.setAttribute("services", store.getOrderedList());
-            req.setAttribute("plans", store.getMockServicePlanList());
+            req.setAttribute("services", store.getOrderedListOfServices());
+            req.setAttribute("plans", store.getServicePlans());
             req.setAttribute("plan", new ServicePlan());
             req.setAttribute("universalError", store.getUniversalErrorResponse());
         }

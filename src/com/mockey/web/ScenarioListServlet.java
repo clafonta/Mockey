@@ -48,8 +48,8 @@ public class ScenarioListServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		Long serviceId = new Long(req.getParameter("serviceId"));
-		Service ms = store.getMockServiceById(serviceId);
-		req.setAttribute("mockservice", ms);
+		Service service = store.getMockServiceById(serviceId);
+		req.setAttribute("service", service);
 		RequestDispatcher dispatch = req
 				.getRequestDispatcher("/service_scenario_list.jsp");
 		dispatch.forward(req, resp);

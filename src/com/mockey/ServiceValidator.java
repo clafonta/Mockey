@@ -55,7 +55,7 @@ public class ServiceValidator {
         // Make sure there doesn't exist a service
         // w/ the same serviceURL.
         try {
-            List testServices = store.getOrderedList();
+            List testServices = store.getOrderedListOfServices();
             Iterator iter = testServices.iterator();
             Service ts;
 

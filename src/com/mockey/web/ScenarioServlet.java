@@ -52,9 +52,9 @@ public class ScenarioServlet extends HttpServlet {
         String actionTypeGetFlag = req.getParameter("actionTypeGetFlag");
 
         if (req.getParameter("delete") != null && serviceId != null && scenarioId != null) {
-            Service ms = store.getMockServiceById(serviceId);
-            ms.deleteScenario(scenarioId);
-            store.saveOrUpdate(ms);
+            Service service = store.getMockServiceById(serviceId);
+            service.deleteScenario(scenarioId);
+            store.saveOrUpdate(service);
             resp.sendRedirect("setup?id=" + serviceId);
             return;
         }
@@ -95,19 +95,19 @@ public class ScenarioServlet extends HttpServlet {
 
         String responseMsg = req.getParameter("responseMessage");
 
-        Service ms = store.getMockServiceById(serviceId);
+        Service service = store.getMockServiceById(serviceId);
 
-        Scenario mss = ms.getScenario(scenarioId);
-        if (mss == null) {
-            mss = new Scenario();
+        Scenario scenario = service.getScenario(scenarioId);
+        if (scenario == null) {
+            scenario = new Scenario();
         }
 
         if (responseMsg != null) {
-            mss.setResponseMessage(responseMsg);
+            scenario.setResponseMessage(responseMsg);
         }
 
-        req.setAttribute("mockservice", ms);
-        req.setAttribute("mockscenario", mss);
+        req.setAttribute("mockservice", service);
+        req.setAttribute("mockscenario", scenario);
         req.setAttribute("universalErrorScenario", store.getUniversalErrorResponse());
         RequestDispatcher dispatch = req.getRequestDispatcher("/service_scenario_setup.jsp");
         dispatch.forward(req, resp);
@@ -128,54 +128,54 @@ public class ScenarioServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Long serviceId = new Long(req.getParameter("serviceId"));
-        Service ms = store.getMockServiceById(serviceId);
+        Service service = store.getMockServiceById(serviceId);
 
-        Scenario mss = null;
+        Scenario scenario = null;
         try {
-            mss = ms.getScenario(new Long(req.getParameter("scenarioId")));
+            scenario = service.getScenario(new Long(req.getParameter("scenarioId")));
         } catch (Exception e) {
             //
         }
 
-        if (mss == null) {
-            mss = new Scenario();
+        if (scenario == null) {
+            scenario = new Scenario();
         }
 
-        mss.setScenarioName(req.getParameter("scenarioName"));
-        mss.setResponseMessage(req.getParameter("responseMessage"));
-        mss.setMatchStringArg(req.getParameter("matchStringArg"));
+        scenario.setScenarioName(req.getParameter("scenarioName"));
+        scenario.setResponseMessage(req.getParameter("responseMessage"));
+        scenario.setMatchStringArg(req.getParameter("matchStringArg"));
 
-        Map errorMap = ScenarioValidator.validate(mss);
+        Map errorMap = ScenarioValidator.validate(scenario);
 
         if ((errorMap != null) && (errorMap.size() == 0)) {
 
-            mss = ms.updateScenario(mss);
+            scenario = service.updateScenario(scenario);
 
             // Error response for this service.
             if (req.getParameter("errorScenario") != null) {
-                ms.setErrorScenarioId(mss.getId());
-            } else if (ms.getErrorScenarioId() == mss.getId()) {
-                ms.setErrorScenarioId(null);
+                service.setErrorScenarioId(scenario.getId());
+            } else if (service.getErrorScenarioId() == scenario.getId()) {
+                service.setErrorScenarioId(null);
             }
 
             // Universal error response, for all services.
             if (req.getParameter("universalErrorScenario") != null) {
-                store.setUniversalErrorScenarioId(mss.getId());
+                store.setUniversalErrorScenarioId(scenario.getId());
                 store.setUniversalErrorServiceId(serviceId);
                 
             } else if (store.getUniversalErrorResponse() != null
-                    && store.getUniversalErrorResponse().getId() == mss.getId()) {
+                    && store.getUniversalErrorResponse().getId() == scenario.getId()) {
                 store.setUniversalErrorScenarioId(null);
                 store.setUniversalErrorServiceId(null);
             }
 
-            store.saveOrUpdate(ms);
+            store.saveOrUpdate(service);
             Util.saveSuccessMessage("Service updated", req);
 
         }
 
-        req.setAttribute("mockscenario", mss);
-        req.setAttribute("mockservice", ms);
+        req.setAttribute("mockscenario", scenario);
+        req.setAttribute("mockservice", service);
         req.setAttribute("universalErrorScenario", store.getUniversalErrorResponse());
         Util.saveErrorMap(errorMap, req);
 

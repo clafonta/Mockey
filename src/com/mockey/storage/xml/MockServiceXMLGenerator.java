@@ -56,7 +56,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
             this.setAttribute(rootElement,"universal_error_scenario_id", ""+mssb.getId());
         }
 
-		Iterator iterator = store.getOrderedList().iterator();
+		Iterator iterator = store.getOrderedListOfServices().iterator();
 		logger.debug("building DOM:");
 		while (iterator.hasNext()) {
 			Service mockServiceBean = (Service) iterator.next();
@@ -109,7 +109,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 		
 		// SERVICE PLANS
 		
-		List servicePlans = store.getMockServicePlanList();
+		List servicePlans = store.getServicePlans();
 		if(servicePlans!=null){
 			Iterator iter = servicePlans.iterator();
 			while(iter.hasNext()){
