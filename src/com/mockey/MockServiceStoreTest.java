@@ -167,4 +167,16 @@ public class MockServiceStoreTest implements MockServiceStore {
         
     }
 
+	@Override
+	public List<String> uniqueClientIPs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> uniqueClientIPsForService(MockServiceBean msb) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

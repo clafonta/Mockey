@@ -15,6 +15,7 @@
  */
 package com.mockey;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -197,4 +198,27 @@ public class MockServiceStoreImpl implements MockServiceStore {
         
     }
 
+	@Override
+	public List<String> uniqueClientIPs() {
+		List<String> uniqueIPs = new ArrayList<String>();
+		for (RequestResponseTransaction tx : this.store.getHistoryScenarios()) {
+			String tmpIP = tx.getServiceInfo().getConsumerId();
+			if (!uniqueIPs.contains(tmpIP)) {
+				uniqueIPs.add(tmpIP);
+			}
+		}
+		return uniqueIPs;
+	}
+
+	@Override
+	public List<String> uniqueClientIPsForService(MockServiceBean msb) {
+		List<String> uniqueIPs = new ArrayList<String>();
+		for (RequestResponseTransaction tx : this.store.getHistoryScenarios()) {
+			String ip = tx.getServiceInfo().getConsumerId();
+			if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId()==msb.getId()) {
+				uniqueIPs.add(ip);
+			}
+		}
+		return uniqueIPs;
+	}
 }

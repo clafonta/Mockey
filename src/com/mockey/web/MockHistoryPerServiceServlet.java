@@ -43,34 +43,14 @@ public class MockHistoryPerServiceServlet extends HttpServlet {
     private static MockServiceStore store = MockServiceStoreImpl.getInstance();
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        String serviceIdAsString = req.getParameter("serviceId");
-        Long serviceId = new Long(serviceIdAsString);
-        MockServiceBean ms = store.getMockServiceById(new Long(serviceId));
-        req.setAttribute("mockservice", ms);
-        
-        List htmlOutput = new ArrayList();
-        List scenarioList = store.getHistoryScenarios();
-		Map visitedAddresses = new HashMap();
-		if (scenarioList != null && scenarioList.size() > 0) {
-			Iterator iter = scenarioList.iterator();
-			while (iter.hasNext()) {
-			    RequestResponseTransaction item = (RequestResponseTransaction) iter.next();
-				if (item.getServiceInfo().getServiceId().equals(serviceId) && visitedAddresses.get(item.getServiceInfo().getConsumerId()) == null) {
-					StringBuffer sb = new StringBuffer();
-					sb.append("<div class=\"normal\">");
-					sb.append("IP: <a href=\"detail?serviceId=" + serviceId + "&iprequest="
-							+ item.getServiceInfo().getConsumerId() + "\">" + item.getServiceInfo().getConsumerId() + "</a>");
-					sb.append("</div>");
-					htmlOutput.add(sb.toString());
-					visitedAddresses.put(item.getServiceInfo().getConsumerId(), new Boolean(true));
-				}
-			}
-		} else {
-			htmlOutput.add("Empty - no requests have been made.");
-		}
+    	List<String> ips = store.uniqueClientIPs();
+    	if (ips.size()==1) {
+    		resp.sendRedirect("detail?serviceId="+req.getParameter("serviceId")+"&iprequest="+ips.get(0));
+    		return;
+    	}
+		req.setAttribute("serviceId", req.getParameter("serviceId"));
+		req.setAttribute("uniqueIPs", ips);
 		
-		req.setAttribute("ip_addresses", htmlOutput);
         RequestDispatcher dispatch = req.getRequestDispatcher("/service_history.jsp");
         dispatch.forward(req, resp);
     }

@@ -75,6 +75,9 @@ public interface MockServiceStore {
 	 */
 	public List<RequestResponseTransaction> getHistoryScenarios();
 	
+	public List<String> uniqueClientIPs();
+	public List<String> uniqueClientIPsForService(MockServiceBean msb);
+	
 	public void addHistoricalScenario(RequestResponseTransaction requestResponseX);
 	
 	public void deleteHistoricalScenario(Long scenarioId);
