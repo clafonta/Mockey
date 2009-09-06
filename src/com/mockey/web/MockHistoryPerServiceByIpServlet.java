@@ -50,12 +50,20 @@ public class MockHistoryPerServiceByIpServlet extends HttpServlet {
 		String iprequest = req.getParameter("iprequest");
 		Long serviceId = new Long(req.getParameter("serviceId"));		
 		String action = req.getParameter("action");
+		boolean didDelete = false;
 		if(action!=null && "delete".equals(action)){
 		    // Delete from history
 		    Long scenarioId = new Long(req.getParameter("scenarioId"));		    
 		    store.deleteHistoricalScenario(scenarioId);
+
+		    // don't allow reloads to re-delete.  crappy hack.
+		    didDelete = true;
+		    
 		}else if(action!=null && "delete_all".equals(action)){
 		    store.flushHistoryRequestMsgs(serviceId);
+
+		    // don't allow reloads to re-delete.  crappy hack.
+		    didDelete = true;
 		}
 
 		MockServiceBean ms = store.getMockServiceById(serviceId);
@@ -74,6 +82,11 @@ public class MockHistoryPerServiceByIpServlet extends HttpServlet {
 		req.setAttribute("scenarioHistoryList", scenarioHistoryList);
 		req.setAttribute("mockservice", ms);
 		req.setAttribute("iprequest", iprequest);
+
+	    // don't allow reloads to re-delete.  crappy hack. 
+		if (didDelete) {
+		    resp.sendRedirect("/history/detail?serviceId="+ms.getId()+"&iprequest="+iprequest);
+		}
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("/service_history_ip.jsp");
 		dispatch.forward(req, resp);
