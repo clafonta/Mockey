@@ -29,15 +29,15 @@ public class Scenario implements Item {
     private String requestMessage;
     private String responseMessage;
     private String matchStringArg = null;
-    private String consumerId;
+    private String requestorIP;
     
 
-    public String getConsumerId() {
-        return consumerId;
+    public String getRequestorIP() {
+        return requestorIP;
     }
 
-    public void setConsumerId(String consumerId) {
-        this.consumerId = consumerId;
+    public void setRequestorIP(String consumerId) {
+        this.requestorIP = consumerId;
     }
 
     public String getScenarioName() {

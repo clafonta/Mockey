@@ -112,12 +112,12 @@ public class HistoryHtmlServlet extends HttpServlet {
 			Iterator iter = scenarioList.iterator();
 			while (iter.hasNext()) {
 				Scenario item = (Scenario) iter.next();
-				if (item.getServiceId().equals(serviceId) && visitedAddresses.get(item.getConsumerId()) == null) {
+				if (item.getServiceId().equals(serviceId) && visitedAddresses.get(item.getRequestorIP()) == null) {
 					sb.append("<div class=\"normal\">");
 					sb.append("IP: <a href=\"detail?serviceId=" + serviceId.longValue() + "&iprequest="
-							+ item.getConsumerId() + "\">" + item.getConsumerId() + "</a>");
+							+ item.getRequestorIP() + "\">" + item.getRequestorIP() + "</a>");
 					sb.append("</div>");
-					visitedAddresses.put(item.getConsumerId(), new Boolean(true));
+					visitedAddresses.put(item.getRequestorIP(), new Boolean(true));
 				}
 			}
 		} else {
@@ -141,7 +141,7 @@ public class HistoryHtmlServlet extends HttpServlet {
 			Iterator iter = scenarioList.iterator();
 			while (iter.hasNext()) {
 				Scenario item = (Scenario) iter.next();
-				if (item.getServiceId().equals(serviceId) && requestIp.equalsIgnoreCase(item.getConsumerId())) {
+				if (item.getServiceId().equals(serviceId) && requestIp.equalsIgnoreCase(item.getRequestorIP())) {
 					sb.append("<div class=\"normal\">");
 					sb.append("IP: <a href=\"checkforhistory?id=" + serviceId + "&iprequest=" + requestIp
 							+ "&scenarioNameAsIpAndTime=" + item.getScenarioName() + "\">" + item.getScenarioName()

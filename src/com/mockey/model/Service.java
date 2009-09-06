@@ -33,6 +33,7 @@ public class Service implements Item {
     public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
     public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
     public final static int SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO = 2;
+    
     private Long id;
     private String serviceName;
     private String description;
@@ -40,10 +41,19 @@ public class Service implements Item {
     private Long errorScenarioId;
     private String httpHeaderDefinition;
     private int hangTime = 500;
-    private OrderedMap scenarios = new OrderedMap();
+    private OrderedMap<Scenario> scenarios = new OrderedMap<Scenario>();
     private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
     private String httpMethod = "GET";
     private Url realServiceUrl;
+	private List<RequestResponseTransaction> transactions;
+	
+    public List<RequestResponseTransaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<RequestResponseTransaction> transactions) {
+		this.transactions = transactions;
+	}    
 
     /**
      * Empty constructor needed for XML parsing of service definitions, 
@@ -124,14 +134,6 @@ public class Service implements Item {
         
     }
 
-//    public String getRealHost() {
-//        return realServiceUrl.getHost();
-//    }
-//
-//    public String getRealPath() {
-//        return realServiceUrl.getPath();
-//    }
-
     /**
      * Helper method.
      * 
@@ -142,25 +144,9 @@ public class Service implements Item {
         return (Url.MOCK_SERVICE_PATH + this.getMockServiceUrl());
     }
 
-//    /**
-//     * Method will ensure the service URL starts with '/'. If not, will prepend
-//     * it to the mock uri
-//     * 
-//     * @param mockServiceUrl
-//     *            the path to the service as it should be accessed in our system
-//     */
-//    public void setMockServiceUrl(String mockServiceUrl) {
-//        if (mockServiceUrl != null && !mockServiceUrl.trim().startsWith("/") && mockServiceUrl.trim().length() > 0) {
-//            this.mockServiceUrl = "/" + mockServiceUrl.trim();
-//        } else {
-//            this.mockServiceUrl = mockServiceUrl;
-//        }
-//    }
-
     public Url getUrl(){
         return this.realServiceUrl;
     }
-
 
     public void setRealServiceUrl(Url realServiceUrl) {
         this.realServiceUrl = realServiceUrl;

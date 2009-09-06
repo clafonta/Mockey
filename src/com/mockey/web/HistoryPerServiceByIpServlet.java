@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.model.RequestResponseTransaction;
+import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.XmlMockeyStorage;
@@ -68,15 +69,13 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		}
 
 		Service ms = store.getMockServiceById(serviceId);
-		List scenarios = store.getHistoryScenarios();
+		List<RequestResponseTransaction> scenarios = store.getHistoryScenarios();
 		List scenarioHistoryList = new ArrayList();
 		if(scenarios!=null){
-            for (Object scenario : scenarios) {
-                RequestResponseTransaction type = (RequestResponseTransaction) scenario;
-                if (type.getServiceInfo().getServiceId().equals(serviceId) && type.getServiceInfo().getConsumerId().equals(iprequest)) {
+            for (RequestResponseTransaction type : scenarios) {
+                if (type.getServiceInfo().getServiceId().equals(serviceId) && type.getServiceInfo().getRequestorIP().equals(iprequest)) {
                     scenarioHistoryList.add(type);
                 }
-
             }
 		}
 		

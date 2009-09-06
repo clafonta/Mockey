@@ -68,9 +68,9 @@ public class ResponseServlet extends HttpServlet {
      *             basic
      */
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestFromClient mockeyRequestFromClient = new RequestFromClient(req);
-        logger.info(mockeyRequestFromClient.getHeaderInfo());
-        logger.info(mockeyRequestFromClient.getParameterInfo());
+        RequestFromClient request = new RequestFromClient(req);
+        logger.info(request.getHeaderInfo());
+        logger.info(request.getParameterInfo());
         boolean replied = false;
         String requestIp = req.getRemoteAddr();
 
@@ -86,13 +86,12 @@ public class ResponseServlet extends HttpServlet {
             urlPath = urlPath.substring(contextRoot.length(), urlPath.length());
         }
         Url urlObj = new Url(urlPath);
-        Service realService = store.getServiceByUrl(urlObj.getFullUrl());
-        if (realService == null) {
-
-            realService = new Service(urlObj);
-            store.saveOrUpdate(realService);
+        Service service = store.getServiceByUrl(urlObj.getFullUrl());
+        if (service == null) {
+            service = new Service(urlObj);
+            store.saveOrUpdate(service);
         }
-        realService.setHttpMethod(req.getMethod());
+        service.setHttpMethod(req.getMethod());
 
         // There are several options to look at:
         // 1. Respond with real service response
@@ -100,18 +99,18 @@ public class ResponseServlet extends HttpServlet {
         // 3. Respond with scenario response dependent on matching request
         // message.
         String clientRequest = new String();
-        if (!mockeyRequestFromClient.hasPostBody()) {
+        if (!request.hasPostBody()) {
             // OK..let's build the request message from Params.
             // Is this a HACK? I dunno yet.
             logger.debug("Request message is EMPTY; building request message out of Parameters. ");
-            clientRequest = mockeyRequestFromClient.buildParameterRequest();
+            clientRequest = request.buildParameterRequest();
         } else {
-            clientRequest = mockeyRequestFromClient.getBodyInfo();
+            clientRequest = request.getBodyInfo();
         }
 
         // If no scenarios, then proxy is automatically on.
-        if (realService.getScenarios().size() == 0) {
-            realService.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
+        if (service.getScenarios().size() == 0) {
+            service.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
         }
 
         // If proxy on, then
@@ -120,9 +119,9 @@ public class ResponseServlet extends HttpServlet {
         // 3) Forward the request message to the real service URL
         // 4) Read the reply from the real service URL.
         // 5) Save request + response as a historical scenario.
-        ResponseMessage mockeyResponseMessage = null;
+        ResponseMessage response = null;
 
-        if (realService.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
+        if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
 
             // There are 2 proxy things going on here:
             // 1. Using Mockey as a 'proxy' to a real service.
@@ -135,8 +134,8 @@ public class ResponseServlet extends HttpServlet {
 
             try {
                 logger.debug("Initiating request through proxy");
-                mockeyResponseMessage = clientExecuteProxy.execute(proxyServer, realService, mockeyRequestFromClient);
-                mockeyResponseMessage.writeToOutput(resp);
+                response = clientExecuteProxy.execute(proxyServer, service, request);
+                response.writeToOutput(resp);
                 replied = true;
 
             } catch (Exception e) {
@@ -149,14 +148,14 @@ public class ResponseServlet extends HttpServlet {
                 // no, then
                 // (B) see if Mockey has a universal error response
                 // If neither, then throw the exception.
-                mockeyResponseMessage = new ResponseMessage();
+                response = new ResponseMessage();
                 boolean serviceErrorDefined = false;
                 // FIND SERVICE ERROR, IF EXIST.
-                Iterator iter = realService.getScenarios().iterator();
+                Iterator iter = service.getScenarios().iterator();
                 while (iter.hasNext()) {
                     Scenario scenario = (Scenario) iter.next();
-                    if (scenario.getId() == realService.getErrorScenarioId()) {
-                        mockeyResponseMessage.setBody(scenario.getResponseMessage());
+                    if (scenario.getId() == service.getErrorScenarioId()) {
+                        response.setBody(scenario.getResponseMessage());
                         serviceErrorDefined = true;
                         break;
                     }
@@ -166,9 +165,9 @@ public class ResponseServlet extends HttpServlet {
                 if (!serviceErrorDefined) {
                     Scenario universalError = store.getUniversalErrorResponse();
                     if (universalError != null) {
-                        mockeyResponseMessage.setBody(universalError.getResponseMessage());
+                        response.setBody(universalError.getResponseMessage());
                     } else {
-                        mockeyResponseMessage.setBody("No scenario defined. Also, we encountered this error: "
+                        response.setBody("No scenario defined. Also, we encountered this error: "
                                 + e.getClass() + ": " + e.getMessage());
                     }
                 }
@@ -181,19 +180,18 @@ public class ResponseServlet extends HttpServlet {
         // or
         // 2) Based on scenario selected.
         //
-        else if (realService.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
-            mockeyResponseMessage = new ResponseMessage();
-            List<Scenario> scenarios = realService.getScenarios();
+        else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
+            response = new ResponseMessage();
+            List<Scenario> scenarios = service.getScenarios();
             Iterator iter = scenarios.iterator();
             String messageMatchFound = null;
             while (iter.hasNext()) {
                 Scenario scenario = (Scenario) iter.next();
-                logger
-                        .debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n"
+                logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n"
                                 + clientRequest);
                 int indexValue = -1;
-                if (mockeyRequestFromClient.hasPostBody()) {
-                    indexValue = mockeyRequestFromClient.getBodyInfo().indexOf(scenario.getMatchStringArg());
+                if (request.hasPostBody()) {
+                    indexValue = request.getBodyInfo().indexOf(scenario.getMatchStringArg());
                 } else {
                     indexValue = clientRequest.indexOf(scenario.getMatchStringArg());
                 }
@@ -209,17 +207,17 @@ public class ResponseServlet extends HttpServlet {
                         + "Your setting is 'match scenario' but there is no matching scenario to incoming message: \n"
                         + clientRequest;
             }
-            mockeyResponseMessage.setBody(messageMatchFound);
+            response.setBody(messageMatchFound);
 
-        } else if (realService.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
-            Scenario scenario = realService.getScenario(realService.getDefaultScenarioId());
-            mockeyResponseMessage = new ResponseMessage();
+        } else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
+            Scenario scenario = service.getScenario(service.getDefaultScenarioId());
+            response = new ResponseMessage();
 
             if (scenario != null) {
-                mockeyResponseMessage.setBody(scenario.getResponseMessage());
+                response.setBody(scenario.getResponseMessage());
 
             } else {
-                mockeyResponseMessage.setBody("NO SCENARIO SELECTED");
+                response.setBody("NO SCENARIO SELECTED");
 
             }
 
@@ -227,28 +225,28 @@ public class ResponseServlet extends HttpServlet {
         // **********************
         // History
         // **********************
-        RequestResponseTransaction reqRespX = new RequestResponseTransaction();
-        Scenario historyRequestResponse = new Scenario();
-        historyRequestResponse.setScenarioName((new Date()) + " Remote address:" + requestIp);
-        historyRequestResponse.setConsumerId(requestIp);
-        historyRequestResponse.setServiceId(realService.getId());
-        reqRespX.setServiceInfo(historyRequestResponse);
+        RequestResponseTransaction transaction = new RequestResponseTransaction();
+        Scenario scenario = new Scenario();
+        scenario.setScenarioName((new Date()) + " Remote address:" + requestIp);
+        scenario.setRequestorIP(requestIp);
+        scenario.setServiceId(service.getId());
+        transaction.setServiceInfo(scenario);
 
-        if (!mockeyRequestFromClient.hasPostBody()) {
-            reqRespX.setClientRequestBody("[No post body provided by client]");
+        if (!request.hasPostBody()) {
+            transaction.setClientRequestBody("[No post body provided by client]");
         } else {
-            reqRespX.setClientRequestBody(mockeyRequestFromClient.getBodyInfo());
+            transaction.setClientRequestBody(request.getBodyInfo());
         }
-        reqRespX.setClientRequestHeaders(mockeyRequestFromClient.getHeaderInfo());
-        reqRespX.setClientRequestParameters(mockeyRequestFromClient.getParameterInfo());
-        reqRespX.setResponseMessage(mockeyResponseMessage);
-        store.addHistoricalScenario(reqRespX);
+        transaction.setClientRequestHeaders(request.getHeaderInfo());
+        transaction.setClientRequestParameters(request.getParameterInfo());
+        transaction.setResponseMessage(response);
+        store.addHistoricalScenario(transaction);
 
         try {
             // Wait for a minute.
-            logger.debug("Waiting..." + realService.getHangTime() + " miliseconds ");
+            logger.debug("Waiting..." + service.getHangTime() + " miliseconds ");
 
-            long future = System.currentTimeMillis() + realService.getHangTime();
+            long future = System.currentTimeMillis() + service.getHangTime();
 
             while (true) {
                 if (System.currentTimeMillis() > future) {
@@ -261,10 +259,10 @@ public class ResponseServlet extends HttpServlet {
             // Catch interrupt exception
         }
         if (!replied) {
-            resp.setContentType(realService.getHttpHeaderDefinition());
+            resp.setContentType(service.getHttpHeaderDefinition());
             PrintStream out;
             out = new PrintStream(resp.getOutputStream());
-            out.println(mockeyResponseMessage.getBody());
+            out.println(response.getBody());
         }
     }
 

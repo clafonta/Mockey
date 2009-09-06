@@ -207,7 +207,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
 	public List<String> uniqueClientIPs() {
 		List<String> uniqueIPs = new ArrayList<String>();
 		for (RequestResponseTransaction tx : this.store.getHistoryScenarios()) {
-			String tmpIP = tx.getServiceInfo().getConsumerId();
+			String tmpIP = tx.getServiceInfo().getRequestorIP();
 			if (!uniqueIPs.contains(tmpIP)) {
 				uniqueIPs.add(tmpIP);
 			}
@@ -219,7 +219,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
 	public List<String> uniqueClientIPsForService(Service msb) {
 		List<String> uniqueIPs = new ArrayList<String>();
 		for (RequestResponseTransaction tx : this.store.getHistoryScenarios()) {
-			String ip = tx.getServiceInfo().getConsumerId();
+			String ip = tx.getServiceInfo().getRequestorIP();
 			if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId()==msb.getId()) {
 				uniqueIPs.add(ip);
 			}

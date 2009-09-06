@@ -16,9 +16,11 @@
 package com.mockey;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -31,21 +33,23 @@ import com.mockey.model.Item;
  * @author chad.lafontaine
  *
  */
-public class OrderedMap extends HashMap implements Map{
+public class OrderedMap<T extends Item> extends HashMap<Long, T> 
+	implements Map<Long, T> {
 	
 	private static final long serialVersionUID = -1654150132938363942L;
 	private static Logger logger = Logger.getLogger(OrderedMap.class);
-    public Item save(Item item){
-        
-        
+	private ArrayList<T> backingList = new ArrayList<T>();
+	
+	public Item save(T item){
 		if(item!=null){
 			if(item.getId()!=null){
-				this.put(item.getId(), item);
+				this.put(item.getId(), item); 
 			}else {
 				Long nextNumber = this.getNextValue();
 				item.setId(nextNumber);
 				this.put(nextNumber, item);
 			}
+			backingList.add(item);
 		}
 		logger.debug("Saving to store with ID:"  + item.getId());
 		return item;
@@ -66,10 +70,10 @@ public class OrderedMap extends HashMap implements Map{
 		return nextValue;
 	}
 	
-	public List getOrderedList(){
+	public List<T> getOrderedList(){
 
 		// Temp
-		List keyOrder = new ArrayList();		
+		List<Long> keyOrder = new ArrayList<Long>();		
 		Iterator iter = this.keySet().iterator();
 		while (iter.hasNext()) {
 			Long key = (Long) iter.next();
@@ -84,9 +88,9 @@ public class OrderedMap extends HashMap implements Map{
 			}
 			keyOrder.add(index, key);
 		}
-		
+
 		// Ordered key list.
-		List arrayList = new ArrayList();
+		List<T> arrayList = new ArrayList<T>();
 		Iterator orderedIter = keyOrder.iterator();
 		while(orderedIter.hasNext()){
 			Long key = (Long)orderedIter.next();
@@ -94,5 +98,4 @@ public class OrderedMap extends HashMap implements Map{
 		}
 		return arrayList;
 	}
-	
 }
