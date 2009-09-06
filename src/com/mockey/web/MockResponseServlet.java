@@ -33,7 +33,7 @@ import com.mockey.MockServiceBean;
 import com.mockey.MockServiceScenarioBean;
 import com.mockey.MockServiceStore;
 import com.mockey.MockServiceStoreImpl;
-import com.mockey.ProxyServer;
+import com.mockey.ProxyServerModel;
 import com.mockey.util.Url;
 
 /**
@@ -127,7 +127,7 @@ public class MockResponseServlet extends HttpServlet {
             //
             // For the proxy server between Mockey and the real service,
             // we do the following:
-            ProxyServer proxyServer = store.getProxyInfo();
+            ProxyServerModel proxyServer = store.getProxyInfo();
             ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
 
             try {

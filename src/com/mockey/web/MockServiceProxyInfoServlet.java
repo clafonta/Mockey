@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mockey.ProxyServer;
+import com.mockey.ProxyServerModel;
 import com.mockey.*;
 
 public class MockServiceProxyInfoServlet extends HttpServlet {
@@ -46,7 +46,7 @@ public class MockServiceProxyInfoServlet extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		ProxyServer proxyInfo = store.getProxyInfo();
+		ProxyServerModel proxyInfo = store.getProxyInfo();
 		req.setAttribute("proxyInfo", proxyInfo);
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("/proxy_setup.jsp");
@@ -66,7 +66,7 @@ public class MockServiceProxyInfoServlet extends HttpServlet {
 	 *             basic
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		ProxyServer proxyInfo = new ProxyServer();
+		ProxyServerModel proxyInfo = new ProxyServerModel();
 
 		proxyInfo.setProxyPassword(req.getParameter("proxyPassword"));
 		proxyInfo.setProxyUsername(req.getParameter("proxyUsername"));
