@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.mockey.model.ClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
@@ -42,6 +44,7 @@ import com.mockey.storage.InMemoryMockeyStorage;
 public class HistoryPerServiceByIpServlet extends HttpServlet {
 
     private static final long serialVersionUID = -2255013290808524662L;
+    private static final Logger logger = Logger.getLogger(HistoryPerServiceByIpServlet.class);
 
     private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 	
@@ -50,6 +53,7 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		Long serviceId = new Long(req.getParameter("serviceId"));		
 		String action = req.getParameter("action");
 		boolean didDelete = false;
+		
 		if(action!=null && "delete".equals(action)){
 		    // Delete from history
 		    Long scenarioId = new Long(req.getParameter("scenarioId"));		    
@@ -58,10 +62,12 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		    // don't allow reloads to re-delete.  crappy hack.
 		    didDelete = true;
 		    
-		}else if(action!=null && "delete_all".equals(action)){
-		    store.deleteAllLoggedClientRequestForService(serviceId);
         } else if (action != null && "delete_all".equals(action)) {
             store.deleteAllLoggedClientRequestForService(serviceId);
+
+		    // don't allow reloads to re-delete.  crappy hack.
+		    didDelete = true;
+        }
 
 		Service ms = store.getServiceById(serviceId);
 		List<ClientRequest> scenarios = store.getClientRequests();
@@ -85,9 +91,8 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
             resp.sendRedirect(Url.getContextAwarePath("/history/detail?serviceId=" + ms.getId() + "&iprequest=" + iprequest, contextRoot));
             return;
         } else {
-
             RequestDispatcher dispatch = req.getRequestDispatcher("/service_history_ip.jsp");
             dispatch.forward(req, resp);
         }
     }
-}}
+}
