@@ -29,7 +29,7 @@ import com.mockey.model.Scenario;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.
- *
+ * 
  * @author chad.lafontaine
  */
 public class InMemoryMockeyStorage implements IMockeyStorage {
@@ -37,19 +37,42 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
     private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
     private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
-    
+
     private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
     private ProxyServerModel proxyInfoBean = new ProxyServerModel();
 
     private Long univeralErrorServiceId = null;
-    private Long univeralErrorScenarioId = null;    
+    private Long univeralErrorScenarioId = null;
     private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
 
+    /**
+     * 
+     * @return
+     */
     public static InMemoryMockeyStorage getInstance() {
         return store;
     }
-    
-    private InMemoryMockeyStorage() {}
+
+    /**
+     * HACK: this class is supposed to be a singleton but making this public for
+     * XML parsing (Digester)
+     * 
+     * Error is:
+     * 
+     * Class org.apache.commons.digester.ObjectCreateRule can not access a
+     * member of class com.mockey.storage.InMemoryMockeyStorage with modifiers
+     * "private"
+     * 
+     * Possible Fix: write/implement objectcreatefactory classes.
+     * 
+     * Example:
+     * 
+     * <pre>
+     * http://jsp.codefetch.com/example/fr/storefront-source/com/oreilly/struts/storefront/service/memory/StorefrontMemoryDatabase.java?qy=parse+xml
+     * </pre>
+     */
+    public InMemoryMockeyStorage() {
+    }
 
     public Service getServiceById(Long id) {
         return (Service) mockServiceStore.get(id);
@@ -68,7 +91,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         } catch (Exception e) {
             logger.error("Unable to retrieve service w/ url pattern: " + urlPath, e);
         }
-        logger.debug("Didn't find service with Service path: " +urlPath);
+        logger.debug("Didn't find service with Service path: " + urlPath);
         return null;
     }
 
@@ -87,7 +110,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public String toString() {
-        
+
         StringBuffer stringBuf = new StringBuffer();
         stringBuf.append(super.toString());
         for (Object o : this.mockServiceStore.keySet()) {
@@ -142,35 +165,33 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         this.proxyInfoBean = proxyInfoBean;
     }
 
-	public void deleteServicePlan(ServicePlan servicePlan) {
-		if(servicePlan!=null){
-			this.servicePlanStore.remove(servicePlan.getId());
-		}
-	}
+    public void deleteServicePlan(ServicePlan servicePlan) {
+        if (servicePlan != null) {
+            this.servicePlanStore.remove(servicePlan.getId());
+        }
+    }
 
-	public ServicePlan getServicePlanById(Long servicePlanId) {
-		return (ServicePlan)this.servicePlanStore.get(servicePlanId);
-	}
+    public ServicePlan getServicePlanById(Long servicePlanId) {
+        return (ServicePlan) this.servicePlanStore.get(servicePlanId);
+    }
 
-		
-	public List<ServicePlan> getServicePlans() {
-		return this.servicePlanStore.getOrderedList();
-	}
+    public List<ServicePlan> getServicePlans() {
+        return this.servicePlanStore.getOrderedList();
+    }
 
-	public void saveOrUpdateServicePlan(ServicePlan servicePlan) {
-		this.servicePlanStore.save(servicePlan);
-	}
+    public void saveOrUpdateServicePlan(ServicePlan servicePlan) {
+        this.servicePlanStore.save(servicePlan);
+    }
 
     public Scenario getUniversalErrorScenario() {
         Scenario uErrorBean = null;
         Service msb = getServiceById(this.univeralErrorServiceId);
-        if(msb!=null){
+        if (msb != null) {
             uErrorBean = msb.getScenario(this.univeralErrorScenarioId);
         }
         return uErrorBean;
     }
 
-   
     public void setUniversalErrorScenarioId(Long scenarioId) {
         this.univeralErrorScenarioId = scenarioId;
     }
@@ -185,25 +206,25 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         servicePlanStore = new OrderedMap<ServicePlan>();
     }
 
-	public List<String> uniqueClientIPs() {
-		List<String> uniqueIPs = new ArrayList<String>();
-		for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
-			String tmpIP = tx.getServiceInfo().getRequestorIP();
-			if (!uniqueIPs.contains(tmpIP)) {
-				uniqueIPs.add(tmpIP);
-			}
-		}
-		return uniqueIPs;
-	}
+    public List<String> uniqueClientIPs() {
+        List<String> uniqueIPs = new ArrayList<String>();
+        for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
+            String tmpIP = tx.getServiceInfo().getRequestorIP();
+            if (!uniqueIPs.contains(tmpIP)) {
+                uniqueIPs.add(tmpIP);
+            }
+        }
+        return uniqueIPs;
+    }
 
-	public List<String> uniqueClientIPsForService(Service msb) {
-		List<String> uniqueIPs = new ArrayList<String>();
-		for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
-			String ip = tx.getServiceInfo().getRequestorIP();
-			if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId()==msb.getId()) {
-				uniqueIPs.add(ip);
-			}
-		}
-		return uniqueIPs;
-	}
+    public List<String> uniqueClientIPsForService(Service msb) {
+        List<String> uniqueIPs = new ArrayList<String>();
+        for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
+            String ip = tx.getServiceInfo().getRequestorIP();
+            if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId() == msb.getId()) {
+                uniqueIPs.add(ip);
+            }
+        }
+        return uniqueIPs;
+    }
 }
