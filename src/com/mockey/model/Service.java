@@ -44,20 +44,18 @@ public class Service implements PersistableItem {
     private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
     private String httpMethod = "GET";
     private Url realServiceUrl;
-	private List<FulfilledClientRequest> transactions;
+	private List<FulfilledClientRequest> fulfilledRequests;
 	
-    public List<FulfilledClientRequest> getTransactions() {
-		return transactions;
+    public List<FulfilledClientRequest> getFulfilledRequests() {
+		return fulfilledRequests;
 	}
 
-	public void setTransactions(List<FulfilledClientRequest> transactions) {
-		this.transactions = transactions;
+	public void setFulfilledRequests(List<FulfilledClientRequest> transactions) {
+		this.fulfilledRequests = transactions;
 	}    
 
-    /**
-     * Empty constructor needed for XML parsing of service definitions, 
-     * 
-     */
+	// default constructor for xml.
+	// DO NOT REMOVE.  DO NOT CALL.
     public Service() {
     }
 
@@ -129,7 +127,6 @@ public class Service implements PersistableItem {
         }else {
             return "";
         }
-        
     }
 
     /**
