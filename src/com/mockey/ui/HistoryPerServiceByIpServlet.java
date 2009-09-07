@@ -86,6 +86,7 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 	    // don't allow reloads to re-delete.  crappy hack. 
 		if (didDelete) {
 		    resp.sendRedirect("/history/detail?serviceId="+ms.getId()+"&iprequest="+iprequest);
+		    return;
 		}
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("/service_history_ip.jsp");
