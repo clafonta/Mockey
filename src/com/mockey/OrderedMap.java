@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.mockey.model.Item;
+import com.mockey.model.PersistableItem;
 
 /**
  * Keeps an ordered map of items, order based on 'when defined and added to this object'
@@ -31,13 +31,13 @@ import com.mockey.model.Item;
  * @author chad.lafontaine
  *
  */
-public class OrderedMap<T extends Item> extends HashMap<Long, T> 
+public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T> 
 	implements Map<Long, T> {
 	
 	private static final long serialVersionUID = -1654150132938363942L;
 	private static Logger logger = Logger.getLogger(OrderedMap.class);
 	
-	public Item save(T item){
+	public PersistableItem save(T item){
 		if(item!=null){
 			if(item.getId()!=null){
 				this.put(item.getId(), item); 

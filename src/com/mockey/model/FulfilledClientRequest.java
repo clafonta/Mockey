@@ -24,7 +24,7 @@ package com.mockey.model;
  * @author chad.lafontaine
  * 
  */
-public class FulfilledClientRequest implements Item {
+public class FulfilledClientRequest implements PersistableItem {
 
     private Long id;
     private Scenario serviceInfo;

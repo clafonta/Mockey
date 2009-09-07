@@ -21,7 +21,7 @@ package com.mockey.model;
  * 
  * @author chad.lafontaine
  */
-public class Scenario implements Item {
+public class Scenario implements PersistableItem {
 
     private Long id;
     private Long serviceId;

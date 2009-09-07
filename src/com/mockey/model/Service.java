@@ -27,7 +27,7 @@ import com.mockey.OrderedMap;
  * @author chad.lafontaine
  * 
  */
-public class Service implements Item {
+public class Service implements PersistableItem {
 
     public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
     public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;

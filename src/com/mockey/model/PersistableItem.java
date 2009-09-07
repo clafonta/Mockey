@@ -21,7 +21,7 @@ package com.mockey.model;
  * @author chad.lafontaine
  *
  */
-public interface Item {
+public interface PersistableItem {
 	public Long getId();
 	public void setId(Long id);
 }

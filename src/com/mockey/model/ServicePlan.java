@@ -30,7 +30,7 @@ import java.util.List;
  * @author chad.lafontaine
  * 
  */
-public class ServicePlan implements Item {
+public class ServicePlan implements PersistableItem {
 	private Long id;
 	private String name;
 	private String description;
