@@ -22,7 +22,7 @@ import org.xml.sax.InputSource;
 
 import com.mockey.storage.IMockeyStorage;
 
-public class MockServiceFileReader {
+public class MockeyXmlFileConfigurationReader {
 
 	/**
 	 * Returns a
@@ -35,7 +35,7 @@ public class MockServiceFileReader {
 
 		BufferedReader br = new BufferedReader(new StringReader(mockServicesDefinition));
 
-		MockServiceParser msp = new MockServiceParser();
+		MockeyXmlFileConfigurationParser msp = new MockeyXmlFileConfigurationParser();
 
 		return msp.getMockServices(new InputSource(br));
 
@@ -60,7 +60,7 @@ public class MockServiceFileReader {
 		}
 
 		String strXMLRequest = new String(baos.toByteArray());
-		MockServiceFileReader fileReader = new MockServiceFileReader();
+		MockeyXmlFileConfigurationReader fileReader = new MockeyXmlFileConfigurationReader();
 		IMockeyStorage mockServiceList = fileReader.readDefinition(strXMLRequest);
 		System.out.println(mockServiceList.toString());
 

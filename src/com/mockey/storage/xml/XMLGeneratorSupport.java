@@ -21,7 +21,7 @@ import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 
-class XMLGeneratorSupport {
+class XmlGeneratorSupport {
 	/**
 	 * A <code>SimpleDateFormat</code> used to represent ISO 8601 dates and
 	 * times.

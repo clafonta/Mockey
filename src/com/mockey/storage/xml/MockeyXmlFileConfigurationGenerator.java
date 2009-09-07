@@ -29,9 +29,9 @@ import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.storage.IMockeyStorage;
 
-public class MockServiceXMLGenerator extends XMLGeneratorSupport {
+public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 	/** Basic logger */
-	private static Logger logger = Logger.getLogger(MockServiceXMLGenerator.class);
+	private static Logger logger = Logger.getLogger(MockeyXmlFileConfigurationGenerator.class);
 
 	/**
 	 * Returns an element representing a mock service definitions file in XML. 

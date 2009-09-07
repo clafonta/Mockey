@@ -30,7 +30,7 @@ import com.mockey.storage.InMemoryMockeyStorage;
  * @author Chad.Lafontaine
  * 
  */
-public class MockServiceParser {
+public class MockeyXmlFileConfigurationParser {
 
 	private final static String ROOT = "mockservice";
 	private final static String SERVICE = ROOT + "/service";

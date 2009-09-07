@@ -37,7 +37,7 @@ import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.InMemoryMockeyStorage;
-import com.mockey.storage.xml.MockServiceFileReader;
+import com.mockey.storage.xml.MockeyXmlFileConfigurationReader;
 
 /**
  * 
@@ -100,7 +100,7 @@ public class UploadConfigurationServlet extends HttpServlet {
                     byte[] data = item.get();
                     String strXMLDefintion = new String(data);
 
-                    MockServiceFileReader msfr = new MockServiceFileReader();
+                    MockeyXmlFileConfigurationReader msfr = new MockeyXmlFileConfigurationReader();
                     IMockeyStorage mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
                     if (store.getUniversalErrorScenario() != null
                             && mockServiceStoreTemporary.getUniversalErrorScenario() != null) {

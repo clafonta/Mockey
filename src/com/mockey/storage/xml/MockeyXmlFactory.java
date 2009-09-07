@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.TestMockeyServiceStore;
 
-public class MockServiceXMLFactory {
+public class MockeyXmlFactory {
 	
 
 	/**
@@ -51,7 +51,7 @@ public class MockServiceXMLFactory {
 			DocumentBuilder docBuilder = factory.newDocumentBuilder();
 			Document document = docBuilder.newDocument();
 
-			MockServiceXMLGenerator xmlGeneratorSupport = new MockServiceXMLGenerator();
+			MockeyXmlFileConfigurationGenerator xmlGeneratorSupport = new MockeyXmlFileConfigurationGenerator();
 			
 			Element xmlRootElement = xmlGeneratorSupport.getElement(document, store);
 			document.appendChild(xmlRootElement);
@@ -92,8 +92,8 @@ public class MockServiceXMLFactory {
 	}
 
 	public static void main(String[] args) throws IOException, TransformerException {
-		MockServiceXMLFactory g = new MockServiceXMLFactory();
-		Document result = g.getAsDocument(new TestMockeyServiceStore()); // MockServiceXMLFactory.buildMockObject());
-		System.out.println(MockServiceXMLFactory.documentToString(result));
+		MockeyXmlFactory g = new MockeyXmlFactory();
+		Document result = g.getAsDocument(new TestMockeyServiceStore()); // MockeyXmlFactory.buildMockObject());
+		System.out.println(MockeyXmlFactory.documentToString(result));
 	}
 }

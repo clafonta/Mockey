@@ -17,7 +17,7 @@ package com.mockey.ui;
 
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.InMemoryMockeyStorage;
-import com.mockey.storage.xml.MockServiceXMLFactory;
+import com.mockey.storage.xml.MockeyXmlFactory;
 
 import org.w3c.dom.Document;
 
@@ -43,13 +43,13 @@ public class ExportConfigurationServlet extends HttpServlet {
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		MockServiceXMLFactory g = new MockServiceXMLFactory();
+		MockeyXmlFactory g = new MockeyXmlFactory();
 		IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 		Document result = g.getAsDocument(store);
 
         String fileOutput;
         try {
-            fileOutput = MockServiceXMLFactory.documentToString(result);
+            fileOutput = MockeyXmlFactory.documentToString(result);
         } catch (TransformerException e) {
             throw new ServletException(e);
         }

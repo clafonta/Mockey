@@ -24,7 +24,7 @@ import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 
 /**
- * Storage interface to service and scenario definitions. 
+ * How Mockey stores itself.
  * @author chad.lafontaine
  *
  */
