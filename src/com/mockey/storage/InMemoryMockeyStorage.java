@@ -48,6 +48,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     public static InMemoryMockeyStorage getInstance() {
         return store;
     }
+    
+    private InMemoryMockeyStorage() {}
 
     public Service getServiceById(Long id) {
         return (Service) mockServiceStore.get(id);
@@ -178,9 +180,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public void deleteEverything() {
-        historyStore = new OrderedMap();
-        mockServiceStore = new OrderedMap();
-        servicePlanStore = new OrderedMap();
+        historyStore = new OrderedMap<ClientRequest>();
+        mockServiceStore = new OrderedMap<Service>();
+        servicePlanStore = new OrderedMap<ServicePlan>();
     }
 
 	public List<String> uniqueClientIPs() {

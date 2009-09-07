@@ -36,7 +36,6 @@ public class OrderedMap<T extends Item> extends HashMap<Long, T>
 	
 	private static final long serialVersionUID = -1654150132938363942L;
 	private static Logger logger = Logger.getLogger(OrderedMap.class);
-	private ArrayList<T> backingList = new ArrayList<T>();
 	
 	public Item save(T item){
 		if(item!=null){
@@ -47,13 +46,10 @@ public class OrderedMap<T extends Item> extends HashMap<Long, T>
 				item.setId(nextNumber);
 				this.put(nextNumber, item);
 			}
-			backingList.add(item);
 		}
 		logger.debug("Saving to store with ID:"  + item.getId());
 		return item;
 	}
-	
-	
 	
 	@SuppressWarnings("unchecked")
     private Long getNextValue(){
