@@ -24,7 +24,7 @@ package com.mockey.model;
  * @author chad.lafontaine
  * 
  */
-public class ClientRequest implements Item {
+public class FulfilledClientRequest implements Item {
 
     private Long id;
     private Scenario serviceInfo;
@@ -56,7 +56,7 @@ public class ClientRequest implements Item {
         this.clientRequestParameters = clientRequestParameters;
     }
 
-    private ResponseMessage responseMessage;
+    private ResponseFromService responseMessage;
 
     public Scenario getServiceInfo() {
         return serviceInfo;
@@ -67,11 +67,11 @@ public class ClientRequest implements Item {
     }
    
 
-    public ResponseMessage getResponseMessage() {
+    public ResponseFromService getResponseMessage() {
         return responseMessage;
     }
 
-    public void setResponseMessage(ResponseMessage responseMessage) {
+    public void setResponseMessage(ResponseFromService responseMessage) {
         this.responseMessage = responseMessage;
     }
 

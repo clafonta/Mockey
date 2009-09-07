@@ -34,10 +34,11 @@ import java.io.PrintStream;
  * @author chad.lafontaine -
  * 
  */
-public class ResponseMessage {
+public class ResponseFromService {
+	
     private static final String[] IGNORE_HEADERS = { "Transfer-Encoding" };
 
-    private Log log = LogFactory.getLog(ResponseMessage.class);
+    private Log log = LogFactory.getLog(ResponseFromService.class);
     private String body;
     private boolean valid;
     private String errorMsg;
@@ -47,7 +48,7 @@ public class ResponseMessage {
     /**
      * Empty constructor
      */
-    public ResponseMessage() {
+    public ResponseFromService() {
     }
 
     /**
@@ -55,7 +56,7 @@ public class ResponseMessage {
      * @param rsp
      *            - parses the response
      */
-    public ResponseMessage(HttpResponse rsp) {
+    public ResponseFromService(HttpResponse rsp) {
         HttpEntity entity = rsp.getEntity();
 
         setStatusLine(rsp.getStatusLine());

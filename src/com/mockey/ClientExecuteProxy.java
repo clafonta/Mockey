@@ -34,7 +34,7 @@ import org.apache.http.params.HttpProtocolParams;
 
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.RequestFromClient;
-import com.mockey.model.ResponseMessage;
+import com.mockey.model.ResponseFromService;
 import com.mockey.model.Service;
 
 /**
@@ -75,7 +75,7 @@ public class ClientExecuteProxy {
     //
     // }
 
-    public ResponseMessage execute(ProxyServerModel proxyServer, Service serviceBean, RequestFromClient request)
+    public ResponseFromService execute(ProxyServerModel proxyServer, Service serviceBean, RequestFromClient request)
             throws Exception {
         log.info("Request: " + String.valueOf(serviceBean));
 
@@ -104,7 +104,7 @@ public class ClientExecuteProxy {
 
         // execute the call to the real host
         HttpResponse response = httpclient.execute(serviceBean.getHttpHost(), request.postToRealServer(serviceBean));
-        ResponseMessage responseMessage = new ResponseMessage(response);
+        ResponseFromService responseMessage = new ResponseFromService(response);
 
         // When HttpClient instance is no longer needed,
         // shut down the connection manager to ensure

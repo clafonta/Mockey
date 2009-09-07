@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.ClientRequest;
+import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 
@@ -53,8 +53,8 @@ public interface IMockeyStorage {
 	public List<String> uniqueClientIPs();
 	public List<String> uniqueClientIPsForService(Service msb);
 	
-	public List<ClientRequest> getClientRequests();
-	public void logClientRequest(ClientRequest requestResponseX);
+	public List<FulfilledClientRequest> getClientRequests();
+	public void logClientRequest(FulfilledClientRequest requestResponseX);
 	public void deleteLoggedClientRequest(Long clientRequestId);
 	public void deleteAllLoggedClientRequestForService(Long serviceId);
 }

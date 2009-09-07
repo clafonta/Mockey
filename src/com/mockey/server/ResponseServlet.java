@@ -31,8 +31,8 @@ import org.apache.log4j.Logger;
 import com.mockey.ClientExecuteProxy;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.RequestFromClient;
-import com.mockey.model.ClientRequest;
-import com.mockey.model.ResponseMessage;
+import com.mockey.model.FulfilledClientRequest;
+import com.mockey.model.ResponseFromService;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.model.Url;
@@ -119,7 +119,7 @@ public class ResponseServlet extends HttpServlet {
         // 3) Forward the request message to the real service URL
         // 4) Read the reply from the real service URL.
         // 5) Save request + response as a historical scenario.
-        ResponseMessage response = null;
+        ResponseFromService response = null;
 
         if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
 
@@ -148,7 +148,7 @@ public class ResponseServlet extends HttpServlet {
                 // no, then
                 // (B) see if Mockey has a universal error response
                 // If neither, then throw the exception.
-                response = new ResponseMessage();
+                response = new ResponseFromService();
                 boolean serviceErrorDefined = false;
                 // FIND SERVICE ERROR, IF EXIST.
                 Iterator<Scenario> iter = service.getScenarios().iterator();
@@ -181,7 +181,7 @@ public class ResponseServlet extends HttpServlet {
         // 2) Based on scenario selected.
         //
         else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
-            response = new ResponseMessage();
+            response = new ResponseFromService();
             List<Scenario> scenarios = service.getScenarios();
             Iterator<Scenario> iter = scenarios.iterator();
             String messageMatchFound = null;
@@ -212,7 +212,7 @@ public class ResponseServlet extends HttpServlet {
 
         } else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
             Scenario scenario = service.getScenario(service.getDefaultScenarioId());
-            response = new ResponseMessage();
+            response = new ResponseFromService();
 
             if (scenario != null) {
                 response.setBody(scenario.getResponseMessage());
@@ -226,7 +226,7 @@ public class ResponseServlet extends HttpServlet {
         // **********************
         // History
         // **********************
-        ClientRequest transaction = new ClientRequest();
+        FulfilledClientRequest transaction = new FulfilledClientRequest();
         Scenario scenario = new Scenario();
         scenario.setScenarioName((new Date()) + " Remote address:" + requestIp);
         scenario.setRequestorIP(requestIp);

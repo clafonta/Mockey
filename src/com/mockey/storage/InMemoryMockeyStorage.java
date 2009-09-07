@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import com.mockey.OrderedMap;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.ClientRequest;
+import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 
@@ -34,7 +34,7 @@ import com.mockey.model.Scenario;
  */
 public class InMemoryMockeyStorage implements IMockeyStorage {
 
-    private OrderedMap<ClientRequest> historyStore = new OrderedMap<ClientRequest>();
+    private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
     private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
     private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
     
@@ -111,9 +111,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     /**
-     * @return list of ClientRequest objects
+     * @return list of FulfilledClientRequest objects
      */
-    public List<ClientRequest> getClientRequests() {
+    public List<FulfilledClientRequest> getClientRequests() {
         return this.historyStore.getOrderedList();
     }
 
@@ -121,13 +121,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         historyStore.remove(scenarioId);
     }
 
-    public void logClientRequest(ClientRequest mssb) {
+    public void logClientRequest(FulfilledClientRequest mssb) {
         historyStore.save(mssb);
     }
 
     public void deleteAllLoggedClientRequestForService(Long serviceId) {
         for (Object o : historyStore.getOrderedList()) {
-            ClientRequest object = (ClientRequest) o;
+            FulfilledClientRequest object = (FulfilledClientRequest) o;
             if (object.getServiceInfo().getServiceId().equals(serviceId)) {
                 this.historyStore.remove(object.getId());
             }
@@ -180,14 +180,14 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public void deleteEverything() {
-        historyStore = new OrderedMap<ClientRequest>();
+        historyStore = new OrderedMap<FulfilledClientRequest>();
         mockServiceStore = new OrderedMap<Service>();
         servicePlanStore = new OrderedMap<ServicePlan>();
     }
 
 	public List<String> uniqueClientIPs() {
 		List<String> uniqueIPs = new ArrayList<String>();
-		for (ClientRequest tx : this.store.getClientRequests()) {
+		for (FulfilledClientRequest tx : this.store.getClientRequests()) {
 			String tmpIP = tx.getServiceInfo().getRequestorIP();
 			if (!uniqueIPs.contains(tmpIP)) {
 				uniqueIPs.add(tmpIP);
@@ -198,7 +198,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public List<String> uniqueClientIPsForService(Service msb) {
 		List<String> uniqueIPs = new ArrayList<String>();
-		for (ClientRequest tx : this.store.getClientRequests()) {
+		for (FulfilledClientRequest tx : this.store.getClientRequests()) {
 			String ip = tx.getServiceInfo().getRequestorIP();
 			if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId()==msb.getId()) {
 				uniqueIPs.add(ip);

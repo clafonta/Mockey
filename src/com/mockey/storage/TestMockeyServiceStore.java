@@ -6,7 +6,7 @@ import java.util.List;
 import com.mockey.model.PlanItem;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.ClientRequest;
+import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.model.Url;
@@ -163,7 +163,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void logClientRequest(ClientRequest requestResponseX) {
+    public void logClientRequest(FulfilledClientRequest requestResponseX) {
         // TODO Auto-generated method stub
 
     }

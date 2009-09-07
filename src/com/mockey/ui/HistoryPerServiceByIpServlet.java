@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.mockey.model.ClientRequest;
+import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
@@ -70,10 +70,10 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
         }
 
 		Service ms = store.getServiceById(serviceId);
-		List<ClientRequest> scenarios = store.getClientRequests();
+		List<FulfilledClientRequest> scenarios = store.getClientRequests();
 		List scenarioHistoryList = new ArrayList();
 		if(scenarios!=null){
-            for (ClientRequest type : scenarios) {
+            for (FulfilledClientRequest type : scenarios) {
                 if (type.getServiceInfo().getServiceId().equals(serviceId) && type.getServiceInfo().getRequestorIP().equals(iprequest)) {
                     scenarioHistoryList.add(type);
                 }
