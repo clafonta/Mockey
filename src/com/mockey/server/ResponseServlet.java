@@ -244,18 +244,14 @@ public class ResponseServlet extends HttpServlet {
         store.logClientRequest(transaction);
 
         try {
+        	
             // Wait for a minute.
             logger.debug("Waiting..." + service.getHangTime() + " miliseconds ");
-
-            long future = System.currentTimeMillis() + service.getHangTime();
-
-            while (true) {
-                if (System.currentTimeMillis() > future) {
-                    break;
-                }
-            }
-
+            
+            Thread.currentThread().sleep(service.getHangTime());
+        
             logger.debug("Done Waiting");
+   
         } catch (Exception e) {
             // Catch interrupt exception
         }
