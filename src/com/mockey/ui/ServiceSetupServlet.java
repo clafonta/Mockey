@@ -35,13 +35,13 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 public class ServiceSetupServlet extends HttpServlet {
     private Log log = LogFactory.getLog(ServiceSetupServlet.class);
 	
 	private static final long serialVersionUID = 5503460488900643184L;
-	private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
 	/**
 	 * 
@@ -56,9 +56,9 @@ public class ServiceSetupServlet extends HttpServlet {
 		}
 
 		if (req.getParameter("delete") != null && serviceId != null) {
-			Service service = store.getMockServiceById(serviceId);
+			Service service = store.getServiceById(serviceId);
 			store.delete(service);
-			store.flushHistoryRequestMsgs(serviceId);
+			store.deleteAllLoggedClientRequestForService(serviceId);
 			
 			Util.saveSuccessMessage("Service '"+service.getServiceName()+"' was deleted.", req);
 			// Check to see if any plans need an update. 
@@ -110,7 +110,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		Service service = null;
 
 		if (serviceId != null) {
-			service = store.getMockServiceById(serviceId);
+			service = store.getServiceById(serviceId);
 		}
 		if (service == null) {
 			service = new Service(null);
@@ -147,7 +147,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			// Do nothing
 		}
 		if(serviceId!=null){
-			service = this.store.getMockServiceById(serviceId);
+			service = this.store.getServiceById(serviceId);
 		}
 		service.setRealServiceUrl(urlObj);
 		service.setServiceName(req.getParameter("serviceName"));
@@ -159,7 +159,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			// no errors, so create service.
 			
 			Util.saveSuccessMessage("Service updated.", req);
-			store.saveOrUpdate(service);
+			store.saveOrUpdateService(service);
 			
 		} else {
 			Util.saveErrorMessage("Service not added/updated.", req);

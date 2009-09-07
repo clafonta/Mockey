@@ -31,13 +31,13 @@ import org.apache.log4j.Logger;
 import com.mockey.ClientExecuteProxy;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.RequestFromClient;
-import com.mockey.model.RequestResponseTransaction;
+import com.mockey.model.ClientRequest;
 import com.mockey.model.ResponseMessage;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 /**
  * Responsible for serving mock responses. Based on configuration, returns
@@ -50,7 +50,7 @@ import com.mockey.storage.XmlMockeyStorage;
 public class ResponseServlet extends HttpServlet {
 
     private static final long serialVersionUID = 8401356766354139506L;
-    private IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private IMockeyStorage store = InMemoryMockeyStorage.getInstance();
     private Logger logger = Logger.getLogger(ResponseServlet.class);
 
     /**
@@ -89,7 +89,7 @@ public class ResponseServlet extends HttpServlet {
         Service service = store.getServiceByUrl(urlObj.getFullUrl());
         if (service == null) {
             service = new Service(urlObj);
-            store.saveOrUpdate(service);
+            store.saveOrUpdateService(service);
         }
         service.setHttpMethod(req.getMethod());
 
@@ -129,7 +129,7 @@ public class ResponseServlet extends HttpServlet {
             //
             // For the proxy server between Mockey and the real service,
             // we do the following:
-            ProxyServerModel proxyServer = store.getProxyInfo();
+            ProxyServerModel proxyServer = store.getProxy();
             ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
 
             try {
@@ -163,7 +163,7 @@ public class ResponseServlet extends HttpServlet {
                 // No service error defined, therefore, let's use the universal
                 // error.
                 if (!serviceErrorDefined) {
-                    Scenario universalError = store.getUniversalErrorResponse();
+                    Scenario universalError = store.getUniversalErrorScenario();
                     if (universalError != null) {
                         response.setBody(universalError.getResponseMessage());
                     } else {
@@ -225,7 +225,7 @@ public class ResponseServlet extends HttpServlet {
         // **********************
         // History
         // **********************
-        RequestResponseTransaction transaction = new RequestResponseTransaction();
+        ClientRequest transaction = new ClientRequest();
         Scenario scenario = new Scenario();
         scenario.setScenarioName((new Date()) + " Remote address:" + requestIp);
         scenario.setRequestorIP(requestIp);
@@ -240,7 +240,7 @@ public class ResponseServlet extends HttpServlet {
         transaction.setClientRequestHeaders(request.getHeaderInfo());
         transaction.setClientRequestParameters(request.getParameterInfo());
         transaction.setResponseMessage(response);
-        store.addHistoricalScenario(transaction);
+        store.logClientRequest(transaction);
 
         try {
             // Wait for a minute.

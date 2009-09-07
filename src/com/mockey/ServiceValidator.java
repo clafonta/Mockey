@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +34,7 @@ import java.util.Map;
 public class ServiceValidator {
     /** Basic logger */
     private static Logger logger = Logger.getLogger(ServiceValidator.class);
-    private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
     /**
      * Return a mapping of input field names and error messages. If the mock
@@ -55,7 +55,7 @@ public class ServiceValidator {
         // Make sure there doesn't exist a service
         // w/ the same serviceURL.
         try {
-            List testServices = store.getOrderedListOfServices();
+            List testServices = store.getServices();
             Iterator iter = testServices.iterator();
             Service ts;
 

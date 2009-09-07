@@ -34,7 +34,7 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 public class ServicePlanSetupServlet extends HttpServlet {
 
@@ -42,7 +42,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
 
     private Log log = LogFactory.getLog(ServicePlanSetupServlet.class);
 
-    private IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
     /**
      * 
@@ -60,10 +60,10 @@ public class ServicePlanSetupServlet extends HttpServlet {
         log.debug("Service Plan setup/delete");
         ServicePlan servicePlan = null;
         Long servicePlanId = null;
-        List<Service> allServices = store.getOrderedListOfServices();
+        List<Service> allServices = store.getServices();
         try {
             servicePlanId = new Long(req.getParameter("plan_id"));
-            servicePlan = store.getMockServicePlan(servicePlanId);
+            servicePlan = store.getServicePlanById(servicePlanId);
         } catch (Exception e) {
             // Do nothing
         }
@@ -90,7 +90,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
                 Iterator iter = servicePlan.getPlanItemList().iterator();
                 while (iter.hasNext()) {
                     PlanItem pi = (PlanItem) iter.next();
-                    Service msb = store.getMockServiceById(pi.getServiceId());
+                    Service msb = store.getServiceById(pi.getServiceId());
                     if (msb != null) {
                         msb.setHangTime(pi.getHangTime());
                         msb.setDefaultScenarioId(pi.getScenarioId());
@@ -107,7 +107,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
         req.setAttribute("services", allServices);
         req.setAttribute("plans", store.getServicePlans());
         req.setAttribute("plan", servicePlan);
-        req.setAttribute("universalError", store.getUniversalErrorResponse());
+        req.setAttribute("universalError", store.getUniversalErrorScenario());
         RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
         dispatch.forward(req, resp);
     }
@@ -135,7 +135,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
             // Do nothing
         }
         if (servicePlanId != null) {
-            servicePlan = this.store.getMockServicePlan(servicePlanId);
+            servicePlan = this.store.getServicePlanById(servicePlanId);
         }
         servicePlan.setName(req.getParameter("plan_name"));
         servicePlan.setDescription(req.getParameter("plan_description"));
@@ -165,12 +165,12 @@ public class ServicePlanSetupServlet extends HttpServlet {
 
                 if (serviceOnlyButtonKey != null) {
                     createPlan = false;
-                    Service msb = store.getMockServiceById(Long.parseLong(serviceId));
+                    Service msb = store.getServiceById(Long.parseLong(serviceId));
                     if (scenarioId != null) {
                         msb.setDefaultScenarioId(Long.parseLong(scenarioId));
                     }
                     msb.setServiceResponseType(serviceResponseTypeKeyInt);
-                    store.saveOrUpdate(msb);
+                    store.saveOrUpdateService(msb);
                     Util.saveSuccessMessage("Service \"" + msb.getServiceName() + "\" updated.", req);
                     break;
                 }
@@ -192,10 +192,10 @@ public class ServicePlanSetupServlet extends HttpServlet {
 
         }
 
-        req.setAttribute("services", store.getOrderedListOfServices());
+        req.setAttribute("services", store.getServices());
         req.setAttribute("plans", store.getServicePlans());
         req.setAttribute("plan", servicePlan);
-        req.setAttribute("universalError", store.getUniversalErrorResponse());
+        req.setAttribute("universalError", store.getUniversalErrorScenario());
         RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
         dispatch.forward(req, resp);
     }
@@ -206,12 +206,12 @@ public class ServicePlanSetupServlet extends HttpServlet {
         Iterator iter = planItems.iterator();
         while (iter.hasNext()) {
             PlanItem pi = (PlanItem) iter.next();
-            Service msb = store.getMockServiceById(pi.getServiceId());
+            Service msb = store.getServiceById(pi.getServiceId());
             if (msb != null) {
                 msb.setHangTime(pi.getHangTime());
                 msb.setDefaultScenarioId(pi.getScenarioId());
                 msb.setServiceResponseType(pi.getServiceResponseType());
-                store.saveOrUpdate(msb);
+                store.saveOrUpdateService(msb);
             }
         }
 

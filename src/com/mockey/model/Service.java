@@ -45,13 +45,13 @@ public class Service implements Item {
     private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
     private String httpMethod = "GET";
     private Url realServiceUrl;
-	private List<RequestResponseTransaction> transactions;
+	private List<ClientRequest> transactions;
 	
-    public List<RequestResponseTransaction> getTransactions() {
+    public List<ClientRequest> getTransactions() {
 		return transactions;
 	}
 
-	public void setTransactions(List<RequestResponseTransaction> transactions) {
+	public void setTransactions(List<ClientRequest> transactions) {
 		this.transactions = transactions;
 	}    
 

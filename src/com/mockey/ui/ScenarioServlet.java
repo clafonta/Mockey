@@ -28,12 +28,12 @@ import com.mockey.ScenarioValidator;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 public class ScenarioServlet extends HttpServlet {
 
     private static final long serialVersionUID = -5920793024759540668L;
-    private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -52,9 +52,9 @@ public class ScenarioServlet extends HttpServlet {
         String actionTypeGetFlag = req.getParameter("actionTypeGetFlag");
 
         if (req.getParameter("delete") != null && serviceId != null && scenarioId != null) {
-            Service service = store.getMockServiceById(serviceId);
+            Service service = store.getServiceById(serviceId);
             service.deleteScenario(scenarioId);
-            store.saveOrUpdate(service);
+            store.saveOrUpdateService(service);
             resp.sendRedirect("setup?id=" + serviceId);
             return;
         }
@@ -95,7 +95,7 @@ public class ScenarioServlet extends HttpServlet {
 
         String responseMsg = req.getParameter("responseMessage");
 
-        Service service = store.getMockServiceById(serviceId);
+        Service service = store.getServiceById(serviceId);
 
         Scenario scenario = service.getScenario(scenarioId);
         if (scenario == null) {
@@ -108,7 +108,7 @@ public class ScenarioServlet extends HttpServlet {
 
         req.setAttribute("mockservice", service);
         req.setAttribute("mockscenario", scenario);
-        req.setAttribute("universalErrorScenario", store.getUniversalErrorResponse());
+        req.setAttribute("universalErrorScenario", store.getUniversalErrorScenario());
         RequestDispatcher dispatch = req.getRequestDispatcher("/service_scenario_setup.jsp");
         dispatch.forward(req, resp);
     }
@@ -128,7 +128,7 @@ public class ScenarioServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Long serviceId = new Long(req.getParameter("serviceId"));
-        Service service = store.getMockServiceById(serviceId);
+        Service service = store.getServiceById(serviceId);
 
         Scenario scenario = null;
         try {
@@ -163,20 +163,20 @@ public class ScenarioServlet extends HttpServlet {
                 store.setUniversalErrorScenarioId(scenario.getId());
                 store.setUniversalErrorServiceId(serviceId);
                 
-            } else if (store.getUniversalErrorResponse() != null
-                    && store.getUniversalErrorResponse().getId() == scenario.getId()) {
+            } else if (store.getUniversalErrorScenario() != null
+                    && store.getUniversalErrorScenario().getId() == scenario.getId()) {
                 store.setUniversalErrorScenarioId(null);
                 store.setUniversalErrorServiceId(null);
             }
 
-            store.saveOrUpdate(service);
+            store.saveOrUpdateService(service);
             Util.saveSuccessMessage("Service updated", req);
 
         }
 
         req.setAttribute("mockscenario", scenario);
         req.setAttribute("mockservice", service);
-        req.setAttribute("universalErrorScenario", store.getUniversalErrorResponse());
+        req.setAttribute("universalErrorScenario", store.getUniversalErrorScenario());
         Util.saveErrorMap(errorMap, req);
 
         RequestDispatcher dispatch = req.getRequestDispatcher("/service_scenario_setup.jsp");

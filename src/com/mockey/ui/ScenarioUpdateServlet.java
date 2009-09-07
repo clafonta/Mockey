@@ -27,14 +27,14 @@ import org.apache.log4j.Logger;
 
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 public class ScenarioUpdateServlet extends HttpServlet {
 
     private static final long serialVersionUID = -2964632050151431391L;
     private Logger log = Logger.getLogger(ScenarioUpdateServlet.class);
 
-    private IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -42,7 +42,7 @@ public class ScenarioUpdateServlet extends HttpServlet {
         String hangTime = req.getParameter("hangTime_" + serviceId);
         String scenarioId = req.getParameter("scenario_" + serviceId);
         String serviceResponseType = req.getParameter("serviceResponseType_" + serviceId);
-        Service service = store.getMockServiceById(new Long(serviceId));
+        Service service = store.getServiceById(new Long(serviceId));
         try {
             service.setServiceResponseType((new Integer(serviceResponseType)).intValue());
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class ScenarioUpdateServlet extends HttpServlet {
             // Do nothing.
             log.debug("Updating service without a 'default scenario ID' value");
         }
-        store.saveOrUpdate(service);
+        store.saveOrUpdateService(service);
         String returnHTML = "Updated";
 
         PrintWriter out = resp.getWriter();

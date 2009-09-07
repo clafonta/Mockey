@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.RequestResponseTransaction;
+import com.mockey.model.ClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 
@@ -28,64 +28,33 @@ import com.mockey.model.Scenario;
  * @author chad.lafontaine
  *
  */
-public interface IMockeyStorage {
+public interface IMockeyStorage {	
 
-	public Service getMockServiceById(Long serviceId);
+	public void deleteEverything();
 
-	public ServicePlan getMockServicePlan(Long servicePlanId);
-	/**
-	 * 
-	 * @return a list of MockServicePlan objects. 
-	 */
+	public Service getServiceById(Long serviceId);
+	public Service getServiceByUrl(String urlPath);
+	public List<Service> getServices();
+	public void saveOrUpdateService(Service service);
+	public void delete(Service service);
+
+	public ServicePlan getServicePlanById(Long servicePlanId);
 	public List<ServicePlan> getServicePlans();
 	public void saveOrUpdateServicePlan(ServicePlan servicePlan);
 	public void deleteServicePlan(ServicePlan servicePlan);
 	
-	public Scenario getUniversalErrorResponse();
+	public Scenario getUniversalErrorScenario();
 	public void setUniversalErrorServiceId(Long serviceId);
 	public void setUniversalErrorScenarioId(Long scenarioId);
-	/**
-	 * 
-	 * @param urlPath
-	 * @return MockServiceBean if urlPath equals a mock URI, null otherwise.
-	 */
-	public Service getServiceByUrl(String urlPath);
 
-	public void saveOrUpdate(Service service);
-
-	public void deleteAll();
-	public void delete(Service service);
-
-	/**
-	 * Support for proxy server 
-	 * @return
-	 */
-	public ProxyServerModel getProxyInfo();
-	
-	/**
-	 * 
-	 * @param proxyInfoBean
-	 */
-	public void setProxyInfo(ProxyServerModel proxyInfoBean);
-	
-	/**
-	 * 
-	 * @return list of Service objects, ordered by id
-	 */
-	public List<Service> getOrderedListOfServices();
-
-	/**
-	 * 
-	 * @return list of MockServiceScenarioBean objects
-	 */
-	public List<RequestResponseTransaction> getHistoryScenarios();
+	public ProxyServerModel getProxy();
+	public void setProxy(ProxyServerModel proxy);
 	
 	public List<String> uniqueClientIPs();
 	public List<String> uniqueClientIPsForService(Service msb);
 	
-	public void addHistoricalScenario(RequestResponseTransaction requestResponseX);
-	
-	public void deleteHistoricalScenario(Long scenarioId);
- 
-	public void flushHistoryRequestMsgs(Long serviceId);
+	public List<ClientRequest> getClientRequests();
+	public void logClientRequest(ClientRequest requestResponseX);
+	public void deleteLoggedClientRequest(Long clientRequestId);
+	public void deleteAllLoggedClientRequestForService(Long serviceId);
 }

@@ -27,25 +27,25 @@ import javax.servlet.http.HttpServletResponse;
 import com.mockey.model.ServicePlan;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 public class HomeServlet extends HttpServlet {
 
     private static final long serialVersionUID = -5485332140449853235L;
 
-    private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String action = req.getParameter("action");
         if (action != null && "deleteAllServices".equals(action)) {
-            IMockeyStorage store = XmlMockeyStorage.getInstance();
-            store.deleteAll();
+            IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+            store.deleteEverything();
         } else {
-            req.setAttribute("services", store.getOrderedListOfServices());
+            req.setAttribute("services", store.getServices());
             req.setAttribute("plans", store.getServicePlans());
             req.setAttribute("plan", new ServicePlan());
-            req.setAttribute("universalError", store.getUniversalErrorResponse());
+            req.setAttribute("universalError", store.getUniversalErrorScenario());
         }
 
         RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");

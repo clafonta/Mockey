@@ -23,7 +23,7 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 /**
  * 
@@ -33,36 +33,20 @@ import com.mockey.storage.XmlMockeyStorage;
 public class MockServiceParser {
 
 	private final static String ROOT = "mockservice";
-
 	private final static String SERVICE = ROOT + "/service";
-
 	private final static String SCENARIO = SERVICE + "/scenario";
-	
 	private final static String PLAN = ROOT + "/service_plan";
-	
 	private final static String PLAN_ITEM = PLAN + "/plan_item";
-
 	private final static String SCENARIO_MATCH = SCENARIO + "/scenario_match";
-
 	private final static String SCENARIO_REQUEST = SCENARIO + "/scenario_request";
-
 	private final static String SCENARIO_RESPONSE = SCENARIO + "/scenario_response";
 
-	public MockServiceParser() {
-
-	}
-
-	/**
-	 * 
-	 * @param inputSource
-	 * @return
-	 */
 	public IMockeyStorage getMockServices(InputSource inputSource) throws org.xml.sax.SAXParseException,
 			java.io.IOException, org.xml.sax.SAXException {
 
 		Digester digester = new Digester();
 		digester.setValidating(false);
-		digester.addObjectCreate(ROOT, XmlMockeyStorage.class);
+		digester.addObjectCreate(ROOT, InMemoryMockeyStorage.class);
 		digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");//   
 		digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");//   
 		
@@ -76,7 +60,7 @@ public class MockServiceParser {
 		digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
 		digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
 	
-		digester.addSetNext(SERVICE, "saveOrUpdate");
+		digester.addSetNext(SERVICE, "saveOrUpdateService");
 
 		digester.addObjectCreate(SCENARIO, Scenario.class);
 		digester.addSetProperties(SCENARIO, "id", "id");

@@ -25,12 +25,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 public class ScenarioListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5034479269126858921L;
-	private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
 	/**
 	 * 
@@ -48,7 +48,7 @@ public class ScenarioListServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		Long serviceId = new Long(req.getParameter("serviceId"));
-		Service service = store.getMockServiceById(serviceId);
+		Service service = store.getServiceById(serviceId);
 		req.setAttribute("service", service);
 		RequestDispatcher dispatch = req
 				.getRequestDispatcher("/service_scenario_list.jsp");

@@ -24,7 +24,7 @@ package com.mockey.model;
  * @author chad.lafontaine
  * 
  */
-public class RequestResponseTransaction implements Item {
+public class ClientRequest implements Item {
 
     private Long id;
     private Scenario serviceInfo;

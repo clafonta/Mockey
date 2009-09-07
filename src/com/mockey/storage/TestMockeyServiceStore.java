@@ -6,7 +6,7 @@ import java.util.List;
 import com.mockey.model.PlanItem;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.RequestResponseTransaction;
+import com.mockey.model.ClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.model.Url;
@@ -18,7 +18,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void deleteHistoricalScenario(Long scenarioId) {
+    public void deleteLoggedClientRequest(Long scenarioId) {
         // TODO Auto-generated method stub
 
     }
@@ -28,17 +28,17 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void flushHistoryRequestMsgs(Long serviceId) {
+    public void deleteAllLoggedClientRequestForService(Long serviceId) {
         // TODO Auto-generated method stub
 
     }
 
-    public List getHistoryScenarios() {
+    public List getClientRequests() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Service getMockServiceById(Long serviceId) {
+    public Service getServiceById(Long serviceId) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -48,7 +48,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return null;
     }
 
-    public ServicePlan getMockServicePlan(Long servicePlanId) {
+    public ServicePlan getServicePlanById(Long servicePlanId) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -90,7 +90,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return planList;
     }
 
-    public List getOrderedListOfServices() {
+    public List getServices() {
         List beans = new ArrayList();
         Service bean = new Service(new Url("http://someservice:8000/eai2"));
         bean.setServiceName("testname");
@@ -127,12 +127,12 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return beans;
     }
 
-    public ProxyServerModel getProxyInfo() {
+    public ProxyServerModel getProxy() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public void saveOrUpdate(Service mockServiceBean) {
+    public void saveOrUpdateService(Service mockServiceBean) {
         // TODO Auto-generated method stub
 
     }
@@ -142,12 +142,12 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void setProxyInfo(ProxyServerModel proxyInfoBean) {
+    public void setProxy(ProxyServerModel proxyInfoBean) {
         // TODO Auto-generated method stub
 
     }
 
-    public Scenario getUniversalErrorResponse() {
+    public Scenario getUniversalErrorScenario() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -162,12 +162,12 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void addHistoricalScenario(RequestResponseTransaction requestResponseX) {
+    public void logClientRequest(ClientRequest requestResponseX) {
         // TODO Auto-generated method stub
 
     }
 
-    public void deleteAll() {
+    public void deleteEverything() {
         // TODO Auto-generated method stub
         
     }

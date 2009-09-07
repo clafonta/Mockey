@@ -48,7 +48,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
 	public Element getElement(Document document, IMockeyStorage store) {
 		
 		Element rootElement = document.createElement("mockservice");
-		Scenario mssb = store.getUniversalErrorResponse();		
+		Scenario mssb = store.getUniversalErrorScenario();		
 		this.setAttribute(rootElement, "xml:lang", "en-US");
 		this.setAttribute(rootElement, "version", "1.0");
 		if(mssb!=null){
@@ -56,7 +56,7 @@ public class MockServiceXMLGenerator extends XMLGeneratorSupport {
             this.setAttribute(rootElement,"universal_error_scenario_id", ""+mssb.getId());
         }
 
-		Iterator iterator = store.getOrderedListOfServices().iterator();
+		Iterator iterator = store.getServices().iterator();
 		logger.debug("building DOM:");
 		while (iterator.hasNext()) {
 			Service mockServiceBean = (Service) iterator.next();

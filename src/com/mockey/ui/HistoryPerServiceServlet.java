@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 /**
  * 
@@ -40,7 +40,7 @@ import com.mockey.storage.XmlMockeyStorage;
 public class HistoryPerServiceServlet extends HttpServlet {
 
     private static final long serialVersionUID = 6606106522000844746L;
-    private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	List<String> ips = store.uniqueClientIPs();

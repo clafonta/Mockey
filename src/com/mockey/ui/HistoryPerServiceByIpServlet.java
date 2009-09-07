@@ -25,11 +25,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mockey.model.RequestResponseTransaction;
+import com.mockey.model.ClientRequest;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 /**
  * <code>MockHistoryPerServiceByIpServlet</code> manages the display of past
@@ -46,7 +46,7 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
      * 
      */
     private static final long serialVersionUID = -2255013290808524662L;
-    private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String iprequest = req.getParameter("iprequest");
@@ -56,23 +56,23 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		if(action!=null && "delete".equals(action)){
 		    // Delete from history
 		    Long scenarioId = new Long(req.getParameter("scenarioId"));		    
-		    store.deleteHistoricalScenario(scenarioId);
+		    store.deleteLoggedClientRequest(scenarioId);
 
 		    // don't allow reloads to re-delete.  crappy hack.
 		    didDelete = true;
 		    
 		}else if(action!=null && "delete_all".equals(action)){
-		    store.flushHistoryRequestMsgs(serviceId);
+		    store.deleteAllLoggedClientRequestForService(serviceId);
 
 		    // don't allow reloads to re-delete.  crappy hack.
 		    didDelete = true;
 		}
 
-		Service ms = store.getMockServiceById(serviceId);
-		List<RequestResponseTransaction> scenarios = store.getHistoryScenarios();
+		Service ms = store.getServiceById(serviceId);
+		List<ClientRequest> scenarios = store.getClientRequests();
 		List scenarioHistoryList = new ArrayList();
 		if(scenarios!=null){
-            for (RequestResponseTransaction type : scenarios) {
+            for (ClientRequest type : scenarios) {
                 if (type.getServiceInfo().getServiceId().equals(serviceId) && type.getServiceInfo().getRequestorIP().equals(iprequest)) {
                     scenarioHistoryList.add(type);
                 }

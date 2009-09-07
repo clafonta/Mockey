@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.model.Scenario;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 /**
  * Accepts requests for "who hit this service" and returns content. Servlet does
@@ -40,7 +40,7 @@ import com.mockey.storage.XmlMockeyStorage;
 public class HistoryHtmlServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 9089211154525468963L;
-	private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
 	/**
 	 * Handles three types of requests:
@@ -106,7 +106,7 @@ public class HistoryHtmlServlet extends HttpServlet {
 	private String getListOfIpAddresses(Long serviceId) {
 		StringBuffer sb = new StringBuffer();
 
-		List scenarioList = store.getHistoryScenarios();
+		List scenarioList = store.getClientRequests();
 		Map visitedAddresses = new HashMap();
 		if (scenarioList != null && scenarioList.size() > 0) {
 			Iterator iter = scenarioList.iterator();
@@ -136,7 +136,7 @@ public class HistoryHtmlServlet extends HttpServlet {
 	 */
 	private String getListOfRecordedScenarios(Long serviceId, String requestIp) {
 		StringBuffer sb = new StringBuffer();
-		List scenarioList = store.getHistoryScenarios();
+		List scenarioList = store.getClientRequests();
 		if (scenarioList != null && scenarioList.size() > 0) {
 			Iterator iter = scenarioList.iterator();
 			while (iter.hasNext()) {

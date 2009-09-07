@@ -26,13 +26,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.mockey.*;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 public class ProxyInfoServlet extends HttpServlet {
 
 	
 	private static final long serialVersionUID = 5503460488900643184L;
-	private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 	
 	/**
 	 *
@@ -48,7 +48,7 @@ public class ProxyInfoServlet extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		ProxyServerModel proxyInfo = store.getProxyInfo();
+		ProxyServerModel proxyInfo = store.getProxy();
 		req.setAttribute("proxyInfo", proxyInfo);
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("/proxy_setup.jsp");
@@ -82,8 +82,8 @@ public class ProxyInfoServlet extends HttpServlet {
 		}
 		proxyInfo.setProxyEnabled(proxyEnabled);
 		Util.saveSuccessMessage("Proxy settings set", req);
-		store.setProxyInfo(proxyInfo);
-		proxyInfo = store.getProxyInfo();
+		store.setProxy(proxyInfo);
+		proxyInfo = store.getProxy();
 		req.setAttribute("proxyInfo", proxyInfo);
 		RequestDispatcher dispatch = req.getRequestDispatcher("/proxy_setup.jsp");
 		dispatch.forward(req, resp);

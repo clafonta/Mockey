@@ -36,7 +36,7 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.XmlMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
 import com.mockey.storage.xml.MockServiceFileReader;
 
 /**
@@ -47,7 +47,7 @@ import com.mockey.storage.xml.MockServiceFileReader;
 public class UploadConfigurationServlet extends HttpServlet {
 
     private static final long serialVersionUID = 2874257060865115637L;
-    private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
     private static Logger logger = Logger.getLogger(UploadConfigurationServlet.class);
 
     /**
@@ -101,15 +101,15 @@ public class UploadConfigurationServlet extends HttpServlet {
 
                     MockServiceFileReader msfr = new MockServiceFileReader();
                     IMockeyStorage mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
-                    if (store.getUniversalErrorResponse() != null
-                            && mockServiceStoreTemporary.getUniversalErrorResponse() != null) {
+                    if (store.getUniversalErrorScenario() != null
+                            && mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
                         conflicts.add("<b>Universal error message</b>: one already defined with name '"
-                                + store.getUniversalErrorResponse().getScenarioName() + "'");
-                    } else if (store.getUniversalErrorResponse() == null
-                            && mockServiceStoreTemporary.getUniversalErrorResponse() != null) {
+                                + store.getUniversalErrorScenario().getScenarioName() + "'");
+                    } else if (store.getUniversalErrorScenario() == null
+                            && mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
                         
-                        store.setUniversalErrorScenarioId(mockServiceStoreTemporary.getUniversalErrorResponse().getId());
-                        store.setUniversalErrorServiceId(mockServiceStoreTemporary.getUniversalErrorResponse().getServiceId());
+                        store.setUniversalErrorScenarioId(mockServiceStoreTemporary.getUniversalErrorScenario().getId());
+                        store.setUniversalErrorServiceId(mockServiceStoreTemporary.getUniversalErrorScenario().getServiceId());
                         additions.add("<b>Universal error response defined.</b>");
                                 
                     }
@@ -126,11 +126,11 @@ public class UploadConfigurationServlet extends HttpServlet {
                     // 2) NO MATCHING MOCK URL
                     // If there is no matching service URL, then create a new
                     // service and associated scenarios.
-                    List uploadedServices = mockServiceStoreTemporary.getOrderedListOfServices();
+                    List uploadedServices = mockServiceStoreTemporary.getServices();
                     Iterator iter2 = uploadedServices.iterator();
                     while (iter2.hasNext()) {
                         Service uploadedServiceBean = (Service) iter2.next();
-                        List serviceBeansInMemory = store.getOrderedListOfServices();
+                        List serviceBeansInMemory = store.getServices();
                         Iterator iter3 = serviceBeansInMemory.iterator();
                         boolean existingServiceWithMatchingMockUrl = false;
                         Service inMemoryServiceBean = null;
@@ -147,7 +147,7 @@ public class UploadConfigurationServlet extends HttpServlet {
                         if (!existingServiceWithMatchingMockUrl) {
                             // We null it, to not stomp on any services
                             uploadedServiceBean.setId(null);
-                            store.saveOrUpdate(uploadedServiceBean);
+                            store.saveOrUpdateService(uploadedServiceBean);
                             additions.add("<b>Service Added</b>: '" + uploadedServiceBean.getServiceName() + "'");
 
                         } else {
@@ -168,7 +168,7 @@ public class UploadConfigurationServlet extends HttpServlet {
                                 if (!existingScenario) {
                                     uBean.setServiceId(inMemoryServiceBean.getId());
                                     inMemoryServiceBean.updateScenario(uBean);
-                                    store.saveOrUpdate(inMemoryServiceBean);
+                                    store.saveOrUpdateService(inMemoryServiceBean);
                                     additions.add("<b>Scenario Added</b>: '" + uBean.getScenarioName()
                                             + "' added to existing service '" + inMemoryServiceBean.getServiceName()
                                             + "'");

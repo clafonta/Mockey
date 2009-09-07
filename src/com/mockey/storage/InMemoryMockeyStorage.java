@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import com.mockey.OrderedMap;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.RequestResponseTransaction;
+import com.mockey.model.ClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 
@@ -32,35 +32,30 @@ import com.mockey.model.Scenario;
  *
  * @author chad.lafontaine
  */
-public class XmlMockeyStorage implements IMockeyStorage {
+public class InMemoryMockeyStorage implements IMockeyStorage {
 
-    /**
-     * Basic logger
-     */
-    private static Logger logger = Logger.getLogger(XmlMockeyStorage.class);
+    private OrderedMap<ClientRequest> historyStore = new OrderedMap<ClientRequest>();
+    private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
+    private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
+    
+    private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
     private ProxyServerModel proxyInfoBean = new ProxyServerModel();
-    private OrderedMap historyCache = new OrderedMap();
-    private OrderedMap mockServiceStore = new OrderedMap();
-    private OrderedMap servicePlanStore = new OrderedMap();
     private Long univeralErrorServiceId = null;
     private Long univeralErrorScenarioId = null;
     
-    private static XmlMockeyStorage store = new XmlMockeyStorage();
+    private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
 
-    public static XmlMockeyStorage getInstance() {
+    public static InMemoryMockeyStorage getInstance() {
         return store;
     }
 
-    public Service getMockServiceById(Long id) {
+    public Service getServiceById(Long id) {
         return (Service) mockServiceStore.get(id);
     }
 
     public Service getServiceByUrl(String urlPath) {
-       
-       
         try {
-            for (Object o : mockServiceStore.keySet()) {
-                Long id = (Long) o;
+            for (Long id : mockServiceStore.keySet()) {
                 Service theService = (Service) mockServiceStore.get(id);
                 String tempString = theService.getMockServiceUrl();
                 if (tempString.equals(urlPath)) {
@@ -70,16 +65,13 @@ public class XmlMockeyStorage implements IMockeyStorage {
 
         } catch (Exception e) {
             logger.error("Unable to retrieve service w/ url pattern: " + urlPath, e);
-
         }
         logger.debug("Didn't find service with Service path: " +urlPath);
         return null;
     }
 
-    public void saveOrUpdate(Service mockServiceBean) {
-        
+    public void saveOrUpdateService(Service mockServiceBean) {
         mockServiceStore.save(mockServiceBean);
-        
     }
 
     public void delete(Service mockServiceBean) {
@@ -88,7 +80,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
         }
     }
 
-    public List getOrderedListOfServices() {
+    public List getServices() {
         return this.mockServiceStore.getOrderedList();
     }
 
@@ -118,38 +110,38 @@ public class XmlMockeyStorage implements IMockeyStorage {
     }
 
     /**
-     * @return list of RequestResponseTransaction objects
+     * @return list of ClientRequest objects
      */
-    public List<RequestResponseTransaction> getHistoryScenarios() {
-        return this.historyCache.getOrderedList();
+    public List<ClientRequest> getClientRequests() {
+        return this.historyStore.getOrderedList();
     }
 
-    public void deleteHistoricalScenario(Long scenarioId) {
+    public void deleteLoggedClientRequest(Long scenarioId) {
 
-        historyCache.remove(scenarioId);
-
-    }
-
-    public void addHistoricalScenario(RequestResponseTransaction mssb) {
-
-        historyCache.save(mssb);
+        historyStore.remove(scenarioId);
 
     }
 
-    public void flushHistoryRequestMsgs(Long serviceId) {
-        for (Object o : historyCache.getOrderedList()) {
-            RequestResponseTransaction object = (RequestResponseTransaction) o;
+    public void logClientRequest(ClientRequest mssb) {
+
+        historyStore.save(mssb);
+
+    }
+
+    public void deleteAllLoggedClientRequestForService(Long serviceId) {
+        for (Object o : historyStore.getOrderedList()) {
+            ClientRequest object = (ClientRequest) o;
             if (object.getServiceInfo().getServiceId().equals(serviceId)) {
-                this.historyCache.remove(object.getId());
+                this.historyStore.remove(object.getId());
             }
         }
     }
 
-    public ProxyServerModel getProxyInfo() {
+    public ProxyServerModel getProxy() {
         return this.proxyInfoBean;
     }
 
-    public void setProxyInfo(ProxyServerModel proxyInfoBean) {
+    public void setProxy(ProxyServerModel proxyInfoBean) {
         this.proxyInfoBean = proxyInfoBean;
 
     }
@@ -161,7 +153,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
 		
 	}
 
-	public ServicePlan getMockServicePlan(Long servicePlanId) {
+	public ServicePlan getServicePlanById(Long servicePlanId) {
 		return (ServicePlan)this.servicePlanStore.get(servicePlanId);
 	}
 
@@ -176,9 +168,9 @@ public class XmlMockeyStorage implements IMockeyStorage {
 		
 	}
 
-    public Scenario getUniversalErrorResponse() {
+    public Scenario getUniversalErrorScenario() {
         Scenario uErrorBean = null;
-        Service msb = getMockServiceById(this.univeralErrorServiceId);
+        Service msb = getServiceById(this.univeralErrorServiceId);
         if(msb!=null){
             uErrorBean = msb.getScenario(this.univeralErrorScenarioId);
         }
@@ -196,8 +188,8 @@ public class XmlMockeyStorage implements IMockeyStorage {
         
     }
 
-    public void deleteAll() {
-        historyCache = new OrderedMap();
+    public void deleteEverything() {
+        historyStore = new OrderedMap();
         mockServiceStore = new OrderedMap();
         servicePlanStore = new OrderedMap();
         
@@ -206,7 +198,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
 	@Override
 	public List<String> uniqueClientIPs() {
 		List<String> uniqueIPs = new ArrayList<String>();
-		for (RequestResponseTransaction tx : this.store.getHistoryScenarios()) {
+		for (ClientRequest tx : this.store.getClientRequests()) {
 			String tmpIP = tx.getServiceInfo().getRequestorIP();
 			if (!uniqueIPs.contains(tmpIP)) {
 				uniqueIPs.add(tmpIP);
@@ -218,7 +210,7 @@ public class XmlMockeyStorage implements IMockeyStorage {
 	@Override
 	public List<String> uniqueClientIPsForService(Service msb) {
 		List<String> uniqueIPs = new ArrayList<String>();
-		for (RequestResponseTransaction tx : this.store.getHistoryScenarios()) {
+		for (ClientRequest tx : this.store.getClientRequests()) {
 			String ip = tx.getServiceInfo().getRequestorIP();
 			if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId()==msb.getId()) {
 				uniqueIPs.add(ip);
