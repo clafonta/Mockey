@@ -202,11 +202,8 @@ public class ResponseServlet extends HttpServlet {
         // History
         // **********************
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-        Scenario scenario = new Scenario();
-        scenario.setScenarioName((new Date()) + " Remote address:" + requestIp);
         fulfilledClientRequest.setRequestorIP(requestIp);
-        scenario.setServiceId(service.getId());
-        fulfilledClientRequest.setServiceInfo(scenario);
+        fulfilledClientRequest.setServiceId(service.getId());
 
         if (!request.hasPostBody()) {
             fulfilledClientRequest.setClientRequestBody("[No post body provided by client]");

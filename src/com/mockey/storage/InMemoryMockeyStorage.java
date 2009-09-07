@@ -132,7 +132,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
     public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId) {
         for (FulfilledClientRequest req : historyStore.getOrderedList()) {
-            if (req.getServiceInfo().getServiceId().equals(serviceId)) {
+            if (req.getServiceId().equals(serviceId)) {
                 this.historyStore.remove(req.getId());
             }
         }
@@ -198,14 +198,48 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         return uniqueIPs;
     }
 
-    public List<String> uniqueClientIPsForService(Service msb) {
+    public List<String> uniqueClientIPsForService(Service service) {
         List<String> uniqueIPs = new ArrayList<String>();
         for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
             String ip = tx.getRequestorIP();
-            if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId() == msb.getId()) {
+            if (!uniqueIPs.contains(ip) && tx.getServiceId() == service.getId()) {
                 uniqueIPs.add(ip);
             }
         }
         return uniqueIPs;
     }
+
+	@Override
+	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
+		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+		for (FulfilledClientRequest req : this.store.getFulfilledClientRequests()) {
+			if (req.getServiceId().equals(serviceId)) {
+				rv.add(req);
+			}
+		}
+		return rv;
+	}
+
+	@Override
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
+		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+		for (FulfilledClientRequest req : this.store.getFulfilledClientRequests()) {
+			if (req.getRequestorIP().equals(ip)) {
+				rv.add(req);
+			}
+		}
+		return rv;
+	}
+
+	@Override
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
+		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+		for (FulfilledClientRequest req : this.store.getFulfilledClientRequests()) {
+			if ( req.getServiceId().equals(serviceId) &&
+					req.getRequestorIP().equals(ip) ) {
+				rv.add(req);
+			}
+		}
+		return rv;
+	}
 }

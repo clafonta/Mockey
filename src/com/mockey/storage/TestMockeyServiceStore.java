@@ -185,4 +185,25 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		return null;
 	}
 
+	@Override
+	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(
+			Long serviceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(
+			String ip) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(
+			String ip, Long serviceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

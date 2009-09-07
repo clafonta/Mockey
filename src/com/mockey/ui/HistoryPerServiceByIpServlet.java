@@ -69,16 +69,8 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
         }
 
 		Service service = store.getServiceById(serviceId);
-		List<FulfilledClientRequest> requests = new ArrayList<FulfilledClientRequest>();
 
-		for (FulfilledClientRequest request : store.getFulfilledClientRequests()) {
-			if (request.getServiceInfo().getServiceId().equals(serviceId) && 
-					request.getRequestorIP().equals(iprequest)) {
-				requests.add(request);   
-			}    
-		}
-
-        req.setAttribute("scenarioHistoryList", requests);
+        req.setAttribute("requests", store.getFulfilledClientRequestsFromIPForService(iprequest, serviceId));
         req.setAttribute("mockservice", service);
         req.setAttribute("iprequest", iprequest);
 

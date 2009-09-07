@@ -15,6 +15,8 @@
  */
 package com.mockey.model;
 
+import java.util.Date;
+
 
 /**
  * Represents the snap-shot of what-just-happened between the Client and Server,
@@ -27,12 +29,18 @@ package com.mockey.model;
 public class FulfilledClientRequest implements PersistableItem {
 
     private Long id;
-    private Scenario serviceInfo;
+    private Long serviceId;
     private String clientRequestBody;
     private String clientRequestHeaders;
     private String clientRequestParameters;
     private String requestorIP;
-
+    private ResponseFromService responseMessage;
+	private Date time = new Date();
+	
+    public Date getTime() {
+		return time;
+	}
+    
     public String getRequestorIP() {
         return requestorIP;
     }
@@ -65,17 +73,14 @@ public class FulfilledClientRequest implements PersistableItem {
         this.clientRequestParameters = clientRequestParameters;
     }
 
-    private ResponseFromService responseMessage;
-
-    public Scenario getServiceInfo() {
-        return serviceInfo;
+    public Long getServiceId() {
+        return serviceId;
     }
 
-    public void setServiceInfo(Scenario scenario) {
-        this.serviceInfo = scenario;
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
     }
    
-
     public ResponseFromService getResponseMessage() {
         return responseMessage;
     }
@@ -85,13 +90,11 @@ public class FulfilledClientRequest implements PersistableItem {
     }
 
     public Long getId() {
-     
         return id;
     }
 
     public void setId(Long id) {
-        this.id = id;
-        
+        this.id = id; 
     }
 
 }

@@ -40,7 +40,7 @@ $(document).ready(function() {
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
     <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
     <c:choose>
-        <c:when test="${!empty scenarioHistoryList}">
+        <c:when test="${!empty requests}">
             <p>
              <c:url value="/history/detail" var="deleteAllScenarioUrl">
 	                                       <c:param name="serviceId" value="${mockservice.id}" />
@@ -49,8 +49,8 @@ $(document).ready(function() {
 	                                    </c:url>
 	                                   <a href="<c:out value="${deleteAllScenarioUrl}"/>">Clear All</a>
             </p>
-            <c:forEach var="scenario" items="${scenarioHistoryList}" varStatus="status">
-                <p><div id="fulfilledRequest_${scenario.id}">
+            <c:forEach var="request" items="${requests}" varStatus="status">
+                <p><div id="fulfilledRequest_${request.id}">
                     <form action="<c:url value="/scenario"/>" method="post">
 	                    <input type="hidden" name="actionTypeGetFlag" value="true" />
 	                    <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
@@ -59,15 +59,9 @@ $(document).ready(function() {
 	                            <tr>
 	                                <td>
 	                                    <p style="text-align:right;">
-	                                    <c url value="/history/detail" var="deleteScenarioUrl">
-	                                       <c param name="serviceId" value="${mockservice.id}" />
-	                                       <c param name="iprequest" value="${iprequest}" />
-	                                       <c param name="scenarioId" value="${scenario.id}" />
-	                                       <c param name="action" value="delete" />
-	                                    </c url>
-	                                    <a id="deleteFulfilledRequest_${scenario.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
+	                                    	<a id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
 	                                    </p>
-	                                    <p><b>Time and IP:</b> <c:out value="${scenario.serviceInfo.scenarioName}"/> </p>
+	                                    <p><b>Time and IP:</b> <c:out value="${request.time}"/> <c:out value="${request.requestorIP}"/> </p>
 	                                </td>
 	                            </tr>
 	                            <tr>
@@ -75,30 +69,30 @@ $(document).ready(function() {
 	                                  <div class="conflict_message"/>
 	                                    <h3>Request:</h3>
 	                                    <p>Header</p>
-	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${scenario.clientRequestHeaders}"/></textarea></p>
+	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${request.clientRequestHeaders}"/></textarea></p>
 	                                    <p>Parameters</p>
-	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${scenario.clientRequestParameters}"/></textarea></p>
+	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${request.clientRequestParameters}"/></textarea></p>
 	                                    <p>Body</p>
-	                                    <p><textarea name="requestMessage" rows="10" cols="80%"><c:out value="${scenario.clientRequestBody}"/></textarea></p>
+	                                    <p><textarea name="requestMessage" rows="10" cols="80%"><c:out value="${request.clientRequestBody}"/></textarea></p>
 	                                   </div>
 	                                </td>
 	                            </tr>
 	                            <tr>
 	                                <td >
-	                                  <div id="scenario${scenario.id}" class="addition_message mockeyResponse">
+	                                  <div id="scenario${request.id}" class="addition_message mockeyResponse">
 	                                    <h3>Response: </h3>
 	                                    <p>Status</p>
 	                                    <p>
-                                            <textarea name="responseStatus" rows="1" cols="80%"><c:out value="${scenario.responseMessage.statusLine}"/></textarea>
+                                            <textarea name="responseStatus" rows="1" cols="80%"><c:out value="${request.responseMessage.statusLine}"/></textarea>
                                         </p>
 	                                    <p>Header</p>
 	                                    <p>
-                                            <textarea name="responseHeader" rows="10" cols="80%"><c:out value="${scenario.responseMessage.headerInfo}"/></textarea>
+                                            <textarea name="responseHeader" rows="10" cols="80%"><c:out value="${request.responseMessage.headerInfo}"/></textarea>
                                         </p>
                                         <p>Body</p>
 	                                    <p>
 	                                        <button class="formatButton" style="border: 1px solid #006; background: #ccf; margin-left: 60%; border-bottom-width:0;">Format Body</button>
-                                            <textarea style="margin-top: 0px;" name="responseMessage" class="responseContent" rows="10" cols="80%"><c:out value="${scenario.responseMessage.body}"/></textarea>
+                                            <textarea style="margin-top: 0px;" name="responseMessage" class="responseContent" rows="10" cols="80%"><c:out value="${request.responseMessage.body}"/></textarea>
                                         </p>
                                         <p>
                                         <input type="submit" name="Save" value="Save Response as a Scenario" />
