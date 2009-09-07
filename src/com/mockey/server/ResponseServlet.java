@@ -256,7 +256,7 @@ public class ResponseServlet extends HttpServlet {
             // Catch interrupt exception
         }
         if (!replied) {
-            resp.setContentType(service.getHttpHeaderDefinition());
+            resp.setContentType(service.getHttpContentType());
             PrintStream out;
             out = new PrintStream(resp.getOutputStream());
             out.println(response.getBody());

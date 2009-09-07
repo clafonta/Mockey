@@ -77,7 +77,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				serviceElement.setAttribute("url", mockServiceBean.getMockServiceUrl());
 				serviceElement.setAttribute("proxyurl", mockServiceBean.getRealServiceUrl());
 				serviceElement.setAttribute("hang_time", "" + mockServiceBean.getHangTime());
-				serviceElement.setAttribute("http_header_definition", "" + mockServiceBean.getHttpHeaderDefinition());
+				serviceElement.setAttribute("http_header_definition", "" + mockServiceBean.getHttpContentType());
 				serviceElement.setAttribute("default_scenario_id", "" + (mockServiceBean.getDefaultScenarioId()!=null ?  mockServiceBean.getDefaultScenarioId(): ""));
 				serviceElement.setAttribute("service_response_type", "" + mockServiceBean.getServiceResponseType());
 

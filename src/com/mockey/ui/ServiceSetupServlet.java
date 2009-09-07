@@ -153,7 +153,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		service.setRealServiceUrl(urlObj);
 		service.setServiceName(req.getParameter("serviceName"));
 		service.setDescription(req.getParameter("description"));
-		service.setHttpHeaderDefinition(req.getParameter("httpHeaderDefinition"));		
+		service.setHttpContentType(req.getParameter("httpContentType"));		
 		Map<String, String> errorMap = ServiceValidator.validate(service);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {

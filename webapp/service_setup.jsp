@@ -6,18 +6,18 @@
 <%--@elvariable id="mockservice" type="com.mockey.MockServiceBean"--%>
 <jsp:include page="/WEB-INF/common/header.jsp" />
 <div id="main">
-    <%@ include file="/WEB-INF/common/message.jsp"%>    
+    <%@ include file="/WEB-INF/common/message.jsp"%>
     <c:choose>
         <c:when test="${!empty mockservice.id}">
             <h1>Service Setup: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
-        </c:when>        
+        </c:when>
         <c:otherwise>
-            <h1>Service Setup</h1>            
+            <h1>Service Setup</h1>
         </c:otherwise>
     </c:choose>
     <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
     <form action="<c:url value="/setup"/>" method="POST">
-        <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" /> 
+        <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
         <table class="simple" width="100%">
             <tbody>
 	            <tr><th><p>Service name:</p></th>
@@ -32,7 +32,7 @@
                         <p><input type="text" name="realServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.realServiceUrl}"/>" /></p>
                         <p>You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</p>
                     </td>
-                </tr>                
+                </tr>
 	            <tr><th><p>Service description:</p></th>
                     <td>
                         <p><textarea name="description" style="width:90%;" rows="2" ><c:out value="${mockservice.description}" /></textarea></p>
@@ -42,24 +42,24 @@
 	            <tr>
 	                <th><p>Mock service URI:</p></th>
 	                <td>
-	                    <p><c:out value="${mockservice.mockServiceUrl}"/> </p>	                    
+	                    <p><c:out value="${mockservice.mockServiceUrl}"/> </p>
 	                </td>
 	            </tr>
 	            <tr>
 	                <th><p>HTTP header definition:</p></th>
 	                <td>
 	                    <p>
-	                      <select name="httpHeaderDefinition">
-	                        <option value="" <c:if test="${mockservice.httpHeaderDefinition eq ''}">selected="selected"</c:if>>[select]</option>
-                            <option value="text/xml;" <c:if test="${mockservice.httpHeaderDefinition eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
-                            <option value="text/plain;" <c:if test="${mockservice.httpHeaderDefinition eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
-                            <option value="text/css;" <c:if test="${mockservice.httpHeaderDefinition eq 'text/css;'}">selected="selected"</c:if>>text/css;</option>
-                            <option value="application/json;" <c:if test="${mockservice.httpHeaderDefinition eq 'application/json;'}">selected="selected"</c:if>>application/json;</option>
-                            <option value="text/html;charset=utf-8" <c:if test="${mockservice.httpHeaderDefinition eq 'text/html;charset=utf-8'}">selected="selected"</c:if>>text/html;charset=utf-8</option>
-                            <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpHeaderDefinition eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
-                            <!-- <option value="other" <c:if test="${mockservice.httpHeaderDefinition eq 'other'}">selected="selected"</c:if>>other</option>  -->
-                          </select>	                    
-	                    <!--  <input type="text" size="60px" name="httpHeaderDefinition_other" value="<c:out value="${mockservice.httpHeaderDefinition}"/>" /></p>  -->
+	                      <select name="httpContentType">
+	                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
+                            <option value="text/xml;" <c:if test="${mockservice.httpContentType eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
+                            <option value="text/plain;" <c:if test="${mockservice.httpContentType eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
+                            <option value="text/css;" <c:if test="${mockservice.httpContentType eq 'text/css;'}">selected="selected"</c:if>>text/css;</option>
+                            <option value="application/json;" <c:if test="${mockservice.httpContentType eq 'application/json;'}">selected="selected"</c:if>>application/json;</option>
+                            <option value="text/html;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'text/html;charset=utf-8'}">selected="selected"</c:if>>text/html;charset=utf-8</option>
+                            <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpContentType eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
+                            <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->
+                          </select>
+	                    <!--  <input type="text" size="60px" name="httphttpContentType_other" value="<c:out value="${mockservice.httpContentType}"/>" /></p>  -->
 	                    <p>For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
                                 style="font-style: italic;">application/json;</span>, etc. </p>
 	                </td>
@@ -74,7 +74,7 @@
 	            <c:otherwise>
 	                <input type="submit" name="create" value="Create" />
 	            </c:otherwise>
-	        </c:choose> 
+	        </c:choose>
 	        <c:if test="${!empty mockservice.id}">
 	            <input type="submit" name="delete" value="Delete" onclick="return confirm('Deleting this service will delete all scenarios associated with it. \nAre you sure you want to delete this service?');" />
 	        </c:if>

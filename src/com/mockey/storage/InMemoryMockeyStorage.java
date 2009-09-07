@@ -105,32 +105,12 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         }
     }
 
-    public List getServices() {
+    public List<Service> getServices() {
         return this.mockServiceStore.getOrderedList();
     }
 
     public String toString() {
-
-        StringBuffer stringBuf = new StringBuffer();
-        stringBuf.append(super.toString());
-        for (Object o : this.mockServiceStore.keySet()) {
-            Long key = (Long) o;
-            Service element = mockServiceStore.get(key);
-            stringBuf.append("Service ID: ").append(element.getId()).append("\n");
-            stringBuf.append("Service name: ").append(element.getServiceName()).append("\n");
-            stringBuf.append("Service description: ").append(element.getDescription()).append("\n");
-            stringBuf.append("Service url: ").append(element.getMockServiceUrl()).append("\n");
-            stringBuf.append("Service proxyurl: ").append(element.getUrl().getPath()).append("\n");
-            List<Scenario> scenarios = element.getScenarios();
-            for (Object scenario : scenarios) {
-                Scenario b = (Scenario) scenario;
-                stringBuf.append("    scenario name: ").append(b.getScenarioName()).append("\n");
-                stringBuf.append("    scenario request: ").append(b.getRequestMessage()).append("\n");
-                stringBuf.append("    scenario response: ").append(b.getResponseMessage()).append("\n");
-            }
-
-        }
-        return stringBuf.toString();
+        return new MockeyStorageWriter().StorageAsString(this);
     }
 
     /**
@@ -149,10 +129,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId) {
-        for (Object o : historyStore.getOrderedList()) {
-            FulfilledClientRequest object = (FulfilledClientRequest) o;
-            if (object.getServiceInfo().getServiceId().equals(serviceId)) {
-                this.historyStore.remove(object.getId());
+        for (FulfilledClientRequest req : historyStore.getOrderedList()) {
+            if (req.getServiceInfo().getServiceId().equals(serviceId)) {
+                this.historyStore.remove(req.getId());
             }
         }
     }
@@ -172,7 +151,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public ServicePlan getServicePlanById(Long servicePlanId) {
-        return (ServicePlan) this.servicePlanStore.get(servicePlanId);
+        return servicePlanStore.get(servicePlanId);
     }
 
     public List<ServicePlan> getServicePlans() {
@@ -184,12 +163,12 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public Scenario getUniversalErrorScenario() {
-        Scenario uErrorBean = null;
-        Service msb = getServiceById(this.univeralErrorServiceId);
-        if (msb != null) {
-            uErrorBean = msb.getScenario(this.univeralErrorScenarioId);
+        Scenario error = null;
+        Service service = getServiceById(this.univeralErrorServiceId);
+        if (service != null) {
+            error = service.getScenario(this.univeralErrorScenarioId);
         }
-        return uErrorBean;
+        return error;
     }
 
     public void setUniversalErrorScenarioId(Long scenarioId) {

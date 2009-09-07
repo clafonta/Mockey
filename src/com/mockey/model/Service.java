@@ -38,7 +38,7 @@ public class Service implements PersistableItem {
     private String description;
     private Long defaultScenarioId;
     private Long errorScenarioId;
-    private String httpHeaderDefinition;
+    private String httpContentType;
     private int hangTime = 500;
     private OrderedMap<Scenario> scenarios = new OrderedMap<Scenario>();
     private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
@@ -151,12 +151,12 @@ public class Service implements PersistableItem {
         this.realServiceUrl = new Url(realServiceUrl);
     }
 
-    public String getHttpHeaderDefinition() {
-        return httpHeaderDefinition;
+    public String getHttpContentType() {
+        return httpContentType;
     }
 
-    public void setHttpHeaderDefinition(String httpHeaderDefinition) {
-        this.httpHeaderDefinition = httpHeaderDefinition;
+    public void setHttpContentType(String httpContentType) {
+        this.httpContentType = httpContentType;
     }
 
     public String toString() {
@@ -166,7 +166,7 @@ public class Service implements PersistableItem {
         sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
         sb.append("Scheme:").append(this.getUrl().getScheme()).append("\n");
         sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
-        sb.append("HTTP Content:").append(this.getHttpHeaderDefinition()).append("\n");
+        sb.append("HTTP Content:").append(this.getHttpContentType()).append("\n");
         sb.append("Hang time:");
         sb.append(this.getHangTime());
         sb.append("\n");

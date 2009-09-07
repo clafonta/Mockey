@@ -14,12 +14,12 @@
 	<c:url value="/history/list" var="historyUrl">
         <c:param name="serviceId" value="${mockservice.id}" />
     </c:url>
-	<p style="text-align:center;" id="action_links"> 	    
+	<p style="text-align:center;" id="action_links">
 	    <a href="<c:out value="${setupUrl}"/>" title="Edit service settings" <c:if test="${actionKey == 'edit_service'}"> class="nav" </c:if>>Edit Service Definition</a> |
 	    <a href="<c:out value="${scenarioCreateUrl}"/>" title="Edit service settings">Create Scenario</a> |
 	    <a href="<c:out value="${scenarioListUrl}"/>" title="Scenarios" <c:if test="${actionKey == 'scenario_list'}"> class="nav" </c:if>>Edit Scenarios</a> |
 	    <a href="<c:out value="${historyUrl}"/>" title="History of request made to this service" <c:if test="${actionKey == 'service_history'}"> class="nav" </c:if>>History</a>
-	
+
 		<table class="basic" width="100%">
 	        <tbody>
 	            <tr><th colspan=2" style="text-align:center;">Service Definition</th></tr>
@@ -28,14 +28,14 @@
 	                <p>
 	                    <c:url value="/setup" var="setupUrl">
 	                        <c:param name="serviceId" value="${mockservice.id}" />
-	                    </c:url> 
+	                    </c:url>
 	                    <c:out value="${mockservice.serviceName}" />
 	                </p>
 	            </td>
 	            </tr>
 	            <tr>
 	                <th><p>Mock URL:</p></th>
-                    <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set> 
+                    <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
 	                <td>
 	                    <p><a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a><mockey:clipboard id="clip-mockservice" text="${mockUrl}" bgcolor="#F1F1F0"/></p>
 	                </td>
@@ -49,18 +49,18 @@
 	                                <span <c:if test="${mockservice.serviceResponseType eq 0}">style="color:red;" </c:if>>(undefined)</span>
 	                            </c:when>
 	                            <c:otherwise>
-	                                <c:out value="${mockservice.realServiceUrl}" /><mockey:clipboard id="clip-realservice" text="${mockservice.realServiceUrl}" bgcolor="#F1F1F0" /> 
+	                                <c:out value="${mockservice.realServiceUrl}" /><mockey:clipboard id="clip-realservice" text="${mockservice.realServiceUrl}" bgcolor="#F1F1F0" />
 	                            </c:otherwise>
 	                        </c:choose>
 	                    </p>
 	                </td>
 	            </tr>
 	            <tr>
-	                <th><p>HTTP header definition:</p></th>
-	                <td><p><c:out value="${mockservice.httpHeaderDefinition}" /></p></td>
+	                <th><p>HTTP Content Type:</p></th>
+	                <td><p><c:out value="${mockservice.httpContentType}" /></p></td>
 	            </tr>
 	        </tbody>
 	    </table>
 	</p>
 	<br />
-</c:if> 
+</c:if>
