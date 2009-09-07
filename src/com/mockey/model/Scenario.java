@@ -17,7 +17,7 @@ package com.mockey.model;
 
 
 /**
- * Definition of a scenario.
+ * A Scenario is a specific response from a Service.
  * 
  * @author chad.lafontaine
  */

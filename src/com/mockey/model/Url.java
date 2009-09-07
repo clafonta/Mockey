@@ -3,7 +3,7 @@ package com.mockey.model;
 import org.apache.log4j.Logger;
 
 /**
- * Handles parsing of URLs, providing access to scheme, path, and port.
+ * A Url is the specific http url of a Service.
  * 
  * @author chad.lafontaine
  * @author lorin.kobashigawa

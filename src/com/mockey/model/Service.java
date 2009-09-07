@@ -22,7 +22,7 @@ import org.apache.http.HttpHost;
 import com.mockey.OrderedMap;
 
 /**
- * The mock service definition.
+ * A Service is a remote url that can be called.
  * 
  * @author chad.lafontaine
  * 
