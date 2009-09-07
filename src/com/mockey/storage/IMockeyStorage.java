@@ -36,7 +36,7 @@ public interface IMockeyStorage {
 	public Service getServiceByUrl(String urlPath);
 	public List<Service> getServices();
 	public void saveOrUpdateService(Service service);
-	public void delete(Service service);
+	public void deleteService(Service service);
 
 	public ServicePlan getServicePlanById(Long servicePlanId);
 	public List<ServicePlan> getServicePlans();
@@ -53,8 +53,8 @@ public interface IMockeyStorage {
 	public List<String> uniqueClientIPs();
 	public List<String> uniqueClientIPsForService(Service msb);
 	
-	public List<FulfilledClientRequest> getClientRequests();
+	public List<FulfilledClientRequest> getFulfilledClientRequests();
 	public void logClientRequest(FulfilledClientRequest requestResponseX);
-	public void deleteLoggedClientRequest(Long clientRequestId);
-	public void deleteAllLoggedClientRequestForService(Long serviceId);
+	public void deleteLoggedFulfilledClientRequest(Long clientRequestId);
+	public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId);
 }

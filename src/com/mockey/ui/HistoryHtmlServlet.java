@@ -107,7 +107,7 @@ public class HistoryHtmlServlet extends HttpServlet {
     private String getListOfIpAddresses(Long serviceId) {
 		StringBuffer sb = new StringBuffer();
 
-		List scenarioList = store.getClientRequests();
+		List scenarioList = store.getFulfilledClientRequests();
 		Map visitedAddresses = new HashMap();
 		if (scenarioList != null && scenarioList.size() > 0) {
 			Iterator iter = scenarioList.iterator();
@@ -138,7 +138,7 @@ public class HistoryHtmlServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
     private String getListOfRecordedScenarios(Long serviceId, String requestIp) {
 		StringBuffer sb = new StringBuffer();
-		List scenarioList = store.getClientRequests();
+		List scenarioList = store.getFulfilledClientRequests();
 		if (scenarioList != null && scenarioList.size() > 0) {
 			Iterator iter = scenarioList.iterator();
 			while (iter.hasNext()) {

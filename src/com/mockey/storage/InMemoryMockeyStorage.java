@@ -76,7 +76,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         mockServiceStore.save(mockServiceBean);
     }
 
-    public void delete(Service mockServiceBean) {
+    public void deleteService(Service mockServiceBean) {
         if (mockServiceBean != null) {
             mockServiceStore.remove(mockServiceBean.getId());
         }
@@ -113,11 +113,11 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     /**
      * @return list of FulfilledClientRequest objects
      */
-    public List<FulfilledClientRequest> getClientRequests() {
+    public List<FulfilledClientRequest> getFulfilledClientRequests() {
         return this.historyStore.getOrderedList();
     }
 
-    public void deleteLoggedClientRequest(Long scenarioId) {
+    public void deleteLoggedFulfilledClientRequest(Long scenarioId) {
         historyStore.remove(scenarioId);
     }
 
@@ -125,7 +125,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         historyStore.save(mssb);
     }
 
-    public void deleteAllLoggedClientRequestForService(Long serviceId) {
+    public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId) {
         for (Object o : historyStore.getOrderedList()) {
             FulfilledClientRequest object = (FulfilledClientRequest) o;
             if (object.getServiceInfo().getServiceId().equals(serviceId)) {
@@ -187,7 +187,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public List<String> uniqueClientIPs() {
 		List<String> uniqueIPs = new ArrayList<String>();
-		for (FulfilledClientRequest tx : this.store.getClientRequests()) {
+		for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
 			String tmpIP = tx.getServiceInfo().getRequestorIP();
 			if (!uniqueIPs.contains(tmpIP)) {
 				uniqueIPs.add(tmpIP);
@@ -198,7 +198,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public List<String> uniqueClientIPsForService(Service msb) {
 		List<String> uniqueIPs = new ArrayList<String>();
-		for (FulfilledClientRequest tx : this.store.getClientRequests()) {
+		for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
 			String ip = tx.getServiceInfo().getRequestorIP();
 			if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId()==msb.getId()) {
 				uniqueIPs.add(ip);

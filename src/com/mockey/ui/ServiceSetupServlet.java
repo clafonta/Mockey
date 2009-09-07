@@ -58,8 +58,8 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		if (req.getParameter("delete") != null && serviceId != null) {
 			Service service = store.getServiceById(serviceId);
-			store.delete(service);
-			store.deleteAllLoggedClientRequestForService(serviceId);
+			store.deleteService(service);
+			store.deleteAllLoggedFulfilledClientRequestForService(serviceId);
 			
 			Util.saveSuccessMessage("Service '"+service.getServiceName()+"' was deleted.", req);
 			// Check to see if any plans need an update. 

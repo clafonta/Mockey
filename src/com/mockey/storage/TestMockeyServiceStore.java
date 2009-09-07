@@ -13,12 +13,12 @@ import com.mockey.model.Url;
 
 public class TestMockeyServiceStore implements IMockeyStorage {
 
-    public void delete(Service mockServiceBean) {
+    public void deleteService(Service mockServiceBean) {
         // TODO Auto-generated method stub
 
     }
 
-    public void deleteLoggedClientRequest(Long scenarioId) {
+    public void deleteLoggedFulfilledClientRequest(Long scenarioId) {
         // TODO Auto-generated method stub
 
     }
@@ -28,12 +28,12 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void deleteAllLoggedClientRequestForService(Long serviceId) {
+    public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId) {
         // TODO Auto-generated method stub
 
     }
 
-    public List getClientRequests() {
+    public List getFulfilledClientRequests() {
         // TODO Auto-generated method stub
         return null;
     }

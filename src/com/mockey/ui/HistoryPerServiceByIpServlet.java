@@ -57,20 +57,20 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		if(action!=null && "delete".equals(action)){
 		    // Delete from history
 		    Long scenarioId = new Long(req.getParameter("scenarioId"));		    
-		    store.deleteLoggedClientRequest(scenarioId);
+		    store.deleteLoggedFulfilledClientRequest(scenarioId);
 
 		    // don't allow reloads to re-delete.  crappy hack.
 		    didDelete = true;
 		    
         } else if (action != null && "delete_all".equals(action)) {
-            store.deleteAllLoggedClientRequestForService(serviceId);
+            store.deleteAllLoggedFulfilledClientRequestForService(serviceId);
 
 		    // don't allow reloads to re-delete.  crappy hack.
 		    didDelete = true;
         }
 
 		Service ms = store.getServiceById(serviceId);
-		List<FulfilledClientRequest> scenarios = store.getClientRequests();
+		List<FulfilledClientRequest> scenarios = store.getFulfilledClientRequests();
 		List scenarioHistoryList = new ArrayList();
 		if(scenarios!=null){
             for (FulfilledClientRequest type : scenarios) {
