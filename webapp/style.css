@@ -31,27 +31,12 @@ ul#minitabs li{display: inline;margin: 0 3px}
 ul#minitabs a{text-decoration: none;padding: 0 0 3px;  border-bottom: 4px solid #FFF;color: #999}
 ul#minitabs a#current{border-color: #F60;color:#06F}
 ul#minitabs a:hover{border-color: #F60;color: #666}
-.hint_message {
-	margin: 2em;
-	padding-left: 1em;
-	padding-right: 1em;	
-	text-align: left;
-	color: black;
-	border: thin solid #d3d3d3;
-	background-color: #f5f5dc;
-}
-.conflict_message {text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
-.addition_message {text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #7eff00;}
-.alert_message {margin-left: 20%; margin-right: 20%;	text-align: left;	color: black;	border: thin solid #d3d3d3;	padding: 0.2em; background-color: #FFD7D7;}
-.info_message {	
-
-	margin-left: 20%; margin-right: 20%;
-	text-align: left;
-	color: black;
-	border: thin solid #d3d3d3;
-	padding: 0.2em;
-	background-color: #7eff00;
-}
+.hint_message, .alert_message, .conflict_message, .addition_message, .info_message {	margin: 2em;	padding: 1em;	text-align: left;	color: black;	border: thin solid #d3d3d3;}
+.hint_message{background-color: #f5f5dc;}
+.alert_message{background-color: #7eff00;}
+.conflict_message {background-color: #FFD7D7;}
+.addition_message {background-color: #7eff00;}
+.info_message {	background-color: #7eff00;}
 .code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em; font-family: Courier,sans-serif;}
 .code a{text-align:center;font-size: 1.2em;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }

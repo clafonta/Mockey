@@ -32,59 +32,60 @@ import com.mockey.storage.InMemoryMockeyStorage;
  */
 public class MockeyXmlFileConfigurationParser {
 
-	private final static String ROOT = "mockservice";
-	private final static String SERVICE = ROOT + "/service";
-	private final static String SCENARIO = SERVICE + "/scenario";
-	private final static String PLAN = ROOT + "/service_plan";
-	private final static String PLAN_ITEM = PLAN + "/plan_item";
-	private final static String SCENARIO_MATCH = SCENARIO + "/scenario_match";
-	private final static String SCENARIO_REQUEST = SCENARIO + "/scenario_request";
-	private final static String SCENARIO_RESPONSE = SCENARIO + "/scenario_response";
+    private final static String ROOT = "mockservice";
+    private final static String SERVICE = ROOT + "/service";
+    private final static String SCENARIO = SERVICE + "/scenario";
+    private final static String PLAN = ROOT + "/service_plan";
+    private final static String PLAN_ITEM = PLAN + "/plan_item";
+    private final static String SCENARIO_MATCH = SCENARIO + "/scenario_match";
+    private final static String SCENARIO_REQUEST = SCENARIO + "/scenario_request";
+    private final static String SCENARIO_RESPONSE = SCENARIO + "/scenario_response";
 
-	public IMockeyStorage getMockServices(InputSource inputSource) throws org.xml.sax.SAXParseException,
-			java.io.IOException, org.xml.sax.SAXException {
+    public IMockeyStorage getMockServices(InputSource inputSource) throws org.xml.sax.SAXParseException,
+            java.io.IOException, org.xml.sax.SAXException {
 
-		Digester digester = new Digester();
-		digester.setValidating(false);
-		digester.addObjectCreate(ROOT, InMemoryMockeyStorage.class);
-		digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");//   
-		digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");//   
-		
-		digester.addObjectCreate(SERVICE, Service.class);
-		//digester.addSetProperties(SERVICE, "id", "id");//    
-		digester.addSetProperties(SERVICE, "name", "serviceName");//           
-		digester.addSetProperties(SERVICE, "description", "description");
-		digester.addSetProperties(SERVICE, "http_header_definition", "httpHeaderDefinition");
-		digester.addSetProperties(SERVICE, "hang_time", "hangTime");//  
-		digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrlByString");
-		digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
-		digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
-	
-		digester.addSetNext(SERVICE, "saveOrUpdateService");
+        Digester digester = new Digester();
+        digester.setValidating(false);
+        digester.addObjectCreate(ROOT, InMemoryMockeyStorage.class);
 
-		digester.addObjectCreate(SCENARIO, Scenario.class);
-		digester.addSetProperties(SCENARIO, "id", "id");
-		digester.addSetProperties(SCENARIO, "name", "scenarioName");
-		digester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
-		digester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
-		digester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
-		digester.addSetNext(SCENARIO, "updateScenario");
-		
-		// PLAN
-		digester.addObjectCreate(PLAN, ServicePlan.class);
-		digester.addSetProperties(PLAN, "name", "name");//     
-		digester.addSetProperties(PLAN, "description", "description");//
-		digester.addSetProperties(PLAN, "id", "id");
-		digester.addSetNext(PLAN, "saveOrUpdateServicePlan");
-		digester.addObjectCreate(PLAN_ITEM, PlanItem.class);
-		digester.addSetProperties(PLAN_ITEM, "hang_time", "hangTime");
-		digester.addSetProperties(PLAN_ITEM, "service_id", "serviceId");
-		digester.addSetProperties(PLAN_ITEM, "scenario_id", "scenarioId");
-		digester.addSetProperties(PLAN_ITEM, "service_response_type", "serviceResponseType");
-		digester.addSetNext(PLAN_ITEM, "addPlanItem");
-		IMockeyStorage c = (IMockeyStorage) digester.parse(inputSource);
-		return c;
+        digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");//   
+        digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");//   
 
-	}
+        digester.addObjectCreate(SERVICE, Service.class);
+
+        digester.addSetProperties(SERVICE, "name", "serviceName");//           
+        digester.addSetProperties(SERVICE, "description", "description");
+        digester.addSetProperties(SERVICE, "http_header_definition", "httpHeaderDefinition");
+        digester.addSetProperties(SERVICE, "hang_time", "hangTime");//  
+        digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrlByString");
+        digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
+        digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
+
+        digester.addSetNext(SERVICE, "saveOrUpdateService");
+
+        digester.addObjectCreate(SCENARIO, Scenario.class);
+        digester.addSetProperties(SCENARIO, "id", "id");
+        digester.addSetProperties(SCENARIO, "name", "scenarioName");
+        digester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
+        digester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
+        digester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
+        digester.addSetNext(SCENARIO, "updateScenario");
+
+        // PLAN
+        digester.addObjectCreate(PLAN, ServicePlan.class);
+        digester.addSetProperties(PLAN, "name", "name");//     
+        digester.addSetProperties(PLAN, "description", "description");//
+        digester.addSetProperties(PLAN, "id", "id");
+        digester.addSetNext(PLAN, "saveOrUpdateServicePlan");
+        digester.addObjectCreate(PLAN_ITEM, PlanItem.class);
+        digester.addSetProperties(PLAN_ITEM, "hang_time", "hangTime");
+        digester.addSetProperties(PLAN_ITEM, "service_id", "serviceId");
+        digester.addSetProperties(PLAN_ITEM, "scenario_id", "scenarioId");
+        digester.addSetProperties(PLAN_ITEM, "service_response_type", "serviceResponseType");
+        digester.addSetNext(PLAN_ITEM, "addPlanItem");
+        IMockeyStorage c = (IMockeyStorage) digester.parse(inputSource);
+        return c;
+
+    }
 
 }
