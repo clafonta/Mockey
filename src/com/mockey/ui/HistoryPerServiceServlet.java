@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mockey.web;
+package com.mockey.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -27,33 +32,27 @@ import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.XmlMockeyStorage;
 
-public class ScenarioListServlet extends HttpServlet {
+/**
+ * 
+ * 
+ * @author chad.lafontaine
+ */
+public class HistoryPerServiceServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 5034479269126858921L;
-	private static IMockeyStorage store = XmlMockeyStorage.getInstance();
+    private static final long serialVersionUID = 6606106522000844746L;
+    private static IMockeyStorage store = XmlMockeyStorage.getInstance();
 
-	/**
-	 * 
-	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
-	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    	List<String> ips = store.uniqueClientIPs();
+    	if (ips.size()==1) {
+    		resp.sendRedirect("detail?serviceId="+req.getParameter("serviceId")+"&iprequest="+ips.get(0));
+    		return;
+    	}
+		req.setAttribute("serviceId", req.getParameter("serviceId"));
+		req.setAttribute("uniqueIPs", ips);
+		
+        RequestDispatcher dispatch = req.getRequestDispatcher("/service_history.jsp");
+        dispatch.forward(req, resp);
+    }
 
-		Long serviceId = new Long(req.getParameter("serviceId"));
-		Service service = store.getMockServiceById(serviceId);
-		req.setAttribute("service", service);
-		RequestDispatcher dispatch = req
-				.getRequestDispatcher("/service_scenario_list.jsp");
-		dispatch.forward(req, resp);
-	}
-
-	
 }

@@ -1,4 +1,4 @@
-package com.mockey.web.tags;
+package com.mockey.ui.tags;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;

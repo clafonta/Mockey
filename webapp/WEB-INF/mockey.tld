@@ -9,7 +9,7 @@
 	<shortname>custom</shortname>	
 	<tag>
 		<name>url</name>
-		<tagclass>com.mockey.web.tags.ServiceUrlTag</tagclass>
+		<tagclass>com.mockey.ui.tags.ServiceUrlTag</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>Manages a the disply of a service URL</info>
 		<attribute>
@@ -20,7 +20,7 @@
 	</tag>
     <tag>
         <name>clipboard</name>
-        <tagclass>com.mockey.web.tags.ClipboardTag</tagclass>
+        <tagclass>com.mockey.ui.tags.ClipboardTag</tagclass>
         <bodycontent>JSP</bodycontent>
         <info>Adds an add to clipboard link</info>
         <attribute>

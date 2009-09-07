@@ -5,7 +5,7 @@
 	<display-name>Mockey</display-name>
 	<servlet>
 		<servlet-name>MockStartUpServlet</servlet-name>
-		<servlet-class>com.mockey.web.StartUpServlet</servlet-class>
+		<servlet-class>com.mockey.ui.StartUpServlet</servlet-class>
 		<init-param>
 			<param-name>default.properties</param-name>
 			<param-value>WEB-INF/default.properties</param-value>
@@ -18,59 +18,59 @@
 	</servlet>
 	<servlet>
 		<servlet-name>MockHomeServlet</servlet-name>
-		<servlet-class>com.mockey.web.HomeServlet</servlet-class>
+		<servlet-class>com.mockey.ui.HomeServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServiceExportServlet</servlet-name>
-		<servlet-class>com.mockey.web.ExportConfigurationServlet</servlet-class>
+		<servlet-class>com.mockey.ui.ExportConfigurationServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServiceUploadServlet</servlet-name>
-		<servlet-class>com.mockey.web.UploadConfigurationServlet</servlet-class>
+		<servlet-class>com.mockey.ui.UploadConfigurationServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockHistoryPerServiceByIpServlet</servlet-name>
-		<servlet-class>com.mockey.web.HistoryPerServiceByIpServlet</servlet-class>
+		<servlet-class>com.mockey.ui.HistoryPerServiceByIpServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockHistoryHtmlServlet</servlet-name>
-		<servlet-class>com.mockey.web.HistoryHtmlServlet</servlet-class>
+		<servlet-class>com.mockey.ui.HistoryHtmlServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServiceScenarioListServlet</servlet-name>
-		<servlet-class>com.mockey.web.ScenarioListServlet</servlet-class>
+		<servlet-class>com.mockey.ui.ScenarioListServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServiceSetupServlet</servlet-name>
-		<servlet-class>com.mockey.web.ServiceSetupServlet</servlet-class>
+		<servlet-class>com.mockey.ui.ServiceSetupServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockResponseServlet</servlet-name>
-		<servlet-class>com.mockey.web.ResponseServlet</servlet-class>
+		<servlet-class>com.mockey.server.ResponseServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServiceScenarioServlet</servlet-name>
-		<servlet-class>com.mockey.web.ScenarioServlet</servlet-class>
+		<servlet-class>com.mockey.ui.ScenarioServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockHistoryPerServiceServlet</servlet-name>
-		<servlet-class>com.mockey.web.HistoryPerServiceServlet</servlet-class>
+		<servlet-class>com.mockey.ui.HistoryPerServiceServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServiceProxyInfoServlet</servlet-name>
-		<servlet-class>com.mockey.web.ProxyInfoServlet</servlet-class>
+		<servlet-class>com.mockey.ui.ProxyInfoServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServicePlanSetupServlet</servlet-name>
-		<servlet-class>com.mockey.web.ServicePlanSetupServlet</servlet-class>
+		<servlet-class>com.mockey.ui.ServicePlanSetupServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
-		<servlet-class>com.mockey.web.ScenarioUpdateServlet</servlet-class>
+		<servlet-class>com.mockey.ui.ScenarioUpdateServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>HelpServlet</servlet-name>
-		<servlet-class>com.mockey.web.HelpServlet</servlet-class>
+		<servlet-class>com.mockey.ui.HelpServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>HelpServlet</servlet-name>
