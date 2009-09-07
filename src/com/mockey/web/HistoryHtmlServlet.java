@@ -103,7 +103,8 @@ public class HistoryHtmlServlet extends HttpServlet {
 	 * @param serviceId
 	 * @return
 	 */
-	private String getListOfIpAddresses(Long serviceId) {
+	@SuppressWarnings("unchecked")
+    private String getListOfIpAddresses(Long serviceId) {
 		StringBuffer sb = new StringBuffer();
 
 		List scenarioList = store.getHistoryScenarios();
@@ -134,7 +135,8 @@ public class HistoryHtmlServlet extends HttpServlet {
 	 * @param serviceId
 	 * @return
 	 */
-	private String getListOfRecordedScenarios(Long serviceId, String requestIp) {
+	@SuppressWarnings("unchecked")
+    private String getListOfRecordedScenarios(Long serviceId, String requestIp) {
 		StringBuffer sb = new StringBuffer();
 		List scenarioList = store.getHistoryScenarios();
 		if (scenarioList != null && scenarioList.size() > 0) {

@@ -33,11 +33,12 @@ public class Util {
 	 * @param message
 	 * @param req
 	 */
-	private static void save(String message,String messageKey, HttpServletRequest req){
+	@SuppressWarnings("unchecked")
+    private static void save(String message,String messageKey, HttpServletRequest req){
 		
-		List msgs = (List)req.getSession().getAttribute(messageKey);
+		List<String> msgs = (List<String>)req.getSession().getAttribute(messageKey);
 		if(msgs==null){
-			msgs = new ArrayList();
+			msgs = new ArrayList<String>();
 		}
 		msgs.add(message);
 		req.getSession().setAttribute(messageKey, msgs);
@@ -56,9 +57,10 @@ public class Util {
 		save(message, SUCCESS, req);
 		
 	}
-	public static void saveErrorMap(Map errorMap,HttpServletRequest req){
+	@SuppressWarnings("unchecked")
+    public static void saveErrorMap(Map errorMap,HttpServletRequest req){
 		if(errorMap!=null){
-			Iterator iter = errorMap.keySet().iterator();
+			Iterator<String> iter = errorMap.keySet().iterator();
 			while(iter.hasNext()){
 				String key = (String)iter.next();
 				String value = (String)errorMap.get(key);

@@ -33,6 +33,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
+    @SuppressWarnings("unchecked")
     public List getHistoryScenarios() {
         // TODO Auto-generated method stub
         return null;
@@ -53,6 +54,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public List getServicePlans() {
         List planList = new ArrayList();
         ServicePlan msp = new ServicePlan();
@@ -90,6 +92,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return planList;
     }
 
+    @SuppressWarnings("unchecked")
     public List getOrderedListOfServices() {
         List beans = new ArrayList();
         Service bean = new Service(new Url("http://someservice:8000/eai2"));
@@ -172,13 +175,13 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         
     }
 
-	@Override
+
 	public List<String> uniqueClientIPs() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public List<String> uniqueClientIPsForService(Service msb) {
 		// TODO Auto-generated method stub
 		return null;

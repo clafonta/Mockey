@@ -30,22 +30,20 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 /**
- * Export service definitions to XML. 
+ * Export service definitions to XML.
  * 
  * @author Chad.Lafontaine
- *
+ * 
  */
 public class ExportConfigurationServlet extends HttpServlet {
-	
-	private static final long serialVersionUID = -8618555367432628615L;
-	private static IMockeyStorage store = XmlMockeyStorage.getInstance();
 
+    private static final long serialVersionUID = -8618555367432628615L;
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		MockServiceXMLFactory g = new MockServiceXMLFactory();
-		IMockeyStorage store = XmlMockeyStorage.getInstance();
-		Document result = g.getAsDocument(store);
+        MockServiceXMLFactory g = new MockServiceXMLFactory();
+        IMockeyStorage store = XmlMockeyStorage.getInstance();
+        Document result = g.getAsDocument(store);
         String fileOutput;
         try {
             fileOutput = MockServiceXMLFactory.documentToString(result);
@@ -54,10 +52,10 @@ public class ExportConfigurationServlet extends HttpServlet {
         }
 
         resp.setContentType("text/xml");
-		resp.setHeader("Content-disposition", "attachment; filename=mockservice.xml");
-		resp.setContentLength(fileOutput.getBytes().length);
+        resp.setHeader("Content-disposition", "attachment; filename=mockservice.xml");
+        resp.setContentLength(fileOutput.getBytes().length);
 
-		PrintStream out = new PrintStream(resp.getOutputStream());
-		out.println(fileOutput);
-	}
+        PrintStream out = new PrintStream(resp.getOutputStream());
+        out.println(fileOutput);
+    }
 }

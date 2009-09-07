@@ -43,8 +43,8 @@ public class ServiceValidator {
      * @param ms
      * @return
      */
-    public static Map validate(Service ms) {
-        Map errorMap = new HashMap();
+    public static Map<String, String> validate(Service ms) {
+        Map<String, String> errorMap = new HashMap<String, String>();
 
         if ((ms.getServiceName() == null) || (ms.getServiceName().trim().length() < 1)
                 || (ms.getServiceName().trim().length() > 250)) {
@@ -55,12 +55,12 @@ public class ServiceValidator {
         // Make sure there doesn't exist a service
         // w/ the same serviceURL.
         try {
-            List testServices = store.getOrderedListOfServices();
-            Iterator iter = testServices.iterator();
+            List<Service> testServices = store.getOrderedListOfServices();
+            Iterator<Service> iter = testServices.iterator();
             Service ts;
 
             while (iter.hasNext()) {
-                ts = (Service) iter.next();
+                ts = iter.next();
 
                 // We have a match AND service IDs don't match.
                 if (ts.getMockServiceUrl().equals(ms.getMockServiceUrl()) && (ts.getId() != ms.getId())) {

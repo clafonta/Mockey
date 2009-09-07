@@ -26,69 +26,73 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.model.RequestResponseTransaction;
-import com.mockey.model.Scenario;
 import com.mockey.model.Service;
+import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.XmlMockeyStorage;
 
 /**
  * <code>MockHistoryPerServiceByIpServlet</code> manages the display of past
- * requests to a service by calling IP address. 
+ * requests to a service by calling IP address.
  * 
  * @author Chad Lafontaine (chad.lafontaine)
  * @version $Id: MockHistoryRequestLogServlet.java,v 1.2 2005/05/03 22:28:54
  *          clafonta Exp $
  */
 public class HistoryPerServiceByIpServlet extends HttpServlet {
-	
-	
-	/**
-     * 
-     */
+
     private static final long serialVersionUID = -2255013290808524662L;
     private static IMockeyStorage store = XmlMockeyStorage.getInstance();
-	
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String iprequest = req.getParameter("iprequest");
-		Long serviceId = new Long(req.getParameter("serviceId"));		
-		String action = req.getParameter("action");
-		boolean didDelete = false;
-		if(action!=null && "delete".equals(action)){
-		    // Delete from history
-		    Long scenarioId = new Long(req.getParameter("scenarioId"));		    
-		    store.deleteHistoricalScenario(scenarioId);
 
-		    // don't allow reloads to re-delete.  crappy hack.
-		    didDelete = true;
-		    
-		}else if(action!=null && "delete_all".equals(action)){
-		    store.flushHistoryRequestMsgs(serviceId);
+    /**
+     * Deletes the history of request and response transactions for a specific
+     * requestor-IP, then redirects to the history page. .
+     */
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String iprequest = req.getParameter("iprequest");
+        Long serviceId = new Long(req.getParameter("serviceId"));
+        String action = req.getParameter("action");
+        boolean didDelete = false;
+        if (action != null && "delete".equals(action)) {
+            // Delete from history
+            Long scenarioId = new Long(req.getParameter("scenarioId"));
+            store.deleteHistoricalScenario(scenarioId);
 
-		    // don't allow reloads to re-delete.  crappy hack.
-		    didDelete = true;
-		}
+            // don't allow reloads to re-delete. crappy hack.
+            didDelete = true;
 
-		Service ms = store.getMockServiceById(serviceId);
-		List<RequestResponseTransaction> scenarios = store.getHistoryScenarios();
-		List scenarioHistoryList = new ArrayList();
-		if(scenarios!=null){
+        } else if (action != null && "delete_all".equals(action)) {
+            store.flushHistoryRequestMsgs(serviceId);
+
+            // don't allow reloads to re-delete. crappy hack.
+            didDelete = true;
+        }
+
+        Service ms = store.getMockServiceById(serviceId);
+        List<RequestResponseTransaction> scenarios = store.getHistoryScenarios();
+        List<RequestResponseTransaction> scenarioHistoryList = new ArrayList<RequestResponseTransaction>();
+        if (scenarios != null) {
             for (RequestResponseTransaction type : scenarios) {
-                if (type.getServiceInfo().getServiceId().equals(serviceId) && type.getServiceInfo().getRequestorIP().equals(iprequest)) {
+                if (type.getServiceInfo().getServiceId().equals(serviceId)
+                        && type.getServiceInfo().getRequestorIP().equals(iprequest)) {
                     scenarioHistoryList.add(type);
                 }
             }
-		}
-		
-		req.setAttribute("scenarioHistoryList", scenarioHistoryList);
-		req.setAttribute("mockservice", ms);
-		req.setAttribute("iprequest", iprequest);
+        }
 
-	    // don't allow reloads to re-delete.  crappy hack. 
-		if (didDelete) {
-		    resp.sendRedirect("/history/detail?serviceId="+ms.getId()+"&iprequest="+iprequest);
-		}
+        req.setAttribute("scenarioHistoryList", scenarioHistoryList);
+        req.setAttribute("mockservice", ms);
+        req.setAttribute("iprequest", iprequest);
 
-		RequestDispatcher dispatch = req.getRequestDispatcher("/service_history_ip.jsp");
-		dispatch.forward(req, resp);
-	}
+        // don't allow reloads to re-delete. crappy hack.
+        if (didDelete) {
+            String contextRoot = req.getContextPath();
+            resp.sendRedirect(Url.getContextAwarePath("/history/detail?serviceId=" + ms.getId() + "&iprequest=" + iprequest, contextRoot));
+            return;
+        } else {
+
+            RequestDispatcher dispatch = req.getRequestDispatcher("/service_history_ip.jsp");
+            dispatch.forward(req, resp);
+        }
+    }
 }

@@ -56,6 +56,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
      * @throws IOException
      *             basic
      */
+    @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("Service Plan setup/delete");
         ServicePlan servicePlan = null;
@@ -86,8 +87,8 @@ public class ServicePlanSetupServlet extends HttpServlet {
             req.setAttribute("mode", "edit_plan");
 
             if (servicePlan != null) {
-                allServices = new ArrayList();
-                Iterator iter = servicePlan.getPlanItemList().iterator();
+                allServices = new ArrayList<Service>();
+                Iterator<PlanItem> iter = servicePlan.getPlanItemList().iterator();
                 while (iter.hasNext()) {
                     PlanItem pi = (PlanItem) iter.next();
                     Service msb = store.getMockServiceById(pi.getServiceId());
@@ -123,8 +124,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
      *             basic
      * @throws IOException
      *             basic
-     */
-    @SuppressWarnings("unchecked")
+     */    
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServicePlan servicePlan = new ServicePlan();
         Long servicePlanId = null;

@@ -79,17 +79,18 @@ public class UploadConfigurationServlet extends HttpServlet {
      * @throws IOException
      *             basic
      */
+    @SuppressWarnings("unchecked")
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List conflicts = new ArrayList();
-        List additions = new ArrayList();
+        List<String> conflicts = new ArrayList<String>();
+        List<String> additions = new ArrayList<String>();
         try {
             // Create a new file upload handler
             DiskFileUpload upload = new DiskFileUpload();
             logger.debug("Upload servlet");
 
             // Parse the request
-            List items = upload.parseRequest(req);
-            Iterator iter = items.iterator();
+            List<FileItem> items = upload.parseRequest(req);
+            Iterator<FileItem> iter = items.iterator();
             while (iter.hasNext()) {
                 FileItem item = (FileItem) iter.next();
 
