@@ -62,24 +62,15 @@ public class ServiceSetupServlet extends HttpServlet {
 			store.deleteAllLoggedFulfilledClientRequestForService(serviceId);
 			
 			Util.saveSuccessMessage("Service '"+service.getServiceName()+"' was deleted.", req);
+			
 			// Check to see if any plans need an update. 
-			List<ServicePlan> planList = store.getServicePlans();
-			Iterator<ServicePlan> iter = planList.iterator();
 			String errorMessage = null;
-			while(iter.hasNext()){
-				ServicePlan msp = (ServicePlan)iter.next();
-				Iterator<PlanItem> planItemIter = msp.getPlanItemList().iterator();
-				while(planItemIter.hasNext()){
-					PlanItem planItem = (PlanItem)planItemIter.next();
-					if(planItem.getServiceId().equals(serviceId)){
-						errorMessage = "Warning: the deleted service is referenced in service plans.";
-						
-						break;
-					}
-				}
+			if(service.isReferencedInAServicePlan()) {
+				errorMessage = "Warning: the deleted service is referenced in service plans.";
 			}
+			
 			if(errorMessage!=null){
-			Util.saveErrorMessage(errorMessage, req);
+				Util.saveErrorMessage(errorMessage, req);
 			}
 			String contextRoot = req.getContextPath();
 			resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));

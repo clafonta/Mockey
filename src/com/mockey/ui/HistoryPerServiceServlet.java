@@ -38,12 +38,13 @@ public class HistoryPerServiceServlet extends HttpServlet {
     private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	List<String> ips = store.uniqueClientIPs();
+    	String serviceId = req.getParameter("serviceId")
+    	List<String> ips = store.uniqueClientIPsForService(serviceId);
     	if (ips.size()==1) {
     		resp.sendRedirect("detail?serviceId="+req.getParameter("serviceId")+"&iprequest="+ips.get(0));
     		return;
     	}
-		req.setAttribute("serviceId", req.getParameter("serviceId"));
+		req.setAttribute("serviceId", serviceId);
 		req.setAttribute("uniqueIPs", ips);
 		
         RequestDispatcher dispatch = req.getRequestDispatcher("/service_history.jsp");

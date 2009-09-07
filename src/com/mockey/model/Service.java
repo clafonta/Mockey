@@ -233,4 +233,17 @@ public class Service implements PersistableItem {
         // error.
         return InMemoryMockeyStorage.getInstance().getUniversalErrorScenario();
     }
+    
+    public Boolean isReferencedInAServicePlan() {
+    	Boolean isReferenced = false;
+		for(ServicePlan plan : InMemoryMockeyStorage.getInstance().getServicePlans()) {
+			for(PlanItem planItem : plan.getPlanItemList()) {
+				if(planItem.getServiceId().equals(this.getId())) {
+					isReferenced = true;
+					break;
+				}
+			}
+		}
+		return isReferenced;
+    }
 }

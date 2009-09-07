@@ -34,8 +34,7 @@ public class ServicePlan implements PersistableItem {
 	private Long id;
 	private String name;
 	private String description;
-	@SuppressWarnings("unchecked")
-	private List planItemList = new ArrayList();
+	private List<PlanItem> planItemList = new ArrayList<PlanItem>();
 	public Long getId() {
 		return id;
 	}
@@ -51,27 +50,20 @@ public class ServicePlan implements PersistableItem {
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	/**
-	 * 
-	 * @return a list of PlanItem objects
-	 */
-	@SuppressWarnings("unchecked")
-	public List getPlanItemList() {
+
+	public List<PlanItem> getPlanItemList() {
 		return planItemList;
 	}
-	@SuppressWarnings("unchecked")
-	public void setPlanItemList(List planItemList) {
+	
+	public void setPlanItemList(List<PlanItem> planItemList) {
 		this.planItemList = planItemList;
 	}
-	@SuppressWarnings("unchecked")
+	
 	public void addPlanItem(PlanItem planItem){
 		this.planItemList.add(planItem);
-	}
-	
-	
-	
-	
+	}	
 }

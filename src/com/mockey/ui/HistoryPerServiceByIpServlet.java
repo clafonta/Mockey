@@ -52,8 +52,7 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		String iprequest = req.getParameter("iprequest");
 		Long serviceId = new Long(req.getParameter("serviceId"));		
 		String action = req.getParameter("action");
-		boolean didDelete = false;
-		
+
 		if(action!=null && "delete".equals(action)){
 		    // Delete from history
 		    Long fulfilledRequestId = new Long(req.getParameter("fulfilledRequestId"));		    
@@ -64,25 +63,18 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
         } else if (action != null && "delete_all".equals(action)) {
             store.deleteAllLoggedFulfilledClientRequestForService(serviceId);
 
-		    // don't allow reloads to re-delete.  crappy hack.
-		    didDelete = true;
+		    // don't allow reloads to re-delete.
+            String contextRoot = req.getContextPath();
+            resp.sendRedirect(Url.getContextAwarePath("/history/detail?serviceId=" + serviceId + "&iprequest=" + iprequest, contextRoot));
+            return;
         }
-
+		
 		Service service = store.getServiceById(serviceId);
-
         req.setAttribute("requests", store.getFulfilledClientRequestsFromIPForService(iprequest, serviceId));
         req.setAttribute("mockservice", service);
         req.setAttribute("iprequest", iprequest);
 
-
-        // don't allow reloads to re-delete. crappy hack.
-        if (didDelete) {
-            String contextRoot = req.getContextPath();
-            resp.sendRedirect(Url.getContextAwarePath("/history/detail?serviceId=" + service.getId() + "&iprequest=" + iprequest, contextRoot));
-            return;
-        } else {
-            RequestDispatcher dispatch = req.getRequestDispatcher("/service_history_ip.jsp");
-            dispatch.forward(req, resp);
-        }
+        RequestDispatcher dispatch = req.getRequestDispatcher("/service_history_ip.jsp");
+        dispatch.forward(req, resp);
     }
 }
