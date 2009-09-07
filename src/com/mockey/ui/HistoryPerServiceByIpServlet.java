@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mockey.web;
+package com.mockey.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,6 +83,7 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
         req.setAttribute("scenarioHistoryList", scenarioHistoryList);
         req.setAttribute("mockservice", ms);
         req.setAttribute("iprequest", iprequest);
+
 
         // don't allow reloads to re-delete. crappy hack.
         if (didDelete) {

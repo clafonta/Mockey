@@ -1,4 +1,4 @@
-package com.mockey.web;
+package com.mockey.ui;
 
 import java.io.IOException;
 import java.net.URL;
