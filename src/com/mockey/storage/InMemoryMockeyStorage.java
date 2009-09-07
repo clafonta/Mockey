@@ -40,9 +40,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     
     private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
     private ProxyServerModel proxyInfoBean = new ProxyServerModel();
+
     private Long univeralErrorServiceId = null;
-    private Long univeralErrorScenarioId = null;
-    
+    private Long univeralErrorScenarioId = null;    
     private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
 
     public static InMemoryMockeyStorage getInstance() {
@@ -90,19 +90,18 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         stringBuf.append(super.toString());
         for (Object o : this.mockServiceStore.keySet()) {
             Long key = (Long) o;
-            Service element = (Service) mockServiceStore.get(key);
+            Service element = mockServiceStore.get(key);
             stringBuf.append("Service ID: ").append(element.getId()).append("\n");
             stringBuf.append("Service name: ").append(element.getServiceName()).append("\n");
             stringBuf.append("Service description: ").append(element.getDescription()).append("\n");
             stringBuf.append("Service url: ").append(element.getMockServiceUrl()).append("\n");
             stringBuf.append("Service proxyurl: ").append(element.getUrl().getPath()).append("\n");
-            List scenarios = element.getScenarios();
+            List<Scenario> scenarios = element.getScenarios();
             for (Object scenario : scenarios) {
                 Scenario b = (Scenario) scenario;
                 stringBuf.append("    scenario name: ").append(b.getScenarioName()).append("\n");
                 stringBuf.append("    scenario request: ").append(b.getRequestMessage()).append("\n");
                 stringBuf.append("    scenario response: ").append(b.getResponseMessage()).append("\n");
-
             }
 
         }
@@ -117,15 +116,11 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public void deleteLoggedClientRequest(Long scenarioId) {
-
         historyStore.remove(scenarioId);
-
     }
 
     public void logClientRequest(ClientRequest mssb) {
-
         historyStore.save(mssb);
-
     }
 
     public void deleteAllLoggedClientRequestForService(Long serviceId) {
@@ -143,14 +138,12 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
     public void setProxy(ProxyServerModel proxyInfoBean) {
         this.proxyInfoBean = proxyInfoBean;
-
     }
 
 	public void deleteServicePlan(ServicePlan servicePlan) {
 		if(servicePlan!=null){
 			this.servicePlanStore.remove(servicePlan.getId());
 		}
-		
 	}
 
 	public ServicePlan getServicePlanById(Long servicePlanId) {
@@ -158,14 +151,12 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 		
-	@SuppressWarnings("unchecked")
-	public List getServicePlans() {
+	public List<ServicePlan> getServicePlans() {
 		return this.servicePlanStore.getOrderedList();
 	}
 
 	public void saveOrUpdateServicePlan(ServicePlan servicePlan) {
 		this.servicePlanStore.save(servicePlan);
-		
 	}
 
     public Scenario getUniversalErrorScenario() {
@@ -180,22 +171,18 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
    
     public void setUniversalErrorScenarioId(Long scenarioId) {
         this.univeralErrorScenarioId = scenarioId;
-        
     }
 
     public void setUniversalErrorServiceId(Long serviceId) {
         this.univeralErrorServiceId = serviceId;
-        
     }
 
     public void deleteEverything() {
         historyStore = new OrderedMap();
         mockServiceStore = new OrderedMap();
         servicePlanStore = new OrderedMap();
-        
     }
 
-	@Override
 	public List<String> uniqueClientIPs() {
 		List<String> uniqueIPs = new ArrayList<String>();
 		for (ClientRequest tx : this.store.getClientRequests()) {
@@ -207,7 +194,6 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return uniqueIPs;
 	}
 
-	@Override
 	public List<String> uniqueClientIPsForService(Service msb) {
 		List<String> uniqueIPs = new ArrayList<String>();
 		for (ClientRequest tx : this.store.getClientRequests()) {

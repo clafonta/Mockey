@@ -151,9 +151,9 @@ public class ResponseServlet extends HttpServlet {
                 response = new ResponseMessage();
                 boolean serviceErrorDefined = false;
                 // FIND SERVICE ERROR, IF EXIST.
-                Iterator iter = service.getScenarios().iterator();
+                Iterator<Scenario> iter = service.getScenarios().iterator();
                 while (iter.hasNext()) {
-                    Scenario scenario = (Scenario) iter.next();
+                    Scenario scenario = iter.next();
                     if (scenario.getId() == service.getErrorScenarioId()) {
                         response.setBody(scenario.getResponseMessage());
                         serviceErrorDefined = true;
@@ -167,8 +167,8 @@ public class ResponseServlet extends HttpServlet {
                     if (universalError != null) {
                         response.setBody(universalError.getResponseMessage());
                     } else {
-                        response.setBody("No scenario defined. Also, we encountered this error: "
-                                + e.getClass() + ": " + e.getMessage());
+                        response.setBody("No scenario defined. Also, we encountered this error: " + e.getClass() + ": "
+                                + e.getMessage());
                     }
                 }
             }
@@ -183,11 +183,12 @@ public class ResponseServlet extends HttpServlet {
         else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
             response = new ResponseMessage();
             List<Scenario> scenarios = service.getScenarios();
-            Iterator iter = scenarios.iterator();
+            Iterator<Scenario> iter = scenarios.iterator();
             String messageMatchFound = null;
             while (iter.hasNext()) {
-                Scenario scenario = (Scenario) iter.next();
-                logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n"
+                Scenario scenario = iter.next();
+                logger
+                        .debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n"
                                 + clientRequest);
                 int indexValue = -1;
                 if (request.hasPostBody()) {

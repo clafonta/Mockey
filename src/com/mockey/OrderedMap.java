@@ -16,11 +16,9 @@
 package com.mockey;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -57,7 +55,8 @@ public class OrderedMap<T extends Item> extends HashMap<Long, T>
 	
 	
 	
-	private Long getNextValue(){
+	@SuppressWarnings("unchecked")
+    private Long getNextValue(){
 		Iterator iter = this.keySet().iterator();
 		Long nextValue = new Long(0);
 		while (iter.hasNext()) {
@@ -70,7 +69,8 @@ public class OrderedMap<T extends Item> extends HashMap<Long, T>
 		return nextValue;
 	}
 	
-	public List<T> getOrderedList(){
+	@SuppressWarnings("unchecked")
+    public List<T> getOrderedList(){
 
 		// Temp
 		List<Long> keyOrder = new ArrayList<Long>();		

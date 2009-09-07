@@ -53,6 +53,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public List getServicePlans() {
         List planList = new ArrayList();
         ServicePlan msp = new ServicePlan();
@@ -172,13 +173,13 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         
     }
 
-	@Override
+
 	public List<String> uniqueClientIPs() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public List<String> uniqueClientIPsForService(Service msb) {
 		// TODO Auto-generated method stub
 		return null;

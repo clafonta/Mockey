@@ -145,7 +145,7 @@ public class ScenarioServlet extends HttpServlet {
         scenario.setResponseMessage(req.getParameter("responseMessage"));
         scenario.setMatchStringArg(req.getParameter("matchStringArg"));
 
-        Map errorMap = ScenarioValidator.validate(scenario);
+        Map<String, String> errorMap = ScenarioValidator.validate(scenario);
 
         if ((errorMap != null) && (errorMap.size() == 0)) {
 

@@ -15,7 +15,6 @@
  */
 package com.mockey.model;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpHost;
@@ -107,7 +106,6 @@ public class Service implements Item {
         this.hangTime = hangTime;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Scenario> getScenarios() {
         return scenarios.getOrderedList();
     }

@@ -47,8 +47,8 @@ public class ScenarioValidator {
 	 * @param ms MockServiceScenarioBean to validate.
 	 * @return a mapping of input field names and error messages, key value pairs. If no errors, then empty Map. 
 	 */
-	public static Map validate(Scenario mss) {
-		Map errorMap = new HashMap();
+	public static Map<String, String> validate(Scenario mss) {
+		Map<String, String> errorMap = new HashMap<String, String>();
 
 		// TRIM input in case user entered only spaces in input fields.
 		if ((mss.getScenarioName() == null) || (mss.getScenarioName().trim().length() < 1)

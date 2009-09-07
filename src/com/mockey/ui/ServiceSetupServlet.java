@@ -46,7 +46,8 @@ public class ServiceSetupServlet extends HttpServlet {
 	/**
 	 * 
 	 */
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	@SuppressWarnings("unchecked")
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.debug("Setting up a new service");
 		Long serviceId = null;
 		try{
@@ -63,11 +64,11 @@ public class ServiceSetupServlet extends HttpServlet {
 			Util.saveSuccessMessage("Service '"+service.getServiceName()+"' was deleted.", req);
 			// Check to see if any plans need an update. 
 			List<ServicePlan> planList = store.getServicePlans();
-			Iterator iter = planList.iterator();
+			Iterator<ServicePlan> iter = planList.iterator();
 			String errorMessage = null;
 			while(iter.hasNext()){
 				ServicePlan msp = (ServicePlan)iter.next();
-				Iterator planItemIter = msp.getPlanItemList().iterator();
+				Iterator<PlanItem> planItemIter = msp.getPlanItemList().iterator();
 				while(planItemIter.hasNext()){
 					PlanItem planItem = (PlanItem)planItemIter.next();
 					if(planItem.getServiceId().equals(serviceId)){
@@ -153,7 +154,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		service.setServiceName(req.getParameter("serviceName"));
 		service.setDescription(req.getParameter("description"));
 		service.setHttpHeaderDefinition(req.getParameter("httpHeaderDefinition"));		
-		Map errorMap = ServiceValidator.validate(service);
+		Map<String, String> errorMap = ServiceValidator.validate(service);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {
 			// no errors, so create service.
