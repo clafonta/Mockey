@@ -56,7 +56,6 @@ public class ServicePlanSetupServlet extends HttpServlet {
      * @throws IOException
      *             basic
      */
-    @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("Service Plan setup/delete");
         ServicePlan servicePlan = null;
@@ -200,20 +199,15 @@ public class ServicePlanSetupServlet extends HttpServlet {
         dispatch.forward(req, resp);
     }
 
-    @SuppressWarnings( { "unchecked" })
-    private void setPlan(ServicePlan servicePlan) {
-        List planItems = servicePlan.getPlanItemList();
-        Iterator iter = planItems.iterator();
-        while (iter.hasNext()) {
-            PlanItem pi = (PlanItem) iter.next();
-            Service msb = store.getServiceById(pi.getServiceId());
-            if (msb != null) {
-                msb.setHangTime(pi.getHangTime());
-                msb.setDefaultScenarioId(pi.getScenarioId());
-                msb.setServiceResponseType(pi.getServiceResponseType());
-                store.saveOrUpdateService(msb);
+    private void setPlan(ServicePlan servicePlan) {    	
+    	for (PlanItem planItem : servicePlan.getPlanItemList()) {
+            Service service = store.getServiceById(planItem.getServiceId());
+            if (service != null) {
+                service.setHangTime(planItem.getHangTime());
+                service.setDefaultScenarioId(planItem.getScenarioId());
+                service.setServiceResponseType(planItem.getServiceResponseType());
+                store.saveOrUpdateService(service);
             }
         }
-
     }
 }

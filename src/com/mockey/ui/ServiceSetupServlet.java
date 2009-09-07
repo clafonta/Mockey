@@ -43,10 +43,6 @@ public class ServiceSetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
 
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.debug("Setting up a new service");
 		Long serviceId = null;

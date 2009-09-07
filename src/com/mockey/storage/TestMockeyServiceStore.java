@@ -33,7 +33,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public List getFulfilledClientRequests() {
+    public List<FulfilledClientRequest> getFulfilledClientRequests() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -53,79 +53,78 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public List getServicePlans() {
-        List planList = new ArrayList();
-        ServicePlan msp = new ServicePlan();
-        msp.setId(new Long(1));
-        msp.setName("happy path");
-        msp.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ");
+    public List<ServicePlan> getServicePlans() {
+        List<ServicePlan> planList = new ArrayList<ServicePlan>();
+        ServicePlan servicePlan = new ServicePlan();
+        servicePlan.setId(new Long(1));
+        servicePlan.setName("happy path");
+        servicePlan.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ");
         PlanItem planItem = new PlanItem();
         planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
 
         planItem.setScenarioId(new Long(123));
         planItem.setServiceId(new Long(234));
-        msp.addPlanItem(planItem);
+        servicePlan.addPlanItem(planItem);
         planItem = new PlanItem();
         planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
         planItem.setScenarioId(new Long(98));
         planItem.setServiceId(new Long(97877));
-        msp.addPlanItem(planItem);
-        planList.add(msp);
+        servicePlan.addPlanItem(planItem);
+        planList.add(servicePlan);
 
-        msp = new ServicePlan();
-        msp.setId(new Long(2));
-        msp.setName("trial and tribulation");
-        msp.setDescription("battle of beetles in bottles");
+        servicePlan = new ServicePlan();
+        servicePlan.setId(new Long(2));
+        servicePlan.setName("trial and tribulation");
+        servicePlan.setDescription("battle of beetles in bottles");
         planItem = new PlanItem();
         planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO);
         planItem.setScenarioId(new Long(1));
         planItem.setServiceId(new Long(2));
-        msp.addPlanItem(planItem);
+        servicePlan.addPlanItem(planItem);
         planItem = new PlanItem();
         planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO);
         planItem.setScenarioId(new Long(3));
         planItem.setServiceId(new Long(4));
-        msp.addPlanItem(planItem);
-        planList.add(msp);
+        servicePlan.addPlanItem(planItem);
+        planList.add(servicePlan);
         return planList;
     }
 
-    public List getServices() {
-        List beans = new ArrayList();
-        Service bean = new Service(new Url("http://someservice:8000/eai2"));
-        bean.setServiceName("testname");
-        bean.setDescription("test description");
+    public List<Service> getServices() {
+        List<Service> services = new ArrayList<Service>();
+        Service service = new Service(new Url("http://someservice:8000/eai2"));
+        service.setServiceName("testname");
+        service.setDescription("test description");
         
         
-        Scenario mssb = new Scenario();
-        mssb.setScenarioName("a");
-        mssb.setRequestMessage("request message a");
-        mssb.setResponseMessage("response message a");
-        bean.updateScenario(mssb);
-        mssb = new Scenario();
-        mssb.setScenarioName("b");
-        mssb.setRequestMessage("request message b");
-        mssb.setResponseMessage("response message b");
-        bean.updateScenario(mssb);
-        beans.add(bean);
-        Service bean2 = new Service(new Url("http://someservice:8000/eai2"));
-        bean2.setServiceName("testname2");
-        bean2.setDescription("test description2");
+        Scenario scenario = new Scenario();
+        scenario.setScenarioName("a");
+        scenario.setRequestMessage("request message a");
+        scenario.setResponseMessage("response message a");
+        service.updateScenario(scenario);
+        scenario = new Scenario();
+        scenario.setScenarioName("b");
+        scenario.setRequestMessage("request message b");
+        scenario.setResponseMessage("response message b");
+        service.updateScenario(scenario);
+        services.add(service);
+        Service service2 = new Service(new Url("http://someservice:8000/eai2"));
+        service2.setServiceName("testname2");
+        service2.setDescription("test description2");
         
        
-        Scenario mssb2 = new Scenario();
-        mssb2.setScenarioName("a");
-        mssb2.setRequestMessage("request message a");
-        mssb2.setResponseMessage("response message a");
-        bean2.updateScenario(mssb);
-        mssb2 = new Scenario();
-        mssb2.setScenarioName("b");
-        mssb2.setRequestMessage("request message b");
-        mssb2.setResponseMessage("response message b");
-        bean2.updateScenario(mssb);
-        beans.add(bean2);
-        return beans;
+        Scenario scenario2 = new Scenario();
+        scenario2.setScenarioName("a");
+        scenario2.setRequestMessage("request message a");
+        scenario2.setResponseMessage("response message a");
+        service2.updateScenario(scenario);
+        scenario2 = new Scenario();
+        scenario2.setScenarioName("b");
+        scenario2.setRequestMessage("request message b");
+        scenario2.setResponseMessage("response message b");
+        service2.updateScenario(scenario);
+        services.add(service2);
+        return services;
     }
 
     public ProxyServerModel getProxy() {

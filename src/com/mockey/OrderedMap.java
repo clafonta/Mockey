@@ -51,13 +51,10 @@ public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T>
 		return item;
 	}
 	
-	@SuppressWarnings("unchecked")
     private Long getNextValue(){
-		Iterator iter = this.keySet().iterator();
 		Long nextValue = new Long(0);
-		while (iter.hasNext()) {
-			Long key = (Long) iter.next();
-			if(key.longValue() > nextValue.longValue()){
+		for (Long key : this.keySet()) {
+			if(key > nextValue) {
 				nextValue = key;
 			}
 		}
@@ -65,33 +62,26 @@ public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T>
 		return nextValue;
 	}
 	
-	@SuppressWarnings("unchecked")
     public List<T> getOrderedList(){
-
 		// Temp
-		List<Long> keyOrder = new ArrayList<Long>();		
-		Iterator iter = this.keySet().iterator();
-		while (iter.hasNext()) {
-			Long key = (Long) iter.next();
-			Iterator keyIter = keyOrder.iterator();
-			int index = 0;
-			while(keyIter.hasNext()){
-				Long current = (Long)keyIter.next();
-				if(current.longValue() > key.longValue()){
-					break;
-				}
-				index++;
-			}
-			keyOrder.add(index, key);
-		}
+    	List<Long> orderedListOfKeys = new ArrayList<Long>();
+    	for(Long key : this.keySet()) {
+    		int index = 0;
+    		for (Long current : orderedListOfKeys) {
+    			if(current > key) {
+    				break;
+    			}
+    			index++;
+    		}
+    		orderedListOfKeys.add(index, key);
+    	}
 
 		// Ordered key list.
-		List<T> arrayList = new ArrayList<T>();
-		Iterator orderedIter = keyOrder.iterator();
-		while(orderedIter.hasNext()){
-			Long key = (Long)orderedIter.next();
-			arrayList.add(this.get(key));
+		List<T> orderedListOfValues = new ArrayList<T>();
+		for (Long key : orderedListOfKeys) {
+			orderedListOfValues.add(this.get(key));
 		}
-		return arrayList;
+
+		return orderedListOfValues;
 	}
 }
