@@ -190,7 +190,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     public List<String> uniqueClientIPs() {
         List<String> uniqueIPs = new ArrayList<String>();
         for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
-            String tmpIP = tx.getServiceInfo().getRequestorIP();
+            String tmpIP = tx.getRequestorIP();
             if (!uniqueIPs.contains(tmpIP)) {
                 uniqueIPs.add(tmpIP);
             }
@@ -201,7 +201,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     public List<String> uniqueClientIPsForService(Service msb) {
         List<String> uniqueIPs = new ArrayList<String>();
         for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
-            String ip = tx.getServiceInfo().getRequestorIP();
+            String ip = tx.getRequestorIP();
             if (!uniqueIPs.contains(ip) && tx.getServiceInfo().getServiceId() == msb.getId()) {
                 uniqueIPs.add(ip);
             }

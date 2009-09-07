@@ -32,10 +32,10 @@
 		<servlet-name>MockHistoryPerServiceByIpServlet</servlet-name>
 		<servlet-class>com.mockey.ui.HistoryPerServiceByIpServlet</servlet-class>
 	</servlet>
-	<servlet>
+<!-- unused?	<servlet>
 		<servlet-name>MockHistoryHtmlServlet</servlet-name>
 		<servlet-class>com.mockey.ui.HistoryHtmlServlet</servlet-class>
-	</servlet>
+	</servlet> -->
 	<servlet>
 		<servlet-name>MockServiceScenarioListServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ScenarioListServlet</servlet-class>
@@ -100,10 +100,10 @@
 		<servlet-name>MockHistoryPerServiceByIpServlet</servlet-name>
 		<url-pattern>/history/detail</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
+<!-- unused?	<servlet-mapping>
 		<servlet-name>MockHistoryHtmlServlet</servlet-name>
 		<url-pattern>/checkforhistory</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 	<servlet-mapping>
 		<servlet-name>MockServiceScenarioListServlet</servlet-name>
 		<url-pattern>/scenariolist</url-pattern>

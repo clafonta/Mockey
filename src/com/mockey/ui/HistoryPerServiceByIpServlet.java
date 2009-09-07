@@ -73,7 +73,7 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 
 		for (FulfilledClientRequest request : store.getFulfilledClientRequests()) {
 			if (request.getServiceInfo().getServiceId().equals(serviceId) && 
-					request.getServiceInfo().getRequestorIP().equals(iprequest)) {
+					request.getRequestorIP().equals(iprequest)) {
 				requests.add(request);   
 			}    
 		}

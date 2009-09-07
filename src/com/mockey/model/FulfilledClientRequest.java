@@ -31,7 +31,16 @@ public class FulfilledClientRequest implements PersistableItem {
     private String clientRequestBody;
     private String clientRequestHeaders;
     private String clientRequestParameters;
+    private String requestorIP;
 
+    public String getRequestorIP() {
+        return requestorIP;
+    }
+
+    public void setRequestorIP(String consumerId) {
+        this.requestorIP = consumerId;
+    }
+    
     public String getClientRequestBody() {
         return clientRequestBody;
     }

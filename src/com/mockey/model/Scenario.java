@@ -29,16 +29,6 @@ public class Scenario implements PersistableItem {
     private String requestMessage;
     private String responseMessage;
     private String matchStringArg = null;
-    private String requestorIP;
-    
-
-    public String getRequestorIP() {
-        return requestorIP;
-    }
-
-    public void setRequestorIP(String consumerId) {
-        this.requestorIP = consumerId;
-    }
 
     public String getScenarioName() {
         return scenarioName;

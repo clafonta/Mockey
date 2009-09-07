@@ -204,7 +204,7 @@ public class ResponseServlet extends HttpServlet {
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
         Scenario scenario = new Scenario();
         scenario.setScenarioName((new Date()) + " Remote address:" + requestIp);
-        scenario.setRequestorIP(requestIp);
+        fulfilledClientRequest.setRequestorIP(requestIp);
         scenario.setServiceId(service.getId());
         fulfilledClientRequest.setServiceInfo(scenario);
 
