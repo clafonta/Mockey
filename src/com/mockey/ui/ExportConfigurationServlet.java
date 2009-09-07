@@ -16,7 +16,7 @@
 package com.mockey.ui;
 
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 import com.mockey.storage.xml.MockeyXmlFactory;
 
 import org.w3c.dom.Document;
@@ -37,14 +37,14 @@ import java.io.PrintStream;
  */
 public class ExportConfigurationServlet extends HttpServlet {
 	
-	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
     private static final long serialVersionUID = -8618555367432628615L;
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		MockeyXmlFactory g = new MockeyXmlFactory();
-		IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+		IMockeyStorage store = StorageRegistry.MockeyStorage;
 		Document result = g.getAsDocument(store);
 
         String fileOutput;

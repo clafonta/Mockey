@@ -27,14 +27,14 @@ import org.apache.log4j.Logger;
 
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 public class ScenarioUpdateServlet extends HttpServlet {
 
     private static final long serialVersionUID = -2964632050151431391L;
     private Logger log = Logger.getLogger(ScenarioUpdateServlet.class);
 
-    private IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private IMockeyStorage store = StorageRegistry.MockeyStorage;
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

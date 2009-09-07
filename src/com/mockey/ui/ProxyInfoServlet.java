@@ -25,13 +25,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.model.ProxyServerModel;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 public class ProxyInfoServlet extends HttpServlet {
 
 	
 	private static final long serialVersionUID = 5503460488900643184L;
-	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	
 	/**
 	 *

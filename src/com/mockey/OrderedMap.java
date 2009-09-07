@@ -38,6 +38,7 @@ public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T>
 	private static Logger logger = Logger.getLogger(OrderedMap.class);
 	
 	public PersistableItem save(T item){
+		logger.debug("saving item: "+item.toString());
 		if(item!=null){
 			if(item.getId()!=null){
 				this.put(item.getId(), item); 

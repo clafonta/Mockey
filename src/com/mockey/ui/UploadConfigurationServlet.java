@@ -36,7 +36,7 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 import com.mockey.storage.xml.MockeyXmlFileConfigurationReader;
 
 /**
@@ -47,7 +47,7 @@ import com.mockey.storage.xml.MockeyXmlFileConfigurationReader;
 public class UploadConfigurationServlet extends HttpServlet {
 
     private static final long serialVersionUID = 2874257060865115637L;
-    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
     private static Logger logger = Logger.getLogger(UploadConfigurationServlet.class);
 
     /**

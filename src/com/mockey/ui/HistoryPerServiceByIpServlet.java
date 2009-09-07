@@ -31,7 +31,7 @@ import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 /**
  * <code>MockHistoryPerServiceByIpServlet</code> manages the display of past
@@ -46,7 +46,7 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
     private static final long serialVersionUID = -2255013290808524662L;
     private static final Logger logger = Logger.getLogger(HistoryPerServiceByIpServlet.class);
 
-    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String iprequest = req.getParameter("iprequest");

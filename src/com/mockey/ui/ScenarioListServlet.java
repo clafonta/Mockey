@@ -25,12 +25,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 public class ScenarioListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5034479269126858921L;
-	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
 	/**
 	 * 

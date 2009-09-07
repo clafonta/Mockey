@@ -27,7 +27,7 @@ import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.model.Url;
-
+ 
 /**
  * In memory implementation to the storage of mock services and scenarios.
  * 
@@ -50,7 +50,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
      * 
      * @return
      */
-    public static InMemoryMockeyStorage getInstance() {
+    static InMemoryMockeyStorage getInstance() {
         return store;
     }
 
@@ -126,8 +126,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         historyStore.remove(scenarioId);
     }
 
-    public void logClientRequest(FulfilledClientRequest mssb) {
-        historyStore.save(mssb);
+    public void logClientRequest(FulfilledClientRequest request) {
+    	logger.debug("saving a request.");
+        historyStore.save(request);
     }
 
     public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId) {
@@ -189,7 +190,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
     public List<String> uniqueClientIPs() {
         List<String> uniqueIPs = new ArrayList<String>();
-        for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
+        for (FulfilledClientRequest tx : this.historyStore.getOrderedList()) {
             String tmpIP = tx.getRequestorIP();
             if (!uniqueIPs.contains(tmpIP)) {
                 uniqueIPs.add(tmpIP);
@@ -199,10 +200,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public List<String> uniqueClientIPsForService(Long serviceId) {
+
+		logger.debug("getting IPs for serviceId: "+serviceId+". there are a total of "+this.historyStore.size()+" requests currently stored.");
+		
         List<String> uniqueIPs = new ArrayList<String>();
-        for (FulfilledClientRequest tx : this.store.getFulfilledClientRequests()) {
+        for (FulfilledClientRequest tx : this.historyStore.getOrderedList()) {
             String ip = tx.getRequestorIP();
-            if (!uniqueIPs.contains(ip) && tx.getServiceId() == serviceId) {
+            if (!uniqueIPs.contains(ip) && tx.getServiceId().equals(serviceId)) {
                 uniqueIPs.add(ip);
             }
         }
@@ -211,8 +215,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	@Override
 	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
+		logger.debug("getting requests for serviceId: "+serviceId+". there are a total of "+this.historyStore.size()+" requests currently stored.");
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-		for (FulfilledClientRequest req : this.store.getFulfilledClientRequests()) {
+		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 			if (req.getServiceId().equals(serviceId)) {
 				rv.add(req);
 			}
@@ -223,7 +228,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	@Override
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-		for (FulfilledClientRequest req : this.store.getFulfilledClientRequests()) {
+		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 			if (req.getRequestorIP().equals(ip)) {
 				rv.add(req);
 			}
@@ -234,7 +239,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	@Override
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-		for (FulfilledClientRequest req : this.store.getFulfilledClientRequests()) {
+		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 			if ( req.getServiceId().equals(serviceId) &&
 					req.getRequestorIP().equals(ip) ) {
 				rv.add(req);

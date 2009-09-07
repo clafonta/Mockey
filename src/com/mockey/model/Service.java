@@ -20,7 +20,7 @@ import java.util.List;
 import org.apache.http.HttpHost;
 
 import com.mockey.OrderedMap;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 /**
  * A Service is a remote url that can be called.
@@ -231,12 +231,12 @@ public class Service implements PersistableItem {
         }
         // No service error defined, therefore, let's use the universal
         // error.
-        return InMemoryMockeyStorage.getInstance().getUniversalErrorScenario();
+        return StorageRegistry.MockeyStorage.getUniversalErrorScenario();
     }
     
     public Boolean isReferencedInAServicePlan() {
     	Boolean isReferenced = false;
-		for(ServicePlan plan : InMemoryMockeyStorage.getInstance().getServicePlans()) {
+		for(ServicePlan plan : StorageRegistry.MockeyStorage.getServicePlans()) {
 			for(PlanItem planItem : plan.getPlanItemList()) {
 				if(planItem.getServiceId().equals(this.getId())) {
 					isReferenced = true;

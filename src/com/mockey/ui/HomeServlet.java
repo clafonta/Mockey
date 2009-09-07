@@ -27,19 +27,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.mockey.model.ServicePlan;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 public class HomeServlet extends HttpServlet {
 
     private static final long serialVersionUID = -5485332140449853235L;
 
-    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String action = req.getParameter("action");
         if (action != null && "deleteAllServices".equals(action)) {
-            IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+            IMockeyStorage store = StorageRegistry.MockeyStorage;
             store.deleteEverything();
         } else {
             req.setAttribute("services", store.getServices());

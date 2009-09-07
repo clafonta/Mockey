@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +34,7 @@ import java.util.Map;
 public class ServiceValidator {
     /** Basic logger */
     private static Logger logger = Logger.getLogger(ServiceValidator.class);
-    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
     /**
      * Return a mapping of input field names and error messages. If the mock

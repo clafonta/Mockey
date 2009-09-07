@@ -37,7 +37,7 @@ import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 /**
  * Responsible for serving mock responses. Based on configuration, returns
@@ -50,7 +50,7 @@ import com.mockey.storage.InMemoryMockeyStorage;
 public class ResponseServlet extends HttpServlet {
 
     private static final long serialVersionUID = 8401356766354139506L;
-    private IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private IMockeyStorage store = StorageRegistry.MockeyStorage;
     private Logger logger = Logger.getLogger(ResponseServlet.class);
 
     /**

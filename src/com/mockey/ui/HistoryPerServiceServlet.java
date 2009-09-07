@@ -24,8 +24,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 /**
  * 
@@ -35,11 +37,15 @@ import com.mockey.storage.InMemoryMockeyStorage;
 public class HistoryPerServiceServlet extends HttpServlet {
 
     private static final long serialVersionUID = 6606106522000844746L;
-    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+    private static Logger logger = Logger.getLogger(HistoryPerServiceServlet.class);
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	String serviceId = req.getParameter("serviceId");
-    	List<String> ips = store.uniqueClientIPsForService(Long.parseLong(serviceId));
+
+    	Long serviceId = Long.parseLong(req.getParameter("serviceId"));
+    	logger.debug("getting requests for service: "+serviceId);
+    	
+    	List<String> ips = store.uniqueClientIPsForService(serviceId);
     	if (ips.size()==1) {
     		resp.sendRedirect("detail?serviceId="+req.getParameter("serviceId")+"&iprequest="+ips.get(0));
     		return;

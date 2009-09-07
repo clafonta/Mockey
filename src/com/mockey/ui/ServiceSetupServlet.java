@@ -35,13 +35,13 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 public class ServiceSetupServlet extends HttpServlet {
     private Log log = LogFactory.getLog(ServiceSetupServlet.class);
 	
 	private static final long serialVersionUID = 5503460488900643184L;
-	private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.debug("Setting up a new service");

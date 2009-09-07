@@ -34,7 +34,7 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 public class ServicePlanSetupServlet extends HttpServlet {
 
@@ -42,7 +42,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
 
     private Log log = LogFactory.getLog(ServicePlanSetupServlet.class);
 
-    private IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private IMockeyStorage store = StorageRegistry.MockeyStorage;
 
     /**
      * 

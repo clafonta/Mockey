@@ -28,12 +28,12 @@ import com.mockey.ScenarioValidator;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
 import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 public class ScenarioServlet extends HttpServlet {
 
     private static final long serialVersionUID = -5920793024759540668L;
-    private static IMockeyStorage store = InMemoryMockeyStorage.getInstance();
+    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
