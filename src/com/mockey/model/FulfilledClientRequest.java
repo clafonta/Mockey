@@ -62,8 +62,8 @@ public class FulfilledClientRequest implements PersistableItem {
         return serviceInfo;
     }
 
-    public void setServiceInfo(Scenario serviceInfo) {
-        this.serviceInfo = serviceInfo;
+    public void setServiceInfo(Scenario scenario) {
+        this.serviceInfo = scenario;
     }
    
 
@@ -71,8 +71,8 @@ public class FulfilledClientRequest implements PersistableItem {
         return responseMessage;
     }
 
-    public void setResponseMessage(ResponseFromService responseMessage) {
-        this.responseMessage = responseMessage;
+    public void setResponseMessage(ResponseFromService response) {
+        this.responseMessage = response;
     }
 
     public Long getId() {

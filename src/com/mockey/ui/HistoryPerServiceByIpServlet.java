@@ -56,11 +56,10 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		
 		if(action!=null && "delete".equals(action)){
 		    // Delete from history
-		    Long scenarioId = new Long(req.getParameter("scenarioId"));		    
-		    store.deleteLoggedFulfilledClientRequest(scenarioId);
-
-		    // don't allow reloads to re-delete.  crappy hack.
-		    didDelete = true;
+		    Long fulfilledRequestId = new Long(req.getParameter("fulfilledRequestId"));		    
+		    store.deleteLoggedFulfilledClientRequest(fulfilledRequestId);
+		    // this is a void ajax call.
+		    return;
 		    
         } else if (action != null && "delete_all".equals(action)) {
             store.deleteAllLoggedFulfilledClientRequestForService(serviceId);
@@ -69,26 +68,25 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		    didDelete = true;
         }
 
-		Service ms = store.getServiceById(serviceId);
-		List<FulfilledClientRequest> scenarios = store.getFulfilledClientRequests();
-		List scenarioHistoryList = new ArrayList();
-		if(scenarios!=null){
-            for (FulfilledClientRequest type : scenarios) {
-                if (type.getServiceInfo().getServiceId().equals(serviceId) && type.getServiceInfo().getRequestorIP().equals(iprequest)) {
-                    scenarioHistoryList.add(type);
-                }
-            }
-        }
+		Service service = store.getServiceById(serviceId);
+		List<FulfilledClientRequest> requests = new ArrayList<FulfilledClientRequest>();
 
-        req.setAttribute("scenarioHistoryList", scenarioHistoryList);
-        req.setAttribute("mockservice", ms);
+		for (FulfilledClientRequest request : store.getFulfilledClientRequests()) {
+			if (request.getServiceInfo().getServiceId().equals(serviceId) && 
+					request.getServiceInfo().getRequestorIP().equals(iprequest)) {
+				requests.add(request);   
+			}    
+		}
+
+        req.setAttribute("scenarioHistoryList", requests);
+        req.setAttribute("mockservice", service);
         req.setAttribute("iprequest", iprequest);
 
 
         // don't allow reloads to re-delete. crappy hack.
         if (didDelete) {
             String contextRoot = req.getContextPath();
-            resp.sendRedirect(Url.getContextAwarePath("/history/detail?serviceId=" + ms.getId() + "&iprequest=" + iprequest, contextRoot));
+            resp.sendRedirect(Url.getContextAwarePath("/history/detail?serviceId=" + service.getId() + "&iprequest=" + iprequest, contextRoot));
             return;
         } else {
             RequestDispatcher dispatch = req.getRequestDispatcher("/service_history_ip.jsp");

@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.http.HttpHost;
 
 import com.mockey.OrderedMap;
+import com.mockey.storage.InMemoryMockeyStorage;
 
 /**
  * A Service is a remote url that can be called.
@@ -205,7 +206,12 @@ public class Service implements PersistableItem {
     }
 
     public int getServiceResponseType() {
-        return serviceResponseType;
+    	// If no scenarios, then proxy is automatically on.
+    	if (this.getScenarios().size()==0) {
+    		return SERVICE_RESPONSE_TYPE_PROXY;
+    	} else {
+    		return serviceResponseType;	
+    	}
     }
 
     public void setErrorScenarioId(Long errorScenarioId) {
@@ -214,5 +220,17 @@ public class Service implements PersistableItem {
 
     public Long getErrorScenarioId() {
         return errorScenarioId;
+    }
+    
+    public Scenario getErrorScenario() {
+    	// FIND SERVICE ERROR, IF EXIST.
+        for(Scenario scenario : this.getScenarios()) {
+        	if (scenario.getId()==this.getErrorScenarioId()) {
+        		return scenario;
+        	}
+        }
+        // No service error defined, therefore, let's use the universal
+        // error.
+        return InMemoryMockeyStorage.getInstance().getUniversalErrorScenario();
     }
 }

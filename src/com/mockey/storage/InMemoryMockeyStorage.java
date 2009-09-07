@@ -26,6 +26,7 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Scenario;
+import com.mockey.model.Url;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.
@@ -75,24 +76,25 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public Service getServiceById(Long id) {
-        return (Service) mockServiceStore.get(id);
+        return mockServiceStore.get(id);
     }
 
-    public Service getServiceByUrl(String urlPath) {
-        try {
-            for (Long id : mockServiceStore.keySet()) {
-                Service theService = (Service) mockServiceStore.get(id);
-                String tempString = theService.getMockServiceUrl();
-                if (tempString.equals(urlPath)) {
-                    return theService;
-                }
-            }
-
+    public Service getServiceByUrl(String url) {
+        
+    	try {
+        	for (Service service : getServices()) {
+        		if (service.getUrl().getFullUrl().equals(url)) {
+        			return service;
+        		}
+        	}
         } catch (Exception e) {
-            logger.error("Unable to retrieve service w/ url pattern: " + urlPath, e);
+            logger.error("Unable to retrieve service w/ url pattern: " + url, e);
         }
-        logger.debug("Didn't find service with Service path: " + urlPath);
-        return null;
+        
+        logger.debug("Didn't find service with Service path: " + url + ".  Creating a new one.");
+        Service service = new Service(new Url(url));
+        store.saveOrUpdateService(service);
+        return service;
     }
 
     public void saveOrUpdateService(Service mockServiceBean) {
