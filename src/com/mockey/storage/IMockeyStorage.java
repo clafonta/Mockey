@@ -51,7 +51,7 @@ public interface IMockeyStorage {
 	public void setProxy(ProxyServerModel proxy);
 	
 	public List<String> uniqueClientIPs();
-	public List<String> uniqueClientIPsForService(Service msb);
+	public List<String> uniqueClientIPsForService(Long serviceId);
 	
 	public List<FulfilledClientRequest> getFulfilledClientRequests();
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip);

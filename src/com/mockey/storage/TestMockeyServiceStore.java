@@ -180,7 +180,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 	}
 
 
-	public List<String> uniqueClientIPsForService(Service msb) {
+	public List<String> uniqueClientIPsForService(Long serviceId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
