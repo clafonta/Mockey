@@ -29,12 +29,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
-import com.mockey.model.ServicePlan;
-import com.mockey.model.Service;
 import com.mockey.model.Scenario;
+import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 import com.mockey.storage.xml.MockeyXmlFileConfigurationReader;
@@ -48,7 +47,7 @@ public class UploadConfigurationServlet extends HttpServlet {
 
     private static final long serialVersionUID = 2874257060865115637L;
     private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-    private static Logger logger = Logger.getLogger(UploadConfigurationServlet.class);
+    //private static Logger logger = Logger.getLogger(UploadConfigurationServlet.class);
 
     /**
      * 
@@ -86,7 +85,7 @@ public class UploadConfigurationServlet extends HttpServlet {
         try {
             // Create a new file upload handler
             DiskFileUpload upload = new DiskFileUpload();
-            logger.debug("Upload servlet");
+            
 
             // Parse the request
             List<FileItem> items = upload.parseRequest(req);
@@ -95,7 +94,7 @@ public class UploadConfigurationServlet extends HttpServlet {
                 FileItem item = (FileItem) iter.next();
 
                 if (!item.isFormField()) {
-                    logger.debug("Upload servlet: found file " + item.getFieldName());
+                    //logger.debug("Upload servlet: found file " + item.getFieldName());
 
                     byte[] data = item.get();
                     String strXMLDefintion = new String(data);

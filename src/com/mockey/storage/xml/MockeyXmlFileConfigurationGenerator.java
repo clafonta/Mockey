@@ -31,7 +31,7 @@ import com.mockey.storage.IMockeyStorage;
 
 public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 	/** Basic logger */
-	private static Logger logger = Logger.getLogger(MockeyXmlFileConfigurationGenerator.class);
+	//private static Logger logger = Logger.getLogger(MockeyXmlFileConfigurationGenerator.class);
 
 	/**
 	 * Returns an element representing a mock service definitions file in XML. 
@@ -57,21 +57,21 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
         }
 
 		Iterator iterator = store.getServices().iterator();
-		logger.debug("building DOM:");
+		//logger.debug("building DOM:");
 		while (iterator.hasNext()) {
 			Service mockServiceBean = (Service) iterator.next();
 			Element serviceElement = document.createElement("service");
 			rootElement.appendChild(serviceElement);
 
 			if (mockServiceBean != null) {
-				logger.debug("building XML representation for MockServiceBean:\n" + mockServiceBean.toString());
+				//logger.debug("building XML representation for MockServiceBean:\n" + mockServiceBean.toString());
 				// *************************************
 				// We do NOT want to write out ID.
 				// If we did, then someone uploading this xml definition may overwrite services
 				// defined with the same ID.
 				// serviceElement.setAttribute("id", mockServiceBean.getId());
 				// *************************************
-				serviceElement.setAttribute("id", ""+mockServiceBean.getId());
+				//serviceElement.setAttribute("id", ""+mockServiceBean.getId());
 				serviceElement.setAttribute("name", mockServiceBean.getServiceName());
 				serviceElement.setAttribute("description", mockServiceBean.getDescription());
 				serviceElement.setAttribute("url", mockServiceBean.getMockServiceUrl());
@@ -86,7 +86,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 
 				while (iter.hasNext()) {
 					Scenario scenario = (Scenario) iter.next();
-					logger.debug("building XML representation for MockServiceScenarioBean:\n" + scenario.toString());
+					//logger.debug("building XML representation for MockServiceScenarioBean:\n" + scenario.toString());
 					Element scenarioElement = document.createElement("scenario");
 					scenarioElement.setAttribute("id", scenario.getId().toString());
 					scenarioElement.setAttribute("name", scenario.getScenarioName());
