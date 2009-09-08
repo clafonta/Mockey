@@ -9,6 +9,7 @@
 	<property name="lib.dir" value="${webapp.dir}/WEB-INF/lib"/>
 	<property name="build.dir" location="build"/>
 	<property name="etc.dir" location="etc"/>
+	<property name="one-jar-lib.dir" location="${etc.dir}/one-jar"/>
 	<property name="dist.dir" location="dist"/>
 	<property name="version.num" value="1.3"/>
 	<property name="classes.dir" location="${build.dir}/WEB-INF/classes"/>
@@ -17,7 +18,7 @@
 			<include name="**/*.jar"/>
 		</fileset>
         <fileset dir="${etc.dir}">
-            <include name="*.jar" />
+            <include name="**/*.jar" />
         </fileset>
 		<pathelement location="${classes.dir}"/>
 	</path>	
@@ -63,7 +64,7 @@
             </fileset>
         </main>
         <lib>
-            <fileset dir="${etc.dir}" >
+            <fileset dir="${one-jar-lib.dir}" >
                 <include name="*.jar" />
             </fileset>
         </lib>

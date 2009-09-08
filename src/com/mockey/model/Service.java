@@ -20,7 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpHost;
-import org.testng.log4testng.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 
 import com.mockey.ClientExecuteProxy;
 import com.mockey.OrderedMap;
@@ -52,7 +54,7 @@ public class Service implements PersistableItem, ExecutableService {
     private Url realServiceUrl;
 	private List<FulfilledClientRequest> fulfilledRequests;
 	
-	private static Logger logger = Logger.getLogger(Service.class);
+	private static Log logger = LogFactory.getLog(Service.class);
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	
     public List<FulfilledClientRequest> getFulfilledRequests() {
