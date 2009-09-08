@@ -16,8 +16,6 @@
 package com.mockey.ui;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -30,8 +28,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mockey.ServiceValidator;
-import com.mockey.model.PlanItem;
-import com.mockey.model.ServicePlan;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
@@ -135,7 +131,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			// Do nothing
 		}
 		if(serviceId!=null){
-			service = this.store.getServiceById(serviceId);
+			service = store.getServiceById(serviceId);
 		}
 		service.setRealServiceUrl(urlObj);
 		service.setServiceName(req.getParameter("serviceName"));

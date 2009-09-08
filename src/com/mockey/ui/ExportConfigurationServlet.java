@@ -44,7 +44,6 @@ public class ExportConfigurationServlet extends HttpServlet {
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		MockeyXmlFactory g = new MockeyXmlFactory();
-		IMockeyStorage store = StorageRegistry.MockeyStorage;
 		Document result = g.getAsDocument(store);
 
         String fileOutput;

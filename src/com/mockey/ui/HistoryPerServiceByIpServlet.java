@@ -16,8 +16,6 @@
 package com.mockey.ui;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -27,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
@@ -54,6 +51,7 @@ public class HistoryPerServiceByIpServlet extends HttpServlet {
 		String action = req.getParameter("action");
 
 		if(action!=null && "delete".equals(action)){
+			logger.debug("deleting a single historical request.");
 		    // Delete from history
 		    Long fulfilledRequestId = new Long(req.getParameter("fulfilledRequestId"));		    
 		    store.deleteLoggedFulfilledClientRequest(fulfilledRequestId);

@@ -17,7 +17,6 @@ package com.mockey.server;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -219,7 +218,7 @@ public class ResponseServlet extends HttpServlet {
         	
             // Wait for a minute.
             logger.debug("Waiting..." + service.getHangTime() + " miliseconds ");
-            
+
             Thread.currentThread().sleep(service.getHangTime());
         
             logger.debug("Done Waiting");
@@ -232,5 +231,4 @@ public class ResponseServlet extends HttpServlet {
             new PrintStream(resp.getOutputStream()).println(response.getBody());
         }
     }
-
 }
