@@ -56,37 +56,26 @@ public class ResponseServlet extends HttpServlet {
      * Parses the caller's remote address, parses the URL, (the URI) then
      * determines the appropriate mockservice for the definition of the response
      * type.
-     * 
-     * @param req
-     *            basic request
-     * @param resp
-     *            basic resp
-     * @throws ServletException
-     *             basic
-     * @throws IOException
-     *             basic
      */
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestFromClient request = new RequestFromClient(req);
+        
+    		RequestFromClient request = new RequestFromClient(req);
+        
         logger.info(request.getHeaderInfo());
         logger.info(request.getParameterInfo());
-        boolean replied = false;
+        
+        boolean isAMoxie = false;
 
-        String urlPath = req.getRequestURI();
-
+        String requestedUrl = req.getRequestURI();
         String contextRoot = req.getContextPath();
-        if (urlPath.startsWith(contextRoot)) {
-            urlPath = urlPath.substring(contextRoot.length(), urlPath.length());
+        if (requestedUrl.startsWith(contextRoot)) {
+            requestedUrl = requestedUrl.substring(contextRoot.length(), requestedUrl.length());
         }
-        Url url = new Url(urlPath);
-        Service service = store.getServiceByUrl(url.getFullUrl());
+        Url serviceUrl = new Url(requestedUrl);
+        
+        Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
         service.setHttpMethod(req.getMethod());
 
-        // There are several options to look at:
-        // 1. Respond with real service response
-        // 2. Respond with scenario response independent of request message.
-        // 3. Respond with scenario response dependent on matching request
-        // message.
         String rawRequestData = new String();
         if (!request.hasPostBody()) {
             // OK..let's build the request message from Params.
@@ -97,97 +86,14 @@ public class ResponseServlet extends HttpServlet {
             rawRequestData = request.getBodyInfo();
         }
 
-        // If proxy on, then
-        // 1) Capture request message.
-        // 2) Set up a connection to the real service URL
-        // 3) Forward the request message to the real service URL
-        // 4) Read the reply from the real service URL.
-        // 5) Save request + response as a historical scenario.
         ResponseFromService response = null;
-
         if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
-
-            // There are 2 proxy things going on here:
-            // 1. Using Mockey as a 'proxy' to a real service.
-            // 2. The proxy server between Mockey and the real service.
-            //
-            // For the proxy server between Mockey and the real service,
-            // we do the following:
-            ProxyServerModel proxyServer = store.getProxy();
-            ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
-
-            try {
-                logger.debug("Initiating request through proxy");
-                response = clientExecuteProxy.execute(proxyServer, service, request);
-                response.writeToOutput(resp);
-                replied = true;
-            } catch (Exception e) {
-                // We're here for various reasons.
-                // 1) timeout from calling real service.
-                // 2) unable to parse real response.
-                // 3) magic!
-                // Before we throw an exception, check:
-                // (A) does this mock service have a default error response. If
-                // no, then
-                // (B) see if Mockey has a universal error response
-                // If neither, then throw the exception.
-                response = new ResponseFromService();
-                
-                Scenario error = service.getErrorScenario();
-                if (error != null) {
-                    response.setBody(error.getResponseMessage());
-                } else {
-                	response.setBody("No scenario defined. Also, we encountered this error: " + e.getClass() + ": "
-                                + e.getMessage());
-                }   
-            }
-        }
-        // Proxy is NOT on. Therefore we use a scenario to figure out a reply.
-        // Either:
-        // 1) Based on matching the request message to one of the scenarios
-        // or
-        // 2) Based on scenario selected.
-        //
-        else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
-            response = new ResponseFromService();
-            List<Scenario> scenarios = service.getScenarios();
-            Iterator<Scenario> iter = scenarios.iterator();
-            String messageMatchFound = null;
-            while (iter.hasNext()) {
-                Scenario scenario = iter.next();
-                logger
-                        .debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n"
-                                + rawRequestData);
-                int indexValue = -1;
-                if (request.hasPostBody()) {
-                    indexValue = request.getBodyInfo().indexOf(scenario.getMatchStringArg());
-                } else {
-                    indexValue = rawRequestData.indexOf(scenario.getMatchStringArg());
-                }
-
-                if ((indexValue > -1)) {
-                    logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
-                    messageMatchFound = scenario.getResponseMessage();
-                    break;
-                }
-            }
-            if (messageMatchFound == null) {
-                messageMatchFound = "Big fat ERROR:[Be sure to view source to see more...] \n"
-                        + "Your setting is 'match scenario' but there is no matching scenario to incoming message: \n"
-                        + rawRequestData;
-            }
-            response.setBody(messageMatchFound);
-
+        		response = proxyTheRequest(service, request);
+            isAMoxie = true;
+        } else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
+        		response = executeDynamicScenario(service, rawRequestData, request);
         } else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
-            Scenario scenario = service.getScenario(service.getDefaultScenarioId());
-            response = new ResponseFromService();
-
-            if (scenario != null) {
-                response.setBody(scenario.getResponseMessage());
-            } else {
-                response.setBody("NO SCENARIO SELECTED");
-            }
-
+        		response = executeStaticScenario(service);
         }
 
         // **********************
@@ -208,20 +114,120 @@ public class ResponseServlet extends HttpServlet {
         store.logClientRequest(fulfilledClientRequest);
 
         try {
-        	
             // Wait for a minute.
             logger.debug("Waiting..." + service.getHangTime() + " miliseconds ");
-
             Thread.currentThread().sleep(service.getHangTime());
-        
             logger.debug("Done Waiting");
-   
         } catch (Exception e) {
-            // Catch interrupt exception
+            // Catch interrupt exception.
+        		// Or not.
         }
-        if (!replied) {
+        if (!isAMoxie) {
             resp.setContentType(service.getHttpContentType());
             new PrintStream(resp.getOutputStream()).println(response.getBody());
+        } else {
+        		response.writeToOutput(resp);
         }
+    }
+    
+    private ResponseFromService proxyTheRequest(Service service, RequestFromClient request) {
+
+    		logger.debug("proxying a moxie.");
+        // If proxy on, then
+        // 1) Capture request message.
+        // 2) Set up a connection to the real service URL
+        // 3) Forward the request message to the real service URL
+        // 4) Read the reply from the real service URL.
+        // 5) Save request + response as a historical scenario.
+    	
+        // There are 2 proxy things going on here:
+        // 1. Using Mockey as a 'proxy' to a real service.
+        // 2. The proxy server between Mockey and the real service.
+        //
+        // For the proxy server between Mockey and the real service,
+        // we do the following:
+        ProxyServerModel proxyServer = store.getProxy();
+        ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
+        ResponseFromService response = null;
+        try {
+            logger.debug("Initiating request through proxy");
+            response = clientExecuteProxy.execute(proxyServer, service, request);
+        } catch (Exception e) {
+            // We're here for various reasons.
+            // 1) timeout from calling real service.
+            // 2) unable to parse real response.
+            // 3) magic!
+            // Before we throw an exception, check:
+            // (A) does this mock service have a default error response. If
+            // no, then
+            // (B) see if Mockey has a universal error response
+            // If neither, then throw the exception.
+            response = new ResponseFromService();
+            
+            Scenario error = service.getErrorScenario();
+            if (error != null) {
+                response.setBody(error.getResponseMessage());
+            } else {
+            	response.setBody("No scenario defined. Also, we encountered this error: " + e.getClass() + ": "
+                            + e.getMessage());
+            }   
+        }
+        return response;
+    }
+    
+    private ResponseFromService executeStaticScenario(Service service) {
+    	
+    		logger.debug("mockeying a static scenario");
+    		
+        // Proxy is NOT on. Therefore we use a scenario to figure out a reply.
+        // Either:
+        // 1) Based on matching the request message to one of the scenarios
+        // or
+        // 2) Based on scenario selected.
+        //
+        Scenario scenario = service.getScenario(service.getDefaultScenarioId());
+        ResponseFromService response = new ResponseFromService();
+
+        if (scenario != null) {
+            response.setBody(scenario.getResponseMessage());
+        } else {
+            response.setBody("NO SCENARIO SELECTED");
+        }
+        return response;
+    }
+    
+    private ResponseFromService executeDynamicScenario(Service service, String rawRequestData, RequestFromClient request) {
+    	
+    		logger.debug("mockeying a dynamic scenario.");
+    		
+        ResponseFromService response = new ResponseFromService();
+        List<Scenario> scenarios = service.getScenarios();
+        Iterator<Scenario> iter = scenarios.iterator();
+        String messageMatchFound = null;
+        while (iter.hasNext()) {
+            Scenario scenario = iter.next();
+            logger
+                    .debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n"
+                            + rawRequestData);
+            int indexValue = -1;
+            if (request.hasPostBody()) {
+                indexValue = request.getBodyInfo().indexOf(scenario.getMatchStringArg());
+            } else {
+                indexValue = rawRequestData.indexOf(scenario.getMatchStringArg());
+            }
+
+            if ((indexValue > -1)) {
+                logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
+                messageMatchFound = scenario.getResponseMessage();
+                break;
+            }
+        }
+        if (messageMatchFound == null) {
+            messageMatchFound = "Big fat ERROR:[Be sure to view source to see more...] \n"
+                    + "Your setting is 'match scenario' but there is no matching scenario to incoming message: \n"
+                    + rawRequestData;
+        }
+        response.setBody(messageMatchFound);
+        return response;
     }
 }
