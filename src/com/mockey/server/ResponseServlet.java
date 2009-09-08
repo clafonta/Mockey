@@ -17,6 +17,7 @@ package com.mockey.server;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,61 +58,37 @@ public class ResponseServlet extends HttpServlet {
      * determines the appropriate mockservice for the definition of the response
      * type.
      */
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void service(HttpServletRequest originalHttpReqFromClient, HttpServletResponse resp) throws ServletException, IOException {
         
-    		RequestFromClient request = new RequestFromClient(req);
+    		RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
         
         logger.info(request.getHeaderInfo());
         logger.info(request.getParameterInfo());
-        
-        boolean isAMoxie = false;
 
-        String requestedUrl = req.getRequestURI();
-        String contextRoot = req.getContextPath();
+        String requestedUrl = originalHttpReqFromClient.getRequestURI();
+        String contextRoot = originalHttpReqFromClient.getContextPath();
         if (requestedUrl.startsWith(contextRoot)) {
             requestedUrl = requestedUrl.substring(contextRoot.length(), requestedUrl.length());
         }
         Url serviceUrl = new Url(requestedUrl);
         
         Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
-        service.setHttpMethod(req.getMethod());
-
-        String rawRequestData = new String();
-        if (!request.hasPostBody()) {
-            // OK..let's build the request message from Params.
-            // Is this a HACK? I dunno yet.
-            logger.debug("Request message is EMPTY; building request message out of Parameters. ");
-            rawRequestData = request.buildParameterRequest();
-        } else {
-            rawRequestData = request.getBodyInfo();
-        }
+        service.setHttpMethod(originalHttpReqFromClient.getMethod());
 
         ResponseFromService response = null;
+        boolean isAMoxie = false;
         if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
         		response = proxyTheRequest(service, request);
             isAMoxie = true;
         } else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
-        		response = executeDynamicScenario(service, rawRequestData, request);
+        		response = executeDynamicScenario(service, request);
+        		isAMoxie = false;
         } else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
         		response = executeStaticScenario(service);
+        		isAMoxie = false;
         }
 
-        // **********************
-        // History
-        // **********************
-        FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-        fulfilledClientRequest.setRequestorIP(req.getRemoteAddr());
-        fulfilledClientRequest.setServiceId(service.getId());
-
-        if (!request.hasPostBody()) {
-            fulfilledClientRequest.setClientRequestBody("[No post body provided by client]");
-        } else {
-            fulfilledClientRequest.setClientRequestBody(request.getBodyInfo());
-        }
-        fulfilledClientRequest.setClientRequestHeaders(request.getHeaderInfo());
-        fulfilledClientRequest.setClientRequestParameters(request.getParameterInfo());
-        fulfilledClientRequest.setResponseMessage(response);
-        store.logClientRequest(fulfilledClientRequest);
+        logRequest(service, request, response, originalHttpReqFromClient.getRemoteAddr());
 
         try {
             // Wait for a minute.
@@ -122,6 +99,7 @@ public class ResponseServlet extends HttpServlet {
             // Catch interrupt exception.
         		// Or not.
         }
+        
         if (!isAMoxie) {
             resp.setContentType(service.getHttpContentType());
             new PrintStream(resp.getOutputStream()).println(response.getBody());
@@ -196,10 +174,24 @@ public class ResponseServlet extends HttpServlet {
         return response;
     }
     
-    private ResponseFromService executeDynamicScenario(Service service, String rawRequestData, RequestFromClient request) {
+    private ResponseFromService executeDynamicScenario(Service service, RequestFromClient request) {
     	
     		logger.debug("mockeying a dynamic scenario.");
-    		
+    		String rawRequestData = "";
+    		try {
+            rawRequestData = new String();
+            if (!request.hasPostBody()) {
+                // OK..let's build the request message from Params.
+                // Is this a HACK? I dunno yet.
+                logger.debug("Request message is EMPTY; building request message out of Parameters. ");
+                rawRequestData = request.buildParameterRequest();
+            } else {
+                rawRequestData = request.getBodyInfo();
+            }
+    		} catch (UnsupportedEncodingException e) {
+    			// uhm.
+    		}
+            
         ResponseFromService response = new ResponseFromService();
         List<Scenario> scenarios = service.getScenarios();
         Iterator<Scenario> iter = scenarios.iterator();
@@ -229,5 +221,24 @@ public class ResponseServlet extends HttpServlet {
         }
         response.setBody(messageMatchFound);
         return response;
+    }
+    
+    private void logRequest(Service service, RequestFromClient request, ResponseFromService response, String ip) {
+        // **********************
+        // History
+        // **********************
+        FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
+        fulfilledClientRequest.setRequestorIP(ip);
+        fulfilledClientRequest.setServiceId(service.getId());
+
+        if (!request.hasPostBody()) {
+            fulfilledClientRequest.setClientRequestBody("[No post body provided by client]");
+        } else {
+            fulfilledClientRequest.setClientRequestBody(request.getBodyInfo());
+        }
+        fulfilledClientRequest.setClientRequestHeaders(request.getHeaderInfo());
+        fulfilledClientRequest.setClientRequestParameters(request.getParameterInfo());
+        fulfilledClientRequest.setResponseMessage(response);
+        store.logClientRequest(fulfilledClientRequest);
     }
 }
