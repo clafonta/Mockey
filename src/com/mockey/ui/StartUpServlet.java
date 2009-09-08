@@ -25,41 +25,20 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 public class StartUpServlet extends HttpServlet {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -6466436642921760561L;
-
-	/** Logger */
 	private static Logger logger = Logger.getLogger(StartUpServlet.class);
+	private static Properties appProps = new Properties();
 
-	protected static Properties appProps = new Properties();
-
-	/**
-	 * <p>
-	 * To be called by the servlet engine when it first starts up. A few things
-	 * get initialized here:
-	 * </p>
-	 * <li>Logging</li>
-	 * <li>General application properties</li>
-	 * <li>Handle to a connectin pool</li>
-	 * 
-	 * @throws ServletException
-	 *             basic
-	 */
 	public void init() throws ServletException {
-		// Configuration paths for log4J
+
 		String log4jFile = getInitParameter("log4j.properties");
-
-		// Configuration paths for application properties
 		String appPropFile = getInitParameter("default.properties");
-
 		// base directory of servlet context
 		String contextPath = getServletContext().getRealPath(System.getProperty("file.separator"));
 
 		try {
 			contextPath = "/";
-
 			InputStream log4jInputStream = getServletContext().getResourceAsStream(contextPath + log4jFile);
 			Properties log4JProperties = new Properties();
 			log4JProperties.load(log4jInputStream);
