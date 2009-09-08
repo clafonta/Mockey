@@ -61,6 +61,36 @@
                 <hr />
 
                       </div>
+
+                      <script>
+                      $(document).ready( function() {
+						$('.deleteServiceLink').each( function() {
+							$(this).click( function() {
+								var serviceId = this.id.split("_")[1];
+								$.prompt(
+									'Are you sure you want to delete this Service?',
+									{
+										callback: function (proceed) {
+											if(proceed) {
+												$.ajax({
+													type: "GET",
+													url: "setup?delete=true&serviceId="+serviceId
+												});
+												$('#serviceRow_'+serviceId).fadeOut(500, function() {
+													$('#serviceRow_'+serviceId).remove();
+												});
+											}
+										},
+										buttons: {
+											'Delete Service': true,
+											Cancel: false
+										}
+									});
+								});
+							});
+						});
+
+                      </script>
 		        <table class="simple" width="100%" cellspacing="0">
 			        <thead>
 			            <tr>
@@ -70,7 +100,7 @@
 		            <tbody>
 						<c:forEach var="mockservice" items="${services}">
 
-						<tr>
+						<tr id="serviceRow_${mockservice.id}">
 						    <a name="<c:out value="${mockservice.id}"/>"/>
 							<td valign="top">
 	                            <c:url value="/setup" var="setupUrl">
@@ -84,13 +114,13 @@
 	                                <c:param name="serviceId" value="${mockservice.id}" />
 	                             </c:url>
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
-	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a> |
-	                             <a class="tiny" href="<c:out value="${deleteUrl}"/>" title="Delete this service">delete</a>
+	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a>
 	                                <br /><br />
 								<h2><a href="<c:out value="${setupUrl}"/>" title="Edit Service">
 								<c:out value="${mockservice.serviceName}" /></a></h2>
 							</td>
 							<td colspan="2">
+
 								<c:if test="${mode ne 'edit_plan'}">
 <%-- LOVELY JQUERY + JSP TAGS + EL --%>
 <script type="text/javascript">
@@ -119,6 +149,9 @@ $(document).ready(function() {
 								<input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
 								</c:if>
 							  <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
+								<p style="text-align:right;">
+									<a id="deleteServiceLink_${mockservice.id}" class="deleteServiceLink" title="Delete this service"><img src="<c:url value="/images/cross.png"/>"></a>
+								</p>
 							  Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
 							  <%--   COMMENTING OUT FOR TWO REASONS --%>
 							  <%--
