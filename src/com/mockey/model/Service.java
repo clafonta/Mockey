@@ -15,10 +15,12 @@
  */
 package com.mockey.model;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpHost;
 
+import com.mockey.ClientExecuteProxy;
 import com.mockey.OrderedMap;
 import com.mockey.storage.StorageRegistry;
 
@@ -235,7 +237,7 @@ public class Service implements PersistableItem {
     }
     
     public Boolean isReferencedInAServicePlan() {
-    	Boolean isReferenced = false;
+    		Boolean isReferenced = false;
 		for(ServicePlan plan : StorageRegistry.MockeyStorage.getServicePlans()) {
 			for(PlanItem planItem : plan.getPlanItemList()) {
 				if(planItem.getServiceId().equals(this.getId())) {

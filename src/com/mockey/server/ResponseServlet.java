@@ -71,12 +71,6 @@ public class ResponseServlet extends HttpServlet {
         logger.info(request.getHeaderInfo());
         logger.info(request.getParameterInfo());
         boolean replied = false;
-        String requestIp = req.getRemoteAddr();
-
-        // on macs sometimes localhost resolves to the IPV6 format IP
-        if (requestIp.equals("0:0:0:0:0:0:0:1%0")) {
-            requestIp = "127.0.0.1";
-        }
 
         String urlPath = req.getRequestURI();
 
@@ -147,7 +141,6 @@ public class ResponseServlet extends HttpServlet {
                                 + e.getMessage());
                 }   
             }
-
         }
         // Proxy is NOT on. Therefore we use a scenario to figure out a reply.
         // Either:
@@ -201,7 +194,7 @@ public class ResponseServlet extends HttpServlet {
         // History
         // **********************
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-        fulfilledClientRequest.setRequestorIP(requestIp);
+        fulfilledClientRequest.setRequestorIP(req.getRemoteAddr());
         fulfilledClientRequest.setServiceId(service.getId());
 
         if (!request.hasPostBody()) {

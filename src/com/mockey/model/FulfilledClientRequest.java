@@ -45,8 +45,13 @@ public class FulfilledClientRequest implements PersistableItem {
         return requestorIP;
     }
 
-    public void setRequestorIP(String consumerId) {
-        this.requestorIP = consumerId;
+    public void setRequestorIP(String ip) {
+        String requestIp = ip;
+        // on macs sometimes localhost resolves to the IPV6 format IP
+        if (requestIp.equals("0:0:0:0:0:0:0:1%0")) {
+            requestIp = "127.0.0.1";
+        }
+        this.requestorIP = ip;
     }
     
     public String getClientRequestBody() {
