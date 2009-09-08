@@ -17,9 +17,6 @@ package com.mockey.server;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,13 +25,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.mockey.ClientExecuteProxy;
-import com.mockey.model.ProxyServerModel;
 import com.mockey.model.RequestFromClient;
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.ResponseFromService;
 import com.mockey.model.Service;
-import com.mockey.model.Scenario;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -60,7 +54,7 @@ public class ResponseServlet extends HttpServlet {
      */
     public void service(HttpServletRequest originalHttpReqFromClient, HttpServletResponse resp) throws ServletException, IOException {
         
-    		RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
+    	RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
         
         logger.info(request.getHeaderInfo());
         logger.info(request.getParameterInfo());
@@ -75,20 +69,8 @@ public class ResponseServlet extends HttpServlet {
         Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
         service.setHttpMethod(originalHttpReqFromClient.getMethod());
 
-        ResponseFromService response = null;
-        boolean isAMoxie = false;
-        if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
-        		response = proxyTheRequest(service, request);
-            isAMoxie = true;
-        } else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
-        		response = executeDynamicScenario(service, request);
-        		isAMoxie = false;
-        } else if (service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
-        		response = executeStaticScenario(service);
-        		isAMoxie = false;
-        }
-
-        logRequest(service, request, response, originalHttpReqFromClient.getRemoteAddr());
+        ResponseFromService response = service.Execute(request);
+        logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr());
 
         try {
             // Wait for a minute.
@@ -97,136 +79,18 @@ public class ResponseServlet extends HttpServlet {
             logger.debug("Done Waiting");
         } catch (Exception e) {
             // Catch interrupt exception.
-        		// Or not.
+        	// Or not.
         }
         
-        if (!isAMoxie) {
+        if (!(service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY)) {
             resp.setContentType(service.getHttpContentType());
             new PrintStream(resp.getOutputStream()).println(response.getBody());
         } else {
-        		response.writeToOutput(resp);
+        	response.writeToOutput(resp);
         }
     }
     
-    private ResponseFromService proxyTheRequest(Service service, RequestFromClient request) {
-
-    		logger.debug("proxying a moxie.");
-        // If proxy on, then
-        // 1) Capture request message.
-        // 2) Set up a connection to the real service URL
-        // 3) Forward the request message to the real service URL
-        // 4) Read the reply from the real service URL.
-        // 5) Save request + response as a historical scenario.
-    	
-        // There are 2 proxy things going on here:
-        // 1. Using Mockey as a 'proxy' to a real service.
-        // 2. The proxy server between Mockey and the real service.
-        //
-        // For the proxy server between Mockey and the real service,
-        // we do the following:
-        ProxyServerModel proxyServer = store.getProxy();
-        ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
-        ResponseFromService response = null;
-        try {
-            logger.debug("Initiating request through proxy");
-            response = clientExecuteProxy.execute(proxyServer, service, request);
-        } catch (Exception e) {
-            // We're here for various reasons.
-            // 1) timeout from calling real service.
-            // 2) unable to parse real response.
-            // 3) magic!
-            // Before we throw an exception, check:
-            // (A) does this mock service have a default error response. If
-            // no, then
-            // (B) see if Mockey has a universal error response
-            // If neither, then throw the exception.
-            response = new ResponseFromService();
-            
-            Scenario error = service.getErrorScenario();
-            if (error != null) {
-                response.setBody(error.getResponseMessage());
-            } else {
-            	response.setBody("No scenario defined. Also, we encountered this error: " + e.getClass() + ": "
-                            + e.getMessage());
-            }   
-        }
-        return response;
-    }
-    
-    private ResponseFromService executeStaticScenario(Service service) {
-    	
-    		logger.debug("mockeying a static scenario");
-    		
-        // Proxy is NOT on. Therefore we use a scenario to figure out a reply.
-        // Either:
-        // 1) Based on matching the request message to one of the scenarios
-        // or
-        // 2) Based on scenario selected.
-        //
-        Scenario scenario = service.getScenario(service.getDefaultScenarioId());
-        ResponseFromService response = new ResponseFromService();
-
-        if (scenario != null) {
-            response.setBody(scenario.getResponseMessage());
-        } else {
-            response.setBody("NO SCENARIO SELECTED");
-        }
-        return response;
-    }
-    
-    private ResponseFromService executeDynamicScenario(Service service, RequestFromClient request) {
-    	
-    		logger.debug("mockeying a dynamic scenario.");
-    		String rawRequestData = "";
-    		try {
-            rawRequestData = new String();
-            if (!request.hasPostBody()) {
-                // OK..let's build the request message from Params.
-                // Is this a HACK? I dunno yet.
-                logger.debug("Request message is EMPTY; building request message out of Parameters. ");
-                rawRequestData = request.buildParameterRequest();
-            } else {
-                rawRequestData = request.getBodyInfo();
-            }
-    		} catch (UnsupportedEncodingException e) {
-    			// uhm.
-    		}
-            
-        ResponseFromService response = new ResponseFromService();
-        List<Scenario> scenarios = service.getScenarios();
-        Iterator<Scenario> iter = scenarios.iterator();
-        String messageMatchFound = null;
-        while (iter.hasNext()) {
-            Scenario scenario = iter.next();
-            logger
-                    .debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n"
-                            + rawRequestData);
-            int indexValue = -1;
-            if (request.hasPostBody()) {
-                indexValue = request.getBodyInfo().indexOf(scenario.getMatchStringArg());
-            } else {
-                indexValue = rawRequestData.indexOf(scenario.getMatchStringArg());
-            }
-
-            if ((indexValue > -1)) {
-                logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
-                messageMatchFound = scenario.getResponseMessage();
-                break;
-            }
-        }
-        if (messageMatchFound == null) {
-            messageMatchFound = "Big fat ERROR:[Be sure to view source to see more...] \n"
-                    + "Your setting is 'match scenario' but there is no matching scenario to incoming message: \n"
-                    + rawRequestData;
-        }
-        response.setBody(messageMatchFound);
-        return response;
-    }
-    
-    private void logRequest(Service service, RequestFromClient request, ResponseFromService response, String ip) {
-        // **********************
-        // History
-        // **********************
+    private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response, String ip) {
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
         fulfilledClientRequest.setRequestorIP(ip);
         fulfilledClientRequest.setServiceId(service.getId());
