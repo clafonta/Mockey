@@ -90,7 +90,7 @@
     when calling the service. An error can be caused by a timeout, from calling a real service, or inability 
     to parse data. </p>
     <h2>Universal Error Response</h2>
-    <p><b>You define this.</b>A service scenario flagged as a 'Universal Error Response' will be returned by Mockey if an error occurs 
+    <p><b>You define this.</b> A service scenario flagged as a 'Universal Error Response' will be returned by Mockey if an error occurs 
     when calling a service <i>and</i> a scenario is not defined as a Service Error Response. The purpose of this 
     feature is to provide one place to define a universal error message, without the need to create an error
     scenario for each service.  </p>

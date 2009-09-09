@@ -69,7 +69,7 @@ $(document).ready(function() {
                 <p><div id="fulfilledRequest_${request.id}">
                     <form action="<c:url value="/scenario"/>" method="post">
 	                    <input type="hidden" name="actionTypeGetFlag" value="true" />
-	                    <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
+	                    <input type="hidden" name="serviceId" value="<c:out value="${request.serviceId}"/>" />
 	                    <table class="simple" width="100%">
 	                        <tbody>
 	                            <tr>
