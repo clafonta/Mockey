@@ -63,7 +63,7 @@ $(document).ready(function() {
              <c:url value="/history" var="deleteAllScenarioUrl">
                  <c:param name="action" value="delete_all" />
               </c:url>
-             <a id="clear_history">Clear History</a>  | <a href="<c:url value="/history"/>">Remove Filters</a>
+             <a id="clear_history" href="#">Clear History</a>  | <a href="<c:url value="/history"/>">Remove Filters</a>
             </p>
             <c:forEach var="request" items="${requests}" varStatus="status">
                 <p><div id="fulfilledRequest_${request.id}">

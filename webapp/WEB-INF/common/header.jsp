@@ -75,6 +75,6 @@ $(document).ready(function() {
     <li><a <c:if test="${currentTab == 'export'}">id ="current"</c:if> href="<c:url value="/export" />">Export Service Definitions</a> | </li>
     <li><a <c:if test="${currentTab == 'history'}">id ="current"</c:if> href="<c:url value="/history" />">History</a> | </li>
     <li><a <c:if test="${currentTab == 'proxy'}">id ="current"</c:if> href="<c:url value="/proxy/settings" />">Proxy Settings</a> | </li>     
-    <li><a id="flush">Flush</a> | </li>
+    <li><a id="flush" href="#">Flush</a> | </li>
     <li><a <c:if test="${currentTab == 'help'}">id ="current"</c:if> href="<c:url value="/help" />">Help</a></li></ul>
 </div>
