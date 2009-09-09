@@ -29,14 +29,6 @@
 		<servlet-class>com.mockey.ui.UploadConfigurationServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>MockHistoryPerServiceByIpServlet</servlet-name>
-		<servlet-class>com.mockey.ui.HistoryPerServiceByIpServlet</servlet-class>
-	</servlet>
-<!-- unused?	<servlet>
-		<servlet-name>MockHistoryHtmlServlet</servlet-name>
-		<servlet-class>com.mockey.ui.HistoryHtmlServlet</servlet-class>
-	</servlet> -->
-	<servlet>
 		<servlet-name>MockServiceScenarioListServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ScenarioListServlet</servlet-class>
 	</servlet>
