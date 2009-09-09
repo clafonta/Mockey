@@ -1,6 +1,7 @@
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
-<c:set var="pageTitle" value="History" scope="request"/>
+<c:set var="pageTitle" value="History" scope="request" />
+<c:set var="currentTab" value="history" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
 <script>
 $(document).ready(function() {
@@ -27,13 +28,30 @@ $(document).ready(function() {
 			var unusedServiceId = -1;
 			$.ajax({
 				type: "GET",
-				url: "/history/detail?action=delete&serviceId="+unusedServiceId+"&fulfilledRequestId="+requestId
+				url: "<c:url value="history"/>?action=delete&serviceId="+unusedServiceId+"&fulfilledRequestId="+requestId
 			});
 			$('#fulfilledRequest_'+requestId).fadeOut(500, function() {
 				$('#fulfilledRequest_'+requestId).remove();
 			});
 		});
 	});
+});
+
+$(document).ready(function() {
+    $('#clear_history').click(
+        function () {
+             $.prompt(
+                    'Are you sure? This will delete all fulfilled request for all requesting IPs.', {
+                        callback: function (proceed) {
+                            if(proceed) document.location="<c:url value="/history?action=delete_all" />";
+                        },
+                        buttons: {
+                            'Delete All History': true,
+                            Cancel: false
+                        }
+                    }
+                );
+        })
 });
 </script>
 <div id="main">
@@ -42,12 +60,10 @@ $(document).ready(function() {
     <c:choose>
         <c:when test="${!empty requests}">
             <p>
-             <c:url value="/history/detail" var="deleteAllScenarioUrl">
-	                                       <c:param name="serviceId" value="${mockservice.id}" />
-	                                       <c:param name="iprequest" value="${iprequest}" />
-	                                       <c:param name="action" value="delete_all" />
-	                                    </c:url>
-	                                   <a href="<c:out value="${deleteAllScenarioUrl}"/>">Clear All</a>
+             <c:url value="/history" var="deleteAllScenarioUrl">
+                 <c:param name="action" value="delete_all" />
+              </c:url>
+             <a id="clear_history">Clear History</a>  | <a href="<c:url value="/history"/>">Remove Filters</a>
             </p>
             <c:forEach var="request" items="${requests}" varStatus="status">
                 <p><div id="fulfilledRequest_${request.id}">
@@ -61,7 +77,15 @@ $(document).ready(function() {
 	                                    <p style="text-align:right;">
 	                                    	<a id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
 	                                    </p>
-	                                    <p><b>Time and IP:</b> <c:out value="${request.time}"/> <c:out value="${request.requestorIP}"/> </p>
+	                                     <c:url value="/history" var="filterByIp">
+	                                       <c:param name="iprequest" value="${request.requestorIP}" />	
+	                                                                              
+	                                    </c:url>
+	                                    <c:url value="/history" var="filterByServiceId">
+	                                        <c:param name="serviceId" value="${request.serviceId}" />	                                                                              
+	                                    </c:url>
+	                                      
+	                                    <p><b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${filterByServiceId}"/>" title="Filter by Service"><c:out value="${request.serviceName}"/></a></b></p>
 	                                </td>
 	                            </tr>
 	                            <tr>

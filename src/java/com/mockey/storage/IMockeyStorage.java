@@ -59,6 +59,9 @@ public interface IMockeyStorage {
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 	
 	public void logClientRequest(FulfilledClientRequest requestResponseX);
-	public void deleteLoggedFulfilledClientRequest(Long clientRequestId);
-	public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId);
+	public void deleteFulfilledClientRequests();
+	public void deleteFulfilledClientRequestById(Long fulfilledRequestID);
+	public void deleteFulfilledClientRequestsFromIP(Long ip);	
+	public void deleteFulfilledClientRequestsForService(Long serviceId);
+	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 }

@@ -95,7 +95,9 @@
 			        <thead>
 			            <tr>
 						 <th width="15%" style="text-align:center;background-color:#bdbdbd;">Service Name</th>
-						 <th style="text-align:center;background-color:#bdbdbd;">Service Settings</th>			            </tr>
+						 <th colspan="3" style="text-align:center;background-color:#bdbdbd;">Service Settings</th>
+						 	           
+						  </tr>
 			        </thead>
 		            <tbody>
 						<c:forEach var="mockservice" items="${services}">
@@ -110,7 +112,7 @@
 	                                <c:param name="serviceId" value="${mockservice.id}" />
 	                                <c:param name="delete" value="true" />
 	                             </c:url>
-	                             <c:url value="/history/list" var="historyUrl">
+	                             <c:url value="/history" var="historyUrl">
 	                                <c:param name="serviceId" value="${mockservice.id}" />
 	                             </c:url>
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
@@ -149,9 +151,7 @@ $(document).ready(function() {
 								<input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
 								</c:if>
 							  <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
-								<p style="text-align:right;">
-									<a id="deleteServiceLink_${mockservice.id}" class="deleteServiceLink" title="Delete this service"><img src="<c:url value="/images/cross.png"/>"></a>
-								</p>
+							
 							  Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
 							  <%--   COMMENTING OUT FOR TWO REASONS --%>
 							  <%--
@@ -240,6 +240,11 @@ $(document).ready(function() {
 	                              </form>
 
                               </c:if>
+							</td>
+							<td valign="top" width="1px">
+								<p style="text-align:right;">
+									<a id="deleteServiceLink_${mockservice.id}" class="deleteServiceLink" title="Delete this service"><img src="<c:url value="/images/cross.png"/>"></a>
+								</p> 
 							</td>
 						</tr>
 						</c:forEach>

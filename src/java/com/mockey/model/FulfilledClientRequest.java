@@ -30,10 +30,12 @@ public class FulfilledClientRequest implements PersistableItem {
 
     private Long id;
     private Long serviceId;
+    private String serviceName;
     private String clientRequestBody;
     private String clientRequestHeaders;
     private String clientRequestParameters;
     private String requestorIP;
+    
     private ResponseFromService responseMessage;
 	private Date time = new Date();
 	
@@ -100,6 +102,14 @@ public class FulfilledClientRequest implements PersistableItem {
 
     public void setId(Long id) {
         this.id = id; 
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getServiceName() {
+        return serviceName;
     }
 
 }
