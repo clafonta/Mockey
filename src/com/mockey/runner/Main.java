@@ -10,12 +10,14 @@ public class Main {
     public static void main(String args[]) throws Exception {
         String port = "8080";
 
-        for (int i = 0; i < args.length; i++) {
-            if ("--port".equals(args[i])) {
-                port = args[++i];
-            }
+        if (args!=null) { // running in-proc in win32 passes NULL to the jvm
+        	for (int i = 0; i < args.length; i++) {
+        		if ("--port".equals(args[i])) {
+        			port = args[++i];
+        		}
+        	}
         }
-
+        
         String[] argv = {"--port", port, "Mockey.war"};
 
         new Thread(new BrowserThread("http://127.0.0.1:", port, 10)).start();
