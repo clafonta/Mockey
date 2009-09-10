@@ -94,6 +94,7 @@ public class ResponseServlet extends HttpServlet {
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
         fulfilledClientRequest.setRequestorIP(ip);
         fulfilledClientRequest.setServiceId(service.getId());
+        fulfilledClientRequest.setServiceName(service.getServiceName());
 
         if (!request.hasPostBody()) {
             fulfilledClientRequest.setClientRequestBody("[No post body provided by client]");

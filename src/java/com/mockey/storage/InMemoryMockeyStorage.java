@@ -122,7 +122,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         return this.historyStore.getOrderedList();
     }
 
-    public void deleteLoggedFulfilledClientRequest(Long scenarioId) {
+    public void deleteFulfilledClientRequestsFromIP(Long scenarioId) {
         historyStore.remove(scenarioId);
     }
 
@@ -131,7 +131,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         historyStore.save(request);
     }
 
-    public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId) {
+    public void deleteFulfilledClientRequestsForService(Long serviceId) {
         for (FulfilledClientRequest req : historyStore.getOrderedList()) {
             if (req.getServiceId().equals(serviceId)) {
                 this.historyStore.remove(req.getId());
@@ -247,4 +247,27 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 		return rv;
 	}
+
+    public void deleteFulfilledClientRequests() {
+        historyStore = new OrderedMap<FulfilledClientRequest>();
+        
+    }
+    
+    public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
+        for (FulfilledClientRequest req : historyStore.getOrderedList()) {
+            if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
+                this.historyStore.remove(req.getId());
+            }
+        }
+        
+    }
+
+    public void deleteFulfilledClientRequestById(Long fulfilledRequestID) {
+        for (FulfilledClientRequest req : historyStore.getOrderedList()) {
+            if (req.getId().equals(fulfilledRequestID)) {
+                this.historyStore.remove(req.getId());
+            }
+        }
+        
+    }
 }

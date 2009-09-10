@@ -18,7 +18,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void deleteLoggedFulfilledClientRequest(Long scenarioId) {
+    public void deleteFulfilledClientRequestsFromIP(Long scenarioId) {
         // TODO Auto-generated method stub
 
     }
@@ -28,7 +28,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void deleteAllLoggedFulfilledClientRequestForService(Long serviceId) {
+    public void deleteFulfilledClientRequestsForService(Long serviceId) {
         // TODO Auto-generated method stub
 
     }
@@ -204,5 +204,20 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    public void deleteFulfilledClientRequests() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void deleteFulfilledClientRequestById(Long fulfilledRequestID) {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

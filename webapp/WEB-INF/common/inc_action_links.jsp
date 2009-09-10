@@ -11,7 +11,7 @@
 	<c:url value="/configure" var="configureUrl">
 	    <c:param name="serviceId" value="${mockservice.id}" />
 	</c:url>
-	<c:url value="/history/list" var="historyUrl">
+	<c:url value="/history" var="historyUrl">
         <c:param name="serviceId" value="${mockservice.id}" />
     </c:url>
 	<p style="text-align:center;" id="action_links">

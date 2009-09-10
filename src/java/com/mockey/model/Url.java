@@ -45,7 +45,7 @@ public class Url {
      * @return the path
      */
     public String getPath() {
-        return path;
+        return path != null && path.trim() != "" ? path : "/";
     }
 
     /**
@@ -189,39 +189,5 @@ public class Url {
             relativePath = contextRoot + uri;
         }
         return relativePath;
-    }
-
-    public static void main(String[] args) {
-        // System.out.println("/mockey/home =? " +
-        // Url.getContextAwarePath("/home", "/mockey"));
-        // System.out.println("/mockey/home =? " + Url.getContextAwarePath("/",
-        // "/mockey"));
-        // System.out.println("/mockey/home =? " +
-        // Url.getContextAwarePath("/home/", "mockey"));
-        // System.out.println("/mockey/home =? " +
-        // Url.getContextAwarePath("/home/", "/mockey"));
-        // System.out.println("/home/ =? " + Url.getContextAwarePath("/home/",
-        // "/"));
-        // System.out.println("/home =? " + Url.getContextAwarePath("home",
-        // "/"));
-        // System.out.println("/home =? " + Url.getContextAwarePath("home",
-        // ""));
-
-        // System.out.println("A) " + new
-        // Url("http://www.google.com:80").toString());
-        // System.out.println("B) " + new Url("htp://www.google0").toString());
-        // System.out.println("C) " + new
-        // Url("http://www.google.com:43").toString());
-        // System.out.println("D) " + new Url("http://google.com").toString());
-        // System.out.println("E) " + new
-        // Url("https://www.google.com").toString());
-        // System.out.println("F) " + new Url("www.google.com:80").toString());
-        // System.out.println("G) " + new
-        // Url("https://www.google.com:9000").toString());
-        // System.out.println("H) " + new Url("google.com:80").toString());
-        // System.out.println("I) " + new
-        // Url("http://www.google.com:443").toString());
-        // System.out.println("J) " + new
-        // Url("https://www.google.com:443").toString());
     }
 }

@@ -29,14 +29,6 @@
 		<servlet-class>com.mockey.ui.UploadConfigurationServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>MockHistoryPerServiceByIpServlet</servlet-name>
-		<servlet-class>com.mockey.ui.HistoryPerServiceByIpServlet</servlet-class>
-	</servlet>
-<!-- unused?	<servlet>
-		<servlet-name>MockHistoryHtmlServlet</servlet-name>
-		<servlet-class>com.mockey.ui.HistoryHtmlServlet</servlet-class>
-	</servlet> -->
-	<servlet>
 		<servlet-name>MockServiceScenarioListServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ScenarioListServlet</servlet-class>
 	</servlet>
@@ -53,8 +45,8 @@
 		<servlet-class>com.mockey.ui.ScenarioServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>MockHistoryPerServiceServlet</servlet-name>
-		<servlet-class>com.mockey.ui.HistoryPerServiceServlet</servlet-class>
+		<servlet-name>HistoryServlet</servlet-name>
+		<servlet-class>com.mockey.ui.HistoryServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>MockServiceProxyInfoServlet</servlet-name>
@@ -91,14 +83,10 @@
 	<servlet-mapping>
 		<servlet-name>MockHomeServlet</servlet-name>
 		<url-pattern>/home</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>	
 	<servlet-mapping>
-		<servlet-name>MockHistoryPerServiceServlet</servlet-name>
-		<url-pattern>/history/list</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>MockHistoryPerServiceByIpServlet</servlet-name>
-		<url-pattern>/history/detail</url-pattern>
+		<servlet-name>HistoryServlet</servlet-name>
+		<url-pattern>/history</url-pattern>
 	</servlet-mapping>
 <!-- unused?	<servlet-mapping>
 		<servlet-name>MockHistoryHtmlServlet</servlet-name>
