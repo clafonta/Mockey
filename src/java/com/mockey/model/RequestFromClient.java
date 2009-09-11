@@ -146,9 +146,9 @@ public class RequestFromClient {
             if (values != null && values.length > 0) {
                 for (String value : values) {
                     if(value.trim().length() > 0){
-                        requestMsg.append(key).append("=").append(URLEncoder.encode(value,"UTF-8"));
+                        requestMsg.append(URLEncoder.encode(key,"UTF-8")).append("=").append(URLEncoder.encode(value,"UTF-8"));
                     }else {
-                        requestMsg.append(key);
+                        requestMsg.append(URLEncoder.encode(key,"UTF-8"));
                     }
                 }
             } 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2002-2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.mockey.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -27,6 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;
+import com.mockey.model.HistoryFilter;
+import com.mockey.model.HistoryFilterType;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -50,12 +53,15 @@ public class HistoryServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         // Filter by request IP
-        String filterByIP = req.getParameter("iprequest");
-
+        List<HistoryFilter> historyFilterList = new ArrayList<HistoryFilter>();
+        String filterByIP = req.getParameter(HistoryFilterType.IP.getKey());
+        if(filterByIP!=null){
+            historyFilterList.add(new HistoryFilter());
+        }
         Long filterByServiceId = null;
 
         try {
-            filterByServiceId = new Long(req.getParameter("serviceId"));
+            filterByServiceId = new Long(req.getParameter(HistoryFilterType.SERVICE.getKey()));
 
         } catch (Exception e) {
 
@@ -80,6 +86,7 @@ public class HistoryServlet extends HttpServlet {
 
         }
         List<FulfilledClientRequest> fulfilledRequests = null;
+        
 
         if (filterByIP == null && filterByServiceId == null) {
             fulfilledRequests = store.getFulfilledClientRequests();
