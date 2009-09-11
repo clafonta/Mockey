@@ -95,11 +95,13 @@ $(document).ready(function() {
 	                                       <c:param name="token" value="${request.requestorIP}" />	
 	                                                                              
 	                                    </c:url>
-	                                    <c:url value="/history" var="filterByServiceId">
+	                                    <c:url value="/history" var="filterByServiceName">
 	                                        <c:param name="token" value="${request.serviceName}" />	                                                                              
 	                                    </c:url>
-	                                      
-	                                    <p><b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${filterByServiceId}"/>" title="Filter by Service"><c:out value="${request.serviceName}"/></a></b></p>
+	                                    <c:url value="/setup" var="serviceUrl">
+                                            <c:param name="serviceId" value="${request.serviceId}" />                                                                               
+                                        </c:url>  
+	                                    <p><b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b> (<a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a>)</p>
 	                                </td>
 	                            </tr>
 	                            <tr>
