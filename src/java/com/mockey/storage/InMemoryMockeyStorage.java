@@ -16,18 +16,20 @@
 package com.mockey.storage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.log4j.Logger;
 
 import com.mockey.OrderedMap;
-import com.mockey.model.ProxyServerModel;
-import com.mockey.model.ServicePlan;
 import com.mockey.model.FulfilledClientRequest;
-import com.mockey.model.Service;
+import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
+import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 import com.mockey.model.Url;
- 
+
 /**
  * In memory implementation to the storage of mock services and scenarios.
  * 
@@ -80,17 +82,17 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public Service getServiceByUrl(String url) {
-        
-    	try {
-        	for (Service service : getServices()) {
-        		if (service.getUrl().getFullUrl().equals(url)) {
-        			return service;
-        		}
-        	}
+
+        try {
+            for (Service service : getServices()) {
+                if (service.getUrl().getFullUrl().equals(url)) {
+                    return service;
+                }
+            }
         } catch (Exception e) {
             logger.error("Unable to retrieve service w/ url pattern: " + url, e);
         }
-        
+
         logger.debug("Didn't find service with Service path: " + url + ".  Creating a new one.");
         Service service = new Service(new Url(url));
         store.saveOrUpdateService(service);
@@ -127,7 +129,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public void logClientRequest(FulfilledClientRequest request) {
-    	logger.debug("saving a request.");
+        logger.debug("saving a request.");
         historyStore.save(request);
     }
 
@@ -201,8 +203,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
     public List<String> uniqueClientIPsForService(Long serviceId) {
 
-		logger.debug("getting IPs for serviceId: "+serviceId+". there are a total of "+this.historyStore.size()+" requests currently stored.");
-		
+        logger.debug("getting IPs for serviceId: " + serviceId + ". there are a total of " + this.historyStore.size()
+                + " requests currently stored.");
+
         List<String> uniqueIPs = new ArrayList<String>();
         for (FulfilledClientRequest tx : this.historyStore.getOrderedList()) {
             String ip = tx.getRequestorIP();
@@ -213,53 +216,50 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         return uniqueIPs;
     }
 
-	
-	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
-		logger.debug("getting requests for serviceId: "+serviceId+". there are a total of "+this.historyStore.size()+" requests currently stored.");
-		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-			if (req.getServiceId().equals(serviceId)) {
-				rv.add(req);
-			}
-		}
-		return rv;
-	}
+    public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
+        logger.debug("getting requests for serviceId: " + serviceId + ". there are a total of "
+                + this.historyStore.size() + " requests currently stored.");
+        List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+        for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
+            if (req.getServiceId().equals(serviceId)) {
+                rv.add(req);
+            }
+        }
+        return rv;
+    }
 
-	
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
-		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-			if (req.getRequestorIP().equals(ip)) {
-				rv.add(req);
-			}
-		}
-		return rv;
-	}
+    public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
+        List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+        for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
+            if (req.getRequestorIP().equals(ip)) {
+                rv.add(req);
+            }
+        }
+        return rv;
+    }
 
-	
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
-		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-			if ( req.getServiceId().equals(serviceId) &&
-					req.getRequestorIP().equals(ip) ) {
-				rv.add(req);
-			}
-		}
-		return rv;
-	}
+    public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
+        List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+        for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
+            if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
+                rv.add(req);
+            }
+        }
+        return rv;
+    }
 
     public void deleteFulfilledClientRequests() {
         historyStore = new OrderedMap<FulfilledClientRequest>();
-        
+
     }
-    
+
     public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
         for (FulfilledClientRequest req : historyStore.getOrderedList()) {
             if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
                 this.historyStore.remove(req.getId());
             }
         }
-        
+
     }
 
     public void deleteFulfilledClientRequestById(Long fulfilledRequestID) {
@@ -268,6 +268,50 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
                 this.historyStore.remove(req.getId());
             }
         }
-        
+
+    }
+
+    public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments) {
+
+        List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+        if (filterArguments.size() == 0) {
+            rv = this.getFulfilledClientRequests();
+        } else {
+            for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
+
+                for (String filterArg : filterArguments) {
+                    // SERVICE ID
+                    if (req.getServiceId().toString().indexOf(filterArg) > -1) {
+                        rv.add(req);
+                    } else if (req.getClientRequestBody().indexOf(filterArg) > -1) {
+                        rv.add(req);
+                    } else if (req.getClientRequestHeaders().indexOf(filterArg) > -1) {
+                        rv.add(req);
+                    } else if (req.getClientRequestParameters().indexOf(filterArg) > -1) {
+                        rv.add(req);
+                    } else if (req.getRequestorIP().indexOf(filterArg) > -1) {
+                        rv.add(req);
+                    } else if (req.getResponseMessage().getBody().indexOf(filterArg) > -1) {
+                        rv.add(req);
+                    } else if (req.getResponseMessage().getHeaderInfo().indexOf(filterArg) > -1) {
+                        rv.add(req);
+                    } else if (req.getServiceName().indexOf(filterArg) > -1) {
+                        rv.add(req);
+                    } else {
+                        Header[] headers = req.getResponseMessage().getHeaders();
+                        for (Header header : headers) {
+                            if (header.getName().indexOf(filterArg) > -1) {
+                                rv.add(req);
+                            } else if (header.getValue().indexOf(filterArg) > -1) {
+                                rv.add(req);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        }
+        return rv;
     }
 }

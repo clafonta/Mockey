@@ -113,7 +113,7 @@
 	                                <c:param name="delete" value="true" />
 	                             </c:url>
 	                             <c:url value="/history" var="historyUrl">
-	                                <c:param name="serviceId" value="${mockservice.id}" />
+	                                <c:param name="token" value="${mockservice.serviceName}" />
 	                             </c:url>
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
 	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a>

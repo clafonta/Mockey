@@ -35,7 +35,7 @@ import java.io.PrintStream;
  * 
  */
 public class ResponseFromService {
-	
+
     private static final String[] IGNORE_HEADERS = { "Transfer-Encoding" };
 
     private Log log = LogFactory.getLog(ResponseFromService.class);
@@ -153,30 +153,31 @@ public class ResponseFromService {
 
     public void writeToOutput(HttpServletResponse resp) throws IOException {
         // copy the headers out
-        for (Header header : headers) {
+        if (headers != null) {
+            for (Header header : headers) {
 
-            // copy the cookies
-            if (ignoreHeader(header.getName())) {
-                log.debug("Ignoring header: " + header.getName());
-            } else if (header.getName().equals("Set-Cookie")) {
+                // copy the cookies
+                if (ignoreHeader(header.getName())) {
+                    log.debug("Ignoring header: " + header.getName());
+                } else if (header.getName().equals("Set-Cookie")) {
 
-                String[] cookieParts = header.getValue().split("=", 2);
-                String cookieBody = cookieParts[1];
+                    String[] cookieParts = header.getValue().split("=", 2);
+                    String cookieBody = cookieParts[1];
 
-                String[] cookieBodyParts = cookieBody.split("; ");
+                    String[] cookieBodyParts = cookieBody.split("; ");
 
-                Cookie cookie = new Cookie(cookieParts[0], cookieBodyParts[0]);
-                resp.addCookie(cookie);
+                    Cookie cookie = new Cookie(cookieParts[0], cookieBodyParts[0]);
+                    resp.addCookie(cookie);
 
-                log.info("Adding header: " + cookieParts[0] + " value: " + cookieBodyParts[0]);
-                log.info("cookie ---> " + cookie.toString());
-            } else if (header.getName().equals("Content-Type")) {
-                // copy the content type
-                resp.setContentType(header.getValue());
-            } else
-                resp.setHeader(header.getName(), header.getValue());
+                    log.info("Adding header: " + cookieParts[0] + " value: " + cookieBodyParts[0]);
+                    log.info("cookie ---> " + cookie.toString());
+                } else if (header.getName().equals("Content-Type")) {
+                    // copy the content type
+                    resp.setContentType(header.getValue());
+                } else
+                    resp.setHeader(header.getName(), header.getValue());
+            }
         }
-
         PrintStream out = new PrintStream(resp.getOutputStream());
         out.println(body);
 

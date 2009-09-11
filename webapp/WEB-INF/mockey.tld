@@ -18,6 +18,17 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+        <name>history</name>
+        <tagclass>com.mockey.ui.tags.HistoryFilterTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Manages a the disply of a history token removal</info>
+        <attribute>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     <tag>
         <name>clipboard</name>
         <tagclass>com.mockey.ui.tags.ClipboardTag</tagclass>
