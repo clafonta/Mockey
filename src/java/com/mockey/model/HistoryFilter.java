@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2008-2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,76 @@
  */
 package com.mockey.model;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
- * Fulfilled request history filter. 
+ * List of unique filter tokens.
  * 
  * @author chad.lafontaine
- *
+ * 
  */
 public class HistoryFilter {
 
-    private String value;
-    private HistoryFilterType type;
-    /**
-     * @return the value
-     */
-    public String getValue() {
-        return value;
+    private Map<String, String> tokens = new LinkedHashMap<String, String>();
+
+    public Collection<String> getTokens() {
+        return this.tokens.keySet();
+
     }
+
     /**
-     * @param value the value to set
+     * Ensures no duplicate arguments are given to this filter.
+     * 
+     * @param arg
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void addToken(String arg) {
+        if (arg != null) {
+            this.tokens.put(arg, arg);
+        }
+
     }
+
+    public void addTokens(String[] args) {
+
+        if (args != null) {
+            for (String arg : args) {
+                this.addToken(arg);
+            }
+        }
+
+    }
+
+    public void deleteToken(String arg) {
+        if (arg != null) {
+            tokens.remove(arg);
+        }
+
+    }
+
+    public void deleteTokens(String[] args) {
+        if (args != null) {
+            for (String arg : args) {
+                this.deleteToken(arg);
+            }
+        }
+    }
+
     /**
-     * @return the type
+     * Pipe delimited set of filter tokens
      */
-    public HistoryFilterType getType() {
-        return type;
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        Iterator<String> iter = this.tokens.keySet().iterator();
+        while (iter.hasNext()) {
+            buf.append(iter.next());
+            if (iter.hasNext()) {
+                buf.append("|");
+            }
+        }
+        return buf.toString();
     }
-    /**
-     * @param type the type to set
-     */
-    public void setType(HistoryFilterType type) {
-        this.type = type;
-    }
-    
+
 }

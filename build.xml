@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Mockey" default="compile" basedir=".">
+<project name="Mockey" default="compile" basedir="."  xmlns:dn="antlib:org.apache.ant.dotnet">
 	<!-- =================================================================== -->
 	<!-- Base global properties for this build                                                                               -->
 	<!-- =================================================================== -->
@@ -168,6 +168,30 @@
 			message="Missing tomcat 5 directory or 'CATALINA_HOME' is not set correctly!"/>
 	</target>
 
+	<target name="windows-service" depends="">
+	  <taskdef resource="org/apache/ant/dotnet/antlib.xml">
+	    <classpath>
+	  	  <pathelement location="etc/ant-dotnet-1.0.jar"/>
+	    </classpath>
+	  </taskdef>
+	  <msbuild>
+	    <build>
+	      <MSBuild Projects="${basedir}\windows\MockeyWin32Service\MockeyWin32Service.sln"
+	        xmlns="http://schemas.microsoft.com/developer/msbuild/2003"/>
+	    </build>
+	  </msbuild>
+
+	  <mkdir dir="${dist.dir}\win32service" />
+	  <copy file="windows\MockeyWin32Service\Debug\MockeyWin32Runner.exe" todir="${dist.dir}\win32service"/>
+	  <copy file="${etc.dir}/one-jar/jetty-runner.jar" todir="${dist.dir}\win32service"/>
+	  <copy file="${etc.dir}/one-jar/jsp-api.jar" todir="${dist.dir}\win32service"/>
+	  <copy file="${etc.dir}/one-jar/servlet-api.jar" todir="${dist.dir}\win32service"/>
+	  <copy file="${dist.dir}\${ant.project.name}.war" todir="${dist.dir}\win32service"/>
+	  <jar destfile="${dist.dir}\win32service\MockeyBooter.jar">
+	  	<fileset dir="${build.dir}/WEB-INF/classes" includes="**/runner/**" />
+	  </jar>
+
+	</target>
 
     <target name="build" depends="compile, test" description="Build the whole app and test it" /> 
 </project>

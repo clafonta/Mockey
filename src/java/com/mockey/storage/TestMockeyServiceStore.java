@@ -1,6 +1,7 @@
 package com.mockey.storage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.mockey.model.PlanItem;
@@ -218,6 +219,16 @@ public class TestMockeyServiceStore implements IMockeyStorage {
     public void deleteFulfilledClientRequestById(Long fulfilledRequestID) {
         // TODO Auto-generated method stub
         
+    }
+
+    public List<FulfilledClientRequest> getFulfilledClientRequest(List<String> filterArguments) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

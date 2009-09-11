@@ -16,7 +16,6 @@
 package com.mockey.ui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -29,14 +28,15 @@ import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.HistoryFilter;
-import com.mockey.model.HistoryFilterType;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 /**
- * <code>HistoryServlet</code> manages the display of past requests and accepts
- * arguments to filter display.
+ * <code>HistoryServlet</code> produces a list of fulfilled requests and
+ * responses (history). Moreover, this servlet accepts String tokens to filter
+ * the end list.
+ * 
  * 
  * @author Chad Lafontaine (chad.lafontaine)
  */
@@ -44,6 +44,7 @@ public class HistoryServlet extends HttpServlet {
 
     private static final long serialVersionUID = -2255013290808524662L;
     private static final Logger logger = Logger.getLogger(HistoryServlet.class);
+    private static final String HISTORY_FILTER = "historyFilter";
 
     private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
@@ -52,20 +53,13 @@ public class HistoryServlet extends HttpServlet {
      */
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        // Filter by request IP
-        List<HistoryFilter> historyFilterList = new ArrayList<HistoryFilter>();
-        String filterByIP = req.getParameter(HistoryFilterType.IP.getKey());
-        if(filterByIP!=null){
-            historyFilterList.add(new HistoryFilter());
-        }
-        Long filterByServiceId = null;
-
-        try {
-            filterByServiceId = new Long(req.getParameter(HistoryFilterType.SERVICE.getKey()));
-
-        } catch (Exception e) {
+        String[] filterTokens = req.getParameterValues("token");
+        HistoryFilter historyFilter = (HistoryFilter) req.getSession().getAttribute(HISTORY_FILTER);
+        if (historyFilter == null) {
+            historyFilter = new HistoryFilter();
 
         }
+
         String action = req.getParameter("action");
 
         if (action != null && "delete_all".equals(action)) {
@@ -76,7 +70,7 @@ public class HistoryServlet extends HttpServlet {
             return;
         } else if (action != null && "delete".equals(action)) {
             String fulfilledRequestId = req.getParameter("fulfilledRequestId");
-            try {                
+            try {
                 store.deleteFulfilledClientRequestById(new Long(fulfilledRequestId));
             } catch (Exception e) {
                 logger.error("Unable to delete fulfilled request with id:" + fulfilledRequestId, e);
@@ -84,22 +78,17 @@ public class HistoryServlet extends HttpServlet {
             // Ajax used in page, so don't return anything
             return;
 
-        }
-        List<FulfilledClientRequest> fulfilledRequests = null;
-        
+        } else if (action != null && "remove_token".equals(action)) {
+            historyFilter.deleteTokens(filterTokens);
+        } else if (action != null && "remove_all_tokens".equals(action)) {
+            historyFilter = new HistoryFilter();
+        } else {
 
-        if (filterByIP == null && filterByServiceId == null) {
-            fulfilledRequests = store.getFulfilledClientRequests();
-        } else if (filterByIP != null && filterByServiceId == null) {
-            fulfilledRequests = store.getFulfilledClientRequestsFromIP(filterByIP);
-        } else if (filterByIP == null && filterByServiceId != null) {
-            fulfilledRequests = store.getFulfilledClientRequestsForService(filterByServiceId);
-        } else if (filterByIP != null && filterByServiceId != null) {
-            fulfilledRequests = store.getFulfilledClientRequestsFromIPForService(filterByIP, filterByServiceId);
+            historyFilter.addTokens(filterTokens);
         }
-
+        List<FulfilledClientRequest> fulfilledRequests = store.getFulfilledClientRequest(historyFilter.getTokens());
         req.setAttribute("requests", fulfilledRequests);
-        req.setAttribute("iprequest", filterByIP);
+        req.getSession().setAttribute(HISTORY_FILTER, historyFilter);
         RequestDispatcher dispatch = req.getRequestDispatcher("/history.jsp");
         dispatch.forward(req, resp);
     }

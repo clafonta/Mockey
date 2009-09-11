@@ -15,13 +15,14 @@
  */
 package com.mockey.storage;
 
+import java.util.Collection;
 import java.util.List;
 
-import com.mockey.model.ProxyServerModel;
-import com.mockey.model.ServicePlan;
 import com.mockey.model.FulfilledClientRequest;
-import com.mockey.model.Service;
+import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
+import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 
 /**
  * How Mockey stores itself.
@@ -57,8 +58,8 @@ public interface IMockeyStorage {
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip);
 	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId);
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
-	
-	public void logClientRequest(FulfilledClientRequest requestResponseX);
+	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments);
+ 	public void logClientRequest(FulfilledClientRequest requestResponseX);
 	public void deleteFulfilledClientRequests();
 	public void deleteFulfilledClientRequestById(Long fulfilledRequestID);
 	public void deleteFulfilledClientRequestsFromIP(Long ip);	

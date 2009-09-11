@@ -56,15 +56,33 @@ $(document).ready(function() {
 </script>
 <div id="main">
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
-    <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
+    <form action="<c:url value="/history"/>" method="get">
+    <p>
+    <input type="text" name="token" size="80"/>
+    <input type="submit" name="Filter" value="Add Filter" />
+    
+    <c:if test="${!empty requests}">
+      <c:url value="/history" var="deleteAllScenarioUrl">
+         <c:param name="action" value="delete_all" />
+      </c:url>
+      <a  class="spread" id="clear_history" href="#">Clear History</a>  
+    </c:if>
+    <c:if test="${!empty historyFilter.tokens}">  
+       <a class="spread" href="<c:url value="/history?action=remove_all_tokens"/>">Clear Filters</a>
+    </c:if>
+    </p>
+    </form>
+    <c:if test="${!empty historyFilter.tokens}">    
+    <div class="hint_message">
+    <h4>You are filtering your history on:</h4>
+    <c:forEach var="token" items="${historyFilter.tokens}">
+        <a style="text-decoration: none;" title="Remove filter token" href="<mockey:history value="${token}"/>"><c:out value="${token}"/><img src="<c:url value="/images/bullet_delete.png" />" /></a> 
+    </c:forEach>
+    <p></p>
+    </div>
+    </c:if>
     <c:choose>
         <c:when test="${!empty requests}">
-            <p>
-             <c:url value="/history" var="deleteAllScenarioUrl">
-                 <c:param name="action" value="delete_all" />
-              </c:url>
-             <a id="clear_history" href="#">Clear History</a>  | <a href="<c:url value="/history"/>">Remove Filters</a>
-            </p>
             <c:forEach var="request" items="${requests}" varStatus="status">
                 <p><div id="fulfilledRequest_${request.id}">
                     <form action="<c:url value="/scenario"/>" method="post">
@@ -78,14 +96,16 @@ $(document).ready(function() {
 	                                    	<a id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
 	                                    </p>
 	                                     <c:url value="/history" var="filterByIp">
-	                                       <c:param name="iprequest" value="${request.requestorIP}" />	
+	                                       <c:param name="token" value="${request.requestorIP}" />	
 	                                                                              
 	                                    </c:url>
-	                                    <c:url value="/history" var="filterByServiceId">
-	                                        <c:param name="serviceId" value="${request.serviceId}" />	                                                                              
+	                                    <c:url value="/history" var="filterByServiceName">
+	                                        <c:param name="token" value="${request.serviceName}" />	                                                                              
 	                                    </c:url>
-	                                      
-	                                    <p><b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${filterByServiceId}"/>" title="Filter by Service"><c:out value="${request.serviceName}"/></a></b></p>
+	                                    <c:url value="/setup" var="serviceUrl">
+                                            <c:param name="serviceId" value="${request.serviceId}" />                                                                               
+                                        </c:url>  
+	                                    <p><b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b> (<a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a>)</p>
 	                                </td>
 	                            </tr>
 	                            <tr>
