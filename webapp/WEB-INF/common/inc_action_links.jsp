@@ -12,7 +12,7 @@
 	    <c:param name="serviceId" value="${mockservice.id}" />
 	</c:url>
 	<c:url value="/history" var="historyUrl">
-        <c:param name="serviceId" value="${mockservice.id}" />
+        <c:param name="token" value="${mockservice.serviceName}" />
     </c:url>
 	<p style="text-align:center;" id="action_links">
 	    <a href="<c:out value="${setupUrl}"/>" title="Edit service settings" <c:if test="${actionKey == 'edit_service'}"> class="nav" </c:if>>Edit Service Definition</a> |

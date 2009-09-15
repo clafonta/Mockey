@@ -91,20 +91,55 @@
 						});
 
                       </script>
+                
 		        <table class="simple" width="100%" cellspacing="0">
 			        <thead>
 			            <tr>
-						 <th width="15%" style="text-align:center;background-color:#bdbdbd;">Service Name</th>
+						 <th width="15%" style="text-align:center;background-color:#bdbdbd;">Services</th>
 						 <th colspan="3" style="text-align:center;background-color:#bdbdbd;">Service Settings</th>
 						 	           
 						  </tr>
 			        </thead>
 		            <tbody>
-						<c:forEach var="mockservice" items="${services}">
-
-						<tr id="serviceRow_${mockservice.id}">
-						    <a name="<c:out value="${mockservice.id}"/>"/>
+		              <tr>
 							<td valign="top">
+	                            <c:forEach var="mockservice" items="${services}">	                              
+	                                <div class="toggle_button">
+									      <a href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
+									</div>
+							    </c:forEach>
+							</td>
+							<td valign="top">
+							<div id='service_list_container'>
+				
+							<c:forEach var="mockservice" items="${services}">
+							   <div id="div_<c:out value="${mockservice.id}"/>" class="display" > 
+                               <%--  <c:if test="${mode ne 'edit_plan'}">  --%>
+								<%-- LOVELY JQUERY + JSP TAGS + EL --%>
+								<script type="text/javascript">
+								$(document).ready(function() {
+								    $.prompt.setDefaults({
+								        opacity:0.2
+								    });
+								    $("#update_service_<c:out value="${mockservice.id}"/>").click(function(){
+								        $scenario = $("input[name='scenario_<c:out value="${mockservice.id}"/>']:checked").val();
+								        $serviceResponseType = $("input[name='serviceResponseType_<c:out value="${mockservice.id}"/>']:checked").val();
+								        $hangTime = document.getElementById("hangTime_<c:out value="${mockservice.id}"/>").value;
+								        $serviceId = document.getElementById("serviceId_<c:out value="${mockservice.id}"/>").value;
+								        $.post("<c:url value="/service_scenario"/>", {serviceResponseType_<c:out value="${mockservice.id}"/>:$serviceResponseType, serviceId:$serviceId,scenario_<c:out value="${mockservice.id}"/>:$scenario, hangTime_<c:out value="${mockservice.id}"/>:$hangTime}, function(xml) {
+								            $("#responseMessage_<c:out value="${mockservice.id}"/>").html(
+								                    $("report", xml).text()
+								            );
+								            $.prompt("Service '<c:out value="${mockservice.serviceName}"/>' updated.", { timeout: 2000});
+								        });
+								    });
+								});
+								</script>
+                                <div id="updateStatus_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
+                                <form id="multi_form" action="<c:url value="/service_scenario"/>" method="post">
+                                <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
+                                <%-- </c:if>--%>
+							 
 	                            <c:url value="/setup" var="setupUrl">
 	                                <c:param name="serviceId" value="${mockservice.id}" />
 	                             </c:url>
@@ -116,140 +151,93 @@
 	                                <c:param name="token" value="${mockservice.serviceName}" />
 	                             </c:url>
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
-	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a>
-	                                <br /><br />
-								<h2><a href="<c:out value="${setupUrl}"/>" title="Edit Service">
-								<c:out value="${mockservice.serviceName}" /></a></h2>
-							</td>
-							<td colspan="2">
-
-								<c:if test="${mode ne 'edit_plan'}">
-<%-- LOVELY JQUERY + JSP TAGS + EL --%>
-<script type="text/javascript">
-$(document).ready(function() {
-	$.prompt.setDefaults({
-		opacity:0.2
-	});
-	$("#update_service_<c:out value="${mockservice.id}"/>").click(function(){
-		$scenario = $("input[name='scenario_<c:out value="${mockservice.id}"/>']:checked").val();
-		$serviceResponseType = $("input[name='serviceResponseType_<c:out value="${mockservice.id}"/>']:checked").val();
-		$hangTime = document.getElementById("hangTime_<c:out value="${mockservice.id}"/>").value;
-		$serviceId = document.getElementById("serviceId_<c:out value="${mockservice.id}"/>").value;
-		$.post("<c:url value="/service_scenario"/>", {serviceResponseType_<c:out value="${mockservice.id}"/>:$serviceResponseType, serviceId:$serviceId,scenario_<c:out value="${mockservice.id}"/>:$scenario, hangTime_<c:out value="${mockservice.id}"/>:$hangTime}, function(xml) {
-			$("#responseMessage_<c:out value="${mockservice.id}"/>").html(
-					$("report", xml).text()
-			);
-			$.prompt("Service '<c:out value="${mockservice.serviceName}"/>' updated.", { timeout: 2000});
-		});
-	});
-});
-</script>
-<%-- EXAMPLE: There is a response from /service_scenario servlet this is how we display it.  --%>
-<%-- <div id="responseMessage_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>  --%>
-								<div id="updateStatus_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
-								<form id="multi_form" action="<c:url value="/service_scenario"/>" method="post">
-								<input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
-								</c:if>
-							  <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
+	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a> |
+	                             <a class="tiny" href="<c:out value="${deleteUrl}"/>" title="Delete this service">delete</a>
+	                                
+								 <h3>Service name: <a href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></h3>
+							     <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
 							
-							  Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
-							  <%--   COMMENTING OUT FOR TWO REASONS --%>
-							  <%--
-							  1. Too many flash instances makes Safari crash.
-							  2. Flash doesn't play well with transparent overlays.
-							  <mockey:clipboard id="clip-mockservice" text="${mockUrl}" bgcolor="#ffff99"/>
-							  --%>
-							  <br />
-							  <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
-
-							  <p>
-			                  <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="serviceResponseType_<c:out value="${mockservice.id}"/>" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> />
-			                  <b>Proxy</b> to this URL: <span class="highlight">
-			                    <c:out value="${mockservice.realServiceUrl}" /></span>
-			                    <%--   COMMENTING OUT FOR TWO REASONS --%>
-								<%--
-								  1. Too many flash instances makes Safari crash.
-								  2. Flash doesn't play well with transparent overlays.
-				                    <mockey:clipboard id="clip-mockservice" text="${mockservice.realServiceUrl}" bgcolor="#ffff99"/>
-			                     --%>
-			                    <c:if test="${empty mockservice.realServiceUrl and mockservice.serviceResponseType eq 0}">
-			                      <div>
-			                        <p class="alert_message">You need to <a href="<c:out value="${setupUrl}"/>" title="edit">define a real URL</a></p>
-			                      </div>
-			                    </c:if>
-			                  </p>
-			                  <p>
-			                  <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" value="2" <c:if test='${mockservice.serviceResponseType eq 2}'>checked</c:if> />
-			                  <b>Dynamic Scenario</b>
-			                  </p>
-                              <p>
-                                <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="staticScenario_<c:out value="${mockservice.id}"/>" value="1" <c:if test='${mockservice.serviceResponseType eq 1}'>checked</c:if> />
-                                <b>Static Scenario</b>
-                                <c:if test="${empty mockservice.scenarios and mockservice.serviceResponseType ne 0}">
-                                <c:url value="/scenario" var="scenarioUrl">
-                                    <c:param name="serviceId" value="${mockservice.id}" />
-                                </c:url>
-                                    <div>
-                                        <p class="alert_message">You need to <a href="<c:out value="${scenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
-                                         a scenario before using "Scenario".</p>
+							     Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
+							     <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
+							     <p>
+			                       <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="serviceResponseType_<c:out value="${mockservice.id}"/>" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> />
+			                       <b>Proxy</b> to this URL: <span class="highlight"><c:out value="${mockservice.realServiceUrl}" /></span>			                  
+			                       <c:if test="${empty mockservice.realServiceUrl and mockservice.serviceResponseType eq 0}">
+			                          <div>
+			                             <p class="alert_message">You need to <a href="<c:out value="${setupUrl}"/>" title="edit">define a real URL</a></p>
+			                          </div>
+			                       </c:if>
+			                     </p>
+			                     <p>
+			                        <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" value="2" <c:if test='${mockservice.serviceResponseType eq 2}'>checked</c:if> />
+			                        <b>Dynamic Scenario</b>
+			                     </p>
+                                 <p>
+                                   <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="staticScenario_<c:out value="${mockservice.id}"/>" value="1" <c:if test='${mockservice.serviceResponseType eq 1}'>checked</c:if> />
+                                   <b>Static Scenario</b>
+                                   <c:if test="${empty mockservice.scenarios and mockservice.serviceResponseType ne 0}">
+                                      <c:url value="/scenario" var="scenarioUrl">
+                                         <c:param name="serviceId" value="${mockservice.id}" />
+                                      </c:url>
+                                      <div>
+                                        <p class="alert_message">You need to <a href="<c:out value="${scenarioUrl}"/>" title="Create service scenario" border="0" />create</a> a scenario before using "Scenario".</p>
                                         <input type="hidden" name="serviceResponseType_<c:out value="${mockservice.id}"/>" value="false" />
-
-                                    </div>
-                                </c:if>
-                              </p>
-							  <span>
-                                <ul class="group">
-                                    <li>
-                                    Select a Static Scenario.
-                                    </li>
-	                                <c:choose>
-	                                  <c:when test="${not empty mockservice.scenarios}">
-	                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
+                                      </div>
+                                   </c:if>
+                                </p>
+								  <span>
+	                                <ul class="group">
 	                                    <li>
-	                                      <input type="radio" onclick="$('#staticScenario_<c:out value="${mockservice.id}"/>').attr('checked', true);" name="scenario_<c:out value="${mockservice.id}"/>" id="scenario_<c:out value="${mockservice.id}"/>" value="<c:out value="${scenario.id}"/>"
-	                                      <c:if test='${mockservice.defaultScenarioId eq scenario.id}'>checked</c:if> />
-	                                      <c:url value="/scenario" var="scenarioEditUrl">
-	                                        <c:param name="serviceId" value="${mockservice.id}" />
-	                                        <c:param name="scenarioId" value="${scenario.id}" />
-	                                      </c:url>
-	                                      <a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario"  ><c:out value="${scenario.scenarioName}" /></a>
-	                                      <c:if test="${!empty universalError and universalError.id eq scenario.id and universalError.serviceId eq mockservice.id}">
-	                                        (<span class="highlight_pos tiny">Universal Error Response</span>)
-	                                      </c:if>
-	                                      <c:if test="${scenario.id eq mockservice.errorScenarioId}">
-	                                        (<span class="highlight_pos tiny">Service Error Response</span>)
-	                                      </c:if>
+	                                    Select a Static Scenario.
 	                                    </li>
-	                                  </c:forEach>
-	                                  </c:when>
-	                                  <c:otherwise>
-	                                    <c:url value="/scenario" var="scenarioUrl">
-								            <c:param name="serviceId" value="${mockservice.id}" />
-								        </c:url>
-	                                  	<li class="alert_message"><span>You need to <a href="<c:out value="${scenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
-	                                     a scenario before using "Static or Dynamic Scenario".</span></li>
-	                                  </c:otherwise>
-	                                </c:choose>
-                                </ul>
-                              </span>
-                               <p>
-			                    <input type="text" name="hangTime_<c:out value="${mockservice.id}"/>" id="hangTime_<c:out value="${mockservice.id}"/>" maxlength="20" size="20" value="<c:out value="${mockservice.hangTime}"/>" /> Hang time (milliseconds)
-			                  </p>
-                              <c:if test="${mode ne 'edit_plan'}">
+		                                <c:choose>
+		                                  <c:when test="${not empty mockservice.scenarios}">
+		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
+		                                    <li>
+		                                      <input type="radio" onclick="$('#staticScenario_<c:out value="${mockservice.id}"/>').attr('checked', true);" name="scenario_<c:out value="${mockservice.id}"/>" id="scenario_<c:out value="${mockservice.id}"/>" value="<c:out value="${scenario.id}"/>"
+		                                      <c:if test='${mockservice.defaultScenarioId eq scenario.id}'>checked</c:if> />
+		                                      <c:url value="/scenario" var="scenarioEditUrl">
+		                                        <c:param name="serviceId" value="${mockservice.id}" />
+		                                        <c:param name="scenarioId" value="${scenario.id}" />
+		                                      </c:url>
+		                                      <a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario"  ><c:out value="${scenario.scenarioName}" /></a>
+		                                      <c:if test="${!empty universalError and universalError.id eq scenario.id and universalError.serviceId eq mockservice.id}">
+		                                        (<span class="highlight_pos tiny">Universal Error Response</span>)
+		                                      </c:if>
+		                                      <c:if test="${scenario.id eq mockservice.errorScenarioId}">
+		                                        (<span class="highlight_pos tiny">Service Error Response</span>)
+		                                      </c:if>
+		                                    </li>
+		                                  </c:forEach>
+		                                  </c:when>
+		                                  <c:otherwise>
+		                                    <c:url value="/scenario" var="scenarioUrl">
+									            <c:param name="serviceId" value="${mockservice.id}" />
+									        </c:url>
+		                                  	<li class="alert_message"><span>You need to <a href="<c:out value="${scenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
+		                                     a scenario before using "Static or Dynamic Scenario".</span></li>
+		                                  </c:otherwise>
+		                                </c:choose>
+	                                </ul>
+	                              </span>
+                                 <p>
+			                       <input type="text" name="hangTime_<c:out value="${mockservice.id}"/>" id="hangTime_<c:out value="${mockservice.id}"/>" maxlength="20" size="20" value="<c:out value="${mockservice.hangTime}"/>" /> Hang time (milliseconds)
+			                     </p>
+                             <%--  <c:if test="${mode ne 'edit_plan'}">  --%>
 	                              <input type="button" name="update_service_<c:out value="${mockservice.id}"/>" id="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />
 	                              </form>
 
-                              </c:if>
-							</td>
-							<td valign="top" width="1px">
-								<p style="text-align:right;">
-									<a id="deleteServiceLink_${mockservice.id}" class="deleteServiceLink" title="Delete this service"><img src="<c:url value="/images/cross.png"/>"></a>
-								</p> 
-							</td>
+                              <%-- </c:if> --%>
+                              </div>
+                              </c:forEach>
+                              </div>
+                              
+							</td>							
 						</tr>
-						</c:forEach>
+						
 		            </tbody>
 		        </table>
+		        
 		        <c:if test="${mode eq 'edit_plan'}">
 		        </form>
 		        </c:if>
@@ -296,5 +284,22 @@ $(document).ready(function() {
 			  <p class="alert_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. </p>
 			</c:otherwise>
         </c:choose>
+<script type="text/javascript">$('html').addClass('js');
 
+$(function() {
+ 
+  var counter = 1;
+  
+  $('a','div.toggle_button').click(function() {
+    var serviceId = this.id.split("_")[1];
+    $('div','#service_list_container')
+      .stop()
+      .hide()
+      .filter( function() { return this.id.match('div_' + serviceId); })   
+      .show('fast');    
+    return false; 
+  
+  })
+
+});</script>
 <jsp:include page="/WEB-INF/common/footer.jsp" />
