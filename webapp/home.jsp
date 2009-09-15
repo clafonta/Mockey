@@ -27,7 +27,43 @@ $(document).ready( function() {
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>
 	        <c:when test="${!empty services}">
+ 
+  <div>
+                  <a name="plan"></a>
+                  <h1>Service Plans</h1>
+                  <hr />
+                  <c:url value="/plan/setup" var="createPlanUrl">
+                    <c:param name="action" value="edit_plan" />
+                 </c:url>
+                  <p><a href="<c:out value="${createPlanUrl}"/>">Create a Plan</a></p>
+                  <c:choose>
+                    <c:when test="${!empty plans}">
 
+                           <c:forEach var="planItem" items="${plans}">
+                             <c:url value="/plan/setup" var="planUrl">
+                                <c:param name="plan_id" value="${planItem.id}" />
+                                <c:param name="action" value="edit_plan" />
+                             </c:url>
+                             <c:url value="/plan/setup" var="deletePlanUrl">
+                                <c:param name="plan_id" value="${planItem.id}" />
+                                <c:param name="action" value="delete_plan" />
+                             </c:url>
+                             <c:url value="/plan/setup" var="setPlanUrl">
+                                <c:param name="plan_id" value="${planItem.id}" />
+                                <c:param name="action" value="set_plan" />
+                             </c:url>
+                             [<span style="background-color:pink;"> <b><c:out value="${planItem.name}"/></b> (
+                               <a  href="<c:out value="${planUrl}"/>">edit</a> | <a href="<c:out value="${deletePlanUrl}"/>">delete</a> | <a href="<c:out value="${setPlanUrl}"/>">set plan</a>) </span>]
+                            
+
+                           </c:forEach>
+
+                    </c:when>
+                    <c:otherwise>
+                      <p class="highlight">There are no service plans defined. But that's OK. </p>
+                    </c:otherwise>
+                  </c:choose>
+                </div>
 	            <c:if test="${mode eq 'edit_plan'}">
 	            <form action="<c:url value="/plan/setup" />" method="post">
 	            </c:if>
@@ -87,7 +123,7 @@ $(document).ready( function() {
 		        <table class="simple" width="100%" cellspacing="0">
 			        <thead>
 			            <tr>
-						 <th width="15%" style="text-align:center;background-color:#bdbdbd;">Services</th>
+						 <th width="20%" style="text-align:center;background-color:#bdbdbd;">Services</th>
 						 <th colspan="3" style="text-align:center;background-color:#bdbdbd;">Service Settings</th>
 						 	           
 						  </tr>
@@ -105,8 +141,8 @@ $(document).ready( function() {
 							<div id='service_list_container'>
 				
 							<c:forEach var="mockservice" items="${services}">
-							   <div id="div_<c:out value="${mockservice.id}"/>" class="display" > 
-                               <%--  <c:if test="${mode ne 'edit_plan'}">  --%>
+							   <div id="div_<c:out value="${mockservice.id}"/>" class="display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
+                               <c:if test="${mode ne 'edit_plan'}">
 								<%-- LOVELY JQUERY + JSP TAGS + EL --%>
 								<script type="text/javascript">
 								$(document).ready(function() {
@@ -130,7 +166,7 @@ $(document).ready( function() {
                                 <div id="updateStatus_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
                                 <form id="multi_form" action="<c:url value="/service_scenario"/>" method="post">
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
-                                <%-- </c:if>--%>
+                                </c:if>
 							 
 	                            <c:url value="/setup" var="setupUrl">
 	                                <c:param name="serviceId" value="${mockservice.id}" />
@@ -215,67 +251,50 @@ $(document).ready( function() {
                                  <p>
 			                       <input type="text" name="hangTime_<c:out value="${mockservice.id}"/>" id="hangTime_<c:out value="${mockservice.id}"/>" maxlength="20" size="20" value="<c:out value="${mockservice.hangTime}"/>" /> Hang time (milliseconds)
 			                     </p>
-                             <%--  <c:if test="${mode ne 'edit_plan'}">  --%>
+                             <c:if test="${mode ne 'edit_plan'}">
 	                              <input type="button" name="update_service_<c:out value="${mockservice.id}"/>" id="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />
 	                              </form>
 
-                              <%-- </c:if> --%>
+                             </c:if>
                               </div>
                               </c:forEach>
                               </div>
                               
 							</td>							
 						</tr>
-						
+						<c:if test="${mode eq 'edit_plan'}">
+						<tr>
+                        
+	                        <td colspan="2">
+	                        <p align="right">
+	                        <c:choose>
+	                            <c:when test="${!empty plan.id}">
+	                                <input type="submit" name="create_or_update_plan"
+	                                    value="Update Plan" class="button" />
+	                            </c:when>
+	                            <c:otherwise>
+	                                <input type="submit" name="create_or_update_plan"
+	                                    value="Save as a Plan" class="button" />
+	                            </c:otherwise>
+	                        </c:choose> <a href="<c:url value="/home" />">Cancel</a>
+	                        </p>
+	                        </td>
+	                    </tr>
+                        </c:if>
 		            </tbody>
 		        </table>
 		        
 		        <c:if test="${mode eq 'edit_plan'}">
 		        </form>
 		        </c:if>
-		         <div>
-                  <a name="plan"></a>
-                  <h1>Service Plans</h1>
-                  <hr />
-                  <c:url value="/plan/setup" var="createPlanUrl">
-                    <c:param name="action" value="edit_plan" />
-                 </c:url>
-                  <p><a href="<c:out value="${createPlanUrl}"/>">Create a Plan</a></p>
-                  <c:choose>
-                    <c:when test="${!empty plans}">
-
-                           <c:forEach var="planItem" items="${plans}">
-                             <c:url value="/plan/setup" var="planUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                                <c:param name="action" value="edit_plan" />
-                             </c:url>
-                             <c:url value="/plan/setup" var="deletePlanUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                                <c:param name="action" value="delete_plan" />
-                             </c:url>
-                             <c:url value="/plan/setup" var="setPlanUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                                <c:param name="action" value="set_plan" />
-                             </c:url>
-                             <p>
-                               <b><c:out value="${planItem.name}"/></b> (
-                               <a href="<c:out value="${planUrl}"/>">edit</a> | <a href="<c:out value="${deletePlanUrl}"/>">delete</a> | <a href="<c:out value="${setPlanUrl}"/>">set plan</a>)
-							</p>
-
-                           </c:forEach>
-
-                    </c:when>
-                    <c:otherwise>
-                      <p class="highlight">There are no service plans defined. But that's OK. </p>
-                    </c:otherwise>
-                  </c:choose>
-                </div>
+		        
     </div>
 	        </c:when>
 	        <c:otherwise>
 			  <p class="alert_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. </p>
 			</c:otherwise>
         </c:choose>
+<c:if test="${mode ne 'edit_plan'}">
 <script type="text/javascript">$('html').addClass('js');
 
 $(function() {
@@ -296,4 +315,5 @@ $(function() {
 });
 
 </script>
+</c:if>
 <jsp:include page="/WEB-INF/common/footer.jsp" />

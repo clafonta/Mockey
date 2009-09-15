@@ -1,6 +1,7 @@
 body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
 .big{font-size: 300%; font-weight:bold;}
 .tiny{font-size: 80%;}
+.setplan{border: thin solid #bdbdbd; margin-top:0.8em; padding:0.8em; }
 .tiny_service_delete{font-size: 80%;}
 h1, h2, h3, h4{margin: 0.2em 0 0.2em 0; }
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
