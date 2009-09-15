@@ -41,7 +41,7 @@ public class HistoryFilter {
      * @param arg
      */
     public void addToken(String arg) {
-        if (arg != null) {
+        if (arg != null && arg.trim().length()>0) {
             this.tokens.put(arg, arg);
         }
 

@@ -51,7 +51,7 @@ public class HistoryServlet extends HttpServlet {
     /**
      * 
      */
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String[] filterTokens = req.getParameterValues("token");
         HistoryFilter historyFilter = (HistoryFilter) req.getSession().getAttribute(HISTORY_FILTER);

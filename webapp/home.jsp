@@ -3,6 +3,26 @@
 <c:set var="pageTitle" value="Home" scope="request" />
 <c:set var="currentTab" value="home" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
+<script>
+$(document).ready( function() {
+    $('.tiny_service_delete').each( function() {
+        $(this).click( function() {
+            var serviceId = this.id.split("_")[1];
+            $.prompt(
+                'Are you sure you want to delete this Service?',
+                {
+                    callback: function (proceed) {
+                        if(proceed) document.location="<c:url value="/setup" />?delete=true&serviceId="+ serviceId;
+                    },
+                    buttons: {
+                        'Delete Service': true,
+                        Cancel: false
+                    }
+                });
+            });
+        });
+    });
+</script>
     <div id="main">
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>
@@ -62,35 +82,7 @@
 
                       </div>
 
-                      <script>
-                      $(document).ready( function() {
-						$('.deleteServiceLink').each( function() {
-							$(this).click( function() {
-								var serviceId = this.id.split("_")[1];
-								$.prompt(
-									'Are you sure you want to delete this Service?',
-									{
-										callback: function (proceed) {
-											if(proceed) {
-												$.ajax({
-													type: "GET",
-													url: "setup?delete=true&serviceId="+serviceId
-												});
-												$('#serviceRow_'+serviceId).fadeOut(500, function() {
-													$('#serviceRow_'+serviceId).remove();
-												});
-											}
-										},
-										buttons: {
-											'Delete Service': true,
-											Cancel: false
-										}
-									});
-								});
-							});
-						});
-
-                      </script>
+                      
                 
 		        <table class="simple" width="100%" cellspacing="0">
 			        <thead>
@@ -152,7 +144,7 @@
 	                             </c:url>
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
 	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a> |
-	                             <a class="tiny" href="<c:out value="${deleteUrl}"/>" title="Delete this service">delete</a>
+	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a>
 	                                
 								 <h3>Service name: <a href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></h3>
 							     <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
@@ -301,5 +293,7 @@ $(function() {
   
   })
 
-});</script>
+});
+
+</script>
 <jsp:include page="/WEB-INF/common/footer.jsp" />
