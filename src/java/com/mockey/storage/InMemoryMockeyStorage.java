@@ -311,14 +311,16 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
                     } else {
                         Header[] headers = req.getResponseMessage().getHeaders();
-                        for (Header header : headers) {
-                            if (header.getName().indexOf(filterArg) > -1) {
-                                tokenFound = true;
-                                break;
-                            } else if (header.getValue().indexOf(filterArg) > -1) {
-                                tokenFound = true;
-                                break;
-
+                        if(headers!=null){
+                            for (Header header : headers) {
+                                if (header.getName().indexOf(filterArg) > -1) {
+                                    tokenFound = true;
+                                    break;
+                                } else if (header.getValue().indexOf(filterArg) > -1) {
+                                    tokenFound = true;
+                                    break;
+    
+                                }
                             }
                         }
                     }

@@ -36,6 +36,7 @@ $(document).ready( function() {
                     <c:param name="action" value="edit_plan" />
                  </c:url>
                   <p><a href="<c:out value="${createPlanUrl}"/>">Create a Plan</a></p>
+                  <p style="line-height: 180%;" >
                   <c:choose>
                     <c:when test="${!empty plans}">
 
@@ -52,10 +53,11 @@ $(document).ready( function() {
                                 <c:param name="plan_id" value="${planItem.id}" />
                                 <c:param name="action" value="set_plan" />
                              </c:url>
-                             [<span style="background-color:pink;"> <b><c:out value="${planItem.name}"/></b> (
-                               <a  href="<c:out value="${planUrl}"/>">edit</a> | <a href="<c:out value="${deletePlanUrl}"/>">delete</a> | <a href="<c:out value="${setPlanUrl}"/>">set plan</a>) </span>]
-                            
 
+                             
+                             <span style="background-color:pink; margin:0.2em; padding:0.2em;"> <b><c:out value="${planItem.name}"/></b> (
+                               <a  href="<c:out value="${planUrl}"/>">edit</a> | <a href="<c:out value="${deletePlanUrl}"/>">delete</a> | <a href="<c:out value="${setPlanUrl}"/>">set plan</a>) </span>
+                             
                            </c:forEach>
 
                     </c:when>
@@ -63,6 +65,7 @@ $(document).ready( function() {
                       <p class="highlight">There are no service plans defined. But that's OK. </p>
                     </c:otherwise>
                   </c:choose>
+                  </p>
                 </div>
 	            <c:if test="${mode eq 'edit_plan'}">
 	            <form action="<c:url value="/plan/setup" />" method="post">
@@ -141,7 +144,7 @@ $(document).ready( function() {
 							<div id='service_list_container'>
 				
 							<c:forEach var="mockservice" items="${services}">
-							   <div id="div_<c:out value="${mockservice.id}"/>" class="display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
+							   <div id="div_<c:out value="${mockservice.id}"/>_" class="display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
                                <c:if test="${mode ne 'edit_plan'}">
 								<%-- LOVELY JQUERY + JSP TAGS + EL --%>
 								<script type="text/javascript">
@@ -178,7 +181,11 @@ $(document).ready( function() {
 	                             <c:url value="/history" var="historyUrl">
 	                                <c:param name="token" value="${mockservice.serviceName}" />
 	                             </c:url>
+	                             <c:url value="/scenario" var="scenarioCreateUrl">
+						            <c:param name="serviceId" value="${mockservice.id}" />
+						         </c:url>
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
+	                             <a class="tiny" href="<c:out value="${scenarioCreateUrl}"/>" title="Create a scenario">add scenario</a> |
 	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a> |
 	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a>
 	                                
@@ -306,7 +313,7 @@ $(function() {
     $('div','#service_list_container')
       .stop()
       .hide()
-      .filter( function() { return this.id.match('div_' + serviceId); })   
+      .filter( function() { return this.id.match('div_' + serviceId+'_'); })   
       .show('fast');    
     return false; 
   

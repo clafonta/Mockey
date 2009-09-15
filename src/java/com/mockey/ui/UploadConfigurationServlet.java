@@ -49,6 +49,9 @@ public class UploadConfigurationServlet extends HttpServlet {
     private static IMockeyStorage store = StorageRegistry.MockeyStorage;
     //private static Logger logger = Logger.getLogger(UploadConfigurationServlet.class);
 
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.service(req, resp);
+    }
     /**
      * 
      * 
@@ -62,6 +65,7 @@ public class UploadConfigurationServlet extends HttpServlet {
      *             basic
      */
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
         RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
         dispatch.forward(req, resp);
     }
