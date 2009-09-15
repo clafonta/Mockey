@@ -42,7 +42,7 @@ ul#minitabs a:hover{border-color: #F60;color: #666}
 .conflict_message {background-color: #FFD7D7;}
 .addition_message {background-color: #7eff00;}
 .info_message {	background-color: #7eff00;}
-.code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em; font-family: Courier,sans-serif;}
+.code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em; font-family: Courier,serif;}
 .code a{text-align:center;font-size: 1.2em;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
 pre{	background-color: White;	border: 1px solid #666;	color: Black;	margin: 1.5em;	overflow: auto;	font-size: 115%;	padding: 1.2em;	font: 120% "Courier New"; }

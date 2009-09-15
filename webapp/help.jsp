@@ -101,10 +101,37 @@
     <li><i>Connection smarts:</i> Try setting the hang time for 2 minutes, then see if your application's timeout connection setting works. Remember, 
     sometimes the service your application interacts with is slow and may receive a connection but not let go.</li>
     <li><i>Garbage handling:</i> Be sure to create bad responses (e.g. Mockey responds with the word 'GARBAGE') and see if your application handles this gracefully. </li>
-      
+    </ul>      
+    </p>
+    <h2>URL Mapping Config Recommendations</h2>
+    <p>
+    If your application points to 1 or more services like this:
     
-    </ul> 
+    <ul>     
+      <li>http://someservice.com/catalog/product</li>
+      <li>http://someotherservice.com/authentication</li>
+      <li>http://anotherservice.com/?wsdl</li>      
+    </ul>
+    
+    ...you probably have this in a configuration file (not in code, right?). You may want to define a <i>base</i> url parameter, 
+    like this:
+    <div class="code">
+    <ul>
+      <li>DEV_BASE_URL=http://localhost:8090/Mockey/service/</li>      
+      <li>SERVICE_URL_1=http://someservice.com/catalog/product</li>
+      <li>SERVICE_URL_2=http://someotherservice.com/authentication</li>
+      <li>SERVICE_URL_3=http://anotherservice.com/?wsdl</li>      
+    </ul>    
+    </div>
+    You then can create URLs by pre-pending the DEV_BASE_URL to your SERVICE_URL definitions. When it comes time to go to production, 
+    just define DEV_BASE_URL as an empty string. 
+    
      
+    
+    </p>
+    <h2>Related Read</h2>
+    <p>
+    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>
     </p>
 </div>	
 <jsp:include page="/WEB-INF/common/footer.jsp" />
