@@ -42,6 +42,7 @@ public class ProxyServerModel {
 	}
 
 	public String getProxyUsername() {
+	    
 		return this.proxyUsername;
 	}
 
@@ -69,6 +70,15 @@ public class ProxyServerModel {
     }
     
     public Credentials getCredentials() {
-        return new UsernamePasswordCredentials(getProxyUsername(), getProxyPassword());
+        String username = getProxyUsername();
+        String pass = getProxyPassword();
+        if(username == null){
+            username = "";
+        }
+        if(pass==null){
+            username = "";
+        }
+        // Can't pass null
+        return new UsernamePasswordCredentials(username, pass);
     }
 }
