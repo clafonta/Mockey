@@ -168,7 +168,7 @@
 			message="Missing tomcat 5 directory or 'CATALINA_HOME' is not set correctly!"/>
 	</target>
 
-	<target name="windows-service" depends="">
+	<target name="windows-service" depends="dist" description="Builds a windows EXE ">
 	  <taskdef resource="org/apache/ant/dotnet/antlib.xml">
 	    <classpath>
 	  	  <pathelement location="etc/ant-dotnet-1.0.jar"/>
