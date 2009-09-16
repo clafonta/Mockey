@@ -18,15 +18,15 @@ package com.mockey.storage.xml;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.mockey.model.PlanItem;
-import com.mockey.model.ServicePlan;
-import com.mockey.model.Service;
+import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
+import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 import com.mockey.storage.IMockeyStorage;
 
 public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
@@ -51,10 +51,19 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		Scenario mssb = store.getUniversalErrorScenario();		
 		this.setAttribute(rootElement, "xml:lang", "en-US");
 		this.setAttribute(rootElement, "version", "1.0");
+		// Universal Service settings
 		if(mssb!=null){
             this.setAttribute(rootElement,"universal_error_service_id", ""+mssb.getServiceId());
             this.setAttribute(rootElement,"universal_error_scenario_id", ""+mssb.getId());
         }
+		// Proxy settings
+		ProxyServerModel psm = store.getProxy();
+		if(psm!=null){
+		    Element proxyElement = document.createElement("proxy_settings");
+		    proxyElement.setAttribute("proxy_url", psm.getProxyUrl());
+		    proxyElement.setAttribute("proxy_enabled", ""+psm.isProxyEnabled());
+		    rootElement.appendChild(proxyElement);
+		}
 
 		Iterator iterator = store.getServices().iterator();
 		//logger.debug("building DOM:");

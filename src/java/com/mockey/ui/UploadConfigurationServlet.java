@@ -102,9 +102,13 @@ public class UploadConfigurationServlet extends HttpServlet {
 
                     byte[] data = item.get();
                     String strXMLDefintion = new String(data);
-
+                    
                     MockeyXmlFileConfigurationReader msfr = new MockeyXmlFileConfigurationReader();
                     IMockeyStorage mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
+                    // PROXY SETTINGs
+                    store.setProxy(mockServiceStoreTemporary.getProxy());
+                    
+                    // UNIVERSAL RESPONSE SETTINGS
                     if (store.getUniversalErrorScenario() != null
                             && mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
                         conflicts.add("<b>Universal error message</b>: one already defined with name '"
@@ -114,6 +118,7 @@ public class UploadConfigurationServlet extends HttpServlet {
                         
                         store.setUniversalErrorScenarioId(mockServiceStoreTemporary.getUniversalErrorScenario().getId());
                         store.setUniversalErrorServiceId(mockServiceStoreTemporary.getUniversalErrorScenario().getServiceId());
+                        
                         additions.add("<b>Universal error response defined.</b>");
                                 
                     }

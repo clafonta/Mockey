@@ -90,7 +90,7 @@
 		</zip>
 		<echo message="Success! Now try this:"/>
 		<echo message="                    >cd dist"/>
-		<echo message="                    >java -jar Mockey.jar"/>
+		<echo message="                    >java -jar Mockey.jar --port 8090"/>
 	</target>	
 	<!-- =================================================================== -->
 	<!-- Jars up a war file for application server                                                                       -->

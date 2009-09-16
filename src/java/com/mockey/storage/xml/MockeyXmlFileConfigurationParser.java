@@ -19,13 +19,16 @@ import org.apache.commons.digester.Digester;
 import org.xml.sax.InputSource;
 
 import com.mockey.model.PlanItem;
-import com.mockey.model.ServicePlan;
-import com.mockey.model.Service;
+import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
+import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.InMemoryMockeyStorage;
 
 /**
+ * This class consumes the mock service definitions file and saves it to the
+ * store.
  * 
  * @author Chad.Lafontaine
  * 
@@ -33,6 +36,7 @@ import com.mockey.storage.InMemoryMockeyStorage;
 public class MockeyXmlFileConfigurationParser {
 
     private final static String ROOT = "mockservice";
+    private final static String PROXYSERVER = ROOT + "/proxy_settings";
     private final static String SERVICE = ROOT + "/service";
     private final static String SCENARIO = SERVICE + "/scenario";
     private final static String PLAN = ROOT + "/service_plan";
@@ -50,6 +54,11 @@ public class MockeyXmlFileConfigurationParser {
 
         digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");//   
         digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");//   
+
+        digester.addObjectCreate(PROXYSERVER, ProxyServerModel.class);
+        digester.addSetProperties(PROXYSERVER, "proxy_url", "proxyUrl");//
+        digester.addSetProperties(PROXYSERVER, "proxy_enabled", "proxyEnabled");//
+        digester.addSetNext(PROXYSERVER, "setProxy");
 
         digester.addObjectCreate(SERVICE, Service.class);
 
