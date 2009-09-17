@@ -3,6 +3,7 @@
 <c:set var="pageTitle" value="Home" scope="request" />
 <c:set var="currentTab" value="home" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
+    
 <script>
 $(document).ready( function() {
     $('.tiny_service_delete').each( function() {
@@ -39,112 +40,9 @@ $(document).ready( function() {
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>
 	        <c:when test="${!empty services}">
- 
-  <div>
-                  <a name="plan"></a>
-                  <h1>Service Plans</h1>
-                  <hr />
-                  <c:url value="/plan/setup" var="createPlanUrl">
-                    <c:param name="action" value="edit_plan" />
-                 </c:url>
-                  <p><a href="<c:out value="${createPlanUrl}"/>">Create a Plan</a></p>
-                  <p style="line-height: 180%;" >
-                  <c:choose>
-                    <c:when test="${!empty plans}">
-
-                           <c:forEach var="planItem" items="${plans}">
-                             <c:url value="/plan/setup" var="planUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                                <c:param name="action" value="edit_plan" />
-                             </c:url>
-                             <c:url value="/plan/setup" var="deletePlanUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                                <c:param name="action" value="delete_plan" />
-                             </c:url>
-                             <c:url value="/plan/setup" var="setPlanUrl">
-                                <c:param name="plan_id" value="${planItem.id}" />
-                                <c:param name="action" value="set_plan" />
-                             </c:url>
-
-                             
-                             <span style="background-color:pink; margin:0.2em; padding:0.2em;"> <b><c:out value="${planItem.name}"/></b> (
-                               <a  href="<c:out value="${planUrl}"/>">edit</a> | <a href="<c:out value="${deletePlanUrl}"/>">delete</a> | <a href="<c:out value="${setPlanUrl}"/>">set plan</a>) </span>
-                             
-                           </c:forEach>
-
-                    </c:when>
-                    <c:otherwise>
-                      <p class="highlight">There are no service plans defined. But that's OK. </p>
-                    </c:otherwise>
-                  </c:choose>
-                  </p>
-                </div>
-	            <c:if test="${mode eq 'edit_plan'}">
-	            <form action="<c:url value="/plan/setup" />" method="post">
-	            </c:if>
-
-		<c:if test="${mode eq 'edit_plan'}">
-
-			<h1 class="highlight">Edit Service Plan: <c:out value="${plan.name}" /></h1>
-
-
-			<c:if test="${!empty plan.id}">
-				<input type="hidden" name="plan_id"
-					value="<c:out value="${plan.id}"/>" />
-			</c:if>
-
-
-			<table width="100%">
-				<tbody>
-					<tr>
-						<th width="20%">
-						<p>Plan Name:</p>
-						</th>
-						<td>
-						<p><input type="text" style="width: 60%;" name="plan_name"
-							value="<c:out value="${plan.name}"/>" /></p>
-						</td>
-					</tr>
-
-					<tr>
-						<td></td>
-						<td>
-						<p align="right">
-						<c:choose>
-							<c:when test="${!empty plan.id}">
-								<input type="submit" name="create_or_update_plan"
-									value="Update Plan" class="button" />
-							</c:when>
-							<c:otherwise>
-								<input type="submit" name="create_or_update_plan"
-									value="Save as a Plan" class="button" />
-							</c:otherwise>
-						</c:choose> <a href="<c:url value="/home" />">Cancel</a>
-						</p>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<br />
-		</c:if>
-		        <div>
-                <h1>Mock Services</h1>
-                <hr />
-
-                      </div>
-
-                      
-                
 		        <table class="simple" width="100%" cellspacing="0">
-			        <thead>
-			            <tr>
-						 <th width="20%" style="text-align:center;background-color:#bdbdbd;">Services</th>
-						 <th colspan="3" style="text-align:center;background-color:#bdbdbd;">Service Settings</th>
-						 	           
-						  </tr>
-			        </thead>
-		            <tbody>
-		              <tr>
+	            <tbody>
+		              <tr>                                                                                 
 							<td valign="top">
 	                            <c:forEach var="mockservice" items="${services}">	                              
 	                                <div class="toggle_button">
@@ -156,7 +54,7 @@ $(document).ready( function() {
 							<div id='service_list_container'>
 				
 							<c:forEach var="mockservice" items="${services}">
-							   <div id="div_<c:out value="${mockservice.id}"/>_" class="display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
+							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
                                <c:if test="${mode ne 'edit_plan'}">
 								<%-- LOVELY JQUERY + JSP TAGS + EL --%>
 								<script type="text/javascript">
@@ -182,7 +80,7 @@ $(document).ready( function() {
                                 <form id="multi_form" action="<c:url value="/service_scenario"/>" method="post">
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
                                 </c:if>
-							 
+							    <div class="service_edit_links">
 	                            <c:url value="/setup" var="setupUrl">
 	                                <c:param name="serviceId" value="${mockservice.id}" />
 	                             </c:url>
@@ -195,12 +93,13 @@ $(document).ready( function() {
 	                             </c:url>
 	                             <c:url value="/scenario" var="scenarioCreateUrl">
 						            <c:param name="serviceId" value="${mockservice.id}" />
-						         </c:url>
+						         </c:url>                                 
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
 	                             <a class="tiny" href="<c:out value="${scenarioCreateUrl}"/>" title="Create a scenario">add scenario</a> |
 	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a> |
 	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a>
-	                                
+                                 </div>
+
 								 <h3>Service name: <a href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></h3>
 							     <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
 							
@@ -320,7 +219,7 @@ $(function() {
 
   $('a','div.toggle_button').click(function() {
     var serviceId = this.id.split("_")[1];
-    $('div','#service_list_container')
+    $('div.display','#service_list_container')
       .stop()
       .hide()
       .filter( function() { return this.id.match('div_' + serviceId+'_'); })   

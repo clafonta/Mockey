@@ -3,7 +3,8 @@ body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
 .tiny{font-size: 80%;}
 .setplan{border: thin solid #bdbdbd; margin-top:0.8em; padding:0.8em; }
 .tiny_service_delete{font-size: 80%;}
-.gt{color: black;}
+.gt{color: #666;}
+a.gt:hover {color: black;}
 .gt_active{	color: blue;	font-weight: bold; font-size:120%;}
 h1, h2, h3, h4{margin: 0.2em 0 0.2em 0; }
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
@@ -19,6 +20,8 @@ img {border:0;}
 form {
 	padding: 0em 1em 0em 1em;
 	border: thin solid #bdbdbd;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
 	background-color: #e8e8e8;
 }
 form#multi_form{	padding: 0.8em;}
@@ -28,8 +31,9 @@ ul li {	margin:0.5em; }
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
 p{margin: 0.5em; padding: 1px;}
 a{color: #00F;text-decoration:underline}
+
 a#highlight{font-size:120%;}
-div#container{width:950px;margin:0 auto}
+div#container{width:875px;margin:0 auto}
 div#main{width: 100%;min-width:600px; margin-top: 10px }
 div{margin-top: 1px }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
@@ -127,3 +131,7 @@ div.jqi button.jqidefaultbutton{
       background-color: #F60;
 }
 .js .display { display:none; }
+
+div.service_edit_links {
+    text-align: right;    
+}
