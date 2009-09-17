@@ -3,6 +3,8 @@ body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
 .tiny{font-size: 80%;}
 .setplan{border: thin solid #bdbdbd; margin-top:0.8em; padding:0.8em; }
 .tiny_service_delete{font-size: 80%;}
+.gt{color: black;}
+.gt_active{	color: blue;	font-weight: bold; font-size:120%;}
 h1, h2, h3, h4{margin: 0.2em 0 0.2em 0; }
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
 h1{ font-size:160%; color: #06F;}
@@ -14,7 +16,11 @@ img {border:0;}
 .highlight_pos{color: #06F;}
 .nav{	color: #06F;	text-decoration: none;	font-weight:bold;}
 .group {	border: thin dashed #bdbdbd;	margin: 0.8em;	padding: 0.8em;}
-form {	padding: 0em 1em 0em 1em;	border: thin solid #bdbdbd;	background-color: #ffff99;}
+form {
+	padding: 0em 1em 0em 1em;
+	border: thin solid #bdbdbd;
+	background-color: #e8e8e8;
+}
 form#multi_form{	padding: 0.8em;}
 ul {	list-style: none;	}
 ul li {	margin:0.5em; }
@@ -38,7 +44,7 @@ ul#minitabs a#current{border-color: #F60;color:#06F}
 ul#minitabs a:hover{border-color: #F60;color: #666}
 .hint_message, .alert_message, .conflict_message, .addition_message, .info_message {	margin: 0.8em;	padding: 0.8em;	text-align: left;	color: black;	border: thin solid #d3d3d3;}
 .hint_message{background-color: #f5f5dc;}
-.alert_message{background-color: #7eff00;}
+.alert_message{background-color: #FFD7D7;}
 .conflict_message {background-color: #FFD7D7;}
 .addition_message {background-color: #7eff00;}
 .info_message {	background-color: #7eff00;}

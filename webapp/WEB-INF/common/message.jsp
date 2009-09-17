@@ -18,11 +18,7 @@
 </c:if>
 
 <c:if test="${not empty errorMessages}">
-<script type="text/javascript">
-	    $(document).ready(function() {
-		$("#bar").fadeIn(2000).fadeTo(5000, 1).fadeOut(5000);
-	});
-</script>
+
 	<p id="bar" class="alert_message">
 	<c:forEach var="msg" items="${errorMessages}">
 		<c:out value="${msg}" escapeXml="false" /> <br />

@@ -21,6 +21,18 @@ $(document).ready( function() {
                 });
             });
         });
+    
+    });
+</script>
+<script>
+$(document).ready( function() {
+    $('.gt').each( function() {
+        $(this).click(function(){    	
+    	$(".gt_active").removeClass("gt_active");
+    	$(this).addClass("gt_active");
+        });
+        });
+    
     });
 </script>
     <div id="main">
@@ -136,7 +148,7 @@ $(document).ready( function() {
 							<td valign="top">
 	                            <c:forEach var="mockservice" items="${services}">	                              
 	                                <div class="toggle_button">
-									      <a href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
+									      <a class="gt" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
 									</div>
 							    </c:forEach>
 							</td>
@@ -305,9 +317,7 @@ $(document).ready( function() {
 <script type="text/javascript">$('html').addClass('js');
 
 $(function() {
- 
-  var counter = 1;
-  
+
   $('a','div.toggle_button').click(function() {
     var serviceId = this.id.split("_")[1];
     $('div','#service_list_container')

@@ -28,6 +28,7 @@
 	  scenario's response message will be the response. If more than one scenario is defined with this matching argument, then the first matched 
 	  scenario's response message will be returned. If no scenario is found with a matching argument, a plain text error message will display.
     </p>
+    <p><img src="<c:url value="/images/dynamic_response.png" />" /></p>
     <p>
     You only need to define a match argument per service scenario for dynamic scenarios.
     </p>
@@ -44,7 +45,7 @@
 		<p>
 		First, place Mockey's URL in front of the service URL you want to
 		record, something like this:
-		<div class="code">[mockey_ip]:[port]<b>/Mockey/service/</b>[whatever_service_you_want_to_record]</div>
+		<div class="code">[mockey_ip]:[port]<b>[/Context Root]/service/</b>[whatever_service_you_want_to_record]</div>
 		</p>
 		<p>
 		Second, go back to Mockey's menu and click 'All Services'. You should
