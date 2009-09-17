@@ -85,7 +85,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
         try {
             for (Service service : getServices()) {
-                if (service.getUrl().getFullUrl().equals(url)) {
+                String fullURL = service.getUrl().getFullUrl().trim();
+                if(fullURL.equals(url.trim())){                
                     return service;
                 }
             }
