@@ -43,7 +43,7 @@ $(document).ready( function() {
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
-							<td valign="top">
+							<td valign="top" width="20%">
 	                            <c:forEach var="mockservice" items="${services}">	                              
 	                                <div class="toggle_button">
 									      <a class="gt" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
