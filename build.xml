@@ -58,6 +58,7 @@
 		<delete dir="${env.CATALINA_HOME}/webapps/${ant.project.name}"/>
 		<delete file="${env.CATALINA_HOME}/webapps/${ant.project.name}.war"/>
 		<delete dir="${env.CATALINA_HOME}/work"/>
+		<delete dir="${webapp.dir}/WEB-INF/classes" />
 	</target>
 
 	<target name="one-jar" depends="webapp" description="Generates an executable jar file with the war file embedded">
@@ -203,4 +204,9 @@
 
 
 	<target name="build" depends="compile, test" description="Build the whole app and test it" />
-</project>
+	<target name="build-in-place" depends="compile" description="Build app into the webapp src dir">
+		<copy todir="${webapp.dir}/WEB-INF/classes">
+			<fileset dir="${classes.dir}" />
+		</copy>
+	</target>
+</project> 
