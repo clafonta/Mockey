@@ -98,8 +98,11 @@
 	<!-- =================================================================== -->
 	<target name="webapp" depends="compile" description="Builds a WAR file and places in a dist directory. ">
 		<property name="WEBINF" value="${webapp.dir}/WEB-INF"/>
-		<war destfile="${dist.dir}/${ant.project.name}.war" webxml="${WEBINF}/web.xml">
-			<fileset dir="webapp" excludes="**/web.xml"/>
+		<war destfile="${dist.dir}/${ant.project.name}.war" webxml="${build.dir}/WEB-INF/web.xml">
+			<fileset dir="${webapp.dir}">
+                <exclude name="**/web.xml" />
+                <exclude name="**/*.jsp" />
+            </fileset>
 			<classes dir="${classes.dir}"/>
 			<lib dir="${lib.dir}"/>
 		</war>
@@ -203,10 +206,38 @@
 	</target>
 
 
-	<target name="build" depends="compile, test" description="Build the whole app and test it" />
+	<target name="build" depends="compile, jspc, test" description="Build the whole app and test it" />
 	<target name="build-in-place" depends="compile" description="Build app into the webapp src dir">
 		<copy todir="${webapp.dir}/WEB-INF/classes">
 			<fileset dir="${classes.dir}" />
 		</copy>
 	</target>
+    
+    <target name="jspc" depends="compile">
+        <taskdef classname="org.apache.jasper.JspC" name="jasper">
+            <classpath>
+                <pathelement location="${java.home}/../lib/tools.jar" />
+                <path refid="standard.classpath" />
+            </classpath>
+        </taskdef>
+
+        <!-- this is lame, but i can't find any way to not get jasper to modify the web.xml in place -->
+        <property  name="tmp.webapp.dir" value="${build.dir}/tmp.web" />
+        <copy todir="${tmp.webapp.dir}">
+            <fileset dir="${webapp.dir}" />
+        </copy>
+
+        <jasper
+                 validateXml="false"
+                 addwebxmlmappings="true"
+                 uriroot="${tmp.webapp.dir}"
+                 webXmlFragment="${build.dir}/WEB-INF/generated_web.xml" 
+                 outputDir="${build.dir}/jsp"
+                 package="com.mockey.jsp"
+
+                />
+        <javac srcdir="${build.dir}/jsp" destdir="${classes.dir}" deprecation="on" classpathref="standard.classpath" debug="on"/>
+        <copy todir="${build.dir}/WEB-INF" file="${tmp.webapp.dir}/WEB-INF/web.xml" />
+      </target>
+
 </project> 

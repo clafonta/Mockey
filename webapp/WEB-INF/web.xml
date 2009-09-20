@@ -85,6 +85,10 @@
 		<url-pattern>/home</url-pattern>
 	</servlet-mapping>	
 	<servlet-mapping>
+		<servlet-name>MockHomeServlet</servlet-name>
+		<url-pattern>/index.html</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
 		<servlet-name>HistoryServlet</servlet-name>
 		<url-pattern>/history</url-pattern>
 	</servlet-mapping>
