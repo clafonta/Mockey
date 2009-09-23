@@ -20,8 +20,8 @@ img {border:0;}
 form {
 	padding: 0em 1em 0em 1em;
 	border: thin solid #bdbdbd;
-    -moz-border-radius: 1em;
-    -webkit-border-radius: 1em;
+    -moz-border-radius: 0.4em;
+    -webkit-border-radius: 0.4em;
 	background-color: #e8e8e8;
 }
 form#multi_form{	padding: 0.8em;}

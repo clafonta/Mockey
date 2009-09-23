@@ -15,16 +15,16 @@
  */
 package com.mockey;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Validator for contents of a MockServiceBean definition. 

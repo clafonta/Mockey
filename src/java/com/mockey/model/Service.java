@@ -19,10 +19,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.http.HttpHost;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHost;
 
 import com.mockey.ClientExecuteProxy;
 import com.mockey.OrderedMap;
@@ -47,7 +46,7 @@ public class Service implements PersistableItem, ExecutableService {
     private Long defaultScenarioId;
     private Long errorScenarioId;
     private String httpContentType;
-    private int hangTime = 500;
+    private int hangTime = 0;
     private OrderedMap<Scenario> scenarios = new OrderedMap<Scenario>();
     private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
     private String httpMethod = "GET";

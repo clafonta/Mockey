@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.mockey.model.RequestFromClient;
 import com.mockey.model.FulfilledClientRequest;
+import com.mockey.model.RequestFromClient;
 import com.mockey.model.ResponseFromService;
 import com.mockey.model.Service;
 import com.mockey.model.Url;

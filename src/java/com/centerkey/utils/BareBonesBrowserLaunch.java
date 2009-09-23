@@ -1,8 +1,9 @@
 package com.centerkey.utils;
 
 import java.lang.reflect.Method;
-import javax.swing.JOptionPane;
 import java.util.Arrays;
+
+import javax.swing.JOptionPane;
 
 /**
  * <b>Bare Bones Browser Launch for Java</b><br>

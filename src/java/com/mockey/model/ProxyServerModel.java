@@ -2,8 +2,8 @@ package com.mockey.model;
 
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 
 
 /**

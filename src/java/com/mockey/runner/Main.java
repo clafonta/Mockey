@@ -1,12 +1,13 @@
 package com.mockey.runner;
 
+import java.io.File;
+
+import org.mortbay.jetty.runner.Runner;
+
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.SimpleJSAP;
-import org.mortbay.jetty.runner.Runner;
-
-import java.io.File;
 
 public class Main {
 

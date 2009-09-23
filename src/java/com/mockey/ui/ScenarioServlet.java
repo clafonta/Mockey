@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.ScenarioValidator;
-import com.mockey.model.Service;
 import com.mockey.model.Scenario;
+import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 

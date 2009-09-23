@@ -15,11 +15,11 @@
  */
 package com.mockey.storage.xml;
 
+import java.text.SimpleDateFormat;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
 
 class XmlGeneratorSupport {
 	/**

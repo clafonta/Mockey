@@ -15,6 +15,12 @@
  */
 package com.mockey.model;
 
+import java.io.IOException;
+import java.io.PrintStream;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
@@ -22,11 +28,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintStream;
 
 /**
  * Wrapper with print and helper functions for a HTTP response message.
