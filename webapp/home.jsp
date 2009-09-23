@@ -46,7 +46,7 @@ $(document).ready( function() {
 							<td valign="top" width="20%">
 	                            <c:forEach var="mockservice" items="${services}">	                              
 	                                <div class="toggle_button">
-									      <a class="gt" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
+									      <a class="gt" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
 									</div>
 							    </c:forEach>
 							</td>
@@ -103,7 +103,7 @@ $(document).ready( function() {
 								 <h3>Service name: <a href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></h3>
 							     <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
 							
-							     Mock URL: <a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
+							     Mock URL: <a href=""><mockey:url value="${mockservice.serviceUrl}"/></a>
 							     <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
 							     <p>
 			                       <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="serviceResponseType_<c:out value="${mockservice.id}"/>" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> />
