@@ -115,6 +115,7 @@ public class Url {
         } else {
             this.path = "";
         }
+        this.path = this.path.trim();
 
         // scheme and port are not case sensitive so normalize to lowercase
         this.scheme = this.scheme.toLowerCase();

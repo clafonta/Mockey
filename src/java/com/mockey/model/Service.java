@@ -308,7 +308,7 @@ public class Service implements PersistableItem, ExecutableService {
 			if (error != null) {
 				response.setBody(error.getResponseMessage());
 			} else {
-				response.setBody("No scenario defined. Also, we encountered this error: "
+				response.setBody("Yikes! We encountered this error (let's hope it's informative): "
 								+ e.getClass() + ": " + e.getMessage());
 			}
 		}
