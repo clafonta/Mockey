@@ -96,12 +96,18 @@
 	<!-- =================================================================== -->
 	<!-- Jars up a war file for application server                                                                       -->
 	<!-- =================================================================== -->
-	<target name="webapp" depends="compile" description="Builds a WAR file and places in a dist directory. ">
+	<target name="webapp" depends="compile, jspc" description="Builds a WAR file and places in a dist directory. ">
 		<property name="WEBINF" value="${webapp.dir}/WEB-INF"/>
+		<copy todir="${build.dir}/WEB-INF">
+					<fileset dir="${webapp.dir}/WEB-INF">
+						<include name="**/*.properties"/>
+						<include name="**/*.xml"/>
+					</fileset>
+				</copy>
 		<war destfile="${dist.dir}/${ant.project.name}.war" webxml="${build.dir}/WEB-INF/web.xml">
 			<fileset dir="${webapp.dir}">
                 <exclude name="**/web.xml" />
-                <exclude name="**/*.jsp" />
+				<exclude name="**/*.jsp" />
             </fileset>
 			<classes dir="${classes.dir}"/>
 			<lib dir="${lib.dir}"/>
