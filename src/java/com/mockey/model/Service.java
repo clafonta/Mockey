@@ -390,10 +390,10 @@ public class Service implements PersistableItem, ExecutableService {
             if (u != null) {
                 messageMatchFound = u.getResponseMessage();
             } else {
-                messageMatchFound = "Big fat ERROR:[Be sure to view source to see more...] \n"
-                        + "Your setting is 'match scenario' but there is no matching scenario, no "
-                        + "service error defined, nor is there a universal error defined to incoming request: \n"
-                        + rawRequestData;
+                messageMatchFound = "Ouch, no love for you! Why? Well, it could be that this service setting "
+                        + "is set to Dynamic but there is no found matching scenario, nor is there a default "
+                        + "service-scenario-error defined, nor is there a universal-scenario-error defined "
+                        + "for this incoming request. In otherwords, Mockey doesn't know what to do.";
             }
 
         }

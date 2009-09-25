@@ -71,6 +71,20 @@ public class RequestFromClient {
         parseParameters();
     }
 
+    public String getRawRequestAsString(Service service){
+        
+        try {
+            URI uri = URIUtils.createURI(service.getUrl().getScheme(), service.getUrl().getHost(), -1, service.getUrl().getPath(), 
+                    this.buildParameterRequest(), null);
+            return uri.toString();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+        return "??";
+        
+        
+    }
     /**
      * Copy all necessary data from the request into a POST to the new server
      * 
@@ -218,7 +232,7 @@ public class RequestFromClient {
         Enumeration headerNames = rawRequest.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String name = (String) headerNames.nextElement();
-            buf.append(name).append(" = ").append(rawRequest.getHeader(name)).append("\n");
+            buf.append(name).append("=").append(rawRequest.getHeader(name)).append("\n");
         }
         return buf.toString();
     }
@@ -270,7 +284,7 @@ public class RequestFromClient {
     public String getParameterInfo() {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
-            builder.append(entry.getKey()).append(" = ");
+            builder.append(entry.getKey()).append("=");
             for (String value : entry.getValue()) {
                 builder.append(value);
             }

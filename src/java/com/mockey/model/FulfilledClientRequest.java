@@ -35,7 +35,22 @@ public class FulfilledClientRequest implements PersistableItem {
     private String clientRequestHeaders;
     private String clientRequestParameters;
     private String requestorIP;
+    private String rawRequest;
     
+    /**
+     * @return the rawRequest
+     */
+    public String getRawRequest() {
+        return rawRequest;
+    }
+
+    /**
+     * @param rawRequest the rawRequest to set
+     */
+    public void setRawRequest(String rawRequest) {
+        this.rawRequest = rawRequest;
+    }
+
     private ResponseFromService responseMessage;
 	private Date time = new Date();
 	

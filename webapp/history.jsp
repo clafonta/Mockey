@@ -111,7 +111,9 @@ $(document).ready(function() {
 	                            <tr>
 	                                <td>
 	                                  <div class="conflict_message"/>
-	                                    <h3>Request:</h3>
+	                                    <h2>Request:</h2>
+	                                    <p><h4><c:out value="${request.rawRequest}" /></h4></p>
+	                                    
 	                                    <p>Header</p>
 	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${request.clientRequestHeaders}"/></textarea></p>
 	                                    <p>Parameters</p>
@@ -124,7 +126,7 @@ $(document).ready(function() {
 	                            <tr>
 	                                <td >
 	                                  <div id="scenario${request.id}" class="addition_message mockeyResponse">
-	                                    <h3>Response: </h3>
+	                                    <h2>Response: </h2>
 	                                    <p>Status</p>
 	                                    <p>
                                             <textarea name="responseStatus" rows="1" cols="80%"><c:out value="${request.responseMessage.statusLine}"/></textarea>

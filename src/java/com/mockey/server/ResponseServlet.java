@@ -17,12 +17,14 @@ package com.mockey.server;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URI;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.utils.URIUtils;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;
@@ -66,10 +68,9 @@ public class ResponseServlet extends HttpServlet {
             requestedUrl = requestedUrl.substring(contextRoot.length(), requestedUrl.length());
         }
         Url serviceUrl = new Url(requestedUrl);
-        
         Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
-        service.setHttpMethod(originalHttpReqFromClient.getMethod());
-
+        service.setHttpMethod(originalHttpReqFromClient.getMethod());       
+       
         ResponseFromService response = service.execute(request);
         logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr());
 
@@ -93,6 +94,7 @@ public class ResponseServlet extends HttpServlet {
     
     private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response, String ip) {
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
+        fulfilledClientRequest.setRawRequest(request.getRawRequestAsString(service));
         fulfilledClientRequest.setRequestorIP(ip);
         fulfilledClientRequest.setServiceId(service.getId());
         fulfilledClientRequest.setServiceName(service.getServiceName());

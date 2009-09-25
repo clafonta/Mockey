@@ -102,7 +102,7 @@ $(document).ready( function() {
 	                             <a class="tiny" href="" title="hide me">hide</a> 
                                  </div>
 
-								 <h3>Service name: <a href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></h3>
+								 <h2>Service name: <a href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></h2>
 							     <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
 							
 							     Mock URL: <a href="<c:out value="${mockUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
