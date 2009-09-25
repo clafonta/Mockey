@@ -4,7 +4,7 @@
 <c:set var="actionKey" value="conf_service" scope="request" />
 <c:set var="pageTitle" value="Proxy Settings" scope="request" />
 <c:set var="currentTab" value="proxy" scope="request" />
-<jsp:include page="/WEB-INF/common/header.jsp" />
+<%@include file="/WEB-INF/common/header.jsp" %>
 <div id="main">
     <%@ include file="/WEB-INF/common/message.jsp"%>     
     

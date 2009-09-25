@@ -52,6 +52,7 @@ public class ResponseServlet extends HttpServlet {
      * determines the appropriate mockservice for the definition of the response
      * type.
      */
+    @SuppressWarnings("static-access")
     public void service(HttpServletRequest originalHttpReqFromClient, HttpServletResponse resp) throws ServletException, IOException {
         
     	RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);

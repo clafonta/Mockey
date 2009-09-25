@@ -99,18 +99,27 @@
 	<target name="webapp" depends="compile, jspc" description="Builds a WAR file and places in a dist directory. ">
 		<property name="WEBINF" value="${webapp.dir}/WEB-INF"/>
 		<copy todir="${build.dir}/WEB-INF">
-					<fileset dir="${webapp.dir}/WEB-INF">
-						<include name="**/*.properties"/>
-						<include name="**/*.xml"/>
-					</fileset>
-				</copy>
+			<fileset dir="${webapp.dir}/WEB-INF">
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+
+
 		<war destfile="${dist.dir}/${ant.project.name}.war" webxml="${build.dir}/WEB-INF/web.xml">
 			<fileset dir="${webapp.dir}">
-                <exclude name="**/web.xml" />
+				<exclude name="**/web.xml" />
 				<exclude name="**/*.jsp" />
-            </fileset>
+			</fileset>
 			<classes dir="${classes.dir}"/>
 			<lib dir="${lib.dir}"/>
+			<!--  Putting these jars in WEB-INF/lib (instead of 'etc') breaks Eclipse Tomcat debug plugin, -->
+			<!--  but are needed for compiled JSPs for a .war file.                                        -->    
+			<lib dir="${etc.dir}">
+				<include name="jsp-api-2.1-glassfish-9.1.1.B60.25.p2.jar"/>
+				<include name="jsp-2.1-glassfish-9.1.1.B60.25.p2.jar"/>
+			</lib>
+
 		</war>
 	</target>
 	<!-- =================================================================== -->
@@ -218,22 +227,22 @@
 			<fileset dir="${classes.dir}" />
 		</copy>
 	</target>
-    
-    <target name="jspc" depends="compile">
-        <taskdef classname="org.apache.jasper.JspC" name="jasper">
-            <classpath>
-                <pathelement location="${java.home}/../lib/tools.jar" />
-                <path refid="standard.classpath" />
-            </classpath>
-        </taskdef>
 
-        <!-- this is lame, but i can't find any way to not get jasper to modify the web.xml in place -->
-        <property  name="tmp.webapp.dir" value="${build.dir}/tmp.web" />
-        <copy todir="${tmp.webapp.dir}">
-            <fileset dir="${webapp.dir}" />
-        </copy>
+	<target name="jspc" depends="compile">
+		<taskdef classname="org.apache.jasper.JspC" name="jasper">
+			<classpath>
+				<pathelement location="${java.home}/../lib/tools.jar" />
+				<path refid="standard.classpath" />
+			</classpath>
+		</taskdef>
 
-        <jasper
+		<!-- this is lame, but i can't find any way to not get jasper to modify the web.xml in place -->
+		<property  name="tmp.webapp.dir" value="${build.dir}/tmp.web" />
+		<copy todir="${tmp.webapp.dir}">
+			<fileset dir="${webapp.dir}" />
+		</copy>
+
+		<jasper
                  validateXml="false"
                  addwebxmlmappings="true"
                  uriroot="${tmp.webapp.dir}"
@@ -242,8 +251,8 @@
                  package="com.mockey.jsp"
 
                 />
-        <javac srcdir="${build.dir}/jsp" destdir="${classes.dir}" deprecation="on" classpathref="standard.classpath" debug="on"/>
-        <copy todir="${build.dir}/WEB-INF" file="${tmp.webapp.dir}/WEB-INF/web.xml" />
-      </target>
+		<javac srcdir="${build.dir}/jsp" destdir="${classes.dir}" deprecation="on" classpathref="standard.classpath" debug="on"/>
+		<copy todir="${build.dir}/WEB-INF" file="${tmp.webapp.dir}/WEB-INF/web.xml" />
+	</target>
 
-</project> 
+</project>

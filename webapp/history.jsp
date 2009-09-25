@@ -2,7 +2,7 @@
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <c:set var="pageTitle" value="History" scope="request" />
 <c:set var="currentTab" value="history" scope="request" />
-<jsp:include page="/WEB-INF/common/header.jsp" />
+<%@include file="/WEB-INF/common/header.jsp" %>
 <script>
 $(document).ready(function() {
 

@@ -4,7 +4,7 @@
 <c:set var="pageTitle" value="Configure" scope="request" />
 <c:set var="currentTab" value="create" scope="request" />
 <%--@elvariable id="mockservice" type="com.mockey.MockServiceBean"--%>
-<jsp:include page="/WEB-INF/common/header.jsp" />
+<%@include file="/WEB-INF/common/header.jsp" %>
 <div id="main">
     <%@ include file="/WEB-INF/common/message.jsp"%>
     <c:choose>

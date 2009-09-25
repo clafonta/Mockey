@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="pageTitle" value="Upload" scope="request" />
 <c:set var="currentTab" value="upload" scope="request" />
-<jsp:include page="/WEB-INF/common/header.jsp" />
+<%@include file="/WEB-INF/common/header.jsp" %>
 <div id="main">
 <h3>Upload your service definition(s):</h3>
 <%@ include file="/WEB-INF/common/message.jsp"%>

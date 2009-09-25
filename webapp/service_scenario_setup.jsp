@@ -2,7 +2,7 @@
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <c:set var="actionKey" value="edit_scenario" scope="request" />
 <c:set var="pageTitle" value="Scenario Setup" scope="request" />
-<jsp:include page="/WEB-INF/common/header.jsp" />
+<%@include file="/WEB-INF/common/header.jsp" %>
     <div id="main">
     	<%@ include file="/WEB-INF/common/message.jsp" %>        
         <h1>Edit scenario for service: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
