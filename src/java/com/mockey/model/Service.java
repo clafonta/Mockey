@@ -39,7 +39,7 @@ public class Service implements PersistableItem, ExecutableService {
     public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
     public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
     public final static int SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO = 2;
-    
+
     private Long id;
     private String serviceName;
     private String description;
@@ -51,26 +51,26 @@ public class Service implements PersistableItem, ExecutableService {
     private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
     private String httpMethod = "GET";
     private Url realServiceUrl;
-	private List<FulfilledClientRequest> fulfilledRequests;
-	
-	private static Log logger = LogFactory.getLog(Service.class);
-	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-	
+    private List<FulfilledClientRequest> fulfilledRequests;
+
+    private static Log logger = LogFactory.getLog(Service.class);
+    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+
     public List<FulfilledClientRequest> getFulfilledRequests() {
-		return fulfilledRequests;
-	}
+        return fulfilledRequests;
+    }
 
-	public void setFulfilledRequests(List<FulfilledClientRequest> transactions) {
-		this.fulfilledRequests = transactions;
-	}    
+    public void setFulfilledRequests(List<FulfilledClientRequest> transactions) {
+        this.fulfilledRequests = transactions;
+    }
 
-	// default constructor for xml.
-	// DO NOT REMOVE.  DO NOT CALL.
+    // default constructor for xml.
+    // DO NOT REMOVE. DO NOT CALL.
     public Service() {
     }
 
     public Service(Url realServiceUrl) {
-        this.realServiceUrl = realServiceUrl;        
+        this.realServiceUrl = realServiceUrl;
         this.setServiceName("Auto-Generated Service");
     }
 
@@ -128,12 +128,12 @@ public class Service implements PersistableItem, ExecutableService {
 
     public Scenario updateScenario(Scenario scenario) {
         scenario.setServiceId(this.id);
-        return (Scenario)this.scenarios.save(scenario);
+        return (Scenario) this.scenarios.save(scenario);
     }
 
     public String getMockServiceUrl() {
-        if (this.realServiceUrl!=null){
-            return realServiceUrl.getFullUrl();    
+        if (this.realServiceUrl != null) {
+            return realServiceUrl.getFullUrl();
         } else {
             return "";
         }
@@ -149,14 +149,14 @@ public class Service implements PersistableItem, ExecutableService {
         return (Url.MOCK_SERVICE_PATH + this.getMockServiceUrl());
     }
 
-    public Url getUrl(){
+    public Url getUrl() {
         return this.realServiceUrl;
     }
 
     public void setRealServiceUrl(Url realServiceUrl) {
         this.realServiceUrl = realServiceUrl;
     }
-    
+
     public void setRealServiceUrlByString(String realServiceUrl) {
         this.realServiceUrl = new Url(realServiceUrl);
     }
@@ -215,12 +215,12 @@ public class Service implements PersistableItem, ExecutableService {
     }
 
     public int getServiceResponseType() {
-    	// If no scenarios, then proxy is automatically on.
-    	if (this.getScenarios().size()==0) {
-    		return SERVICE_RESPONSE_TYPE_PROXY;
-    	} else {
-    		return serviceResponseType;	
-    	}
+        // If no scenarios, then proxy is automatically on.
+        if (this.getScenarios().size() == 0) {
+            return SERVICE_RESPONSE_TYPE_PROXY;
+        } else {
+            return serviceResponseType;
+        }
     }
 
     public void setErrorScenarioId(Long errorScenarioId) {
@@ -230,161 +230,174 @@ public class Service implements PersistableItem, ExecutableService {
     public Long getErrorScenarioId() {
         return errorScenarioId;
     }
-    
+
     public Scenario getErrorScenario() {
-    	// FIND SERVICE ERROR, IF EXIST.
-        for(Scenario scenario : this.getScenarios()) {
-        	if (scenario.getId()==this.getErrorScenarioId()) {
-        		return scenario;
-        	}
+        // FIND SERVICE ERROR, IF EXIST.
+        for (Scenario scenario : this.getScenarios()) {
+            if (scenario.getId() == this.getErrorScenarioId()) {
+                return scenario;
+            }
         }
         // No service error defined, therefore, let's use the universal
         // error.
         return StorageRegistry.MockeyStorage.getUniversalErrorScenario();
     }
-    
+
     public Boolean isReferencedInAServicePlan() {
-    		Boolean isReferenced = false;
-		for(ServicePlan plan : StorageRegistry.MockeyStorage.getServicePlans()) {
-			for(PlanItem planItem : plan.getPlanItemList()) {
-				if(planItem.getServiceId().equals(this.getId())) {
-					isReferenced = true;
-					break;
-				}
-			}
-		}
-		return isReferenced;
+        Boolean isReferenced = false;
+        for (ServicePlan plan : StorageRegistry.MockeyStorage.getServicePlans()) {
+            for (PlanItem planItem : plan.getPlanItemList()) {
+                if (planItem.getServiceId().equals(this.getId())) {
+                    isReferenced = true;
+                    break;
+                }
+            }
+        }
+        return isReferenced;
     }
 
-	
-	public ResponseFromService Execute(RequestFromClient request) {
-		ResponseFromService response = null;
+    /**
+     * The core method to execute the request as either a Proxy, Dynamic, or Static Scenario.
+     */
+    public ResponseFromService execute(RequestFromClient request) {
+        ResponseFromService response = null;
         if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
-        	response = proxyTheRequest(request);
+            response = proxyTheRequest(request);
         } else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
-        	response = executeDynamicScenario(request);
+            response = executeDynamicScenario(request);
         } else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
-        	response = executeStaticScenario();
+            response = executeStaticScenario();
         }
         return response;
-	}
-	
+    }
+
     private ResponseFromService proxyTheRequest(RequestFromClient request) {
 
-		logger.debug("proxying a moxie.");
-		// If proxy on, then
-		// 1) Capture request message.
-		// 2) Set up a connection to the real service URL
-		// 3) Forward the request message to the real service URL
-		// 4) Read the reply from the real service URL.
-		// 5) Save request + response as a historical scenario.
+        logger.debug("proxying a moxie.");
+        // If proxy on, then
+        // 1) Capture request message.
+        // 2) Set up a connection to the real service URL
+        // 3) Forward the request message to the real service URL
+        // 4) Read the reply from the real service URL.
+        // 5) Save request + response as a historical scenario.
 
-		// There are 2 proxy things going on here:
-		// 1. Using Mockey as a 'proxy' to a real service.
-		// 2. The proxy server between Mockey and the real service.
-		//
-		// For the proxy server between Mockey and the real service,
-		// we do the following:
-		ProxyServerModel proxyServer = store.getProxy();
-		ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
-		ResponseFromService response = null;
-		try {
-			logger.debug("Initiating request through proxy");
-			response = clientExecuteProxy
-					.execute(proxyServer, this, request);
-		} catch (Exception e) {
-			// We're here for various reasons.
-			// 1) timeout from calling real service.
-			// 2) unable to parse real response.
-			// 3) magic!
-			// Before we throw an exception, check:
-			// (A) does this mock service have a default error response. If
-			// no, then
-			// (B) see if Mockey has a universal error response
-			// If neither, then throw the exception.
-			response = new ResponseFromService();
+        // There are 2 proxy things going on here:
+        // 1. Using Mockey as a 'proxy' to a real service.
+        // 2. The proxy server between Mockey and the real service.
+        //
+        // For the proxy server between Mockey and the real service,
+        // we do the following:
+        ProxyServerModel proxyServer = store.getProxy();
+        ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
+        ResponseFromService response = null;
+        try {
+            logger.debug("Initiating request through proxy");
+            response = clientExecuteProxy.execute(proxyServer, this, request);
+        } catch (Exception e) {
+            // We're here for various reasons.
+            // 1) timeout from calling real service.
+            // 2) unable to parse real response.
+            // 3) magic!
+            // Before we throw an exception, check:
+            // (A) does this mock service have a default error response. If
+            // no, then
+            // (B) see if Mockey has a universal error response
+            // If neither, then throw the exception.
+            response = new ResponseFromService();
 
-			Scenario error = this.getErrorScenario();
-			if (error != null) {
-				response.setBody(error.getResponseMessage());
-			} else {
-				response.setBody("Yikes! We encountered this error (let's hope it's informative): "
-								+ e.getClass() + ": " + e.getMessage());
-			}
-		}
-		return response;
-	}
+            Scenario error = this.getErrorScenario();
+            if (error != null) {
+                response.setBody(error.getResponseMessage());
+            } else {
+                response.setBody("Yikes! We encountered this error (let's hope it's informative): " + e.getClass()
+                        + ": " + e.getMessage());
+            }
+        }
+        return response;
+    }
 
-	private ResponseFromService executeStaticScenario() {
+    private ResponseFromService executeStaticScenario() {
 
-		logger.debug("mockeying a static scenario");
+        logger.debug("mockeying a static scenario");
 
-		// Proxy is NOT on. Therefore we use a scenario to figure out a reply.
-		// Either:
-		// 1) Based on matching the request message to one of the scenarios
-		// or
-		// 2) Based on scenario selected.
-		//
-		Scenario scenario = this.getScenario(this.getDefaultScenarioId());
-		ResponseFromService response = new ResponseFromService();
+        // Proxy is NOT on. Therefore we use a scenario to figure out a reply.
+        // Either:
+        // 1) Based on matching the request message to one of the scenarios
+        // or
+        // 2) Based on scenario selected.
+        //
+        Scenario scenario = this.getScenario(this.getDefaultScenarioId());
+        ResponseFromService response = new ResponseFromService();
 
-		if (scenario != null) {
-			response.setBody(scenario.getResponseMessage());
-		} else {
-			response.setBody("NO SCENARIO SELECTED");
-		}
-		return response;
-	}
+        if (scenario != null) {
+            response.setBody(scenario.getResponseMessage());
+        } else {
+            response.setBody("NO SCENARIO SELECTED");
+        }
+        return response;
+    }
 
-	private ResponseFromService executeDynamicScenario(RequestFromClient request) {
+    private ResponseFromService executeDynamicScenario(RequestFromClient request) {
 
-		logger.debug("mockeying a dynamic scenario.");
-		String rawRequestData = "";
-		try {
-			rawRequestData = new String();
-			if (!request.hasPostBody()) {
-				// OK..let's build the request message from Params.
-				// Is this a HACK? I dunno yet.
-				logger
-						.debug("Request message is EMPTY; building request message out of Parameters. ");
-				rawRequestData = request.buildParameterRequest();
-			} else {
-				rawRequestData = request.getBodyInfo();
-			}
-		} catch (UnsupportedEncodingException e) {
-			// uhm.
-		}
+        logger.debug("mockeying a dynamic scenario.");
+        String rawRequestData = "";
+        try {
+            rawRequestData = new String();
+            if (!request.hasPostBody()) {
+                // OK..let's build the request message from Params.
+                // Is this a HACK? I dunno yet.
+                logger.debug("Request message is EMPTY; building request message out of Parameters. ");
+                rawRequestData = request.buildParameterRequest();
+            } else {
+                rawRequestData = request.getBodyInfo();
+            }
+        } catch (UnsupportedEncodingException e) {
+            // uhm.
+        }
 
-		ResponseFromService response = new ResponseFromService();
-		List<Scenario> scenarios = this.getScenarios();
-		Iterator<Scenario> iter = scenarios.iterator();
-		String messageMatchFound = null;
-		while (iter.hasNext()) {
-			Scenario scenario = iter.next();
-			logger.debug("Checking: '" + scenario.getMatchStringArg()
-					+ "' in Scenario message: \n" + rawRequestData);
-			int indexValue = -1;
-			if (request.hasPostBody()) {
-				indexValue = request.getBodyInfo().indexOf(
-						scenario.getMatchStringArg());
-			} else {
-				indexValue = rawRequestData.indexOf(scenario
-						.getMatchStringArg());
-			}
+        ResponseFromService response = new ResponseFromService();
+        List<Scenario> scenarios = this.getScenarios();
+        Iterator<Scenario> iter = scenarios.iterator();
+        String messageMatchFound = null;
+        while (iter.hasNext()) {
+            Scenario scenario = iter.next();
+            logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + rawRequestData);
+            int indexValue = -1;
+            if (scenario.hasMatchArgument()) {
+                if (request.hasPostBody()) {
+                    indexValue = request.getBodyInfo().indexOf(scenario.getMatchStringArg());
+                } else {
+                    indexValue = rawRequestData.indexOf(scenario.getMatchStringArg());
+                }
+            }
+            if ((indexValue > -1)) {
+                logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
+                messageMatchFound = scenario.getResponseMessage();
+                break;
+            }
+        }
+        // OK, no matches. Error handling is as follows:
+        // 1) Does service have a default service error defined? If yes, return
+        // message. If no...
+        // 2) Does Mockey have a universal error message defined? If yes,
+        // return, otherwise...
+        // 3) Return a error message.
+        if (messageMatchFound == null) {
+            Scenario u = getErrorScenario();
+            if (u == null) {
+                u = this.store.getUniversalErrorScenario();
+            }
+            if (u != null) {
+                messageMatchFound = u.getResponseMessage();
+            } else {
+                messageMatchFound = "Big fat ERROR:[Be sure to view source to see more...] \n"
+                        + "Your setting is 'match scenario' but there is no matching scenario, no "
+                        + "service error defined, nor is there a universal error defined to incoming request: \n"
+                        + rawRequestData;
+            }
 
-			if ((indexValue > -1)) {
-				logger.debug("FOUND - matching '"
-						+ scenario.getMatchStringArg() + "' ");
-				messageMatchFound = scenario.getResponseMessage();
-				break;
-			}
-		}
-		if (messageMatchFound == null) {
-			messageMatchFound = "Big fat ERROR:[Be sure to view source to see more...] \n"
-					+ "Your setting is 'match scenario' but there is no matching scenario to incoming message: \n"
-					+ rawRequestData;
-		}
-		response.setBody(messageMatchFound);
-		return response;
-	}
+        }
+        response.setBody(messageMatchFound);
+        return response;
+    }
 }

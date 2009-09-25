@@ -67,7 +67,8 @@ $(document).ready( function() {
 								        $serviceResponseType = $("input[name='serviceResponseType_<c:out value="${mockservice.id}"/>']:checked").val();
 								        $hangTime = document.getElementById("hangTime_<c:out value="${mockservice.id}"/>").value;
 								        $serviceId = document.getElementById("serviceId_<c:out value="${mockservice.id}"/>").value;
-								        $.post("<c:url value="/service_scenario"/>", {serviceResponseType_<c:out value="${mockservice.id}"/>:$serviceResponseType, serviceId:$serviceId,scenario_<c:out value="${mockservice.id}"/>:$scenario, hangTime_<c:out value="${mockservice.id}"/>:$hangTime}, function(xml) {
+								        $httpContentType = document.getElementById("httpContentType_<c:out value="${mockservice.id}"/>").value;
+								        $.post("<c:url value="/service_scenario"/>", {serviceResponseType_<c:out value="${mockservice.id}"/>:$serviceResponseType, serviceId:$serviceId,scenario_<c:out value="${mockservice.id}"/>:$scenario, hangTime_<c:out value="${mockservice.id}"/>:$hangTime, httpContentType_<c:out value="${mockservice.id}"/>:$httpContentType}, function(xml) {
 								            $("#responseMessage_<c:out value="${mockservice.id}"/>").html(
 								                    $("report", xml).text()
 								            );
@@ -97,13 +98,14 @@ $(document).ready( function() {
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
 	                             <a class="tiny" href="<c:out value="${scenarioCreateUrl}"/>" title="Create a scenario">add scenario</a> |
 	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a> |
-	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a>
+	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a> |
+	                             <a class="tiny" href="" title="hide me">hide</a> 
                                  </div>
 
 								 <h3>Service name: <a href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></h3>
 							     <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
 							
-							     Mock URL: <a href=""><mockey:url value="${mockservice.serviceUrl}"/></a>
+							     Mock URL: <a href="<c:out value="${mockUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
 							     <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
 							     <p>
 			                       <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="serviceResponseType_<c:out value="${mockservice.id}"/>" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> />
@@ -168,6 +170,19 @@ $(document).ready( function() {
 	                              </span>
                                  <p>
 			                       <input type="text" name="hangTime_<c:out value="${mockservice.id}"/>" id="hangTime_<c:out value="${mockservice.id}"/>" maxlength="20" size="20" value="<c:out value="${mockservice.hangTime}"/>" /> Hang time (milliseconds)
+	                               &nbsp;&nbsp;
+	                               <select name="httpContentType_<c:out value="${mockservice.id}"/>" id="httpContentType_<c:out value="${mockservice.id}"/>">
+				                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
+			                            <option value="text/xml;" <c:if test="${mockservice.httpContentType eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
+			                            <option value="text/plain;" <c:if test="${mockservice.httpContentType eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
+			                            <option value="text/css;" <c:if test="${mockservice.httpContentType eq 'text/css;'}">selected="selected"</c:if>>text/css;</option>
+			                            <option value="application/json;" <c:if test="${mockservice.httpContentType eq 'application/json;'}">selected="selected"</c:if>>application/json;</option>
+			                            <option value="text/html;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'text/html;charset=utf-8'}">selected="selected"</c:if>>text/html;charset=utf-8</option>
+			                            <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpContentType eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
+			                            <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->
+			                          </select>
+			                          Content Type
+	                    
 			                     </p>
                              <c:if test="${mode ne 'edit_plan'}">
 	                              <input type="button" name="update_service_<c:out value="${mockservice.id}"/>" id="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />

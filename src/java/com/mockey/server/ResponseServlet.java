@@ -70,7 +70,7 @@ public class ResponseServlet extends HttpServlet {
         Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
         service.setHttpMethod(originalHttpReqFromClient.getMethod());
 
-        ResponseFromService response = service.Execute(request);
+        ResponseFromService response = service.execute(request);
         logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr());
 
         try {

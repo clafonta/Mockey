@@ -41,6 +41,7 @@ public class ScenarioUpdateServlet extends HttpServlet {
         String serviceId = req.getParameter("serviceId");
         String hangTime = req.getParameter("hangTime_" + serviceId);
         String scenarioId = req.getParameter("scenario_" + serviceId);
+        String httpContentType = req.getParameter("httpContentType_" + serviceId);
         String serviceResponseType = req.getParameter("serviceResponseType_" + serviceId);
         Service service = store.getServiceById(new Long(serviceId));
         try {
@@ -51,6 +52,11 @@ public class ScenarioUpdateServlet extends HttpServlet {
 
         try{
             service.setHangTime( (new Integer(hangTime).intValue()));
+        }catch(Exception e){
+            log.debug("Updating service without a 'hang time' value");
+        }
+        try{
+            service.setHttpContentType(httpContentType);
         }catch(Exception e){
             log.debug("Updating service without a 'hang time' value");
         }
