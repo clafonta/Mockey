@@ -1,7 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="pageTitle" value="Help" scope="request" />
 <c:set var="currentTab" value="help" scope="request" />
-<%@include file="/WEB-INF/common/header.jsp" %>
+
+<jsp:include page="/WEB-INF/common/header.jsp" />
 <div id="main">
 	<h2>The Big Picture</h2>
 	<p><strong>Mockey</strong> is a tool for testing application interactions over http.</p>
