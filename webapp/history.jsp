@@ -35,6 +35,31 @@ $(document).ready(function() {
 			});
 		});
 	});
+
+	$('.viewFulfilledRequestLink').each( function() {
+		$(this).click( function() {
+			var requestId = this.id.split("_")[1];			
+			$.ajax({
+				type: "GET",
+				url: "<c:url value="fulfilledrequest"/>?&fulfilledRequestId="+requestId,
+				success: function(html) {
+                  //i want to fade result into these 2 divs...
+                  $('#letmesee_'+requestId).hide().html(html).fadeIn();
+                }
+
+			});
+			
+		});
+	});
+
+	$('.hideFulfilledRequestLink').each( function() {
+		$(this).click( function() {
+			var requestId = this.id.split("_")[1];			
+			$('#letmesee_'+requestId).fadeOut();
+		});
+	});
+
+	
 });
 
 $(document).ready(function() {
@@ -84,72 +109,30 @@ $(document).ready(function() {
     <c:choose>
         <c:when test="${!empty requests}">
             <c:forEach var="request" items="${requests}" varStatus="status">
-                <p><div id="fulfilledRequest_${request.id}">
-                    <form action="<c:url value="/scenario"/>" method="post">
-	                    <input type="hidden" name="actionTypeGetFlag" value="true" />
-	                    <input type="hidden" name="serviceId" value="<c:out value="${request.serviceId}"/>" />
-	                    <table class="simple" width="100%">
-	                        <tbody>
-	                            <tr>
-	                                <td>
-	                                    <p style="text-align:right;">
-	                                    	<a id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
-	                                    </p>
-	                                     <c:url value="/history" var="filterByIp">
-	                                       <c:param name="token" value="${request.requestorIP}" />	
-	                                                                              
-	                                    </c:url>
-	                                    <c:url value="/history" var="filterByServiceName">
-	                                        <c:param name="token" value="${request.serviceName}" />	                                                                              
-	                                    </c:url>
-	                                    <c:url value="/setup" var="serviceUrl">
-                                            <c:param name="serviceId" value="${request.serviceId}" />                                                                               
-                                        </c:url>  
-	                                    <p><b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b> (<a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a>)</p>
-	                                </td>
-	                            </tr>
-	                            <tr>
-	                                <td>
-	                                  <div class="conflict_message"/>
-	                                    <h2>Request:</h2>
-	                                    <p><h4><c:out value="${request.rawRequest}" /></h4></p>
-	                                    
-	                                    <p>Header</p>
-	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${request.clientRequestHeaders}"/></textarea></p>
-	                                    <p>Parameters</p>
-	                                    <p><textarea name="requestHeader" rows="10" cols="80%"><c:out value="${request.clientRequestParameters}"/></textarea></p>
-	                                    <p>Body</p>
-	                                    <p><textarea name="requestMessage" rows="10" cols="80%"><c:out value="${request.clientRequestBody}"/></textarea></p>
-	                                   </div>
-	                                </td>
-	                            </tr>
-	                            <tr>
-	                                <td >
-	                                  <div id="scenario${request.id}" class="addition_message mockeyResponse">
-	                                    <h2>Response: </h2>
-	                                    <p>Status</p>
-	                                    <p>
-                                            <textarea name="responseStatus" rows="1" cols="80%"><c:out value="${request.responseMessage.statusLine}"/></textarea>
-                                        </p>
-	                                    <p>Header</p>
-	                                    <p>
-                                            <textarea name="responseHeader" rows="10" cols="80%"><c:out value="${request.responseMessage.headerInfo}"/></textarea>
-                                        </p>
-                                        <p>Body</p>
-	                                    <p>
-	                                        <button class="formatButton" style="border: 1px solid #006; background: #ccf; margin-left: 60%; border-bottom-width:0;">Format Body</button>
-                                            <textarea style="margin-top: 0px;" name="responseMessage" class="responseContent" rows="10" cols="80%"><c:out value="${request.responseMessage.body}"/></textarea>
-                                        </p>
-                                        <p>
-                                        <input type="submit" name="Save" value="Save Response as a Scenario" />
-                                        </p>
-                                      </div>
-	                                </td>
-	                            </tr>
-	                        </tbody>
-	                    </table>
-                    </form>
-                </div></p>
+                <div id="fulfilledRequest_${request.id}" class="parentform">
+                   <c:url value="/history" var="filterByIp">
+                      <c:param name="token" value="${request.requestorIP}" />
+                   </c:url>
+                   <c:url value="/history" var="filterByServiceName">
+                       <c:param name="token" value="${request.serviceName}" />	                                                                              
+                   </c:url>
+                   <c:url value="/setup" var="serviceUrl">
+                          <c:param name="serviceId" value="${request.serviceId}" />                                                                               
+                      </c:url>  
+                   <p>
+                   <b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b>
+                   
+                   <span style="float:right;"> 
+                   <a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a> |
+                   <a  id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink">view</a> |
+                   <a  id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |                  
+                   <a  id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
+                   </span>
+                   </p>	                                
+                <div id="letmesee_${request.id}">
+                </div>
+                    
+                </div>
             </c:forEach>
         </c:when>
         <c:otherwise>

@@ -18,10 +18,23 @@ img {border:0;}
 .nav{	color: #06F;	text-decoration: none;	font-weight:bold;}
 .group {	border: thin dashed #bdbdbd;	margin: 0.8em;	padding: 0.8em;}
 form {
-	padding: 0em 1em 0em 1em;
+	padding: 0em 0.8em 0em 0.8em;
 	border: thin solid #bdbdbd;
     -moz-border-radius: 0.4em;
     -webkit-border-radius: 0.4em;
+	background-color: #e8e8e8;
+}
+form#child {
+	padding: 0em;
+	margin: 0em;
+	background-color: #e8e8e8;
+	border: none;
+}
+div.parentform {
+	padding: 0em 0.8em 0em 0.8em;
+	border: thin solid #bdbdbd;
+	-moz-border-radius: 0.4em;
+	-webkit-border-radius: 0.4em;
 	background-color: #e8e8e8;
 }
 form#multi_form{	padding: 0.8em;}
@@ -76,6 +89,15 @@ table.simple td{
 	padding-bottom: 10px;
 	padding-left: 8px;
 	padding-right: 0px;
+}
+table.history{border-collapse: collapse;border-spacing: 0px; }
+table.history th{ border-bottom: 1px inset #DDDDDD; font-weight: bold;padding: 1px; }
+table.history td{
+	border-bottom: 1px inset #DDDDDD;
+	text-align: left;
+	font-weight: normal;
+	padding: 1px;
+	
 }
 .jqifade{
       position: absolute;

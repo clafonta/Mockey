@@ -78,7 +78,7 @@ public class RequestFromClient {
                     this.buildParameterRequest(), null);
             return uri.toString();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            
             e.printStackTrace();
         } 
         return "??";

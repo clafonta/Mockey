@@ -64,6 +64,10 @@
 		<servlet-name>HelpServlet</servlet-name>
 		<servlet-class>com.mockey.ui.HelpServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>HistoryHtmlServlet</servlet-name>
+		<servlet-class>com.mockey.ui.HistoryHtmlServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>HelpServlet</servlet-name>
 		<url-pattern>/help</url-pattern>
@@ -92,10 +96,10 @@
 		<servlet-name>HistoryServlet</servlet-name>
 		<url-pattern>/history</url-pattern>
 	</servlet-mapping>
-<!-- unused?	<servlet-mapping>
-		<servlet-name>MockHistoryHtmlServlet</servlet-name>
-		<url-pattern>/checkforhistory</url-pattern>
-	</servlet-mapping> -->
+    <servlet-mapping>
+		<servlet-name>HistoryHtmlServlet</servlet-name>
+		<url-pattern>/fulfilledrequest</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>MockServiceScenarioListServlet</servlet-name>
 		<url-pattern>/scenariolist</url-pattern>

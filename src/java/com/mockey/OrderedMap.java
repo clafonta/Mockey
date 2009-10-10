@@ -41,11 +41,20 @@ import com.mockey.model.PersistableItem;
 public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T> implements Map<Long, T> {
 
     private static final long serialVersionUID = -1654150132938363942L;
+    private Integer maxSize = null;
 
-    // private static Logger logger = Logger.getLogger(OrderedMap.class);
-
+    
+    /**
+     * Will save item. If maximum size of this Map is set (non-null, positive),
+     * this method will purge the oldest value, the value with the smallest key
+     * value.
+     * 
+     * @param item
+     * @return item saved, with ID set.
+     * @see #getMaxSize()
+     */
     public PersistableItem save(T item) {
-        // logger.debug("saving item: "+item.toString());
+
         if (item != null) {
             if (item.getId() != null) {
                 this.put(item.getId(), item);
@@ -55,8 +64,29 @@ public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T> impl
                 this.put(nextNumber, item);
             }
         }
-        // logger.debug("Saving to store with ID:" + item.getId());
+
+        if (this.maxSize != null && this.maxSize > 0) {
+
+            while (this.size() > this.maxSize) {
+                Long removeMe = getSmallestValue();
+                this.remove(removeMe);
+            }
+
+        }
         return item;
+    }
+
+    private Long getSmallestValue() {
+        Long smallestValue = null;
+        for (Long key : this.keySet()) {
+            if (smallestValue == null) {
+                smallestValue = key;
+            } else if (key < smallestValue) {
+                smallestValue = key;
+            }
+
+        }
+        return smallestValue;
     }
 
     private Long getNextValue() {
@@ -71,7 +101,7 @@ public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T> impl
     }
 
     public List<T> getOrderedList() {
-        // Temp
+
         List<Long> orderedListOfKeys = new ArrayList<Long>();
         for (Long key : this.keySet()) {
             int index = 0;
@@ -91,5 +121,26 @@ public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T> impl
         }
 
         return orderedListOfValues;
+    }
+
+    /**
+     * 
+     * @param maxSize
+     * @see #getMaxSize()
+     */
+    public void setMaxSize(Integer maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    /**
+     * Maximum number of <code>PersistableItem</code> allowed in this ordered
+     * map. Once this map has reached its limit, if set, it takes a first-in,
+     * first-out (FIFO) persistence approach, purging the oldest object.
+     * 
+     * @return null if not set (no size limit), otherwise returns the maximum
+     *         size value.
+     */
+    public Integer getMaxSize() {
+        return maxSize;
     }
 }

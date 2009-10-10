@@ -28,6 +28,10 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         // TODO Auto-generated method stub
 
     }
+    
+    public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId){
+        return null;
+    }
 
     public void deleteFulfilledClientRequestsForService(Long serviceId) {
         // TODO Auto-generated method stub

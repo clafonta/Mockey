@@ -37,7 +37,7 @@ import com.mockey.model.Url;
  */
 public class InMemoryMockeyStorage implements IMockeyStorage {
 
-    private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
+    private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();    
     private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
     private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
 
@@ -75,6 +75,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
      * </pre>
      */
     public InMemoryMockeyStorage() {
+        this.historyStore.setMaxSize(new Integer(20));
     }
 
     public Service getServiceById(Long id) {
@@ -217,6 +218,11 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         return uniqueIPs;
     }
 
+    public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId) {
+               
+        return this.historyStore.get(fulfilledClientRequestId);
+      
+    }
     public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
         logger.debug("getting requests for serviceId: " + serviceId + ". there are a total of "
                 + this.historyStore.size() + " requests currently stored.");
