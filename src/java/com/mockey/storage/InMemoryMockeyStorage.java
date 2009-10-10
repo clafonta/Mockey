@@ -75,7 +75,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
      * </pre>
      */
     public InMemoryMockeyStorage() {
-        this.historyStore.setMaxSize(new Integer(20));
+        this.historyStore.setMaxSize(new Integer(45)); // Was 25...but changed to 45. 
     }
 
     public Service getServiceById(Long id) {
