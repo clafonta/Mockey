@@ -124,9 +124,9 @@ $(document).ready(function() {
                    
                    <span style="float:right;"> 
                    <a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a> |
-                   <a  id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink">view</a> |
-                   <a  id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |                  
-                   <a  id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
+                   <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink">view</a> |
+                   <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |                  
+                   <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
                    </span>
                    </p>	                                
                 <div id="letmesee_${request.id}">

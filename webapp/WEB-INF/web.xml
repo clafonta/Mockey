@@ -21,6 +21,10 @@
 		<servlet-class>com.mockey.ui.HomeServlet</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>MobiServlet</servlet-name>
+		<servlet-class>com.mockey.ui.MobiServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>MockServiceExportServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ExportConfigurationServlet</servlet-class>
 	</servlet>
@@ -83,6 +87,10 @@
 	<servlet-mapping>
 		<servlet-name>MockServiceProxyInfoServlet</servlet-name>
 		<url-pattern>/proxy/settings</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>MobiServlet</servlet-name>
+		<url-pattern>/mobi</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>MockHomeServlet</servlet-name>

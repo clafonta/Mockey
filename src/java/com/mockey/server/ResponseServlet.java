@@ -17,14 +17,12 @@ package com.mockey.server;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URI;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.client.utils.URIUtils;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;

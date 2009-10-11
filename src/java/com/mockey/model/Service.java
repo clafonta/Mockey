@@ -385,7 +385,7 @@ public class Service implements PersistableItem, ExecutableService {
         if (messageMatchFound == null) {
             Scenario u = getErrorScenario();
             if (u == null) {
-                u = this.store.getUniversalErrorScenario();
+                u = store.getUniversalErrorScenario();
             }
             if (u != null) {
                 messageMatchFound = u.getResponseMessage();

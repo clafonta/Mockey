@@ -169,10 +169,11 @@
 		<antcall target="_tomcat-reload" inheritall="true"/>
 	</target>
 
+	<!-- Based on \apache-tomcat-6.0.20 -->
 	<target name="_tomcat-reload">
 		<taskdef name="tomcatreload" classname="org.apache.catalina.ant.ReloadTask">
 			<classpath>
-				<fileset dir="${env.CATALINA_HOME}/server/lib">
+				<fileset dir="${env.CATALINA_HOME}/lib">
 					<include name="*.jar"/>
 				</fileset>
 			</classpath>
