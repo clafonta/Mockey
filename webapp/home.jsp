@@ -247,5 +247,5 @@ $(function() {
 
 </script>
 </c:if>
-</div>
+
 <jsp:include page="/WEB-INF/common/footer.jsp" />

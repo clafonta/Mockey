@@ -44,7 +44,23 @@ ul li {	margin:0.5em; }
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
 p{margin: 0.5em; padding: 1px;}
 a{color: #00F;text-decoration:underline}
+.container_right {
+   position: relative;
+   height: 50px;
+   }
 
+.left-element {
+   position: absolute;
+   left: 0;
+   width: 50%;
+   }
+
+.right-element {
+   position: absolute;
+   right: 0;
+   width: 50%;
+   text-align: right; /* depends on element width */
+   } 
 a#highlight{font-size:120%;}
 div#container{width:875px;margin:0 auto}
 div#main{width: 100%;min-width:600px; margin-top: 10px }
@@ -80,8 +96,7 @@ table.basic td {border-style: none; padding: 0px;}
 table.example {background-color:#E5EECC;background-image:url(images/bgfadegreen.gif);background-repeat:repeat-x;border:1px solid #D4D4D4;color:#000000;padding:8px 10px;}
 table.simple{border-collapse: collapse;border-spacing: 0px; }
 table.simple th{ border-bottom: 1px inset #DDDDDD; font-weight: bold;padding-left: 8px; }
-table.simple td{
-	border-bottom: 1px inset #DDDDDD;
+table.simple td{	
 	text-align: left;
 	font-weight: normal;
 	margin-top: 5px;

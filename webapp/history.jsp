@@ -108,8 +108,10 @@ $(document).ready(function() {
     </c:if>
     <c:choose>
         <c:when test="${!empty requests}">
-            <c:forEach var="request" items="${requests}" varStatus="status">
-                <div id="fulfilledRequest_${request.id}" class="parentform">
+            <c:forEach var="request" items="${requests}" varStatus="status">            
+                <div id="fulfilledRequest_${request.id}" class="parentform" style="padding: 0.2em 0.5em; 0.2em 0.5em;">
+                
+                 
                    <c:url value="/history" var="filterByIp">
                       <c:param name="token" value="${request.requestorIP}" />
                    </c:url>
@@ -119,16 +121,17 @@ $(document).ready(function() {
                    <c:url value="/setup" var="serviceUrl">
                           <c:param name="serviceId" value="${request.serviceId}" />                                                                               
                       </c:url>  
-                   <p>
-                   <b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b>
                    
-                   <span style="float:right;"> 
+                   <div style="text-align:right;  position: relative;">
                    <a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a> |
                    <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink">view</a> |
                    <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |                  
-                   <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img src="<c:url value="/images/cross.png"/>"></a>
-                   </span>
-                   </p>	                                
+                   <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>
+                   </div>
+                   <div style="width:600px; position:relative; margin-top:-1em;">
+                   <b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b>
+                   </div>
+                                     
                 <div id="letmesee_${request.id}">
                 </div>
                     
