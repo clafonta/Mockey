@@ -15,7 +15,12 @@
  */
 package com.mockey.ui;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -26,28 +31,56 @@ import org.apache.log4j.PropertyConfigurator;
 
 public class StartUpServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -6466436642921760561L;
-	private static Logger logger = Logger.getLogger(StartUpServlet.class);
-	private static Properties appProps = new Properties();
+    private static final long serialVersionUID = -6466436642921760561L;
+    private static Logger logger = Logger.getLogger(StartUpServlet.class);
+    private static Properties appProps = new Properties();
+    public static final String MOCK_SERVICE_DEFINITION = "mock_service_definitions.xml";
 
-	public void init() throws ServletException {
+    public void init() throws ServletException {
 
-		String log4jFile = getInitParameter("log4j.properties");
-		String appPropFile = getInitParameter("default.properties");
-		// base directory of servlet context
-		String contextPath = getServletContext().getRealPath(System.getProperty("file.separator"));
+        String log4jFile = getInitParameter("log4j.properties");
+        String appPropFile = getInitParameter("default.properties");
+        // base directory of servlet context
+        String contextPath = getServletContext().getRealPath(System.getProperty("file.separator"));
 
-		try {
-			contextPath = "/";
-			InputStream log4jInputStream = getServletContext().getResourceAsStream(contextPath + log4jFile);
-			Properties log4JProperties = new Properties();
-			log4JProperties.load(log4jInputStream);
-			PropertyConfigurator.configure(log4JProperties);
+        try {
+            contextPath = "/";
+            InputStream log4jInputStream = getServletContext().getResourceAsStream(contextPath + log4jFile);
+            Properties log4JProperties = new Properties();
+            log4JProperties.load(log4jInputStream);
+            PropertyConfigurator.configure(log4JProperties);
 
-			InputStream appInputStream = getServletContext().getResourceAsStream(contextPath + appPropFile);
-			appProps.load(appInputStream);
-		} catch (Exception e) {
-			logger.error("StartUpServlet:init()", e);
-		}
-	}
+            InputStream appInputStream = getServletContext().getResourceAsStream(contextPath + appPropFile);
+            appProps.load(appInputStream);
+
+            File f = new File(MOCK_SERVICE_DEFINITION);
+           //String aa = f.getAbsolutePath();
+           // FileOutputStream fop = new FileOutputStream(f);
+
+            if (f.exists()) {
+                // Slurp it up and initialize definitions.
+                FileInputStream fstream = new FileInputStream(f);                
+                DataInputStream in = new DataInputStream(fstream);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                StringBuffer inputString = new StringBuffer();
+                // Read File Line By Line
+                String strLine = null;
+                while ((strLine = br.readLine()) != null) {
+                    // Print the content on the console
+                    inputString.append(strLine);
+                }
+                ConfigurationReader reader = new ConfigurationReader();
+                reader.loadConfiguration(inputString.toString().getBytes());
+           
+            }
+
+           
+
+        } 
+       
+        
+        catch (Exception e) {
+            logger.error("StartUpServlet:init()", e);
+        }
+    }
 }

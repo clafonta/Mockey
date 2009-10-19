@@ -56,12 +56,14 @@
 		it to see the request and response transaction(s) you just made.
 		
 		<h4>Examples</h4>
-		<ul>
+		<div >
+		<ul id="simple">
 			<li>1) <a href="<c:out value="${hintRecordUrl1}"/>"><c:out
 				value="${hintRecordUrl1}" /></a></li>
 			<li>2) <a href="<c:out value="${hintRecordUrl2}"/>"><c:out
 				value="${hintRecordUrl2}" /></a></li>
 		</ul>
+		</div>
 		<p>
 		After clicking on one of these example links above, click <a href="<c:url value="home"/>">here</a> to see what just happened.  
 		</p>

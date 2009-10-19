@@ -17,6 +17,7 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -99,6 +100,14 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("</p>");
             returnHTML.append("<p>");
             returnHTML.append("<input type=\"submit\" name=\"Save\" value=\"Save Response as a Scenario\" />");
+            String inspectFulfilledRequestURL = Url.getContextAwarePath("/inspect", req.getContextPath());
+            returnHTML.append(" View response body as: ");
+            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type=text/xml;&fulfilledRequestId="+fulfilledRequestId+"\">XML</a> ");
+            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type=text/plain;&fulfilledRequestId="+fulfilledRequestId+"\">Plain</a> ");
+            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type=text/css;&fulfilledRequestId="+fulfilledRequestId+"\">CSS</a> ");
+            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type=application/json;&fulfilledRequestId="+fulfilledRequestId+"\">JSON</a> ");  
+            String encoded = URLEncoder.encode("text/html;charset=utf-8", "utf-8");
+            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type="+encoded+"&fulfilledRequestId="+fulfilledRequestId+"\">HTML</a> ");
             returnHTML.append("</p>");
             returnHTML.append("</div>");
             returnHTML.append("</td>");
@@ -106,6 +115,7 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("</tbody>");
             returnHTML.append("</table>");
             returnHTML.append("</form>");
+            
             //
 
         } catch (Exception e) {

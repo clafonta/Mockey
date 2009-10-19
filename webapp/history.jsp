@@ -130,9 +130,10 @@ $(document).ready(function() {
                    </div>
                    <div style="width:600px; position:relative; margin-top:-1em;">
                    <b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b>
-                   </div>
+                   
                                      
                 <div id="letmesee_${request.id}">
+                </div>
                 </div>
                     
                 </div>

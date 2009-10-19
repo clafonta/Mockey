@@ -72,6 +72,14 @@
 		<servlet-name>HistoryHtmlServlet</servlet-name>
 		<servlet-class>com.mockey.ui.HistoryHtmlServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>InspectFulfilledRequestServlet</servlet-name>
+		<servlet-class>com.mockey.ui.InspectFulfilledRequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>InspectFulfilledRequestServlet</servlet-name>
+		<url-pattern>/inspect</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>HelpServlet</servlet-name>
 		<url-pattern>/help</url-pattern>

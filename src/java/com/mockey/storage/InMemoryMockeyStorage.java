@@ -15,12 +15,15 @@
  */
 package com.mockey.storage;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 import com.mockey.OrderedMap;
 import com.mockey.model.FulfilledClientRequest;
@@ -29,6 +32,8 @@ import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
 import com.mockey.model.Url;
+import com.mockey.storage.xml.MockeyXmlFactory;
+import com.mockey.ui.StartUpServlet;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.
@@ -37,7 +42,7 @@ import com.mockey.model.Url;
  */
 public class InMemoryMockeyStorage implements IMockeyStorage {
 
-    private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();    
+    private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
     private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
     private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
 
@@ -75,7 +80,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
      * </pre>
      */
     public InMemoryMockeyStorage() {
-        this.historyStore.setMaxSize(new Integer(25));  // Careful, more than ~45 and AJAX /JavaScript gets funky.
+        this.historyStore.setMaxSize(new Integer(25)); // Careful, more than ~45
+        // and AJAX /JavaScript
+        // gets funky.
     }
 
     public Service getServiceById(Long id) {
@@ -87,7 +94,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         try {
             for (Service service : getServices()) {
                 String fullURL = service.getUrl().getFullUrl().trim();
-                if(fullURL.equals(url.trim())){                
+                if (fullURL.equals(url.trim())) {
                     return service;
                 }
             }
@@ -103,11 +110,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
     public void saveOrUpdateService(Service mockServiceBean) {
         mockServiceStore.save(mockServiceBean);
+        this.writeMemoryToFile();
     }
 
     public void deleteService(Service mockServiceBean) {
         if (mockServiceBean != null) {
             mockServiceStore.remove(mockServiceBean.getId());
+            this.writeMemoryToFile();
         }
     }
 
@@ -149,11 +158,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
     public void setProxy(ProxyServerModel proxyInfoBean) {
         this.proxyInfoBean = proxyInfoBean;
+        this.writeMemoryToFile();
     }
 
     public void deleteServicePlan(ServicePlan servicePlan) {
         if (servicePlan != null) {
             this.servicePlanStore.remove(servicePlan.getId());
+            this.writeMemoryToFile();
         }
     }
 
@@ -167,6 +178,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
     public void saveOrUpdateServicePlan(ServicePlan servicePlan) {
         this.servicePlanStore.save(servicePlan);
+        this.writeMemoryToFile();
     }
 
     public Scenario getUniversalErrorScenario() {
@@ -180,16 +192,19 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
     public void setUniversalErrorScenarioId(Long scenarioId) {
         this.univeralErrorScenarioId = scenarioId;
+        this.writeMemoryToFile();
     }
 
     public void setUniversalErrorServiceId(Long serviceId) {
         this.univeralErrorServiceId = serviceId;
+        this.writeMemoryToFile();
     }
 
     public void deleteEverything() {
         historyStore = new OrderedMap<FulfilledClientRequest>();
         mockServiceStore = new OrderedMap<Service>();
         servicePlanStore = new OrderedMap<ServicePlan>();
+        this.writeMemoryToFile();
     }
 
     public List<String> uniqueClientIPs() {
@@ -219,10 +234,11 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
     }
 
     public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId) {
-               
+
         return this.historyStore.get(fulfilledClientRequestId);
-      
+
     }
+
     public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
         logger.debug("getting requests for serviceId: " + serviceId + ". there are a total of "
                 + this.historyStore.size() + " requests currently stored.");
@@ -318,7 +334,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
                     } else {
                         Header[] headers = req.getResponseMessage().getHeaders();
-                        if(headers!=null){
+                        if (headers != null) {
                             for (Header header : headers) {
                                 if (header.getName().indexOf(filterArg) > -1) {
                                     tokenFound = true;
@@ -326,7 +342,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
                                 } else if (header.getValue().indexOf(filterArg) > -1) {
                                     tokenFound = true;
                                     break;
-    
+
                                 }
                             }
                         }
@@ -344,5 +360,23 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
             }
         }
         return rv;
+    }
+
+    /**
+     * Every time something gets saved, we write to memory.
+     */
+    private void writeMemoryToFile() {
+        File f = new File(StartUpServlet.MOCK_SERVICE_DEFINITION);
+        try {
+            FileOutputStream fop = new FileOutputStream(f);
+            MockeyXmlFactory g = new MockeyXmlFactory();
+            Document result = g.getAsDocument(store);
+            String fileOutput = MockeyXmlFactory.documentToString(result);
+            fop.write(fileOutput.getBytes());
+            fop.flush();
+            fop.close();
+        } catch (Exception e) {
+            logger.debug("Unable to write file", e);
+        }
     }
 }

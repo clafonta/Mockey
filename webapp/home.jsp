@@ -134,7 +134,7 @@ $(document).ready( function() {
                                    </c:if>
                                 </p>
 								  <span>
-	                                <ul class="group">
+	                                <ul id="simple" class="group">
 	                                    <li>
 	                                    Select a Static Scenario.
 	                                    </li>

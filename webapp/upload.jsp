@@ -13,7 +13,7 @@
 	href="<c:url value="/home" />">Cancel</a></form>
 <c:if test="${not empty conflicts}">
 	<h2 class="highlight">Conflicts</h2>
-	<ul class="conflict_message">
+	<ul id="simple" class="conflict_message">
 		<c:forEach var="conflict" begin="0" items="${conflicts}">
 			<li><c:out value="${conflict}" escapeXml="false" /></li>
 		</c:forEach>
@@ -21,7 +21,7 @@
 </c:if> 
 <c:if test="${not empty additions}">
 	<h2>Additions</h2>
-	<ul class="addition_message">
+	<ul id="simple" class="addition_message">
 		<c:forEach var="addition" begin="0" items="${additions}">
 			<li><c:out value="${addition}" escapeXml="false" /></li>
 		</c:forEach>

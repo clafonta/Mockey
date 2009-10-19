@@ -3,7 +3,7 @@
 	<c:choose>
 	  <c:when test="${not empty mockservice.scenarios}">	  
 		<p>Available scenarios:</p> 
-		<ul class="group">
+		<ul id="simple" class="group">
 			<c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status">   
 	            <c:url value="/scenario" var="scenarioEditUrl">
 	                <c:param name="serviceId" value="${mockservice.id}" />

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en">
 <head>
 <title>Mockey - <c:out value="${requestScope.pageTitle}"/></title>
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="<c:url value="/javascript/jquery-impromptu.2.7.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/xmlTidy.js" />"></script>
 
- <script LANGUAGE="Javascript">
+<script LANGUAGE="Javascript">
 <!---
 function decision(message, url){
 if(confirm(message)) location.href = url;
@@ -69,6 +69,17 @@ $(document).ready(function() {
 
 <div id="logo">
     <img src="<c:url value="/images/logo.png" />" />
+    
+
+<%
+String ua = request.getHeader( "User-Agent" );
+boolean isFirefox = ( ua != null && ua.indexOf( "Firefox/" ) != -1 );
+boolean isMSIE = ( ua != null && ua.indexOf( "MSIE" ) != -1 );
+response.setHeader( "Vary", "User-Agent" );
+%>
+<% if( isMSIE ){ %>
+  <span class="alert_message" style="position:absolute; top:0; right:200; width:500px;">This isn't designed for <b>Internet Explorer</b>. You should use another browser.</span>
+<% } %>
 
 <ul id="minitabs">
     <li><a <c:if test="${currentTab == 'home'}">id ="current"</c:if> href="<c:url value="/home" />">All Services</a> | </li>
