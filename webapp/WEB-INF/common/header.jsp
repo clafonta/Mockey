@@ -11,6 +11,7 @@
 <script type="text/javascript" src="<c:url value="/javascript/jquery.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-impromptu.2.7.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/jquery.textarearesizer.compressed.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/xmlTidy.js" />"></script>
 
 <script LANGUAGE="Javascript">
@@ -22,6 +23,8 @@ if(confirm(message)) location.href = url;
 
 
 $(document).ready(function() {
+	$('textarea.resizable:not(.processed)').TextAreaResizer();
+	
     $('#flush').click(
         function () {
              $.prompt(

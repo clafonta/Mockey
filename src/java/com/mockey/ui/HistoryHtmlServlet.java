@@ -54,6 +54,14 @@ public class HistoryHtmlServlet extends HttpServlet {
             fulfilledRequestId = new Long(req.getParameter("fulfilledRequestId"));
             FulfilledClientRequest fCRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
             String contextRootScenarioURL = Url.getContextAwarePath("/scenario", req.getContextPath());
+            
+            returnHTML.append("<script type=\"text/javascript\">");
+            returnHTML.append("$(document).ready(function() {");
+            returnHTML.append("    $('textarea.resizable:not(.processed)').TextAreaResizer();");
+            returnHTML.append("    $('iframe.resizable:not(.processed)').TextAreaResizer();");
+            returnHTML.append("});");
+            returnHTML.append("</script>");
+        
             returnHTML.append("<form id=\"child\" action=\"" + contextRootScenarioURL + "\" method=\"post\">");
             returnHTML.append("<input type=\"hidden\" name=\"actionTypeGetFlag\" value=\"true\" />");
             returnHTML
@@ -66,13 +74,13 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("<h2>Request:</h2>");
             returnHTML.append("<p><h4>" + fCRequest.getRawRequest() + "</h4></p>");
             returnHTML.append("<p>Header</p>");
-            returnHTML.append("<p><textarea name=\"requestHeader\" rows=\"10\" cols=\"80%\">"
+            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestHeader\" rows=\"10\" cols=\"100%\">"
                     + fCRequest.getClientRequestHeaders() + "</textarea></p>");
             returnHTML.append("<p>Parameters</p>");
-            returnHTML.append("<p><textarea name=\"requestHeader\" rows=\"10\" cols=\"80%\">"
+            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestHeader\" rows=\"10\" cols=\"100%\">"
                     + fCRequest.getClientRequestParameters() + "</textarea></p>");
             returnHTML.append("<p>Body</p>");
-            returnHTML.append("<p><textarea name=\"requestMessage\" rows=\"10\" cols=\"80%\">"
+            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestMessage\" rows=\"10\" >"
                     + fCRequest.getClientRequestBody() + "</textarea></p>");
             returnHTML.append("</div>");
             returnHTML.append("</td>");
@@ -84,18 +92,18 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("<h2>Response: </h2>");
             returnHTML.append("<p>Status</p>");
             returnHTML.append("<p>");
-            returnHTML.append("    <textarea name=\"responseStatus\" rows=\"1\" cols=\"80%\">"
+            returnHTML.append("    <textarea class=\"resizable\" name=\"responseStatus\" rows=\"1\" >"
                     + fCRequest.getResponseMessage().getStatusLine() + "</textarea>");
             returnHTML.append("</p>");
             returnHTML.append("<p>Header</p>");
             returnHTML.append("<p>");
-            returnHTML.append("<textarea name=\"responseHeader\" rows=\"10\" cols=\"80%\">"
+            returnHTML.append("<textarea class=\"resizable\" name=\"responseHeader\" rows=\"10\" >"
                     + fCRequest.getResponseMessage().getHeaderInfo() + "</textarea>");
             returnHTML.append("</p>");
             returnHTML.append("<p>Body</p>");
             returnHTML.append("<p>");
             returnHTML
-                    .append("<textarea style=\"margin-top: 0px;\" name=\"responseMessage\" class=\"responseContent\" rows=\"10\" cols=\"80%\">"
+                    .append("<textarea style=\"margin-top: 0px;\" name=\"responseMessage\" class=\"resizable responseContent\" rows=\"10\" >"
                             + StringEscapeUtils.escapeHtml(fCRequest.getResponseMessage().getBody()) + "</textarea>");
             returnHTML.append("</p>");
             returnHTML.append("<p>");

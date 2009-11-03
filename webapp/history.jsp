@@ -27,6 +27,7 @@ $(document).ready(function() {
 			});
 		});
 
+		
 	
 	$('.mockeyResponse').each( function() {
 		var formatButton = $(this).find(".formatButton")[0];
@@ -150,7 +151,7 @@ $(document).ready(function() {
                    <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |                  
                    <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>
                    </div>
-                   <div style="width:600px; position:relative; margin-top:-1em;">
+                   <div style="width:720px; position:relative; margin-top:-1em;">
                    <b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b>
                    
                                      

@@ -48,7 +48,7 @@ p{margin: 0.5em; padding: 1px;}
 a{color: #00F;text-decoration:underline}
 a#highlight{font-size:120%;}
 div#container{width:875px;margin:0 auto}
-div#main{width: 100%;min-width:600px; margin-top: 10px }
+div#main{width: 100%; margin-top: 10px }
 div{margin-top: 1px }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
 div#logo{text-align: left }
@@ -174,3 +174,5 @@ div.service_edit_links {
 #jsddm li ul li	{	float: none; display:inline;}		
 #jsddm li ul li a {	width: auto; background: #9F1B1B; }
 #jsddm li ul li a:hover	{	background: #7F1616;}
+div.grippie {background:#EEEEEE url(images/grippie.png) no-repeat scroll center 2px;border-color:#DDDDDD;border-style:solid;border-width:0pt 1px 1px;cursor:s-resize;height:9px;overflow:hidden;}
+.resizable-textarea textarea {display:block;margin-bottom:0pt;width:95%;height: 20%;}
