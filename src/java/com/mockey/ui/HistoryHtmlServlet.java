@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
@@ -93,21 +95,24 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("<p>Body</p>");
             returnHTML.append("<p>");
             returnHTML
-                    .append("<button class=\"formatButton\" style=\"border: 1px solid #006; background: #ccf; margin-left: 60%; border-bottom-width:0;\">Format Body</button>");
-            returnHTML
                     .append("<textarea style=\"margin-top: 0px;\" name=\"responseMessage\" class=\"responseContent\" rows=\"10\" cols=\"80%\">"
-                            + fCRequest.getResponseMessage().getBody() + "</textarea>");
+                            + StringEscapeUtils.escapeHtml(fCRequest.getResponseMessage().getBody()) + "</textarea>");
             returnHTML.append("</p>");
             returnHTML.append("<p>");
             returnHTML.append("<input type=\"submit\" name=\"Save\" value=\"Save Response as a Scenario\" />");
             String inspectFulfilledRequestURL = Url.getContextAwarePath("/inspect", req.getContextPath());
             returnHTML.append(" View response body as: ");
-            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type=text/xml;&fulfilledRequestId="+fulfilledRequestId+"\">XML</a> ");
-            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type=text/plain;&fulfilledRequestId="+fulfilledRequestId+"\">Plain</a> ");
-            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type=text/css;&fulfilledRequestId="+fulfilledRequestId+"\">CSS</a> ");
-            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type=application/json;&fulfilledRequestId="+fulfilledRequestId+"\">JSON</a> ");  
+            returnHTML.append("<a href=\"" + inspectFulfilledRequestURL + "?content_type=text/xml;&fulfilledRequestId="
+                    + fulfilledRequestId + "\">XML</a> ");
+            returnHTML.append("<a href=\"" + inspectFulfilledRequestURL
+                    + "?content_type=text/plain;&fulfilledRequestId=" + fulfilledRequestId + "\">Plain</a> ");
+            returnHTML.append("<a href=\"" + inspectFulfilledRequestURL + "?content_type=text/css;&fulfilledRequestId="
+                    + fulfilledRequestId + "\">CSS</a> ");
+            returnHTML.append("<a href=\"" + inspectFulfilledRequestURL
+                    + "?content_type=application/json;&fulfilledRequestId=" + fulfilledRequestId + "\">JSON</a> ");
             String encoded = URLEncoder.encode("text/html;charset=utf-8", "utf-8");
-            returnHTML.append("<a href=\""+inspectFulfilledRequestURL+"?content_type="+encoded+"&fulfilledRequestId="+fulfilledRequestId+"\">HTML</a> ");
+            returnHTML.append("<a href=\"" + inspectFulfilledRequestURL + "?content_type=" + encoded
+                    + "&fulfilledRequestId=" + fulfilledRequestId + "\">HTML</a> ");
             returnHTML.append("</p>");
             returnHTML.append("</div>");
             returnHTML.append("</td>");
@@ -115,15 +120,18 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("</tbody>");
             returnHTML.append("</table>");
             returnHTML.append("</form>");
-            
+
             //
 
         } catch (Exception e) {
             returnHTML.append("Sorry, history for this request is not available.");
         }
 
+        resp.setContentType("text/html");
+
         PrintStream out = new PrintStream(resp.getOutputStream());
-        out.println(returnHTML);
+
+        out.println(returnHTML.toString());
     }
 
 }
