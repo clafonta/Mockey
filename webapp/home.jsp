@@ -46,22 +46,23 @@ $(document).ready( function() {
 							<td valign="top" width="20%">
 	                            <c:forEach var="mockservice" items="${services}">	                              
 	                                <div class="toggle_button">
-									      <a class="gt" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
+									      
 									      
 									      <c:choose>
 									        <c:when test="${mockservice.serviceResponseType eq 0}">
-									        <span style="color:red; font-size:60%;">P</span>
+									        <span style="color:red; font-size:80%;">P</span>
 									        </c:when>
 									        <c:when test="${mockservice.serviceResponseType eq 1}">
-									        <span style="color:red; font-size:60%;">S</span>
+									        <span style="color:red; font-size:80%;">S</span>
 									        </c:when>
 									        <c:when test="${mockservice.serviceResponseType eq 2}">
-									        <span style="color:red; font-size:60%;">D</span>
+									        <span style="color:red; font-size:80%;">D</span>
 									        </c:when>
 									        <c:otherwise>
 									        <span class="tiny" style="color:red;">?</span>
 									        </c:otherwise>
 									      </c:choose>
+									      <a class="gt" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
 									</div>
 							    </c:forEach>
 							</td>

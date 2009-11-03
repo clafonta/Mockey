@@ -9,7 +9,7 @@
 	                <c:param name="serviceId" value="${mockservice.id}" />
 	                <c:param name="scenarioId" value="${scenario.id}" />
 	            </c:url>                 
-				<li><a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario"> <c:out value="${scenario.scenarioName}" /></a></li> 
+				<li><a href="<c:out value="${scenarioEditUrl}"/>" title="Edit service scenario"> <c:out value="${scenario.scenarioName}" /></li> 
 			</c:forEach>
 		</ul>
 		</c:when>

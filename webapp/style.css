@@ -54,7 +54,7 @@ div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid 
 div#logo{text-align: left }
 div#logo a{text-decoration: none; color: #06F; }
 .spread{margin-left:0.8em;}
-span#greentext {font: 12pt Arial;letter-spacing 4pt;color: #00AA00 margin:6px;}
+span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;}
 ul#minitabs{list-style: none;margin: 0;padding: 7px 0;  border-bottom: 1px solid #CCC;font-weight: bold;  text-align: center;white-space: nowrap}
 ul#minitabs li{display: inline;margin: 0 3px}
 ul#minitabs a{
