@@ -21,11 +21,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -59,18 +61,17 @@ public class StartUpServlet extends HttpServlet {
 
             if (f.exists()) {
                 // Slurp it up and initialize definitions.
-                FileInputStream fstream = new FileInputStream(f);                
-                DataInputStream in = new DataInputStream(fstream);
-                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                FileInputStream fstream = new FileInputStream(f);
+                BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
                 StringBuffer inputString = new StringBuffer();
                 // Read File Line By Line
                 String strLine = null;
                 while ((strLine = br.readLine()) != null) {
                     // Print the content on the console
-                    inputString.append(strLine);
+                    inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
                 }
                 ConfigurationReader reader = new ConfigurationReader();
-                reader.loadConfiguration(inputString.toString().getBytes());
+                reader.loadConfiguration(inputString.toString().getBytes(HTTP.UTF_8));
            
             }
 

@@ -27,6 +27,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 /**
@@ -179,8 +180,15 @@ public class ResponseFromService {
                     resp.setHeader(header.getName(), header.getValue());
             }
         }
-        PrintStream out = new PrintStream(resp.getOutputStream());
-        out.println(body);
+        if(body!=null){
+            byte[] myISO88591asBytes = body.getBytes(HTTP.ISO_8859_1);            
+            new PrintStream(resp.getOutputStream()).write(myISO88591asBytes); 
+            resp.getOutputStream().flush();    
+        }else {
+            PrintStream out = new PrintStream(resp.getOutputStream());
+            out.println(body);
+        }
+       
 
     }
 

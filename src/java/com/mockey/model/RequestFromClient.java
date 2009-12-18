@@ -66,6 +66,12 @@ public class RequestFromClient {
 
     public RequestFromClient(HttpServletRequest rawRequest) {
         this.rawRequest = rawRequest;
+        try {
+            this.rawRequest.setCharacterEncoding(HTTP.ISO_8859_1); //"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         parseRequestHeaders();
         parseRequestBody();
         parseParameters();
@@ -160,9 +166,9 @@ public class RequestFromClient {
             if (values != null && values.length > 0) {
                 for (String value : values) {
                     if(value.trim().length() > 0){
-                        requestMsg.append(URLEncoder.encode(key,"UTF-8")).append("=").append(URLEncoder.encode(value,"UTF-8"));
+                        requestMsg.append(URLEncoder.encode(key,HTTP.UTF_8)).append("=").append(URLEncoder.encode(value,HTTP.UTF_8));
                     }else {
-                        requestMsg.append(URLEncoder.encode(key,"UTF-8"));
+                        requestMsg.append(URLEncoder.encode(key,HTTP.UTF_8));
                     }
                 }
             } 
@@ -250,7 +256,7 @@ public class RequestFromClient {
                         parameters.add(new BasicNameValuePair(entry.getKey(), value));
                     }
                 }
-                body = new UrlEncodedFormEntity(parameters, HTTP.UTF_8);
+                body = new UrlEncodedFormEntity(parameters, HTTP.ISO_8859_1); //.UTF_8);
             }
 
         } catch (UnsupportedEncodingException e) {

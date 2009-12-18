@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.http.Header;
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
@@ -372,7 +373,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
             MockeyXmlFactory g = new MockeyXmlFactory();
             Document result = g.getAsDocument(store);
             String fileOutput = MockeyXmlFactory.documentToString(result);
-            fop.write(fileOutput.getBytes());
+            byte[] fileOutputAsBytes = fileOutput.getBytes(HTTP.UTF_8);
+            fop.write(fileOutputAsBytes);
             fop.flush();
             fop.close();
         } catch (Exception e) {

@@ -31,6 +31,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.RequestFromClient;
@@ -90,7 +91,7 @@ public class ClientExecuteProxy {
         // prepare parameters
         HttpParams params = new BasicHttpParams();
         HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(params, "UTF-8");
+        HttpProtocolParams.setContentCharset(params, HTTP.ISO_8859_1);
         HttpProtocolParams.setUseExpectContinue(params, false);
         ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
         DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
@@ -104,6 +105,8 @@ public class ClientExecuteProxy {
 
         // execute the call to the real host
         HttpResponse response = httpclient.execute(serviceBean.getHttpHost(), request.postToRealServer(serviceBean));
+        
+
         ResponseFromService responseMessage = new ResponseFromService(response);
 
         // When HttpClient instance is no longer needed,

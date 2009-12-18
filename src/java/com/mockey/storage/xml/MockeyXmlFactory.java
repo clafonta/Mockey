@@ -28,6 +28,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.http.protocol.HTTP;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -81,7 +82,8 @@ public class MockeyXmlFactory {
 		if (document != null) {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml"); 
+            transformer.setOutputProperty(OutputKeys.ENCODING, HTTP.UTF_8);
             StreamResult result = new StreamResult(new StringWriter());
             DOMSource source = new DOMSource(document);
             transformer.transform(source, result);

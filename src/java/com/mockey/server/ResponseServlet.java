@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;
@@ -59,6 +60,7 @@ public class ResponseServlet extends HttpServlet {
         
         logger.info(request.getHeaderInfo());
         logger.info(request.getParameterInfo());
+        
 
         String requestedUrl = originalHttpReqFromClient.getRequestURI();
         String contextRoot = originalHttpReqFromClient.getContextPath();
@@ -82,9 +84,13 @@ public class ResponseServlet extends HttpServlet {
         	// Or not.
         }
         
+        resp.setCharacterEncoding(HTTP.ISO_8859_1); //"UTF-8");
+        resp.setContentType(service.getHttpContentType());
         if (!(service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY)) {
-            resp.setContentType(service.getHttpContentType());
-            new PrintStream(resp.getOutputStream()).println(response.getBody());
+            resp.setContentType(service.getHttpContentType());           
+            byte[] myISO88591asBytes = response.getBody().getBytes("ISO-8859-1");            
+            new PrintStream(resp.getOutputStream()).write(myISO88591asBytes); 
+            resp.getOutputStream().flush();
         } else {
         	response.writeToOutput(resp);
         }
