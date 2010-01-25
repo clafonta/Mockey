@@ -61,32 +61,38 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("    $('iframe.resizable:not(.processed)').TextAreaResizer();");
             returnHTML.append("});");
             returnHTML.append("</script>");
-        
-            returnHTML.append("<form id=\"child\" action=\"" + contextRootScenarioURL + "\" method=\"post\">");
-            returnHTML.append("<input type=\"hidden\" name=\"actionTypeGetFlag\" value=\"true\" />");
-            returnHTML
-                    .append("<input type=\"hidden\" name=\"serviceId\" value=\"" + fCRequest.getServiceId() + "\" />");
             returnHTML.append("<table class=\"history\" width=\"100%\">");
             returnHTML.append("     <tbody>");
             returnHTML.append("<tr>");
             returnHTML.append("<td>");
             returnHTML.append("<div class=\"conflict_message\">");
+            String contextRoot = req.getContextPath();
+            String doitagainUrl = Url.getContextAwarePath("/doitagain", contextRoot);
+            returnHTML.append("<form id=\"child\" action=\""+doitagainUrl+"\" method=\"post\" style=\"background-color:#FFD7D7\" >");
+            returnHTML.append("<input type=\"hidden\" name=\"fulfilledClientRequestId\" value=\""+fCRequest.getId()+"\" />");
             returnHTML.append("<h2>Request:</h2>");
             returnHTML.append("<p><h4>" + fCRequest.getRawRequest() + "</h4></p>");
-            returnHTML.append("<p>Header</p>");
-            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestHeader\" rows=\"10\" cols=\"100%\">"
+            returnHTML.append("<p>Header (pipe delimited)</p>");
+            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestHeader\" rows=\"5\" cols=\"100%\">"
                     + fCRequest.getClientRequestHeaders() + "</textarea></p>");
-            returnHTML.append("<p>Parameters</p>");
-            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestHeader\" rows=\"10\" cols=\"100%\">"
-                    + fCRequest.getClientRequestParameters() + "</textarea></p>");
+            returnHTML.append("<p>Parameters (pipe delimited)</p>");
+            returnHTML.append("<textarea class=\"resizable\" name=\"requestParameters\" rows=\"5\" cols=\"100%\">"
+                    + fCRequest.getClientRequestParameters() + "</textarea>");
             returnHTML.append("<p>Body</p>");
-            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestMessage\" rows=\"10\" >"
+            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestBody\" rows=\"10\" >"
                     + fCRequest.getClientRequestBody() + "</textarea></p>");
+            returnHTML.append("<input type=\"submit\" name=\"NewParameters\" value=\"Send This Again\" class=\"button\" />");
+            returnHTML.append(" This will build a request with the body, parameters, and header information above. ");
+            returnHTML.append("</form>");
             returnHTML.append("</div>");
             returnHTML.append("</td>");
             returnHTML.append("</tr>");
             returnHTML.append(" <tr>");
             returnHTML.append("<td >");
+            returnHTML.append("<form id=\"child\" action=\"" + contextRootScenarioURL + "\" method=\"post\">");
+            returnHTML.append("<input type=\"hidden\" name=\"actionTypeGetFlag\" value=\"true\" />");
+            returnHTML
+                    .append("<input type=\"hidden\" name=\"serviceId\" value=\"" + fCRequest.getServiceId() + "\" />");
             returnHTML.append("<div id=\"scenario" + fCRequest.getId()
                     + "\" class=\"addition_message mockeyResponse\">");
             returnHTML.append("<h2>Response: </h2>");
@@ -122,12 +128,13 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("<a href=\"" + inspectFulfilledRequestURL + "?content_type=" + encoded
                     + "&fulfilledRequestId=" + fulfilledRequestId + "\">HTML</a> ");
             returnHTML.append("</p>");
+            returnHTML.append("</form>");
             returnHTML.append("</div>");
             returnHTML.append("</td>");
             returnHTML.append("</tr>");
             returnHTML.append("</tbody>");
             returnHTML.append("</table>");
-            returnHTML.append("</form>");
+            
 
             //
 

@@ -234,11 +234,11 @@ public class RequestFromClient {
     @SuppressWarnings("unchecked")
     public String getHeaderInfo() {
         StringBuffer buf = new StringBuffer();
-
+        
         Enumeration headerNames = rawRequest.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String name = (String) headerNames.nextElement();
-            buf.append(name).append("=").append(rawRequest.getHeader(name)).append("\n");
+            buf.append(name).append("=").append(rawRequest.getHeader(name)).append("|");
         }
         return buf.toString();
     }
@@ -294,7 +294,7 @@ public class RequestFromClient {
             for (String value : entry.getValue()) {
                 builder.append(value);
             }
-            builder.append("\n");
+            builder.append("|");
         }
         return builder.toString();
     }

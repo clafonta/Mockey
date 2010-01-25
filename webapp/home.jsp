@@ -68,7 +68,9 @@ $(document).ready( function() {
 							</td>
 							<td valign="top">
 							<div id='service_list_container'>
-				
+							<div class="service_div display" style="display:block;text-align:right;" >
+							<font style="color:orange;font-size:20px;">This is Mockey. Go ahead, click on something.</font>
+							</div>
 							<c:forEach var="mockservice" items="${services}">
 							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
                                <c:if test="${mode ne 'edit_plan'}">

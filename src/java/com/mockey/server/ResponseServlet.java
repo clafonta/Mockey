@@ -17,6 +17,7 @@ package com.mockey.server;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -96,18 +97,13 @@ public class ResponseServlet extends HttpServlet {
         }
     }
     
-    private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response, String ip) {
+    private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response, String ip) throws UnsupportedEncodingException {
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
         fulfilledClientRequest.setRawRequest(request.getRawRequestAsString(service));
         fulfilledClientRequest.setRequestorIP(ip);
         fulfilledClientRequest.setServiceId(service.getId());
-        fulfilledClientRequest.setServiceName(service.getServiceName());
-
-        if (!request.hasPostBody()) {
-            fulfilledClientRequest.setClientRequestBody("[No post body provided by client]");
-        } else {
-            fulfilledClientRequest.setClientRequestBody(request.getBodyInfo());
-        }
+        fulfilledClientRequest.setServiceName(service.getServiceName());       
+        fulfilledClientRequest.setClientRequestBody(request.getBodyInfo());
         fulfilledClientRequest.setClientRequestHeaders(request.getHeaderInfo());
         fulfilledClientRequest.setClientRequestParameters(request.getParameterInfo());
         fulfilledClientRequest.setResponseMessage(response);

@@ -6,12 +6,28 @@
 <taglib>
 	<tlibversion>1.0</tlibversion>
 	<jspversion>1.1</jspversion>
-	<shortname>custom</shortname>	
+	<shortname>custom</shortname>
+	<tag>
+		<name>slug</name>
+		<tagclass>com.mockey.ui.tags.SlugTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Manages a the disply of a service URL</info>
+		<attribute>
+			<name>text</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxLength</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 	<tag>
 		<name>url</name>
 		<tagclass>com.mockey.ui.tags.ServiceUrlTag</tagclass>
 		<bodycontent>JSP</bodycontent>
-		<info>Manages a the disply of a service URL</info>
+		<info>Manages a the display of a service URL</info>
 		<attribute>
 			<name>value</name>
 			<required>true</required>
@@ -19,36 +35,35 @@
 		</attribute>
 	</tag>
 	<tag>
-        <name>history</name>
-        <tagclass>com.mockey.ui.tags.HistoryFilterTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Manages a the disply of a history token removal</info>
-        <attribute>
-            <name>value</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <name>clipboard</name>
-        <tagclass>com.mockey.ui.tags.ClipboardTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Adds an add to clipboard link</info>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>text</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>bgcolor</name>
-            <required>false</required>
-        </attribute>
-
-    </tag>
+		<name>history</name>
+		<tagclass>com.mockey.ui.tags.HistoryFilterTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Manages a the display of a history token removal</info>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>clipboard</name>
+		<tagclass>com.mockey.ui.tags.ClipboardTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Adds an add to clipboard link</info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>text</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>bgcolor</name>
+			<required>false</required>
+		</attribute>
+	</tag>
 
 </taglib>
