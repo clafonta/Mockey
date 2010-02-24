@@ -143,21 +143,19 @@ $(document).ready(function() {
                    </c:url>
                    <c:url value="/setup" var="serviceUrl">
                           <c:param name="serviceId" value="${request.serviceId}" />                                                                               
-                      </c:url>  
+                   </c:url>  
                    
-                   <div style="text-align:right;  position: relative;">
+                   <div style="text-align:right;  position: relative;font-size:80%;">
                    <a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a> |
                    <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink">view</a> |
                    <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |                  
                    <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>
                    
-                   </div>
-                   <div style="width:720px; position:relative; margin-top:-1em;">
-                   <b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP"><c:out value="${request.requestorIP}"/></a></b> for service <b><a href="<c:out value="${serviceUrl}"/>" title="Service"><c:out value="${request.serviceName}"/></a></b>
+                </div>
+                <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
+                   <b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP: <c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a></b> for <b><a href="<c:out value="${serviceUrl}"/>" title="<c:out value="${request.serviceName}"/>"><mockey:slug text="${request.serviceName}" maxLength="20"/></a></b>
                    <br />
-                   <b>URL:</b> <mockey:slug text="${request.rawRequest}" maxLength="80"/> 
-                   
-                                     
+                   <b>URL:</b> <mockey:slug text="${request.rawRequest}" maxLength="80"/>                     
                 <div id="letmesee_${request.id}">
                 </div>
                 </div>

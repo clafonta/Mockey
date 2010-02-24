@@ -110,7 +110,7 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("<p>");
             returnHTML
                     .append("<textarea style=\"margin-top: 0px;\" name=\"responseMessage\" class=\"resizable responseContent\" rows=\"10\" >"
-                            + StringEscapeUtils.escapeHtml(fCRequest.getResponseMessage().getBody()) + "</textarea>");
+                            + StringEscapeUtils.escapeXml(fCRequest.getResponseMessage().getBody()) + "</textarea>");
             returnHTML.append("</p>");
             returnHTML.append("<p>");
             returnHTML.append("<input type=\"submit\" name=\"Save\" value=\"Save Response as a Scenario\" />");

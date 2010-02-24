@@ -54,11 +54,11 @@ $(document).ready(function() {
 <%
 String ua = request.getHeader( "User-Agent" );
 boolean isFirefox = ( ua != null && ua.indexOf( "Firefox/" ) != -1 );
-boolean isMSIE = ( ua != null && ua.indexOf( "MSIE" ) != -1 );
+boolean isMSIE = ( ua != null && ua.indexOf( "MSIE 6.0" ) != -1 );
 response.setHeader( "Vary", "User-Agent" );
 %>
 <% if( isMSIE ){ %>
-  <span class="alert_message" style="position:absolute; top:0; right:200; width:500px;">This isn't designed for <b>Internet Explorer</b>. You should use another browser.</span>
+  <span class="alert_message" style="position:absolute; top:0; right:200; width:500px;">This isn't designed for <b>Internet Explorer 6.0</b>. You should use another browser.</span>
 <% } %>
 
 <ul id="minitabs">
