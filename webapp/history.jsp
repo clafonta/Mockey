@@ -167,8 +167,8 @@ $(document).ready(function() {
                    </c:url>  
                    <div style="text-align:right;  position: relative;font-size:80%;">
                      <a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a> |
-                     <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink">view</a> |
-                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |      
+                     <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a> |
+                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;">hide</a> |      
                      <c:choose>
                        <c:when test="${request.comment ne null}">
                        <a href="#" id="removeCommentFulfilledRequestLink_${request.id}" class="removeCommentFulfilledRequestLink" title="Remove tag"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/star.png"/>"></a>
