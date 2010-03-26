@@ -59,25 +59,13 @@ $(document).ready(function() {
 		});
 	});
 	
-	$('.addCommentFulfilledRequestLink').each( function() {
+	$('.tagFulfilledRequestLink').each( function() {
 		$(this).click( function() {
 			var requestId = this.id.split("_")[1];
 			var unusedServiceId = -1;
 			$.ajax({
 				type: "POST",
-				url: "<c:url value="history"/>?action=addcomment&comment=woot&fulfilledRequestId="+requestId
-			});
-			
-		});
-	});
-	
-		$('.removeCommentFulfilledRequestLink').each( function() {
-		$(this).click( function() {
-			var requestId = this.id.split("_")[1];
-			var unusedServiceId = -1;
-			$.ajax({
-				type: "POST",
-				url: "<c:url value="history"/>?action=removecomment&fulfilledRequestId="+requestId
+				url: "<c:url value="history"/>?action=tag&fulfilledRequestId="+requestId
 			});
 		});
 	});
@@ -124,6 +112,7 @@ $(document).ready(function() {
                 );
         })
 });
+
 </script>
 <div id="main">
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
@@ -156,32 +145,18 @@ $(document).ready(function() {
         <c:when test="${!empty requests}">
             <c:forEach var="request" items="${requests}" varStatus="status">            
                 <div id="fulfilledRequest_${request.id}" class="parentform" style="padding: 0.2em 0.5em; 0.2em 0.5em;">
-                   <c:url value="/history" var="filterByIp">
-                      <c:param name="token" value="${request.requestorIP}" />
-                   </c:url>
-                   <c:url value="/history" var="filterByServiceName">
-                       <c:param name="token" value="${request.serviceName}" />	                                                                              
-                   </c:url>
                    <c:url value="/setup" var="serviceUrl">
                           <c:param name="serviceId" value="${request.serviceId}" />                                                                               
                    </c:url>  
-                   <div style="text-align:right;  position: relative;font-size:80%;">
-                     <a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a> |
+                   <div style="text-align:right;  position: relative;font-size:80%;" class="<c:if test="${request.comment ne null}">selected</c:if>">
+                     
                      <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a> |
                      <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;">hide</a> |      
-                     <c:choose>
-                       <c:when test="${request.comment ne null}">
-                       <a href="#" id="removeCommentFulfilledRequestLink_${request.id}" class="removeCommentFulfilledRequestLink" title="Remove tag"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/star.png"/>"></a>
-                       </c:when>                       
-                       <c:otherwise>
-                     <a href="#" id="addCommentFulfilledRequestLink_${request.id}" class="addCommentFulfilledRequestLink">tag</a>
-                       </c:otherwise>
-                     </c:choose>            
-                     
+                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink"><span>tag</span></a>
                      <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>	              
 	               </div>
 	               <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
-	                 <b>When:</b> <mockey:fdate date="${request.time}"/> From: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP: <c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a></b> 
+	                 <b>When:</b> <mockey:fdate date="${request.time}"/> <b>From:</b> <a id="finfo" title="<c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a>
 						 (<mockey:service type="${request.serviceResponseType}"/>)
 	                 <b><a href="<c:out value="${serviceUrl}"/>" title="<c:out value="${request.serviceName}"/>"><mockey:slug text="${request.serviceName}" maxLength="20"/></a></b>
 	                 <br />
@@ -193,8 +168,15 @@ $(document).ready(function() {
             </c:forEach>
         </c:when>
         <c:otherwise>
-            <div><p>No historical requests. </p></div>
+            <div><p><h4 style="color:red;">No history here.</h4> It's because no one talks to Mockey or someone just cleared the history. Mockey is feeling unwanted.</p></div>
         </c:otherwise>
     </c:choose>
 </div>
+<script>
+    $("a.tagFulfilledRequestLink").click(function () {
+      $(this).parent().toggleClass("selected");
+    });
+</script>
+
+
 <jsp:include page="/WEB-INF/common/footer.jsp" />

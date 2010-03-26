@@ -50,6 +50,7 @@ a#response_proxy{color:green;text-decoration:none; font-size:80%;}
 a#response_static{color:red;text-decoration:none; font-size:80%;}
 a#response_dynamic{color:blue;text-decoration:none; font-size:80%;}
 a#fdate{color:blue;text-decoration:none;}
+a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
 div#container{width:875px;margin:0 auto}
 div#main{width: 100%; margin-top: 10px }
@@ -57,7 +58,7 @@ div{margin-top: 1px }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
 div#logo{text-align: left }
 div#logo a{text-decoration: none; color: #06F; }
-.spread{margin-left:0.8em;}
+.spread{margin-left:0.8em;font-size:80%;}
 span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;}
 ul#minitabs{list-style: none;margin: 0;padding: 7px 0;  border-bottom: 1px solid #CCC;font-weight: bold;  text-align: center;white-space: nowrap}
 ul#minitabs li{display: inline;margin: 0 3px}
@@ -180,3 +181,6 @@ div.service_edit_links {
 #jsddm li ul li a:hover	{	background: #7F1616;}
 div.grippie {background:#EEEEEE url(images/grippie.png) no-repeat scroll center 2px;border-color:#DDDDDD;border-style:solid;border-width:0pt 1px 1px;cursor:s-resize;height:9px;overflow:hidden;}
 .resizable-textarea textarea {display:block;margin-bottom:0pt;width:95%;height: 20%;}
+.selected{background-color:yellow;}
+
+
