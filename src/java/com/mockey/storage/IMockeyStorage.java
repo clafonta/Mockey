@@ -60,7 +60,7 @@ public interface IMockeyStorage {
 	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId);
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments);
- 	public void logClientRequest(FulfilledClientRequest requestResponseX);
+ 	public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest requestResponseX);
 	public void deleteFulfilledClientRequests();
 	public void deleteFulfilledClientRequestById(Long fulfilledRequestID);
 	public void deleteFulfilledClientRequestsFromIP(Long ip);	

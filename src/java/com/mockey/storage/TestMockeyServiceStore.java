@@ -167,7 +167,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void logClientRequest(FulfilledClientRequest requestResponseX) {
+    public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest requestResponseX) {
         // TODO Auto-generated method stub
 
     }

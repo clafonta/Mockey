@@ -46,6 +46,10 @@ ul#simple li {	margin:0.5em; }
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
 p{margin: 0.5em; padding: 1px;}
 a{color: #00F;text-decoration:underline}
+a#response_proxy{color:green;text-decoration:none; font-size:80%;}
+a#response_static{color:red;text-decoration:none; font-size:80%;}
+a#response_dynamic{color:blue;text-decoration:none; font-size:80%;}
+a#fdate{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
 div#container{width:875px;margin:0 auto}
 div#main{width: 100%; margin-top: 10px }

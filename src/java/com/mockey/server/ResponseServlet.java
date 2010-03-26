@@ -107,6 +107,7 @@ public class ResponseServlet extends HttpServlet {
         fulfilledClientRequest.setClientRequestHeaders(request.getHeaderInfo());
         fulfilledClientRequest.setClientRequestParameters(request.getParameterInfo());
         fulfilledClientRequest.setResponseMessage(response);
-        store.logClientRequest(fulfilledClientRequest);
+        fulfilledClientRequest.setServiceResponseType(service.getServiceResponseType());
+        store.saveOrUpdateFulfilledClientRequest(fulfilledClientRequest);
     }
 }

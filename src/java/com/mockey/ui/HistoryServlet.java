@@ -78,6 +78,31 @@ public class HistoryServlet extends HttpServlet {
             // Ajax used in page, so don't return anything
             return;
 
+        }  else if (action != null && "addcomment".equals(action)) {
+            String fulfilledRequestId = req.getParameter("fulfilledRequestId");
+            String comment = req.getParameter("comment");
+            try {
+            	FulfilledClientRequest ffcr = store.getFulfilledClientRequestsById(new Long(fulfilledRequestId));
+            	ffcr.setComment(comment);
+            	store.saveOrUpdateFulfilledClientRequest(ffcr);
+            } catch (Exception e) {
+                logger.error("Unable to add comment fulfilled request with id:" + fulfilledRequestId, e);
+            }
+            // Ajax used in page, so don't return anything
+            return;
+
+        }  else if (action != null && "removecomment".equals(action)) {
+            String fulfilledRequestId = req.getParameter("fulfilledRequestId");
+            try {
+            	FulfilledClientRequest ffcr = store.getFulfilledClientRequestsById(new Long(fulfilledRequestId));
+            	ffcr.setComment(null);
+            	store.saveOrUpdateFulfilledClientRequest(ffcr);
+            } catch (Exception e) {
+                logger.error("Unable to remove comment from fulfilled request with id:" + fulfilledRequestId, e);
+            }
+            // Ajax used in page, so don't return anything
+            return;
+
         } else if (action != null && "remove_token".equals(action)) {
             historyFilter.deleteTokens(filterTokens);
         } else if (action != null && "remove_all_tokens".equals(action)) {

@@ -140,7 +140,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
         historyStore.remove(scenarioId);
     }
 
-    public void logClientRequest(FulfilledClientRequest request) {
+    public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest request) {
         logger.debug("saving a request.");
         historyStore.save(request);
     }

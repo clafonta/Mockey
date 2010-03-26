@@ -58,6 +58,29 @@ $(document).ready(function() {
 			});
 		});
 	});
+	
+	$('.addCommentFulfilledRequestLink').each( function() {
+		$(this).click( function() {
+			var requestId = this.id.split("_")[1];
+			var unusedServiceId = -1;
+			$.ajax({
+				type: "POST",
+				url: "<c:url value="history"/>?action=addcomment&comment=woot&fulfilledRequestId="+requestId
+			});
+			
+		});
+	});
+	
+		$('.removeCommentFulfilledRequestLink').each( function() {
+		$(this).click( function() {
+			var requestId = this.id.split("_")[1];
+			var unusedServiceId = -1;
+			$.ajax({
+				type: "POST",
+				url: "<c:url value="history"/>?action=removecomment&fulfilledRequestId="+requestId
+			});
+		});
+	});
 
 	$('.viewFulfilledRequestLink').each( function() {
 		$(this).click( function() {
@@ -133,8 +156,6 @@ $(document).ready(function() {
         <c:when test="${!empty requests}">
             <c:forEach var="request" items="${requests}" varStatus="status">            
                 <div id="fulfilledRequest_${request.id}" class="parentform" style="padding: 0.2em 0.5em; 0.2em 0.5em;">
-                
-                 
                    <c:url value="/history" var="filterByIp">
                       <c:param name="token" value="${request.requestorIP}" />
                    </c:url>
@@ -144,22 +165,30 @@ $(document).ready(function() {
                    <c:url value="/setup" var="serviceUrl">
                           <c:param name="serviceId" value="${request.serviceId}" />                                                                               
                    </c:url>  
-                   
                    <div style="text-align:right;  position: relative;font-size:80%;">
-                   <a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a> |
-                   <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink">view</a> |
-                   <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |                  
-                   <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>
-                   
-                </div>
-                <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
-                   <b>Time:</b> <c:out value="${request.time}"/> for client IP: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP: <c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a></b> for <b><a href="<c:out value="${serviceUrl}"/>" title="<c:out value="${request.serviceName}"/>"><mockey:slug text="${request.serviceName}" maxLength="20"/></a></b>
-                   <br />
-                   <b>URL:</b> <mockey:slug text="${request.rawRequest}" maxLength="80"/>                     
-                <div id="letmesee_${request.id}">
-                </div>
-                </div>
-                    
+                     <a href="<c:out value="${filterByServiceName}"/>" title="Filter by Service Name">add to filter</a> |
+                     <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink">view</a> |
+                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink">hide</a> |      
+                     <c:choose>
+                       <c:when test="${request.comment ne null}">
+                       <a href="#" id="removeCommentFulfilledRequestLink_${request.id}" class="removeCommentFulfilledRequestLink" title="Remove tag"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/star.png"/>"></a>
+                       </c:when>                       
+                       <c:otherwise>
+                     <a href="#" id="addCommentFulfilledRequestLink_${request.id}" class="addCommentFulfilledRequestLink">tag</a>
+                       </c:otherwise>
+                     </c:choose>            
+                     
+                     <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>	              
+	               </div>
+	               <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
+	                 <b>When:</b> <mockey:fdate date="${request.time}"/> From: <b><a href="<c:out value="${filterByIp}"/>" title="Filter by IP: <c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a></b> 
+						 (<mockey:service type="${request.serviceResponseType}"/>)
+	                 <b><a href="<c:out value="${serviceUrl}"/>" title="<c:out value="${request.serviceName}"/>"><mockey:slug text="${request.serviceName}" maxLength="20"/></a></b>
+	                 <br />
+	                 <b>URL:</b> <mockey:slug text="${request.rawRequest}" maxLength="80"/>                     
+	                 <div id="letmesee_${request.id}">
+                     </div>
+                   </div>                   
                 </div>
             </c:forEach>
         </c:when>
