@@ -62,8 +62,8 @@ response.setHeader( "Vary", "User-Agent" );
 <% } %>
 
 <ul id="minitabs">
-    <li><a <c:if test="${currentTab == 'home'}">id ="current"</c:if> href="<c:url value="/home" />">All Services</a> | </li>
-    <li><a href="<c:url value="/setup" />">Create Service</a> | </li>
+    <li><a <c:if test="${currentTab == 'home'}">id ="current"</c:if> href="<c:url value="/home" />">Services</a></li>
+    <li>(<a href="<c:url value="/setup" />" class="tiny" style="color:red;">Create</a>) | </li>
     <li><a <c:if test="${currentTab == 'upload'}">id ="current"</c:if> href="<c:url value="/upload" />">Upload</a> | </li>
     <li><a <c:if test="${currentTab == 'export'}">id ="current"</c:if> href="<c:url value="/export" />">Export</a> | </li>
     <li><a <c:if test="${currentTab == 'history'}">id ="current"</c:if> href="<c:url value="/history" />">History</a> | </li>

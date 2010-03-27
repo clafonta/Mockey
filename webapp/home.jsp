@@ -43,13 +43,11 @@ $(document).ready( function() {
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
-							<td valign="top" width="20%">
+							<td valign="top" width="35%">
 	                            <c:forEach var="mockservice" items="${services}">	                              
 	                                <div class="toggle_button">
 									      <mockey:service type="${mockservice.serviceResponseType}"/>
-									      
-									    
-									      <a class="gt" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><c:out value="${mockservice.serviceName}"/></a>
+									      <a class="gt" onclick="return true;" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
 									</div>
 							    </c:forEach>
 							</td>
