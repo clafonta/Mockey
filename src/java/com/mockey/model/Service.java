@@ -16,8 +16,10 @@
 package com.mockey.model;
 
 import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,7 +73,7 @@ public class Service implements PersistableItem, ExecutableService {
 
     public Service(Url realServiceUrl) {
         this.realServiceUrl = realServiceUrl;
-        this.setServiceName("Auto-Generated Service");
+        this.setServiceName( getNiceNameForService(this.realServiceUrl.getFullUrl()));
     }
 
     public String getHttpMethod() {
@@ -293,7 +295,8 @@ public class Service implements PersistableItem, ExecutableService {
         try {
             logger.debug("Initiating request through proxy");
             response = clientExecuteProxy.execute(proxyServer, this, request);
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             // We're here for various reasons.
             // 1) timeout from calling real service.
             // 2) unable to parse real response.
@@ -309,8 +312,12 @@ public class Service implements PersistableItem, ExecutableService {
             if (error != null) {
                 response.setBody(error.getResponseMessage());
             } else {
-                response.setBody("Yikes! We encountered this error (let's hope it's informative): " + e.getClass()
-                        + ": " + e.getMessage());
+            	String maybe = "";
+            	if(e instanceof UnknownHostException){
+            		maybe = "\n<span class=\"info_message\">Looks like your proxy settings may be invalid. We can't find the system you need to talk to. </span>\n\n";
+            	}
+                response.setBody("Yikes! We encountered this error (let's hope it's informative). " + maybe + e.getClass()
+                        + ": " + e.getMessage() );
             }
         }
         return response;
@@ -400,4 +407,24 @@ public class Service implements PersistableItem, ExecutableService {
         response.setBody(messageMatchFound);
         return response;
     }
+    
+    private static String getNiceNameForService(String arg){
+    	String name = arg;
+    	// Remove parameters
+    	int index = arg.indexOf("?");
+    	if(index>0){
+    		arg = arg.substring(0, index);
+    	}
+    	StringTokenizer st = new StringTokenizer(arg, "/");
+        while (st.hasMoreTokens()) {
+        	// Eventually, we get the last token, and
+        	// we use it as the name. 
+        	name = st.nextToken();
+        }
+    	name = name + " (auto generated)";
+    
+    	
+    	return name;
+    }
+    
 }
