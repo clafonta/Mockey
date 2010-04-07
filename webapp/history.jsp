@@ -151,8 +151,8 @@ $(document).ready(function() {
                    <div style="text-align:right;  position: relative;font-size:80%;" class="<c:if test="${request.comment ne null}">selected</c:if>">
                      
                      <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a> |
-                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;">hide</a> |      
-                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink"><span>tag</span></a>
+                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" class="hide" onclick="return false;">hide</a> |    
+                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span>tag</span></a>
                      <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>	              
 	               </div>
 	               <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">

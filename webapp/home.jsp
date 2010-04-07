@@ -46,7 +46,7 @@ $(document).ready( function() {
 							<td valign="top" width="35%">
 	                            <c:forEach var="mockservice" items="${services}">	                              
 	                                <div class="toggle_button">
-									      <mockey:service type="${mockservice.serviceResponseType}"/>
+									      <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
 									      <a class="gt" onclick="return true;" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
 									</div>
 							    </c:forEach>
@@ -173,7 +173,8 @@ $(document).ready( function() {
 	                              </span>
                                  <p>
 			                       <input type="text" name="hangTime_<c:out value="${mockservice.id}"/>" id="hangTime_<c:out value="${mockservice.id}"/>" maxlength="20" size="20" value="<c:out value="${mockservice.hangTime}"/>" /> Hang time (milliseconds)
-	                               &nbsp;&nbsp;
+	                             </p>
+	                             <p>
 	                               <select name="httpContentType_<c:out value="${mockservice.id}"/>" id="httpContentType_<c:out value="${mockservice.id}"/>">
 				                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
 			                            <option value="text/xml;" <c:if test="${mockservice.httpContentType eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
@@ -185,10 +186,13 @@ $(document).ready( function() {
 			                            <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->
 			                          </select>
 			                          Content Type
+			                          
 	                    
 			                     </p>
                              <c:if test="${mode ne 'edit_plan'}">
+                                 <p style="text-align:right;">
 	                              <input type="button" name="update_service_<c:out value="${mockservice.id}"/>" id="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />
+	                              </p>
 	                              </form>
 
                              </c:if>

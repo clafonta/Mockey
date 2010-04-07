@@ -19,6 +19,15 @@ public class FulfilledServiceHistoryTag extends TagSupport {
      */
 	private static final long serialVersionUID = 702927192030153426L;
 	private int type = -1;
+	private Long serviceId = null;
+
+	public Long getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(Long serviceId) {
+		this.serviceId = serviceId;
+	}
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -26,18 +35,22 @@ public class FulfilledServiceHistoryTag extends TagSupport {
 		JspWriter out = pageContext.getOut();
 		try {
 			String text = "";
+			String serviceIdentifier = "";
+			if(this.serviceId!=null){
+				serviceIdentifier = "id=\"" +"serviceresponsetype_" + this.serviceId.toString() +"\"";
+			}
 			switch (type) {
 			case 0:
-				text = "<a id=\"response_proxy\" title=\"Proxy response\">P</a>";
+				text = "<a class=\"response_proxy\" "+serviceIdentifier+" onclick=\"return true;\" href=\"#\" title=\"Proxy response\">P</a>";
 				break;
 			case 1:
-				text = "<a id=\"response_static\" title=\"Static response\">S</a>";
+				text = "<a class=\"response_static\" "+serviceIdentifier+" onclick=\"return true;\" href=\"#\" title=\"Static response\">S</a>";
 				break;
 			case 2:
-				text = "<a id=\"response_dynamic\" title=\"Dynamic response\">D</a>";
+				text = "<a class=\"response_dynamic\" "+serviceIdentifier+" onclick=\"return true;\" href=\"#\" title=\"Dynamic response\">D</a>";
 				break;
 			default:
-				text = "<a id=\"response_unknown\" title=\"Undefined type response\">(?)</a>";
+				text = "<a class=\"response_unknown\" "+serviceIdentifier+" onclick=\"return true;\" href=\"#\" title=\"Undefined type response\">(?)</a>";
 				break;
 			}
 			out.print(text);
@@ -54,4 +67,6 @@ public class FulfilledServiceHistoryTag extends TagSupport {
 	public int getType() {
 		return type;
 	}
+	
+	
 }
