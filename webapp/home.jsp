@@ -103,9 +103,16 @@ $(document).ready( function() {
 							<td valign="top">
 							<div id='service_list_container'>
 							<div class="service_div display" style="display:block;text-align:right;" >
-							You.<br />
-							Code.
-							<img src="<c:url value="/images/silhouette.jpg" />" />
+							<%
+      java.util.Random random = new java.util.Random();
+      boolean a = random.nextBoolean();
+      if(a){
+        %><img src="<c:url value="/images/silhouette.jpg" />" /><%
+      }else {
+         %><img src="<c:url value="/images/unicorn.jpg" />" /><%
+      }
+							%>
+							
 							</div>
 							<c:forEach var="mockservice" items="${services}">
 							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
