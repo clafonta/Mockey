@@ -9,10 +9,10 @@
     <%@ include file="/WEB-INF/common/message.jsp"%>     
     
     <div>
-        <p><h1>Proxy Setup</h1></p> 
-	    <p>If Mockey connects to services via your corporate proxy server, here's the place to pipe through it. </p>
+        <p><h1>Proxy Settings</h1></p> 
+	    <p>If Mockey connects to services via some proxy server, here's the place to pipe through it. </p>
 	    <div class="conflict_message" >
-	    	<h3>Note: Only 'enabled' yes/no and proxy URL are exported when using the <strong>Export Services Definitions</strong> 
+	    	<h3>Note: Only 'enabled' yes/no and proxy URL are exported when using the <strong>Export</strong> 
 	    	feature. We don't export username or password values.</h3>
 	    </div>
     </div>

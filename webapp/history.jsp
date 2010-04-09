@@ -69,10 +69,20 @@ $(document).ready(function() {
 			});
 		});
 	});
+	
+    $('a.tagFulfilledRequestLink').click(function () {
+      $(this).parent().toggleClass("selected");
+      var tagspan= $(this).find(".tag")[0];
+      $(tagspan).toggle();
+      var untagspan= $(this).find(".untag")[0];
+      $(untagspan).toggle();
+    });
 
 	$('.viewFulfilledRequestLink').each( function() {
 		$(this).click( function() {
-			var requestId = this.id.split("_")[1];			
+			var requestId = this.id.split("_")[1];	
+		    $(this).toggle();		
+		    $('#hideFulfilledRequest_'+requestId).toggle();
 			$.ajax({
 				type: "GET",
 				url: "<c:url value="fulfilledrequest"/>?&fulfilledRequestId="+requestId,
@@ -83,15 +93,22 @@ $(document).ready(function() {
 
 			});
 			
+			
 		});
+	  
 	});
 
 	$('.hideFulfilledRequestLink').each( function() {
 		$(this).click( function() {
 			var requestId = this.id.split("_")[1];			
 			$('#letmesee_'+requestId).fadeOut();
+			$('#hideFulfilledRequest_'+requestId).toggle();
+			$('#viewFulfilledRequest_'+requestId).toggle();
 		});
 	});
+
+
+
 
 	
 });
@@ -150,10 +167,10 @@ $(document).ready(function() {
                    </c:url>  
                    <div style="text-align:right;  position: relative;font-size:80%;" class="<c:if test="${request.comment ne null}">selected</c:if>">
                      
-                     <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a> |
-                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" class="hide" onclick="return false;">hide</a> |    
-                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span>tag</span></a>
-                     <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>	              
+                     <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a>
+                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;" style="display:none;">hide</a> |    
+                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">tag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">untag</span></a>
+                     <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink" style="margin-left:2em;"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>	              
 	               </div>
 	               <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
 	                 <b>When:</b> <mockey:fdate date="${request.time}"/> <b>From:</b> <a id="finfo" title="<c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a>
@@ -172,11 +189,7 @@ $(document).ready(function() {
         </c:otherwise>
     </c:choose>
 </div>
-<script>
-    $("a.tagFulfilledRequestLink").click(function () {
-      $(this).parent().toggleClass("selected");
-    });
-</script>
+
 
 
 <jsp:include page="/WEB-INF/common/footer.jsp" />

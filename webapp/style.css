@@ -3,12 +3,10 @@ body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
 .tiny{font-size: 80%;}
 .setplan{border: thin solid #bdbdbd; margin-top:0.8em; padding:0.8em; }
 .tiny_service_delete{font-size: 80%;}
-.gt{
-	color: black;
-}
+.gt{ color: black;}
 a.gt:hover {color: black;}
 .gt_active{	color: blue;	font-weight: bold; font-size:120%;}
-h1, h2, h3, h4{margin: 0.2em 0 0.2em 0; }
+h1, h2, h3, h4{margin: 1em 0.5em 0.5em 0.5em; padding:1px;}
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
 h1{ font-size:160%; color: #06F;}
 h2 { font-size:140%; color: #06F;}
@@ -44,11 +42,13 @@ ul#simple { list-style: none;	}
 ul#simple li {	margin:0.5em; }
 .edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
-p{margin: 0.5em; padding: 1px;}
+p{margin: 0.5em; padding: 1px;line-height:130%;}
 a{color: #00F;text-decoration:underline}
-.response_proxy{color:green;text-decoration:none; font-size:80%;}
-.response_static{color:red;text-decoration:none; font-size:80%;}
-.response_dynamic{color:blue;text-decoration:none; font-size:80%;}
+.response_proxy, .response_static, .response_dynamic, .response_not {text-decoration:none; font-size:80%; margin: 0 0.5em 0 0.5em; padding:0.2em;} 
+.response_proxy{color:#2F4F2F;background-color:#90EE90;}
+.response_static{color:red; background-color:pink;}
+.response_dynamic{color:#2B4F81;background-color:#B0C4DE;}
+.response_not{color:grey;background-color:transparent;}
 a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}

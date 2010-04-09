@@ -23,18 +23,65 @@ $(document).ready( function() {
             });
         });
     
-    });
-</script>
-<script>
-$(document).ready( function() {
+
     $('.gt').each( function() {
         $(this).click(function(){    	
-    	$(".gt_active").removeClass("gt_active");
-    	$(this).addClass("gt_active");
+    	  $(".gt_active").removeClass("gt_active");
+    	  $(this).addClass("gt_active");
         });
-        });
+     });
+     
+    $('.serviceResponseTypeProxyLink').each( function() {
+		$(this).click( function() {
+			var serviceId = this.id.split("_")[1];
+			$.ajax({
+				type: "POST",
+				url: "<c:url value="service_scenario"/>",
+				data:"serviceResponseType_"+serviceId+"=0&serviceId="+serviceId
+			});
+			$('#serviceResponseTypeProxy_'+serviceId).removeClass("response_not");
+			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_proxy");
+			$('#serviceResponseTypeStatic_'+serviceId).addClass("response_not");
+			$('#serviceResponseTypeDynamic_'+serviceId).addClass("response_not");
+			$('#proxyScenario_'+serviceId).attr('checked', true);
+			
+		});
+	});
+
+    $('.serviceResponseTypeStaticLink').each( function() {
+		$(this).click( function() {
+			var serviceId = this.id.split("_")[1];
+			$.ajax({
+				type: "POST",
+				url: "<c:url value="service_scenario"/>",
+				data:"serviceResponseType_"+serviceId+"=1&serviceId="+serviceId
+			});
+			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_not");
+			$('#serviceResponseTypeStatic_'+serviceId).removeClass("response_not");
+			$('#serviceResponseTypeStatic_'+serviceId).addClass("response_static");
+			$('#serviceResponseTypeDynamic_'+serviceId).addClass("response_not");
+			$('#staticScenario_'+serviceId).attr('checked', true);
+			
+		});
+	});
+	$('.serviceResponseTypeDynamicLink').each( function() {
+		$(this).click( function() {
+			var serviceId = this.id.split("_")[1];
+			$.ajax({
+				type: "POST",
+				url: "<c:url value="service_scenario"/>",
+				data:"serviceResponseType_"+serviceId+"=2&serviceId="+serviceId
+			});
+			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_not");
+			$('#serviceResponseTypeStatic_'+serviceId).addClass("response_not");
+			$('#serviceResponseTypeDynamic_'+serviceId).removeClass("response_not");
+			$('#serviceResponseTypeDynamic_'+serviceId).addClass("response_dynamic");
+			$('#dynamicScenario_'+serviceId).attr('checked', true);
+			
+		});
+	});
     
-    });
+ });
 </script>
     <div id="main">
         <%@ include file="/WEB-INF/common/message.jsp" %>
@@ -44,17 +91,21 @@ $(document).ready( function() {
 	            <tbody>
 		              <tr>                                                                                 
 							<td valign="top" width="35%">
-	                            <c:forEach var="mockservice" items="${services}">	                              
+	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
+	                                <form style="margin-bottom:0.2em;"> 
+	                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>                 
 	                                <div class="toggle_button">
-									      <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
 									      <a class="gt" onclick="return true;" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
 									</div>
+									</form>
 							    </c:forEach>
 							</td>
 							<td valign="top">
 							<div id='service_list_container'>
 							<div class="service_div display" style="display:block;text-align:right;" >
-							<font style="color:orange;font-size:20px;">This is Mockey. Go ahead, click on something.</font>
+							You.<br />
+							Code.
+							<img src="<c:url value="/images/silhouette.jpg" />" />
 							</div>
 							<c:forEach var="mockservice" items="${services}">
 							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
@@ -77,6 +128,9 @@ $(document).ready( function() {
 								            );
 								            $.prompt("Service '<c:out value="${mockservice.serviceName}"/>' updated.", { timeout: 2000});
 								        });
+								        $('#serviceResponseTypeProxy_${mockservice.id}').addClass("response_not");
+										$('#serviceResponseTypeStatic_${mockservice.id}').addClass("response_not");
+										$('#serviceResponseTypeDynamic_${mockservice.id}').addClass("response_not");
 								    });
 								});
 								</script>
@@ -111,7 +165,7 @@ $(document).ready( function() {
 							     Mock URL: <a href="<c:out value="${mockUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
 							     <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
 							     <p>
-			                       <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="serviceResponseType_<c:out value="${mockservice.id}"/>" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> />
+			                       <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="proxyScenario_${mockservice.id}" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> />
 			                       <b>Proxy</b> to this URL: <span class="highlight"><c:out value="${mockservice.realServiceUrl}" /></span>			                  
 			                       <c:if test="${empty mockservice.realServiceUrl and mockservice.serviceResponseType eq 0}">
 			                          <div>
@@ -120,7 +174,7 @@ $(document).ready( function() {
 			                       </c:if>
 			                     </p>
 			                     <p>
-			                        <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" value="2" <c:if test='${mockservice.serviceResponseType eq 2}'>checked</c:if> />
+			                        <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="dynamicScenario_${mockservice.id}" value="2" <c:if test='${mockservice.serviceResponseType eq 2}'>checked</c:if> />
 			                        <b>Dynamic Scenario</b>
 			                     </p>
                                  <p>
