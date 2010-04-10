@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.model.ServicePlan;
+import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -39,6 +40,9 @@ public class HomeServlet extends HttpServlet {
         if (action != null && "deleteAllServices".equals(action)) {
             IMockeyStorage store = StorageRegistry.MockeyStorage;
             store.deleteEverything();
+            String contextRoot = req.getContextPath();
+            resp.sendRedirect(Url.getContextAwarePath("/home", contextRoot));
+            return;
         } else {
             req.setAttribute("services", store.getServices());
             req.setAttribute("plans", store.getServicePlans());

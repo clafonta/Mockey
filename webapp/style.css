@@ -18,7 +18,7 @@ img {border:0;}
 .nav{	color: #06F;	text-decoration: none;	font-weight:bold;}
 .group {	border: thin dashed #bdbdbd;	margin: 0.8em;	padding: 0.8em;}
 form {
-	padding: 0em 0.8em 0em 0.8em;
+	padding: 0.2em 0.8em 0.2em 0.8em;
 	border: thin solid #bdbdbd;
     -moz-border-radius: 0.4em;
     -webkit-border-radius: 0.4em;
@@ -44,11 +44,13 @@ ul#simple li {	margin:0.5em; }
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
 p{margin: 0.5em; padding: 1px;line-height:130%;}
 a{color: #00F;text-decoration:underline}
-.response_proxy, .response_static, .response_dynamic, .response_not {text-decoration:none; font-size:80%; margin: 0 0.5em 0 0.5em; padding:0.2em;} 
-.response_proxy{color:#2F4F2F;background-color:#90EE90;}
-.response_static{color:red; background-color:pink;}
-.response_dynamic{color:#2B4F81;background-color:#B0C4DE;}
-.response_not{color:grey;background-color:transparent;}
+
+a.response_proxy, a.response_static, a.response_not, a.response_dynamic  { height: 1em; width: 2em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.1em 0.8em 0.1em 0.8em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em; }
+a.response_static  { background-color: #CACC7F; color:red; }
+a.response_dynamic  {background-color: #CACC7F; color:blue; }
+a.response_proxy  {background-color: #CACC7F; color:green; }
+a.response_not  { background-color:transparent;color:grey; }
+
 a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
