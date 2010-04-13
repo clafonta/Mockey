@@ -3,7 +3,25 @@
 <c:set var="pageTitle" value="Home" scope="request" />
 <c:set var="currentTab" value="home" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
+<%
+    java.util.Map cookieTable = new java.util.HashMap();
+    javax.servlet.http.Cookie[] cookies = request.getCookies();
+    for (int i=0; i < cookies.length; i++){
+        cookieTable.put(cookies[i].getName(), cookies[i].getValue());
+    }
+    String moodImage = request.getParameter("mood");
+    if(moodImage!=null){
+    	javax.servlet.http.Cookie myCookie = new Cookie("mood", moodImage);
+	    //myCookie.setMaxAge(0);
+	    //myCookie.setDomain(".somedomain.com");      
+	    response.addCookie(myCookie);
+    }
+    else if (cookieTable.containsKey("mood")) {
+        moodImage = (String)cookieTable.get("mood");
+    }
 
+    
+%>
 <script>
 $(document).ready( function() {
     $('.tiny_service_delete').each( function() {
@@ -103,17 +121,19 @@ $(document).ready( function() {
 							<td valign="top">
 							<div id='service_list_container'>
 							<div class="service_div display" style="display:block;text-align:right;" >
-							<%
-      java.util.Random random = new java.util.Random();
-      boolean a = random.nextBoolean();
-      if(a){
-        %><img src="<c:url value="/images/silhouette.jpg" />" /><%
-      }else {
-         %><img src="<c:url value="/images/unicorn.jpg" />" /><%
-      }
-							%>
+							
+						  <%
+					      if("geometry.jpg".equals(moodImage)){
+					        %><img src="<c:url value="/images/geometry.jpg" />" /><%
+					      }else if("unicorn.jpg".equals(moodImage)) {
+					         %><img src="<c:url value="/images/unicorn.jpg" />" /><%
+					      }else {
+					         %><img src="<c:url value="/images/silhouette.jpg" />" /><%
+					      }
+					      %>
 							
 							</div>
+							
 							<c:forEach var="mockservice" items="${services}">
 							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
                                <c:if test="${mode ne 'edit_plan'}">
@@ -315,5 +335,12 @@ $(function() {
 
 </script>
 </c:if>
+<div style="display:block;text-align:right;">
+<p>
+mood image <a href="home?mood=silhouette.jpg" class="mood" >A</a>
+<a href="home?mood=unicorn.jpg" class="mood" >B</a>
+<a href="home?mood=geometry.jpg" class="mood" >C</a>
 
+</p>
+</div>
 <jsp:include page="/WEB-INF/common/footer.jsp" />

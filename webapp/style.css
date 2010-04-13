@@ -21,7 +21,7 @@ form {
 	padding: 0.2em 0.8em 0.2em 0.8em;
 	border: thin solid #bdbdbd;
     -moz-border-radius: 0.4em;
-    -webkit-border-radius: 0.4em;
+    -webkit-border-radius: 0.3em;
 	background-color: #e8e8e8;
 }
 form#child {
@@ -50,6 +50,7 @@ a.response_static  { background-color: #CACC7F; color:red; }
 a.response_dynamic  {background-color: #CACC7F; color:blue; }
 a.response_proxy  {background-color: #CACC7F; color:green; }
 a.response_not  { background-color:transparent;color:grey; }
+a.mood {decoration:none; font-size:80%;}
 
 a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
