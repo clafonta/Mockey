@@ -43,342 +43,390 @@ import com.mockey.ui.StartUpServlet;
  */
 public class InMemoryMockeyStorage implements IMockeyStorage {
 
-    private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
-    private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
-    private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
+	private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
+	private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
+	private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
 
-    private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
-    private ProxyServerModel proxyInfoBean = new ProxyServerModel();
+	private static Logger logger = Logger
+			.getLogger(InMemoryMockeyStorage.class);
+	private ProxyServerModel proxyInfoBean = new ProxyServerModel();
 
-    private Long univeralErrorServiceId = null;
-    private Long univeralErrorScenarioId = null;
-    private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
+	private Long univeralErrorServiceId = null;
+	private Long univeralErrorScenarioId = null;
+	private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
 
-    /**
-     * 
-     * @return
-     */
-    static InMemoryMockeyStorage getInstance() {
-        return store;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	static InMemoryMockeyStorage getInstance() {
+		return store;
+	}
 
-    /**
-     * HACK: this class is supposed to be a singleton but making this public for
-     * XML parsing (Digester)
-     * 
-     * Error is:
-     * 
-     * Class org.apache.commons.digester.ObjectCreateRule can not access a
-     * member of class com.mockey.storage.InMemoryMockeyStorage with modifiers
-     * "private"
-     * 
-     * Possible Fix: write/implement objectcreatefactory classes.
-     * 
-     * Example:
-     * 
-     * <pre>
-     * http://jsp.codefetch.com/example/fr/storefront-source/com/oreilly/struts/storefront/service/memory/StorefrontMemoryDatabase.java?qy=parse+xml
-     * </pre>
-     */
-    public InMemoryMockeyStorage() {
-        this.historyStore.setMaxSize(new Integer(25)); // Careful, more than ~45
-        // and AJAX /JavaScript
-        // gets funky.
-    }
+	/**
+	 * HACK: this class is supposed to be a singleton but making this public for
+	 * XML parsing (Digester)
+	 * 
+	 * Error is:
+	 * 
+	 * Class org.apache.commons.digester.ObjectCreateRule can not access a
+	 * member of class com.mockey.storage.InMemoryMockeyStorage with modifiers
+	 * "private"
+	 * 
+	 * Possible Fix: write/implement objectcreatefactory classes.
+	 * 
+	 * Example:
+	 * 
+	 * <pre>
+	 * http://jsp.codefetch.com/example/fr/storefront-source/com/oreilly/struts/storefront/service/memory/StorefrontMemoryDatabase.java?qy=parse+xml
+	 * </pre>
+	 */
+	public InMemoryMockeyStorage() {
+		this.historyStore.setMaxSize(new Integer(25)); // Careful, more than ~45
+		// and AJAX /JavaScript
+		// gets funky.
+	}
 
-    public Service getServiceById(Long id) {
-        return mockServiceStore.get(id);
-    }
+	public Service getServiceById(Long id) {
+		return mockServiceStore.get(id);
+	}
 
-    public Service getServiceByUrl(String url) {
+	public Service getServiceByUrl(String url) {
 
-        try {
-            for (Service service : getServices()) {
-                String fullURL = service.getUrl().getFullUrl().trim();
-                if (fullURL.equals(url.trim())) {
-                    return service;
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Unable to retrieve service w/ url pattern: " + url, e);
-        }
+		try {
+			for (Service service : getServices()) {
+				String fullURL = service.getUrl().getFullUrl().trim();
+				if (fullURL.equals(url.trim())) {
+					return service;
+				}
+			}
+		} catch (Exception e) {
+			logger
+					.error("Unable to retrieve service w/ url pattern: " + url,
+							e);
+		}
 
-        logger.debug("Didn't find service with Service path: " + url + ".  Creating a new one.");
-        Service service = new Service(new Url(url));
-        store.saveOrUpdateService(service);
-        return service;
-    }
+		logger.debug("Didn't find service with Service path: " + url
+				+ ".  Creating a new one.");
+		Service service = new Service(new Url(url));
+		store.saveOrUpdateService(service);
+		return service;
+	}
 
-    public void saveOrUpdateService(Service mockServiceBean) {
-        mockServiceStore.save(mockServiceBean);
-        this.writeMemoryToFile();
-    }
+	public void saveOrUpdateService(Service mockServiceBean) {
+		mockServiceStore.save(mockServiceBean);
+		this.writeMemoryToFile();
+	}
 
-    public void deleteService(Service mockServiceBean) {
-        if (mockServiceBean != null) {
-            mockServiceStore.remove(mockServiceBean.getId());
-            this.writeMemoryToFile();
-        }
-    }
+	public void deleteService(Service mockServiceBean) {
+		if (mockServiceBean != null) {
+			mockServiceStore.remove(mockServiceBean.getId());
+			this.writeMemoryToFile();
+		}
+	}
 
-    public List<Service> getServices() {
-        return this.mockServiceStore.getOrderedList();
-    }
+	public List<Service> getServices() {
+		return this.mockServiceStore.getOrderedList();
+	}
 
-    public String toString() {
-        return new MockeyStorageWriter().StorageAsString(this);
-    }
+	public String toString() {
+		return new MockeyStorageWriter().StorageAsString(this);
+	}
 
-    /**
-     * @return list of FulfilledClientRequest objects
-     */
-    public List<FulfilledClientRequest> getFulfilledClientRequests() {
-        return this.historyStore.getOrderedList();
-    }
+	/**
+	 * @return list of FulfilledClientRequest objects
+	 */
+	public List<FulfilledClientRequest> getFulfilledClientRequests() {
+		return this.historyStore.getOrderedList();
+	}
 
-    public void deleteFulfilledClientRequestsFromIP(Long scenarioId) {
-        historyStore.remove(scenarioId);
-    }
+	public void deleteFulfilledClientRequestsFromIP(Long scenarioId) {
+		historyStore.remove(scenarioId);
+	}
 
-    public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest request) {
-        logger.debug("saving a request.");
-        historyStore.save(request);
-    }
+	public void saveOrUpdateFulfilledClientRequest(
+			FulfilledClientRequest request) {
+		logger.debug("saving a request.");
+		historyStore.save(request);
+	}
 
-    public void deleteFulfilledClientRequestsForService(Long serviceId) {
-        for (FulfilledClientRequest req : historyStore.getOrderedList()) {
-            if (req.getServiceId().equals(serviceId)) {
-                this.historyStore.remove(req.getId());
-            }
-        }
-    }
+	public void deleteFulfilledClientRequestsForService(Long serviceId) {
+		for (FulfilledClientRequest req : historyStore.getOrderedList()) {
+			if (req.getServiceId().equals(serviceId)) {
+				this.historyStore.remove(req.getId());
+			}
+		}
+	}
 
-    public ProxyServerModel getProxy() {
-        return this.proxyInfoBean;
-    }
+	public ProxyServerModel getProxy() {
+		return this.proxyInfoBean;
+	}
 
-    public void setProxy(ProxyServerModel proxyInfoBean) {
-        this.proxyInfoBean = proxyInfoBean;
-        this.writeMemoryToFile();
-    }
+	public void setProxy(ProxyServerModel proxyInfoBean) {
+		this.proxyInfoBean = proxyInfoBean;
+		this.writeMemoryToFile();
+	}
 
-    public void deleteServicePlan(ServicePlan servicePlan) {
-        if (servicePlan != null) {
-            this.servicePlanStore.remove(servicePlan.getId());
-            this.writeMemoryToFile();
-        }
-    }
+	public void deleteServicePlan(ServicePlan servicePlan) {
+		if (servicePlan != null) {
+			this.servicePlanStore.remove(servicePlan.getId());
+			this.writeMemoryToFile();
+		}
+	}
 
-    public ServicePlan getServicePlanById(Long servicePlanId) {
-        return servicePlanStore.get(servicePlanId);
-    }
+	public ServicePlan getServicePlanById(Long servicePlanId) {
+		return servicePlanStore.get(servicePlanId);
+	}
 
-    public List<ServicePlan> getServicePlans() {
-        return this.servicePlanStore.getOrderedList();
-    }
+	public List<ServicePlan> getServicePlans() {
+		return this.servicePlanStore.getOrderedList();
+	}
 
-    public void saveOrUpdateServicePlan(ServicePlan servicePlan) {
-        this.servicePlanStore.save(servicePlan);
-        this.writeMemoryToFile();
-    }
+	public void saveOrUpdateServicePlan(ServicePlan servicePlan) {
+		this.servicePlanStore.save(servicePlan);
+		this.writeMemoryToFile();
+	}
 
-    public Scenario getUniversalErrorScenario() {
-        Scenario error = null;
-        Service service = getServiceById(this.univeralErrorServiceId);
-        if (service != null) {
-            error = service.getScenario(this.univeralErrorScenarioId);
-        }
-        return error;
-    }
+	public Scenario getUniversalErrorScenario() {
+		Scenario error = null;
+		Service service = getServiceById(this.univeralErrorServiceId);
+		if (service != null) {
+			error = service.getScenario(this.univeralErrorScenarioId);
+		}
+		return error;
+	}
 
-    public void setUniversalErrorScenarioId(Long scenarioId) {
-        this.univeralErrorScenarioId = scenarioId;
-        this.writeMemoryToFile();
-    }
+	public void setUniversalErrorScenarioId(Long scenarioId) {
+		this.univeralErrorScenarioId = scenarioId;
+		this.writeMemoryToFile();
+	}
 
-    public void setUniversalErrorServiceId(Long serviceId) {
-        this.univeralErrorServiceId = serviceId;
-        this.writeMemoryToFile();
-    }
+	public void setUniversalErrorServiceId(Long serviceId) {
+		this.univeralErrorServiceId = serviceId;
+		this.writeMemoryToFile();
+	}
 
-    public void deleteEverything() {
-        historyStore = new OrderedMap<FulfilledClientRequest>();
-        mockServiceStore = new OrderedMap<Service>();
-        servicePlanStore = new OrderedMap<ServicePlan>();
-        this.writeMemoryToFile();
-    }
+	public void deleteEverything() {
+		historyStore = new OrderedMap<FulfilledClientRequest>();
+		mockServiceStore = new OrderedMap<Service>();
+		servicePlanStore = new OrderedMap<ServicePlan>();
+		this.writeMemoryToFile();
+	}
 
-    public List<String> uniqueClientIPs() {
-        List<String> uniqueIPs = new ArrayList<String>();
-        for (FulfilledClientRequest tx : this.historyStore.getOrderedList()) {
-            String tmpIP = tx.getRequestorIP();
-            if (!uniqueIPs.contains(tmpIP)) {
-                uniqueIPs.add(tmpIP);
-            }
-        }
-        return uniqueIPs;
-    }
+	public List<String> uniqueClientIPs() {
+		List<String> uniqueIPs = new ArrayList<String>();
+		for (FulfilledClientRequest tx : this.historyStore.getOrderedList()) {
+			String tmpIP = tx.getRequestorIP();
+			if (!uniqueIPs.contains(tmpIP)) {
+				uniqueIPs.add(tmpIP);
+			}
+		}
+		return uniqueIPs;
+	}
 
-    public List<String> uniqueClientIPsForService(Long serviceId) {
+	public List<String> uniqueClientIPsForService(Long serviceId) {
 
-        logger.debug("getting IPs for serviceId: " + serviceId + ". there are a total of " + this.historyStore.size()
-                + " requests currently stored.");
+		logger.debug("getting IPs for serviceId: " + serviceId
+				+ ". there are a total of " + this.historyStore.size()
+				+ " requests currently stored.");
 
-        List<String> uniqueIPs = new ArrayList<String>();
-        for (FulfilledClientRequest tx : this.historyStore.getOrderedList()) {
-            String ip = tx.getRequestorIP();
-            if (!uniqueIPs.contains(ip) && tx.getServiceId().equals(serviceId)) {
-                uniqueIPs.add(ip);
-            }
-        }
-        return uniqueIPs;
-    }
+		List<String> uniqueIPs = new ArrayList<String>();
+		for (FulfilledClientRequest tx : this.historyStore.getOrderedList()) {
+			String ip = tx.getRequestorIP();
+			if (!uniqueIPs.contains(ip) && tx.getServiceId().equals(serviceId)) {
+				uniqueIPs.add(ip);
+			}
+		}
+		return uniqueIPs;
+	}
 
-    public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId) {
+	public FulfilledClientRequest getFulfilledClientRequestsById(
+			Long fulfilledClientRequestId) {
 
-        return this.historyStore.get(fulfilledClientRequestId);
+		return this.historyStore.get(fulfilledClientRequestId);
 
-    }
+	}
 
-    public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
-        logger.debug("getting requests for serviceId: " + serviceId + ". there are a total of "
-                + this.historyStore.size() + " requests currently stored.");
-        List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-        for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-            if (req.getServiceId().equals(serviceId)) {
-                rv.add(req);
-            }
-        }
-        return rv;
-    }
+	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(
+			Long serviceId) {
+		logger.debug("getting requests for serviceId: " + serviceId
+				+ ". there are a total of " + this.historyStore.size()
+				+ " requests currently stored.");
+		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
+			if (req.getServiceId().equals(serviceId)) {
+				rv.add(req);
+			}
+		}
+		return rv;
+	}
 
-    public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
-        List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-        for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-            if (req.getRequestorIP().equals(ip)) {
-                rv.add(req);
-            }
-        }
-        return rv;
-    }
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(
+			String ip) {
+		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
+			if (req.getRequestorIP().equals(ip)) {
+				rv.add(req);
+			}
+		}
+		return rv;
+	}
 
-    public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
-        List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-        for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-            if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
-                rv.add(req);
-            }
-        }
-        return rv;
-    }
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(
+			String ip, Long serviceId) {
+		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
+			if (req.getServiceId().equals(serviceId)
+					&& req.getRequestorIP().equals(ip)) {
+				rv.add(req);
+			}
+		}
+		return rv;
+	}
 
-    public void deleteFulfilledClientRequests() {
-        historyStore = new OrderedMap<FulfilledClientRequest>();
+	public void deleteFulfilledClientRequests() {
+		historyStore = new OrderedMap<FulfilledClientRequest>();
 
-    }
+	}
 
-    public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
-        for (FulfilledClientRequest req : historyStore.getOrderedList()) {
-            if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
-                this.historyStore.remove(req.getId());
-            }
-        }
+	public void deleteFulfilledClientRequestsFromIPForService(String ip,
+			Long serviceId) {
+		for (FulfilledClientRequest req : historyStore.getOrderedList()) {
+			if (req.getServiceId().equals(serviceId)
+					&& req.getRequestorIP().equals(ip)) {
+				this.historyStore.remove(req.getId());
+			}
+		}
 
-    }
+	}
 
-    public void deleteFulfilledClientRequestById(Long fulfilledRequestID) {
-        for (FulfilledClientRequest req : historyStore.getOrderedList()) {
-            if (req.getId().equals(fulfilledRequestID)) {
-                this.historyStore.remove(req.getId());
-            }
-        }
+	public void deleteFulfilledClientRequestById(Long fulfilledRequestID) {
+		for (FulfilledClientRequest req : historyStore.getOrderedList()) {
+			if (req.getId().equals(fulfilledRequestID)) {
+				this.historyStore.remove(req.getId());
+			}
+		}
 
-    }
+	}
 
-    /**
-     * Filters list with AND not OR.
-     */
-    public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments) {
+	/**
+	 * Filters list with AND not OR. If string starts with "!", we consider it
+	 * NOT.
+	 */
+	public List<FulfilledClientRequest> getFulfilledClientRequest(
+			Collection<String> filterArguments) {
 
-        List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-        if (filterArguments.size() == 0) {
-            rv = this.getFulfilledClientRequests();
-        } else {
+		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
+		if (filterArguments.size() == 0) {
+			rv = this.getFulfilledClientRequests();
+		} else {
 
-            for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-                boolean allFilterTokensPresentInReq = true;
-                for (String filterArg : filterArguments) {
-                    boolean tokenFound = false;
-                    if (req.getServiceId().toString().indexOf(filterArg) > -1) {
-                        tokenFound = true;
+			for (FulfilledClientRequest req : this.historyStore
+					.getOrderedList()) {
+				boolean allFilterTokensPresentInReq = true;
+				for (String filterArg : filterArguments) {
+					boolean notValue = filterArg.startsWith("!");
 
-                    } else if (req.getClientRequestBody().indexOf(filterArg) > -1) {
-                        tokenFound = true;
+					boolean tokenFound = hasToken(req, filterArg);
+					if (notValue && tokenFound) {
+						allFilterTokensPresentInReq = false;
+						break;
+					} else if (!tokenFound && !notValue) {
+						allFilterTokensPresentInReq = false;
+						break;
+					} else if (!tokenFound && notValue) {
+						allFilterTokensPresentInReq = true;
+					}
 
-                    } else if (req.getClientRequestHeaders().indexOf(filterArg) > -1) {
-                        tokenFound = true;
+				}
+				if (allFilterTokensPresentInReq) {
+					rv.add(req);
+				}
 
-                    } else if (req.getClientRequestParameters().indexOf(filterArg) > -1) {
-                        tokenFound = true;
+			}
+		}
+		return rv;
+	}
 
-                    } else if (req.getRequestorIP().indexOf(filterArg) > -1) {
-                        tokenFound = true;
+	/**
+	 * Filters list with AND not OR. If string starts with "!", we consider it
+	 * NOT.
+	 */
+	private boolean hasToken(FulfilledClientRequest req, String filterArg) {
 
-                    } else if (req.getResponseMessage().getBody().indexOf(filterArg) > -1) {
-                        tokenFound = true;
+		boolean notValue = filterArg.startsWith("!");
+		if (notValue) {
+			try {
+				// get the value
+				filterArg = filterArg.substring(1);
+			} catch (Exception e) {
+				// do nothing. exception may occur
+				// with out of index
+			}
+		}
+		boolean tokenFound = false;
+		if (req.getServiceId().toString().indexOf(filterArg) > -1) {
+			tokenFound = true;
 
-                    } else if (req.getResponseMessage().getHeaderInfo().indexOf(filterArg) > -1) {
-                        tokenFound = true;
+		} else if (req.getClientRequestBody().indexOf(filterArg) > -1) {
+			tokenFound = true;
 
-                    } else if (req.getServiceName().indexOf(filterArg) > -1) {
-                        tokenFound = true;
+		} else if (req.getClientRequestHeaders().indexOf(filterArg) > -1) {
+			tokenFound = true;
 
-                    } else {
-                        Header[] headers = req.getResponseMessage().getHeaders();
-                        if (headers != null) {
-                            for (Header header : headers) {
-                                if (header.getName().indexOf(filterArg) > -1) {
-                                    tokenFound = true;
-                                    break;
-                                } else if (header.getValue().indexOf(filterArg) > -1) {
-                                    tokenFound = true;
-                                    break;
+		} else if (req.getClientRequestParameters().indexOf(filterArg) > -1) {
+			tokenFound = true;
 
-                                }
-                            }
-                        }
-                    }
-                    if (!tokenFound) {
-                        allFilterTokensPresentInReq = false;
-                        break;
-                    }
+		} else if (req.getRequestorIP().indexOf(filterArg) > -1) {
+			tokenFound = true;
 
-                }
-                if (allFilterTokensPresentInReq) {
-                    rv.add(req);
-                }
+		} else if (req.getRawRequest().indexOf(filterArg) > -1) {
+			tokenFound = true;
 
-            }
-        }
-        return rv;
-    }
+		} else if (req.getResponseMessage().getBody().indexOf(filterArg) > -1) {
+			tokenFound = true;
 
-    /**
-     * Every time something gets saved, we write to memory.
-     */
-    private void writeMemoryToFile() {
-        File f = new File(StartUpServlet.MOCK_SERVICE_DEFINITION);
-        try {
-            FileOutputStream fop = new FileOutputStream(f);
-            MockeyXmlFactory g = new MockeyXmlFactory();
-            Document result = g.getAsDocument(store);
-            String fileOutput = MockeyXmlFactory.documentToString(result);
-            byte[] fileOutputAsBytes = fileOutput.getBytes(HTTP.UTF_8);
-            fop.write(fileOutputAsBytes);
-            fop.flush();
-            fop.close();
-        } catch (Exception e) {
-            logger.debug("Unable to write file", e);
-        }
-    }
+		} else if (req.getResponseMessage().getHeaderInfo().indexOf(filterArg) > -1) {
+			tokenFound = true;
+
+		} else if (req.getServiceName().indexOf(filterArg) > -1) {
+			tokenFound = true;
+
+		} else {
+			Header[] headers = req.getResponseMessage().getHeaders();
+			if (headers != null) {
+				for (Header header : headers) {
+					if (header.getName().indexOf(filterArg) > -1) {
+						tokenFound = true;
+						break;
+					} else if (header.getValue().indexOf(filterArg) > -1) {
+						tokenFound = true;
+						break;
+
+					}
+				}
+			}
+		}
+		return tokenFound;
+
+	}
+
+	/**
+	 * Every time something gets saved, we write to memory.
+	 */
+	private void writeMemoryToFile() {
+		File f = new File(StartUpServlet.MOCK_SERVICE_DEFINITION);
+		try {
+			FileOutputStream fop = new FileOutputStream(f);
+			MockeyXmlFactory g = new MockeyXmlFactory();
+			Document result = g.getAsDocument(store);
+			String fileOutput = MockeyXmlFactory.documentToString(result);
+			byte[] fileOutputAsBytes = fileOutput.getBytes(HTTP.UTF_8);
+			fop.write(fileOutputAsBytes);
+			fop.flush();
+			fop.close();
+		} catch (Exception e) {
+			logger.debug("Unable to write file", e);
+		}
+	}
 }

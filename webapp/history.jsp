@@ -150,12 +150,15 @@ $(document).ready(function() {
     </p>
     </form>
     <c:if test="${!empty historyFilter.tokens}">    
+    <p class="tiny">You are filtering your history on:<span style="float:right;"><strong>Hint:</strong> Try filtering with <i>bang + term</i>, example: <span class="code_text"><b>!term</b></span></span></p>
     <div class="hint_message">
-    <h4>You are filtering your history on:</h4>
+   
+    <p>
     <c:forEach var="token" items="${historyFilter.tokens}">
         ${token}<a id="token" class="remove_grey" title="Remove filter token" href="<mockey:history value="${token}"/>" onMouseOver="style.color='#FF0000';">x</a> 
     </c:forEach>
-    <p></p>
+    </p>
+    
     </div>
     </c:if>
     <c:choose>
