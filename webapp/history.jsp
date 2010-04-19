@@ -153,7 +153,7 @@ $(document).ready(function() {
     <div class="hint_message">
     <h4>You are filtering your history on:</h4>
     <c:forEach var="token" items="${historyFilter.tokens}">
-        <a style="text-decoration: none;" title="Remove filter token" href="<mockey:history value="${token}"/>"><c:out value="${token}"/><img src="<c:url value="/images/bullet_delete.png" />" /></a> 
+        ${token}<a id="token" class="remove_grey" title="Remove filter token" href="<mockey:history value="${token}"/>" onMouseOver="style.color='#FF0000';">x</a> 
     </c:forEach>
     <p></p>
     </div>
@@ -162,7 +162,7 @@ $(document).ready(function() {
         <c:when test="${!empty requests}">
             <c:forEach var="request" items="${requests}" varStatus="status">            
                 <div id="fulfilledRequest_${request.id}" class="parentform" style="padding: 0.2em 0.5em; 0.2em 0.5em;">
-                   <c:url value="/setup" var="serviceUrl">
+                   <c:url value="/home" var="serviceUrl">
                           <c:param name="serviceId" value="${request.serviceId}" />                                                                               
                    </c:url>  
                    <div style="text-align:right;  position: relative;font-size:80%;" class="<c:if test="${request.comment ne null}">selected</c:if>">

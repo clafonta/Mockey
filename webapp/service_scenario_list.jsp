@@ -5,7 +5,6 @@
 <%@include file="/WEB-INF/common/header.jsp" %>
     <div id="main">
         <h1>Scenarios for service: <span class="highlight"><c:out value="${service.serviceName}"/></span></h1>
-        <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
         <p>
             <c:url value="/scenario" var="scenarioUrl">
                 <c:param name="serviceId" value="${service.id}" />

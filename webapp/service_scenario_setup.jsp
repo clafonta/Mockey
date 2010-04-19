@@ -4,10 +4,11 @@
 <c:set var="pageTitle" value="Scenario Setup" scope="request" />
 <%@include file="/WEB-INF/common/header.jsp" %>
     <div id="main">
-    	<%@ include file="/WEB-INF/common/message.jsp" %>        
-        <h1>Edit scenario for service: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
-        <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
-        
+    	<%@ include file="/WEB-INF/common/message.jsp" %> 
+    	<c:url value="/setup" var="setupUrl">
+		    <c:param name="serviceId" value="${mockservice.id}" />
+		</c:url>       
+        <h1>Edit scenario for service: <span class="highlight"><a href="${setupUrl}" style="decoration:none;"><c:out value="${mockservice.serviceName}"/></a></span></h1>
         <form action="<c:out value="${scenarioUrl}"/>" method="post">
             <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
 			<c:if test="${!empty mockscenario.id}">

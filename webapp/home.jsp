@@ -105,22 +105,26 @@ $(document).ready( function() {
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>
 	        <c:when test="${!empty services}">
+	            <c:set var="serviceIdToShowByDefault" value="<%= request.getParameter("serviceId") %>" scope="request"/>
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
 							<td valign="top" width="35%">
 	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 	                                <form style="margin-bottom:0.2em;"> 
-	                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>                 
+	                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
+	                                <c:if test="${empty mockservice.scenarios}">
+	                                <span style="float:right;font-size:80%;color:yellow;background-color:red;padding:0 0.2em 0 0.2em;">(no scenarios)</span>
+	                                </c:if>                 
 	                                <div class="toggle_button">
-									      <a class="gt" onclick="return true;" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
+									      <a class="gt <c:if test="${mockservice.id eq serviceIdToShowByDefault}">gt_active</c:if>" onclick="return true;" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
 									</div>
 									</form>
 							    </c:forEach>
 							</td>
 							<td valign="top">
 							<div id='service_list_container'>
-							<div class="service_div display" style="display:block;text-align:right;" >
+							<div class="service_div display" style="<c:if test="${! empty serviceIdToShowByDefault}">display:none;</c:if><c:if test="${serviceIdToShowByDefault==null}">display:block;</c:if>text-align:right;">
 							
 						  <%
 					      if("geometry.jpg".equals(moodImage)){
@@ -135,7 +139,7 @@ $(document).ready( function() {
 							</div>
 							
 							<c:forEach var="mockservice" items="${services}">
-							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display <c:if test="${mode eq 'edit_plan'}">setplan</c:if>" > 
+							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display" style="<c:if test="${mockservice.id eq serviceIdToShowByDefault}">display: block;</c:if>" > 
                                <c:if test="${mode ne 'edit_plan'}">
 								<%-- LOVELY JQUERY + JSP TAGS + EL --%>
 								<script type="text/javascript">
@@ -173,23 +177,19 @@ $(document).ready( function() {
 	                                <c:param name="serviceId" value="${mockservice.id}" />
 	                                <c:param name="delete" value="true" />
 	                             </c:url>
-	                             <c:url value="/history" var="historyUrl">
-	                                <c:param name="token" value="${mockservice.serviceName}" />
-	                             </c:url>
 	                             <c:url value="/scenario" var="scenarioCreateUrl">
 						            <c:param name="serviceId" value="${mockservice.id}" />
 						         </c:url>                                 
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
 	                             <a class="tiny" href="<c:out value="${scenarioCreateUrl}"/>" title="Create a scenario">add scenario</a> |
-	                             <a class="tiny" href="<c:out value="${historyUrl}"/>" title="View request and response history">history</a> |
 	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a> |
-	                             <a class="tiny" href="" title="hide me">hide</a> 
+	                             <a class="tiny" href="<c:url value="/home"/>" title="hide me">hide</a> 
                                  </div>
 
-								 <h2>Service name: <a href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></h2>
+								 <p>Service name: <a class="gt_highlight" href="<c:out value="${setupUrl}"/>" title="Edit Service"><c:out value="${mockservice.serviceName}" /></a></p>
 							     <c:set var="mockUrl"><mockey:url value="${mockservice.serviceUrl}"/></c:set>
 							
-							     Mock URL: <a href="<c:out value="${mockUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a>
+							     <p>Mock URL: <a href="<c:out value="${mockUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a></p>
 							     <input type="hidden" name="plan_item" value="<c:out value="${mockservice.id}"/>"/>
 							     <p>
 			                       <input type="radio" name="serviceResponseType_<c:out value="${mockservice.id}"/>" id="proxyScenario_${mockservice.id}" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> />
@@ -327,7 +327,7 @@ $(function() {
       .hide()
       .filter( function() { return this.id.match('div_' + serviceId+'_'); })   
       .show('fast');    
-    return false; 
+    return true; 
   
   })
 

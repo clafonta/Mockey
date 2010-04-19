@@ -9,13 +9,16 @@
     <%@ include file="/WEB-INF/common/message.jsp"%>
     <c:choose>
         <c:when test="${!empty mockservice.id}">
-            <h1>Service Setup: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
+            <c:url value="/home" var="serviceUrl">
+              <c:param name="serviceId" value="${mockservice.id}" />                                                                               
+        	</c:url> 
+            <h1>Service Setup: <span class="highlight"><a href="${serviceUrl}"><c:out value="${mockservice.serviceName}"/></a></span></h1>
         </c:when>
         <c:otherwise>
             <h1>Service Setup</h1>
         </c:otherwise>
     </c:choose>
-    <%@ include file="/WEB-INF/common/inc_action_links.jsp"%>
+   
     <form action="<c:url value="/setup"/>" method="POST">
         <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
         <table class="simple" width="100%">
@@ -81,10 +84,8 @@
 	        <a href="<c:url value="/"/>">Cancel</a>
 	    </p>
     </form>
-    <p>
-	    <c:if test="${!empty mockservice.scenarios and !empty mockservice.id}">
-	        <%@ include file="/WEB-INF/common/inc_scenario_list.jsp"%>
-	    </c:if>
-    </p>
+    	    <p>
+	        <%@ include file="/WEB-INF/common/inc_scenario_list.jsp" %>
+	    </p>
 </div>
 <jsp:include page="/WEB-INF/common/footer.jsp" />

@@ -5,7 +5,7 @@ body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
 .tiny_service_delete{font-size: 80%;}
 .gt{ color: black;}
 a.gt:hover {color: black;}
-.gt_active{	color: blue;	font-weight: bold; font-size:120%;}
+.gt_active, .gt_highlight{	color: #0000A0;	font-weight: bold; font-size:120%;}
 h1, h2, h3, h4{margin: 1em 0.5em 0.5em 0.5em; padding:1px;}
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
 h1{ font-size:160%; color: #06F;}
@@ -187,5 +187,6 @@ div.grippie {background:#EEEEEE url(images/grippie.png) no-repeat scroll center 
 .selected{background-color:yellow;}
 .hide { display:none;}
 .show { display:block;} 
+.remove_grey {padding: 0 0.5em 0 0.2em; color:#C0C0C0;text-decoration:none;font-size:80%;margin-bottom:02em;}
 
 
