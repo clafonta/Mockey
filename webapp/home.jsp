@@ -162,6 +162,18 @@ $(document).ready( function() {
 								        $('#serviceResponseTypeProxy_${mockservice.id}').addClass("response_not");
 										$('#serviceResponseTypeStatic_${mockservice.id}').addClass("response_not");
 										$('#serviceResponseTypeDynamic_${mockservice.id}').addClass("response_not");
+									
+										if ($serviceResponseType == '0') {
+											
+											$('#serviceResponseTypeProxy_${mockservice.id}').removeClass("response_not");
+											$('#serviceResponseTypeProxy_${mockservice.id}').addClass("response_proxy");
+										  } else if ($serviceResponseType == '1') {
+												$('#serviceResponseTypeStatic_${mockservice.id}').removeClass("response_not");
+												$('#serviceResponseTypeStatic_${mockservice.id}').addClass("response_static");
+										  }else if ($serviceResponseType == '2') {
+												$('#serviceResponseTypeDynamic_${mockservice.id}').removeClass("response_not");
+												$('#serviceResponseTypeDynamic_${mockservice.id}').addClass("response_dynamic");
+											  }
 								    });
 								});
 								</script>
