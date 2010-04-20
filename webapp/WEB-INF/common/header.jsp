@@ -5,16 +5,15 @@
 <head>
 <title>Mockey - <c:out value="${requestScope.pageTitle}"/></title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<link rel="stylesheet" type="text/css" href="<c:url value="/style.css" />" />
-<link rel="stylesheet" type="text/css" href="<c:url value="/css/smoothness/jquery-ui-1.7.2.custom.css" />" />
 <link rel="shortcut icon" href="<c:url value="/images/favicon.ico" />">
+<link rel="stylesheet" type="text/css" href="<c:url value="/style.css" />" />
+<link rel="stylesheet" type="text/css" href="<c:url value="/jquery-ui-1.8.custom/css/smoothness/jquery-ui-1.8.custom.css" />" />
 <script type="text/javascript" src="<c:url value="/javascript/util.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/jquery.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/jquery-ui-1.7.2.custom.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/jquery-ui-1.8.custom/js/jquery-1.4.2.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/jquery-ui-1.8.custom/js/jquery-ui-1.8.custom.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-impromptu.2.7.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery.textarearesizer.compressed.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/xmlTidy.js" />"></script>
 
 <script LANGUAGE="Javascript">
 <!---
