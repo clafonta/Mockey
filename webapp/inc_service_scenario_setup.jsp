@@ -1,5 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
+
         <form action="<c:out value="${scenarioUrl}"/>" method="post" style="background-color:#99CCFF;">
             <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
 			<c:if test="${!empty mockscenario.id}">
@@ -32,6 +31,7 @@
 						    <p class="tiny">The message you want your mock service to reply with. Feel free to cut and paste XML, free form text, etc.</p>
 						</td>
 					</tr>
+				
                 </tbody>
             </table>
 	        <p align="right">
