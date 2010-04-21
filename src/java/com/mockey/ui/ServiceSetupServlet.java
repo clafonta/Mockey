@@ -133,25 +133,32 @@ public class ServiceSetupServlet extends HttpServlet {
 		if(serviceId!=null){
 			service = store.getServiceById(serviceId);
 		}
+		int hangtime = 0;
+		try{
+			hangtime = Integer.parseInt(req.getParameter("hangTime"));
+		}catch(Exception e){
+			
+		}
 		service.setRealServiceUrl(urlObj);
 		service.setServiceName(req.getParameter("serviceName"));
 		service.setDescription(req.getParameter("description"));
-		service.setHttpContentType(req.getParameter("httpContentType"));		
+		service.setHttpContentType(req.getParameter("httpContentType"));
+		service.setHangTime(hangtime);
 		Map<String, String> errorMap = ServiceValidator.validate(service);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {
 			// no errors, so create service.
 			
-			Util.saveSuccessMessage("Service updated.", req);
+			//Util.saveSuccessMessage("Service updated.", req);
 			store.saveOrUpdateService(service);
 			
+			
 		} else {
-			Util.saveErrorMessage("Service not added/updated.", req);
-			Util.saveErrorMap(errorMap, req);
+			//Util.saveErrorMessage("Service not added/updated.", req);
+			//Util.saveErrorMap(errorMap, req);
 			
 		}
-		req.setAttribute("mockservice", service);
-		RequestDispatcher dispatch = req.getRequestDispatcher("/service_setup.jsp");
-		dispatch.forward(req, resp);
+		return;
+		// AJAX thing. Return nothing at this time. 
 	}
 }

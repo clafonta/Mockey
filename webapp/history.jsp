@@ -177,10 +177,10 @@ $(document).ready(function() {
 	               </div>
 	               <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
 	                 <b>When:</b> <mockey:fdate date="${request.time}"/> <b>From:</b> <a id="finfo" title="<c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a>
-						 (<mockey:service type="${request.serviceResponseType}"/>)
+						 (<mockey:service style="1" type="${request.serviceResponseType}"/>)
 	                 <b><a href="<c:out value="${serviceUrl}"/>" title="<c:out value="${request.serviceName}"/>"><mockey:slug text="${request.serviceName}" maxLength="20"/></a></b>
-	                 <br />
-	                 <b>URL:</b> <mockey:slug text="${request.rawRequest}" maxLength="80"/>                     
+	                 <div style="padding-top:0.2em;">
+	                 <b>URL:</b> <mockey:slug text="${request.rawRequest}" maxLength="180"/> </div>                    
 	                 <div id="letmesee_${request.id}">
                      </div>
                    </div>                   

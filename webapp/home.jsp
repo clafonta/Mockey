@@ -111,15 +111,18 @@ $(document).ready( function() {
 		              <tr>                                                                                 
 							<td valign="top" width="35%">
 	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
-	                                <form style="margin-bottom:0.2em;"> 
+	                                <div class="parentform" style="margin-bottom:0.2em;padding:0.2em;">
+	                                <span style="float:right;"><a class="tiny_service_delete remove_grey" onMouseOver="style.color='#FF0000';" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
+	                                <div class="toggle_button" style="margin:0.2em;">
+									      <a class="gt <c:if test="${mockservice.id eq serviceIdToShowByDefault}">gt_active</c:if>" onclick="return true;" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
+									      
+									</div>
 	                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
 	                                <c:if test="${empty mockservice.scenarios}">
-	                                <span style="float:right;font-size:80%;color:yellow;background-color:red;padding:0 0.2em 0 0.2em;">(no scenarios)</span>
+	                                  <span style="float:right;font-size:80%;color:yellow;background-color:red;padding:0 0.2em 0 0.2em;">(no scenarios)</span>
 	                                </c:if>                 
-	                                <div class="toggle_button">
-									      <a class="gt <c:if test="${mockservice.id eq serviceIdToShowByDefault}">gt_active</c:if>" onclick="return true;" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
+	                                
 									</div>
-									</form>
 							    </c:forEach>
 							</td>
 							<td valign="top">
@@ -140,7 +143,7 @@ $(document).ready( function() {
 							
 							<c:forEach var="mockservice" items="${services}">
 							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display" style="<c:if test="${mockservice.id eq serviceIdToShowByDefault}">display: block;</c:if>" > 
-                               <c:if test="${mode ne 'edit_plan'}">
+                               
 								<%-- LOVELY JQUERY + JSP TAGS + EL --%>
 								<script type="text/javascript">
 								$(document).ready(function() {
@@ -178,9 +181,9 @@ $(document).ready( function() {
 								});
 								</script>
                                 <div id="updateStatus_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
-                                <form id="multi_form" action="<c:url value="/service_scenario"/>" method="post">
+                                
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
-                                </c:if>
+                                
 							    <div class="service_edit_links">
 	                            <c:url value="/setup" var="setupUrl">
 	                                <c:param name="serviceId" value="${mockservice.id}" />
@@ -189,11 +192,7 @@ $(document).ready( function() {
 	                                <c:param name="serviceId" value="${mockservice.id}" />
 	                                <c:param name="delete" value="true" />
 	                             </c:url>
-	                             <c:url value="/scenario" var="scenarioCreateUrl">
-						            <c:param name="serviceId" value="${mockservice.id}" />
-						         </c:url>                                 
 	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
-	                             <a class="tiny" href="<c:out value="${scenarioCreateUrl}"/>" title="Create a scenario">add scenario</a> |
 	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a> |
 	                             <a class="tiny" href="<c:url value="/home"/>" title="hide me">hide</a> 
                                  </div>
@@ -265,62 +264,25 @@ $(document).ready( function() {
 	                                </ul>
 	                              </span>
                                  <p>
-			                       <input type="text" name="hangTime_<c:out value="${mockservice.id}"/>" id="hangTime_<c:out value="${mockservice.id}"/>" maxlength="20" size="20" value="<c:out value="${mockservice.hangTime}"/>" /> Hang time (milliseconds)
+			                       <strong>Hang time (milliseconds):</strong> ${mockservice.hangTime} 
 	                             </p>
 	                             <p>
-	                               <select name="httpContentType_<c:out value="${mockservice.id}"/>" id="httpContentType_<c:out value="${mockservice.id}"/>">
-				                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
-			                            <option value="text/xml;" <c:if test="${mockservice.httpContentType eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
-			                            <option value="text/plain;" <c:if test="${mockservice.httpContentType eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
-			                            <option value="text/css;" <c:if test="${mockservice.httpContentType eq 'text/css;'}">selected="selected"</c:if>>text/css;</option>
-			                            <option value="application/json;" <c:if test="${mockservice.httpContentType eq 'application/json;'}">selected="selected"</c:if>>application/json;</option>
-			                            <option value="text/html;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'text/html;charset=utf-8'}">selected="selected"</c:if>>text/html;charset=utf-8</option>
-			                            <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpContentType eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
-			                            <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->
-			                          </select>
-			                          Content Type
-			                          
-	                    
+			                       <strong>Content type:</strong>   
+	                    			<c:choose>
+	                    			<c:when test="${!empty mockservice.httpContentType}">${mockservice.httpContentType}</c:when>
+	                    			<c:otherwise><span style="color:red;">not set</span></c:otherwise>
+	                    			</c:choose>
 			                     </p>
-                             <c:if test="${mode ne 'edit_plan'}">
-                                 <p style="text-align:right;">
-	                              <input type="button" name="update_service_<c:out value="${mockservice.id}"/>" id="update_service_<c:out value="${mockservice.id}"/>" value="Update" class="button" />
-	                              </p>
-	                              </form>
-
-                             </c:if>
+                           
                               </div>
                               </c:forEach>
                               </div>
                               
 							</td>							
 						</tr>
-						<c:if test="${mode eq 'edit_plan'}">
-						<tr>
-                        
-	                        <td colspan="2">
-	                        <p align="right">
-	                        <c:choose>
-	                            <c:when test="${!empty plan.id}">
-	                                <input type="submit" name="create_or_update_plan"
-	                                    value="Update Plan" class="button" />
-	                            </c:when>
-	                            <c:otherwise>
-	                                <input type="submit" name="create_or_update_plan"
-	                                    value="Save as a Plan" class="button" />
-	                            </c:otherwise>
-	                        </c:choose> <a href="<c:url value="/home" />">Cancel</a>
-	                        </p>
-	                        </td>
-	                    </tr>
-                        </c:if>
+						
 		            </tbody>
 		        </table>
-		        
-		        <c:if test="${mode eq 'edit_plan'}">
-		        </form>
-		        </c:if>
-		        
     </div>
 	        </c:when>
 	        <c:otherwise>

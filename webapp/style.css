@@ -1,14 +1,15 @@
 body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
 .big{font-size: 300%; font-weight:bold;}
-.tiny{font-size: 80%;}
+.tiny, .tinyfieldset{font-size: 80%;}
+.tinyfieldset {padding:0.5em 0 2em 0; }
 .setplan{border: thin solid #bdbdbd; margin-top:0.8em; padding:0.8em; }
 .tiny_service_delete{font-size: 80%;}
 .gt{ color: black;}
 a.gt:hover {color: black;}
 .gt_active, .gt_highlight{	color: #06F; font-weight: bold; font-size:120%;}
-h1, h2, h3, h4{margin: 1em 0.5em 0.5em 0.5em; padding:1px;}
+h1, h2, h3, h4, .h1{margin: 1em 0.5em 0.5em 0.5em; padding:1px;}
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
-h1{ font-size:160%; color: #06F;}
+h1, .h1{ font-size:160%; color: #06F;}
 h2 { font-size:140%; color: #06F;}
 h3 { font-size:120%; color: #F60;}
 h4 {font-size: 100%;	color: black;font-weight: bold;}
@@ -45,11 +46,11 @@ p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0
 p{margin: 0.5em; padding: 1px;line-height:130%;}
 a{color: #00F;text-decoration:underline}
 
-a.response_proxy, a.response_static, a.response_not, a.response_dynamic  { height: 1em; width: 2em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.1em 0.8em 0.1em 0.8em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em; }
+a.response_proxy, a.response_static, a.response_not, a.response_dynamic  { height: 1em; width: 2em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.1em 1.5em 0.1em 1.5em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em; }
 a.response_static  { background-color: #CACC7F; color:red; }
 a.response_dynamic  {background-color: #CACC7F; color:blue; }
 a.response_proxy  {background-color: #CACC7F; color:green; }
-a.response_not  { background-color:transparent;color:grey; }
+a.response_not  { background-color:transparent;color:grey; border: 1px solid #A9A9A9;}
 a.mood {decoration:none; font-size:80%;}
 
 a#fdate{color:blue;text-decoration:none;}

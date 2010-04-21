@@ -3,7 +3,6 @@
 <c:set var="actionKey" value="edit_service" scope="request" />
 <c:set var="pageTitle" value="Configure" scope="request" />
 <c:set var="currentTab" value="create" scope="request" />
-<%--@elvariable id="mockservice" type="com.mockey.MockServiceBean"--%>
 <%@include file="/WEB-INF/common/header.jsp" %>
 <script type="text/javascript">
 	$(function() {
@@ -19,12 +18,12 @@
 
 		// a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
 		$("#dialog").dialog("destroy");
-		
-		var name = $("#name"),
-			email = $("#email"),
-			password = $("#password"),
-			allFields = $([]).add(name).add(email).add(password),
-			tips = $(".validateTips");
+
+		var name = $("#scenario_name"),
+		      match = $("#scenario_match"),
+		      responsemsg = $("#scenario_response"),
+		allFields = $([]).add(name).add(match).add(responsemsg),
+		tips = $(".validateTips");	
 
 		function updateTips(t) {
 			tips
@@ -61,30 +60,28 @@
 		
 		$("#dialog-form").dialog({
 			autoOpen: false,
-			height: 300,
-			width: 350,
+			height: 600,
+			width: 650,
 			modal: true,
 			buttons: {
-				'Create an account': function() {
+				'Create a scenario': function() {
 					var bValid = true;
 					allFields.removeClass('ui-state-error');
-
-					bValid = bValid && checkLength(name,"username",3,16);
-					bValid = bValid && checkLength(email,"email",6,80);
-					bValid = bValid && checkLength(password,"password",5,16);
-
-					bValid = bValid && checkRegexp(name,/^[a-z]([0-9a-z_])+$/i,"Username may consist of a-z, 0-9, underscores, begin with a letter.");
-					// From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
-					bValid = bValid && checkRegexp(email,/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,"eg. ui@jquery.com");
-					bValid = bValid && checkRegexp(password,/^([0-9a-zA-Z])+$/,"Password field only allow : a-z 0-9");
-					
+					bValid = bValid && checkLength(name,"scenario name",3,250);
 					if (bValid) {
-						$('#users tbody').append('<tr>' +
-							'<td>' + name.val() + '</td>' + 
-							'<td>' + email.val() + '</td>' + 
-							'<td>' + password.val() + '</td>' +
-							'</tr>');
-						$('#accordion').append('<h3><a href=\"#\">'+name.val()+'</a></h3><div>Woot</div>').accordion('destroy').accordion({
+						
+						$('#accordion').append('<h3><a href=\"#\">'+name.val()+'</a></h3><div><form action=\"\" method=\"post\" style=\"background-color:#99CCFF;\">' +
+								'<input type=\"hidden\" name=\"serviceId\" value=\"\" />' +
+								'<input type=\"hidden\" name=\"scenarioId\" value=\"\" />' +
+								'<table class=\"simple\" width=\"100%\"><tbody><tr><th width=\"20%\"><p>Scenario Name:</p></th><td>' +
+								'<p><input type=\"text\" style=\"width:100%;\"  name=\"scenarioName\" value=\"'+name.val()+'\" /></p>' +
+								'<p class=\"tiny\">Example: <i>Valid Request</i> or <i>Invalid Request</i></p></td></tr>' +
+								'<tr><th><p><a href=\"\">Match argument</a>: <span class=\"tiny\">(use for Dynamic response)</span></p></th>' + 
+								'<td><p><textarea name=\"matchStringArg\" style=\"width:100%;\" rows=\"2\" >'+ match.val()+'</textarea></p></td></tr>' +
+								'<tr><th><p>Scenario response message:</p></th><td>'+
+								'<p><textarea class=\"resizable\" name=\"responseMessage\" rows=\"10\" style=\"width:100%;\">'+responsemsg.val() +
+								'</textarea></p><p class=\"tiny\">The message you want your mock service to reply with. Feel free to cut and paste XML, free form text, etc.</p>' +
+								'</td></tr></tbody></table><button id=\"update-scenario\">Update scenario</button><button id=\"delete-scenario\">Delete scenario</button></form></div>').accordion('destroy').accordion({
 							active: false,
 							collapsible: true
 						});
@@ -102,13 +99,58 @@
 			}
 		});
 		
-		
-		
 		$('#create-scenario')
 			.button()
 			.click(function() {
 				$('#dialog-form').dialog('open');
 			});
+		$('#update-service')
+		    .button()
+		    .click(function() {
+			    
+		    	$.prompt.setDefaults({
+			        opacity:0.2
+			    });
+			    var serviceId = $("#service_id"),
+			        realUrl = $("#service_real_url"),
+			        serviceName = $("#service_name"),
+			        hangtime = $("#hang_time"),
+			        serviceContentType = $("#service_http_content_type");
+			   
+			   $.ajax({
+					type: "POST",
+					url: "<c:url value="/setup"/>",
+					data:"serviceName=" + serviceName.val() + 
+					     "&serviceId=" + serviceId.val()+
+					     "&realServiceUrl=" + realUrl.val() + 
+					     "&httpContentType=" + serviceContentType.val() +
+					     "&hangTime=" + hangtime.val()
+					     
+				});
+			
+			   $.prompt('Service '+serviceName.val()+' updated.', { timeout: 2000});
+				
+		});
+		$('#create-service')
+		    .button()
+		    .click(function() {
+			    alert("create");
+		});
+		$('#delete-service')
+		    .button()
+		    .click(function() {
+			    alert("delete");
+		});
+		$('#delete-scenario')
+		    .button()
+		    .click(function() {
+			    alert("delete scenario");
+		});	
+		$('#update-scenario')
+		    .button()
+		    .click(function() {
+			    alert("update scenario");
+		});		
 
 	});
 	
@@ -117,41 +159,29 @@
 
 <div id="main">
     <%@ include file="/WEB-INF/common/message.jsp"%>
-    <c:choose>
-        <c:when test="${!empty mockservice.id}">
-            <c:url value="/home" var="serviceUrl">
-              <c:param name="serviceId" value="${mockservice.id}" />                                                                               
-        	</c:url> 
-            <h1>Service Setup: <span class="highlight"><a href="${serviceUrl}"><c:out value="${mockservice.serviceName}"/></a></span></h1>
-        </c:when>
-        <c:otherwise>
-            <h1>Service Setup</h1>
-        </c:otherwise>
-    </c:choose>
-   
-    <form action="<c:url value="/setup"/>" method="POST">
-        <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
-        <table class="simple" width="100%">
-            <tbody>
-	            <tr><th><p>Service name:</p></th>
-	                <td>
-	                    <p><input type="text" name="serviceName" maxlength="100" size="90%" value="<c:out value="${mockservice.serviceName}"/>" /></p>
-	                    <p class="tiny">Use a self descriptive name. For example, if you were to use this for 'authentication' testing, then call it 'Authentication'.</p>
-	                </td>
-	            </tr>
-                <tr>
-                    <th><p>Real service URL: </p></th>
-                    <td>
-                        <p><input type="text" name="realServiceUrl" maxlength="100" size="90%" value="<c:out value="${mockservice.realServiceUrl}"/>" /></p>
-                        <p class="tiny">You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</p>
-                    </td>
-                </tr>
-	          
-	            <tr>
-	                <th><p>HTTP header definition:</p></th>
-	                <td>
-	                    <p>
-	                      <select name="httpContentType">
+    
+    <c:if test="${!empty mockservice.id}">
+        <c:url value="/home" var="serviceUrl">
+          <c:param name="serviceId" value="${mockservice.id}" />                                                                               
+    	</c:url> 
+        
+    </c:if>
+    <span style="float:right;"><a href="${serviceUrl}">Return to main page</a></span>
+    <h1>Service Setup</h1>  
+    <div class="parentform">
+        <input type="hidden" id="service_id" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
+        <fieldset>
+				<label for="service_name">Service name:</label>
+	            <input type="text" id="service_name" name="service_name" maxlength="100" size="100%" value="<c:out value="${mockservice.serviceName}"/>" />
+	            <div class="tinyfieldset">Use a self descriptive name. For example, if you were to use this for 'authentication' testing, then call it 'Authentication'.</div>
+	            <label for="service_url">Real service URL: </label>
+                <input type="text" id="service_real_url" name="realServiceUrl" maxlength="100" size="100%" value="<c:out value="${mockservice.realServiceUrl}"/>" />
+                <div class="tinyfieldset">You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</div>
+                <label for="service_url">Hang time: </label>
+                <input type="text" id="hang_time" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
+                <div class="tinyfieldset">The delay time in milliseconds.</div>
+                <label>HTTP header definition:</label>
+	            <select id="service_http_content_type" name="httpContentType">
 	                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
                             <option value="text/xml;" <c:if test="${mockservice.httpContentType eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
                             <option value="text/plain;" <c:if test="${mockservice.httpContentType eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
@@ -161,94 +191,98 @@
                             <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpContentType eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
                             <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->
                           </select>
-	                    </p>
-	                    <p class="tiny">For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
-                                style="font-style: italic;">application/json;</span>, etc. </p>
-	                </td>
-	            </tr>
-            </tbody>
-        </table>
+	           <div class="tinyfieldset">For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
+                                style="font-style: italic;">application/json;</span>, etc. </div>
+	    </fieldset>
         <p align="right">
 	        <c:choose>
 	            <c:when test="${!empty mockservice.id}">
-	                <input type="submit" name="update" value="Update" />
+	                <button id="update-service">Update service</button>
 	            </c:when>
 	            <c:otherwise>
-	                <input type="submit" name="create" value="Create" />
+	                <button id="create-service">Create new service</button>
 	            </c:otherwise>
 	        </c:choose>
 	        <c:if test="${!empty mockservice.id}">
-	            <input type="submit" name="delete" value="Delete" onclick="return confirm('Deleting this service will delete all scenarios associated with it. \nAre you sure you want to delete this service?');" />
+	            <button id="delete-service">Delete</button>
 	        </c:if>
-	        <a href="<c:url value="/"/>">Cancel</a>
 	    </p>
-    </form>
-    <h3>Existing Scenarios</h3>
-	<!--  xxx -->
-	<div class="demo">
-		<div id="accordion">
-			
-			<c:forEach var="mockscenario" begin="0" items="${mockservice.scenarios}" varStatus="status">   
-				<h3><a href="#">${mockscenario.scenarioName}</a></h3>
-				<div>
-				  <p>
-				  <%@ include file="/inc_service_scenario_setup.jsp" %>
-				 
-				  </p>
-				</div>
-			</c:forEach>
+    </div>
+    <c:if test="${!empty mockservice.id}">
+	    <div class="create-scenario-form">
+			<div id="dialog-form" title="Create new scenario">
+				<p class="validateTips">Scenario name is required.</p>
+				<form>
+				<fieldset>
+					<label for="scenario_name">Scenario name</label>
+					<input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
+					<label for="scenario_match">Match argument (for Dynamic response type)</label>
+					<input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
+					<label for="scenario_response">Response content</label>
+					<textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
+				</fieldset> 
+				</form>
+			</div>
+			<p style="float:right;"><button id="create-scenario">Create new scenario</button></p>
 		</div>
-   </div><!-- End demo -->
-   <!-- xxxxxxxx -->
-   <div class="demo">
-
-<div id="dialog-form" title="Create new scenario">
-	<p class="validateTips">All form fields are required.</p>
-
-	<form>
-	<fieldset>
-		<label for="name">Name</label>
-		<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
-		<label for="email">Email</label>
-		<input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
-		<label for="password">Password</label>
-		<input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
-		<label for="scenarioName">Name</label>
-		<input type="text" name="scenarioName" id="scenarioName" class="text ui-widget-content ui-corner-all" />
-		<label for="scenarioName">Match Argument</label>
-		<input type="text" name="matchStringArg" id="matchStringArg" class="text ui-widget-content ui-corner-all" />
-	</fieldset> 
-	</form>
-</div>
-
-
-<div id="users-contain" class="ui-widget">
-	<table id="users" class="ui-widget ui-widget-content">
-		<thead>
-			<tr class="ui-widget-header ">
-				<th>Name</th>
-				<th>Email</th>
-				<th>Password</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>John Doe</td>
-				<td>john.doe@example.com</td>
-				<td>johndoe1</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-<button id="create-scenario">Create new scenario</button>
-
-</div><!-- End demo -->
-
-<div class="demo-description">
-
-<p>Use a modal dialog to require that the user enter data during a multi-step process.  Embed form markup in the content area, set the <code>modal</code> option to true, and specify primary and secondary user actions with the <code>buttons</code> option.</p>
-
-</div><!-- End demo-description -->
-   <!-- xxxxxxxx -->
+	
+	    <h3>Existing Scenarios</h3>
+		
+		<div class="demo">
+			<div id="accordion">
+				
+				<c:forEach var="mockscenario" begin="0" items="${mockservice.scenarios}" varStatus="status">   
+					<h3><a href="#">${mockscenario.scenarioName}</a></h3>
+					<div>
+					  <p>
+					   <!-- BEGIN SCENARIO VIEW FORM  -->
+					   <form style="background-color:#99CCFF;">
+				            <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
+							<c:if test="${!empty mockscenario.id}">
+							    <input type="hidden" name="scenarioId" value="<c:out value="${mockscenario.id}"/>" />
+							</c:if>
+				            <table class="simple" width="100%">
+				                <tbody>
+				                    <tr>
+				                        <th width="20%"><p>Scenario Name:</p></th>
+					                    <td>
+											<p><input type="text" style="width:100%;"  name="scenarioName" value="<c:out value="${mockscenario.scenarioName}"/>" /></p>
+											<p class="tiny">Example: <i>Valid Request</i> or <i>Invalid Request</i></p>
+										</td>
+				                    </tr>
+				                    <tr>
+										<th><p><a href="<c:url value="help#static_dynamic"/>">Match argument</a>: <span style="color:blue;">(optional)</span></p></th>
+										<td>
+										  <p>
+										      <textarea name="matchStringArg" style="width:100%;" rows="2" ><c:out value="${mockscenario.matchStringArg}" /></textarea>
+										  </p>
+										  
+										</td>
+				                    </tr>      
+									<tr>
+										<th><p>Scenario response message:</p></th>
+										<td>
+											<p><textarea class="resizable" name="responseMessage" rows="10" style="width:100%;"><c:out value="${mockscenario.responseMessage}" escapeXml="false"/></textarea>
+											
+											</p>
+										    <p class="tiny">The message you want your mock service to reply with. Feel free to cut and paste XML, free form text, etc.</p>
+										</td>
+									</tr>
+								
+				                </tbody>
+				            </table>
+					        <p align="right">
+						        <button id="update-scenario" name="">Update scenario</button>
+								<button id="delete-scenario" name="delete" onclick="return confirm('Are you sure you want to delete this scenario?');">Delete</button>
+					        </p>
+					    </form>
+					  <!-- END SCENARIO VIEW FORM -->
+					  </p>
+					</div>
+				</c:forEach>
+			</div>
+	   </div>
+   </c:if>
+   
 </div>
 <jsp:include page="/WEB-INF/common/footer.jsp" />

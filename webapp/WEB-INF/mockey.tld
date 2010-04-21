@@ -11,7 +11,7 @@
 		<name>service</name>
 		<tagclass>com.mockey.ui.tags.FulfilledServiceHistoryTag</tagclass>
 		<bodycontent>JSP</bodycontent>
-		<info>Manages an display of type of service response (Static, Dynamic, or Proxy).</info>
+		<info>Manages an display of type of service response (Static, Dynamic, or Proxy). Style value '1' displays service respone type. Default style displays all 3 options.</info>
 		<attribute>
 			<name>type</name>
 			<required>true</required>
@@ -19,6 +19,11 @@
 		</attribute>
 		<attribute>
 			<name>serviceId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>style</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -54,12 +59,13 @@
 		<name>url</name>
 		<tagclass>com.mockey.ui.tags.ServiceUrlTag</tagclass>
 		<bodycontent>JSP</bodycontent>
-		<info>Manages a the display of a service URL</info>
+		<info>Manages a the display of a service URL. </info>
 		<attribute>
 			<name>value</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		
 	</tag>
 	<tag>
 		<name>history</name>
