@@ -31,12 +31,17 @@ form#child {
 	background-color: #e8e8e8;
 	border: none;
 }
-div.parentform {
+div.parentform, div.parentformselected {
 	padding: 0em 0.8em 0em 0.8em;
 	border: thin solid #bdbdbd;
 	-moz-border-radius: 0.4em;
 	-webkit-border-radius: 0.4em;
+}
+div.parentform {
 	background-color: #e8e8e8;
+}
+div.parentformselected {
+	background-color: #D1E0E0;
 }
 form#multi_form{	padding: 0.8em;}
 ul#simple { list-style: none;	}
@@ -108,6 +113,7 @@ table.simple td{
 	padding-bottom: 10px;
 	padding-left: 8px;
 	padding-right: 0px;
+	border-bottom: 1px inset #DDDDDD; 
 }
 table.history{border-collapse: collapse;border-spacing: 0px; }
 table.history th{ border-bottom: 1px inset #DDDDDD; font-weight: bold;padding: 1px; }
@@ -190,7 +196,7 @@ div.grippie {background:#EEEEEE url(images/grippie.png) no-repeat scroll center 
 .hide { display:none;}
 .show { display:block;} 
 .remove_grey {padding: 0 0.5em 0 0.2em; color:#C0C0C0;text-decoration:none;font-size:80%;margin-bottom:02em;}
-
+.remove_grey:hover{color:#FF0000;}
 
 label, input { display:block; }
 input.text { margin-bottom:12px; width:95%; padding: .4em; }

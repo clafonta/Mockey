@@ -39,10 +39,10 @@ public class ScenarioUpdateServlet extends HttpServlet {
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String serviceId = req.getParameter("serviceId");
-        String hangTime = req.getParameter("hangTime_" + serviceId);
-        String scenarioId = req.getParameter("scenario_" + serviceId);
-        String httpContentType = req.getParameter("httpContentType_" + serviceId);
-        String serviceResponseType = req.getParameter("serviceResponseType_" + serviceId);
+        String hangTime = req.getParameter("hangTime");
+        String scenarioId = req.getParameter("scenarioId");
+        String httpContentType = req.getParameter("httpContentType");
+        String serviceResponseType = req.getParameter("serviceResponseType");
         Service service = store.getServiceById(new Long(serviceId));
         try {
             service.setServiceResponseType((new Integer(serviceResponseType)).intValue());

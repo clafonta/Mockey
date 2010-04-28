@@ -61,7 +61,7 @@
 		<servlet-class>com.mockey.ui.ServicePlanSetupServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
+		<servlet-name>ScenarioUpdateServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ScenarioUpdateServlet</servlet-class>
 	</servlet>
 	<servlet>
@@ -93,7 +93,7 @@
 		<url-pattern>/help</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>MockServiceScenarioUpdateServlet</servlet-name>
+		<servlet-name>ScenarioUpdateServlet</servlet-name>
 		<url-pattern>/service_scenario</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
