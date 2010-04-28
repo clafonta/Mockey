@@ -72,7 +72,7 @@ $(document).ready( function() {
 			$.ajax({
 				type: "POST",
 				url: "<c:url value="service_scenario"/>",
-				data:"serviceResponseType_"+serviceId+"=0&serviceId="+serviceId
+				data:"serviceResponseType=0&serviceId="+serviceId
 			});
 			$('#serviceResponseTypeProxy_'+serviceId).removeClass("response_not");
 			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_proxy");
@@ -94,7 +94,7 @@ $(document).ready( function() {
 			$.ajax({
 				type: "POST",
 				url: "<c:url value="service_scenario"/>",
-				data:"serviceResponseType_"+serviceId+"=1&serviceId="+serviceId
+				data:"serviceResponseType=1&serviceId="+serviceId
 			});
 			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_not");
 			$('#serviceResponseTypeStatic_'+serviceId).removeClass("response_not");
@@ -115,7 +115,7 @@ $(document).ready( function() {
 			$.ajax({
 				type: "POST",
 				url: "<c:url value="service_scenario"/>",
-				data:"serviceResponseType_"+serviceId+"=2&serviceId="+serviceId
+				data:"serviceResponseType=2&serviceId="+serviceId
 			});
 			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_not");
 			$('#serviceResponseTypeStatic_'+serviceId).addClass("response_not");

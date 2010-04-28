@@ -155,7 +155,7 @@ $(document).ready(function() {
    
     <p>
     <c:forEach var="token" items="${historyFilter.tokens}">
-        ${token}<a id="token" class="remove_grey" title="Remove filter token" href="<mockey:history value="${token}"/>" onMouseOver="style.color='#FF0000';">x</a> 
+        ${token}<a id="token" class="remove_grey" title="Remove filter token" href="<mockey:history value="${token}"/>">x</a> 
     </c:forEach>
     </p>
     
@@ -173,7 +173,7 @@ $(document).ready(function() {
                      <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a>
                      <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;" style="display:none;">hide</a> |    
                      <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">tag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">untag</span></a>
-                     <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink" style="margin-left:2em;"><img style="margin-bottom:-0.2em;" src="<c:url value="/images/cross.png"/>"></a>	              
+                     <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink remove_grey" style="margin-left:2em;">x</a>	              
 	               </div>
 	               <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
 	                 <b>When:</b> <mockey:fdate date="${request.time}"/> <b>From:</b> <a id="finfo" title="<c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a>

@@ -34,17 +34,18 @@ import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 public class ServiceSetupServlet extends HttpServlet {
-    private Log log = LogFactory.getLog(ServiceSetupServlet.class);
-	
+	private Log log = LogFactory.getLog(ServiceSetupServlet.class);
+
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		log.debug("Setting up a new service");
 		Long serviceId = null;
-		try{
+		try {
 			serviceId = new Long(req.getParameter("serviceId"));
-		}catch(Exception e){
+		} catch (Exception e) {
 			// Do nothing
 		}
 
@@ -52,16 +53,17 @@ public class ServiceSetupServlet extends HttpServlet {
 			Service service = store.getServiceById(serviceId);
 			store.deleteService(service);
 			store.deleteFulfilledClientRequestsForService(serviceId);
-			
-			Util.saveSuccessMessage("Service '"+service.getServiceName()+"' was deleted.", req);
-			
-			// Check to see if any plans need an update. 
+
+			Util.saveSuccessMessage("Service '" + service.getServiceName()
+					+ "' was deleted.", req);
+
+			// Check to see if any plans need an update.
 			String errorMessage = null;
-			if(service.isReferencedInAServicePlan()) {
+			if (service.isReferencedInAServicePlan()) {
 				errorMessage = "Warning: the deleted service is referenced in service plans.";
 			}
-			
-			if(errorMessage!=null){
+
+			if (errorMessage != null) {
 				Util.saveErrorMessage(errorMessage, req);
 			}
 			String contextRoot = req.getContextPath();
@@ -73,7 +75,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	}
 
 	/**
-	 *
+	 * 
 	 * 
 	 * @param req
 	 *            basic request
@@ -84,11 +86,12 @@ public class ServiceSetupServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		Long serviceId = null;
-		try{
+		try {
 			serviceId = new Long(req.getParameter("serviceId"));
-		}catch(Exception e){
+		} catch (Exception e) {
 			// Do nothing
 		}
 		Service service = null;
@@ -102,7 +105,8 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		req.setAttribute("mockservice", service);
 
-		RequestDispatcher dispatch = req.getRequestDispatcher("/service_setup.jsp");
+		RequestDispatcher dispatch = req
+				.getRequestDispatcher("/service_setup.jsp");
 		dispatch.forward(req, resp);
 	}
 
@@ -118,47 +122,52 @@ public class ServiceSetupServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	    String realSrvUrl = req.getParameter("realServiceUrl");
-	    Url urlObj = new Url(realSrvUrl);
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		String realSrvUrl = req.getParameter("realServiceUrl");
+		Url urlObj = new Url(realSrvUrl);
 		Service service = new Service(urlObj);
 		Long serviceId = null;
-		
+
 		try {
-			 serviceId = new Long(req.getParameter("serviceId"));
-		}
-		catch(Exception e){
+			serviceId = new Long(req.getParameter("serviceId"));
+		} catch (Exception e) {
 			// Do nothing
 		}
-		if(serviceId!=null){
+		if (serviceId != null) {
 			service = store.getServiceById(serviceId);
 		}
-		int hangtime = 0;
-		try{
-			hangtime = Integer.parseInt(req.getParameter("hangTime"));
-		}catch(Exception e){
-			
+
+		try {
+			if (req.getParameter("hangTime") != null) {
+				service.setHangTime(Integer.parseInt(req.getParameter("hangTime")));
+			}
+		} catch (Exception e) {
+
 		}
 		service.setRealServiceUrl(urlObj);
 		service.setServiceName(req.getParameter("serviceName"));
-		service.setDescription(req.getParameter("description"));
-		service.setHttpContentType(req.getParameter("httpContentType"));
-		service.setHangTime(hangtime);
+		if (req.getParameter("description") != null) {
+			service.setDescription(req.getParameter("description"));
+		}
+		if (req.getParameter("httpContentType") != null) {
+			service.setHttpContentType(req.getParameter("httpContentType"));
+		}
+
 		Map<String, String> errorMap = ServiceValidator.validate(service);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {
 			// no errors, so create service.
-			
-			//Util.saveSuccessMessage("Service updated.", req);
+
+			// Util.saveSuccessMessage("Service updated.", req);
 			store.saveOrUpdateService(service);
-			
-			
+
 		} else {
-			//Util.saveErrorMessage("Service not added/updated.", req);
-			//Util.saveErrorMap(errorMap, req);
-			
+			// Util.saveErrorMessage("Service not added/updated.", req);
+			// Util.saveErrorMap(errorMap, req);
+
 		}
 		return;
-		// AJAX thing. Return nothing at this time. 
+		// AJAX thing. Return nothing at this time.
 	}
 }

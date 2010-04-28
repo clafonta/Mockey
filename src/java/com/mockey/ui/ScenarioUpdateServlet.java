@@ -31,49 +31,61 @@ import com.mockey.storage.StorageRegistry;
 
 public class ScenarioUpdateServlet extends HttpServlet {
 
-    private static final long serialVersionUID = -2964632050151431391L;
-    private Logger log = Logger.getLogger(ScenarioUpdateServlet.class);
+	private static final long serialVersionUID = -2964632050151431391L;
+	private Logger log = Logger.getLogger(ScenarioUpdateServlet.class);
 
-    private IMockeyStorage store = StorageRegistry.MockeyStorage;
+	private IMockeyStorage store = StorageRegistry.MockeyStorage;
 
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
-        String serviceId = req.getParameter("serviceId");
-        String hangTime = req.getParameter("hangTime");
-        String scenarioId = req.getParameter("scenarioId");
-        String httpContentType = req.getParameter("httpContentType");
-        String serviceResponseType = req.getParameter("serviceResponseType");
-        Service service = store.getServiceById(new Long(serviceId));
-        try {
-            service.setServiceResponseType((new Integer(serviceResponseType)).intValue());
-        } catch (Exception e) {
-            log.debug("Updating service without a 'service response type' value");
-        }
+		String serviceId = req.getParameter("serviceId");
+		String hangTime = req.getParameter("hangTime");
+		String scenarioId = req.getParameter("scenarioId");
+		String httpContentType = req.getParameter("httpContentType");
+		String serviceResponseType = req.getParameter("serviceResponseType");
+		Service service = store.getServiceById(new Long(serviceId));
+		try {
+			if (serviceResponseType != null) {
+				service
+						.setServiceResponseType((new Integer(
+								serviceResponseType)).intValue());
+			}
+		} catch (Exception e) {
+			log
+					.debug("Updating service without a 'service response type' value");
+		}
 
-        try{
-            service.setHangTime( (new Integer(hangTime).intValue()));
-        }catch(Exception e){
-            log.debug("Updating service without a 'hang time' value");
-        }
-        try{
-            service.setHttpContentType(httpContentType);
-        }catch(Exception e){
-            log.debug("Updating service without a 'hang time' value");
-        }
-        try {
-            service.setDefaultScenarioId(new Long(scenarioId));
-        } catch (Exception e) {
-            // Do nothing.
-            log.debug("Updating service without a 'default scenario ID' value");
-        }
-        store.saveOrUpdateService(service);
-        String returnHTML = "Updated";
+		try {
+			if (hangTime != null) {
+				service.setHangTime((new Integer(hangTime).intValue()));
+			}
+		} catch (Exception e) {
+			log.debug("Updating service without a 'hang time' value");
+		}
+		try {
+			if (httpContentType != null) {
+				service.setHttpContentType(httpContentType);
+			}
+		} catch (Exception e) {
+			log.debug("Updating service without a 'hang time' value");
+		}
+		try {
+			if (scenarioId != null) {
+				service.setDefaultScenarioId(new Long(scenarioId));
+			}
+		} catch (Exception e) {
+			// Do nothing.
+			log.debug("Updating service without a 'default scenario ID' value");
+		}
+		store.saveOrUpdateService(service);
+		String returnHTML = "Updated";
 
-        PrintWriter out = resp.getWriter();
-        
-        out.println("<weather><report>" + returnHTML + "</report></weather>");
-        out.flush();
-        out.close();
+		PrintWriter out = resp.getWriter();
 
-    }
+		out.println("<weather><report>" + returnHTML + "</report></weather>");
+		out.flush();
+		out.close();
+
+	}
 }
