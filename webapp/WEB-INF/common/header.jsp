@@ -51,7 +51,7 @@ $(document).ready(function() {
 <div id="logo">
     <img src="<c:url value="/images/logo.png" />" />
     
-
+<%@ include file="/WEB-INF/common/message.jsp"%>
 <%
 String ua = request.getHeader( "User-Agent" );
 boolean isFirefox = ( ua != null && ua.indexOf( "Firefox/" ) != -1 );

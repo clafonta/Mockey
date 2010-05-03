@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public class Util {
 
-	private static final String SUCCESS = "successMessages";
-	private static final String ERROR = "errorMessages";
+	public static final String SUCCESS = "successMessages";
+	public static final String ERROR = "errorMessages";
 	/**
 	 * 
 	 * @param message

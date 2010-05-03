@@ -116,26 +116,24 @@
 			        serviceName = $("#service_name"),
 			        hangtime = $("#hang_time"),
 			        serviceContentType = $("#service_http_content_type");
-			   
-			   $.ajax({
-					type: "POST",
-					url: "<c:url value="/setup"/>",
-					data:"serviceName=" + serviceName.val() + 
-					     "&serviceId=" + serviceId.val()+
-					     "&realServiceUrl=" + realUrl.val() + 
-					     "&httpContentType=" + serviceContentType.val() +
-					     "&hangTime=" + hangtime.val()
-					     
-				});
-			
-			   $.prompt('Service '+serviceName.val()+' updated.', { timeout: 2000});
+			    if (serviceId == null) {   alert('serviceId is not set.'); } 
+			 
+			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(),
+				   realServiceUrl:  realUrl.val(),  httpContentType: serviceContentType.val(),
+				   hangTime: hangtime.val() } ,function(data){
+					   if (data.data.redirect){
+						   window.location.replace(data.data.redirect);
+						   
+					   }else {   
+					   	$.prompt('<span style=\"color:red;\">Not updated:</span> ' + data.data.info );
+					   }
+
+					   }, 'json' );
 				
 		});
-		$('#create-service')
-		    .button()
-		    .click(function() {
-			    alert("create");
-		});
+
+		
+	
 		$('#delete-service')
 		    .button()
 		    .click(function() {
@@ -146,10 +144,12 @@
 		    .click(function() {
 			    alert("delete scenario");
 		});	
-		$('#update-scenario')
+		$('.update-scenario')
 		    .button()
 		    .click(function() {
-			    alert("update scenario");
+		    	var serviceId = $("#service_id");
+		    	var scenearioId = this.id.split("_")[1];
+			    alert("update scenario with service_id "+ serviceId.val() + " scenearioId: " + scenearioId);
 		});		
 
 	});
@@ -158,27 +158,33 @@
 
 
 <div id="main">
-    <%@ include file="/WEB-INF/common/message.jsp"%>
     
-    <c:if test="${!empty mockservice.id}">
-        <c:url value="/home" var="serviceUrl">
-          <c:param name="serviceId" value="${mockservice.id}" />                                                                               
-    	</c:url> 
-        
-    </c:if>
-    <span style="float:right;"><a href="${serviceUrl}">Return to main page</a></span>
+    <div class="result"></div>
+    <c:choose>
+	    <c:when test="${!empty mockservice.id}">
+	        <c:url value="/home" var="returnToServiceUrl">
+	          <c:param name="serviceId" value="${mockservice.id}" />                                                                               
+	    	</c:url> 
+	    </c:when>
+	    <c:otherwise>
+	    	<c:url value="/home" var="returnToServiceUrl"/>
+	    </c:otherwise>
+    </c:choose>
+    <span style="float:right;"><a href="${returnToServiceUrl}">Return to main page</a></span>
     <h1>Service Setup</h1>  
     <div class="parentform">
-        <input type="hidden" id="service_id" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
+        <c:if test="${!empty mockservice.id}">
+            <input type="hidden" id="service_id" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
+        </c:if>
         <fieldset>
 				<label for="service_name">Service name:</label>
-	            <input type="text" id="service_name" name="service_name" maxlength="100" size="100%" value="<c:out value="${mockservice.serviceName}"/>" />
+	            <input type="text" id="service_name" class="text ui-corner-all ui-widget-content" name="service_name" maxlength="100" size="100%" value="<c:out value="${mockservice.serviceName}"/>" />
 	            <div class="tinyfieldset">Use a self descriptive name. For example, if you were to use this for 'authentication' testing, then call it 'Authentication'.</div>
 	            <label for="service_url">Real service URL: </label>
-                <input type="text" id="service_real_url" name="realServiceUrl" maxlength="100" size="100%" value="<c:out value="${mockservice.realServiceUrl}"/>" />
+                <input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="100" size="100%" value="<c:out value="${mockservice.realServiceUrl}"/>" />
                 <div class="tinyfieldset">You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</div>
                 <label for="service_url">Hang time: </label>
-                <input type="text" id="hang_time" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
+                <input type="text" id="hang_time" class="text ui-corner-all ui-widget-content" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
                 <div class="tinyfieldset">The delay time in milliseconds.</div>
                 <label>HTTP header definition:</label>
 	            <select id="service_http_content_type" name="httpContentType">
@@ -200,7 +206,7 @@
 	                <button id="update-service">Update service</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button id="create-service">Create new service</button>
+	                <button id="update-service">Create new service</button>
 	            </c:otherwise>
 	        </c:choose>
 	        <c:if test="${!empty mockservice.id}">
@@ -234,9 +240,8 @@
 				<c:forEach var="mockscenario" begin="0" items="${mockservice.scenarios}" varStatus="status">   
 					<h3><a href="#">${mockscenario.scenarioName}</a></h3>
 					<div>
-					  <p>
-					   <!-- BEGIN SCENARIO VIEW FORM  -->
-					   <form style="background-color:#99CCFF;">
+					<div class="parentformselected" >
+					
 				            <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
 							<c:if test="${!empty mockscenario.id}">
 							    <input type="hidden" name="scenarioId" value="<c:out value="${mockscenario.id}"/>" />
@@ -246,7 +251,7 @@
 				                    <tr>
 				                        <th width="20%"><p>Scenario Name:</p></th>
 					                    <td>
-											<p><input type="text" style="width:100%;"  name="scenarioName" value="<c:out value="${mockscenario.scenarioName}"/>" /></p>
+											<p><input type="text" style="width:100%;" id="scenarioName_${mockscenario.id}" name="scenarioName" value="<c:out value="${mockscenario.scenarioName}"/>" /></p>
 											<p class="tiny">Example: <i>Valid Request</i> or <i>Invalid Request</i></p>
 										</td>
 				                    </tr>
@@ -254,7 +259,7 @@
 										<th><p><a href="<c:url value="help#static_dynamic"/>">Match argument</a>: <span style="color:blue;">(optional)</span></p></th>
 										<td>
 										  <p>
-										      <textarea name="matchStringArg" style="width:100%;" rows="2" ><c:out value="${mockscenario.matchStringArg}" /></textarea>
+										      <textarea name="matchStringArg" id="matchStringArg_${mockscenario.id}" style="width:100%;" rows="2" ><c:out value="${mockscenario.matchStringArg}" /></textarea>
 										  </p>
 										  
 										</td>
@@ -262,7 +267,7 @@
 									<tr>
 										<th><p>Scenario response message:</p></th>
 										<td>
-											<p><textarea class="resizable" name="responseMessage" rows="10" style="width:100%;"><c:out value="${mockscenario.responseMessage}" escapeXml="false"/></textarea>
+											<p><textarea class="resizable" id="responseMessage_${mockscenario.id}" name="responseMessage" rows="10" style="width:100%;"><c:out value="${mockscenario.responseMessage}" escapeXml="false"/></textarea>
 											
 											</p>
 										    <p class="tiny">The message you want your mock service to reply with. Feel free to cut and paste XML, free form text, etc.</p>
@@ -272,12 +277,10 @@
 				                </tbody>
 				            </table>
 					        <p align="right">
-						        <button id="update-scenario" name="">Update scenario</button>
+						        <button id="update-scenario_${mockscenario.id}" class="update-scenario" name="">Update scenario</button>
 								<button id="delete-scenario" name="delete" onclick="return confirm('Are you sure you want to delete this scenario?');">Delete</button>
 					        </p>
-					    </form>
-					  <!-- END SCENARIO VIEW FORM -->
-					  </p>
+						</div>
 					</div>
 				</c:forEach>
 			</div>

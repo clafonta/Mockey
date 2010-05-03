@@ -98,5 +98,15 @@
 			<required>false</required>
 		</attribute>
 	</tag>
+	<tag>
+		<name>message</name>
+		<tagclass>com.mockey.ui.tags.MessageTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>separator</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
 
 </taglib>

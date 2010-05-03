@@ -137,8 +137,9 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return null;
     }
 
-    public void saveOrUpdateService(Service mockServiceBean) {
+    public Service saveOrUpdateService(Service mockServiceBean) {
         // TODO Auto-generated method stub
+    	return null;
 
     }
 

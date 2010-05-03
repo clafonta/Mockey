@@ -36,7 +36,7 @@ public interface IMockeyStorage {
 	public Service getServiceById(Long serviceId);
 	public Service getServiceByUrl(String urlPath);
 	public List<Service> getServices();
-	public void saveOrUpdateService(Service service);
+	public Service saveOrUpdateService(Service service);
 	public void deleteService(Service service);
 
 	public ServicePlan getServicePlanById(Long servicePlanId);

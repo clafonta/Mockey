@@ -78,7 +78,7 @@ public class Service implements PersistableItem, ExecutableService {
 			this.setServiceName(getNiceNameForService(this.realServiceUrl
 					.getFullUrl()));
 		} else {
-			this.setServiceName("New Service Name Here");
+			this.setServiceName("");
 		}
 	}
 

@@ -142,6 +142,7 @@ $(document).ready( function() {
 	            <tbody>
 		              <tr>                                                                                 
 							<td valign="top" width="35%">
+							  <div class="scroll">
 	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 	                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" style="margin-bottom:0.2em;padding:0.2em;">
 	                                <span style="float:right;"><a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
@@ -156,6 +157,7 @@ $(document).ready( function() {
 	                                
 									</div>
 							    </c:forEach>
+							    </div>
 							</td>
 							<td valign="top">
 							<div id='service_list_container'>

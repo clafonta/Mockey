@@ -28,6 +28,7 @@ import org.w3c.dom.Document;
 
 import com.mockey.OrderedMap;
 import com.mockey.model.FulfilledClientRequest;
+import com.mockey.model.PersistableItem;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
@@ -113,9 +114,10 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return service;
 	}
 
-	public void saveOrUpdateService(Service mockServiceBean) {
-		mockServiceStore.save(mockServiceBean);
+	public Service saveOrUpdateService(Service mockServiceBean) {
+		PersistableItem item = mockServiceStore.save(mockServiceBean);
 		this.writeMemoryToFile();
+		return (Service)item;
 	}
 
 	public void deleteService(Service mockServiceBean) {

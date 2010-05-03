@@ -16,6 +16,8 @@
 package com.mockey.ui;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -140,7 +142,8 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		try {
 			if (req.getParameter("hangTime") != null) {
-				service.setHangTime(Integer.parseInt(req.getParameter("hangTime")));
+				service.setHangTime(Integer.parseInt(req
+						.getParameter("hangTime")));
 			}
 		} catch (Exception e) {
 
@@ -159,12 +162,35 @@ public class ServiceSetupServlet extends HttpServlet {
 		if ((errorMap != null) && (errorMap.size() == 0)) {
 			// no errors, so create service.
 
-			// Util.saveSuccessMessage("Service updated.", req);
-			store.saveOrUpdateService(service);
+			Util.saveSuccessMessage("Service updated.", req);
+			Service updatedService = store.saveOrUpdateService(service);
+
+			
+			String redirectUrl = Url.getContextAwarePath("/setup?serviceId="
+					+ updatedService.getId(), req.getContextPath());
+			PrintWriter out = resp.getWriter();
+			out.println("{ \"data\": { \"redirect\": \""+redirectUrl+"\"}}");
+			out.flush();
+			out.close();
+			return;
+			
 
 		} else {
 			// Util.saveErrorMessage("Service not added/updated.", req);
 			// Util.saveErrorMap(errorMap, req);
+
+			StringBuffer returnHTML = new StringBuffer();
+			Iterator<String> errorIter = errorMap.keySet().iterator();
+			while (errorIter.hasNext()) {
+				String key = errorIter.next();
+				String value = errorMap.get(key);
+				returnHTML.append(value);
+			}
+			PrintWriter out = resp.getWriter();
+			out.println("{ \"data\": { \"info\": \""+returnHTML+"\"}}");
+			
+			out.flush();
+			out.close();
 
 		}
 		return;
