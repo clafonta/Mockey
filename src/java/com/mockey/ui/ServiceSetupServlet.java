@@ -17,7 +17,6 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -169,25 +168,19 @@ public class ServiceSetupServlet extends HttpServlet {
 			String redirectUrl = Url.getContextAwarePath("/setup?serviceId="
 					+ updatedService.getId(), req.getContextPath());
 			PrintWriter out = resp.getWriter();
-			out.println("{ \"data\": { \"redirect\": \""+redirectUrl+"\"}}");
+			String resultingJSON = "{ \"result\": { \"redirect\": \""+redirectUrl+"\"}}";
+			out.println(resultingJSON);
 			out.flush();
 			out.close();
 			return;
 			
 
 		} else {
-			// Util.saveErrorMessage("Service not added/updated.", req);
-			// Util.saveErrorMap(errorMap, req);
-
-			StringBuffer returnHTML = new StringBuffer();
-			Iterator<String> errorIter = errorMap.keySet().iterator();
-			while (errorIter.hasNext()) {
-				String key = errorIter.next();
-				String value = errorMap.get(key);
-				returnHTML.append(value);
-			}
+			
+		
 			PrintWriter out = resp.getWriter();
-			out.println("{ \"data\": { \"info\": \""+returnHTML+"\"}}");
+			String resultingJSON = Util.getJSON(errorMap);
+			out.println(resultingJSON);
 			
 			out.flush();
 			out.close();

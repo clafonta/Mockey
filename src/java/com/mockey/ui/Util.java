@@ -15,6 +15,7 @@
  */
 package com.mockey.ui;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -68,5 +69,24 @@ public class Util {
 			}
 		}
 		
+	}
+	
+	public static String getJSON(Map errorMap){
+		StringBuffer returnErrorMap = new StringBuffer();
+		StringBuffer returnCoachingMessage = new StringBuffer();
+		Iterator<String> errorIter = errorMap.keySet().iterator();
+		while (errorIter.hasNext()) {
+			String key = errorIter.next();
+			String value = (String)errorMap.get(key);
+			returnCoachingMessage.append(value);
+			returnErrorMap.append("\""+key+"\": \""+value+"\"" );
+			if(errorIter.hasNext()){
+				returnCoachingMessage.append(" ");
+				returnErrorMap.append(",\n" );
+			}
+		}
+		
+		String resultingJSON = "{ \"result\": { \"message\": \""+returnCoachingMessage.toString()+"\", "+returnErrorMap.toString()+"}}";
+		return resultingJSON;
 	}
 }

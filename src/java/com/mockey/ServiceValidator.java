@@ -65,8 +65,8 @@ public class ServiceValidator {
 
                 // We have a match AND service IDs don't match.
                 if (ts.getMockServiceUrl().equals(ms.getMockServiceUrl()) && (ts.getId() != ms.getId())) {
-                    errorMap.put("serviceUrl", "Mock service URI is already used by the '" + ts.getServiceName()
-                            + "' service. Please choose another mock service URI pattern. ");
+                    errorMap.put("serviceUrl", "Real service URL is already used by the '" + ts.getServiceName()
+                            + "' service. Please choose another URL pattern. ");
 
                     break;
                 }

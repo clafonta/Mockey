@@ -45,7 +45,7 @@
 		<servlet-class>com.mockey.server.ResponseServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>MockServiceScenarioServlet</servlet-name>
+		<servlet-name>ScenarioServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ScenarioServlet</servlet-class>
 	</servlet>
 	<servlet>
@@ -133,7 +133,7 @@
 		<url-pattern>/setup</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>MockServiceScenarioServlet</servlet-name>
+		<servlet-name>ScenarioServlet</servlet-name>
 		<url-pattern>/scenario</url-pattern>
 	</servlet-mapping>	
 	<servlet-mapping>

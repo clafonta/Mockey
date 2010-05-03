@@ -64,30 +64,28 @@
 			width: 650,
 			modal: true,
 			buttons: {
-				'Create a scenario': function() {
+				'Create scenario': function() {
 					var bValid = true;
+					var serviceId = $("#service_id");
 					allFields.removeClass('ui-state-error');
 					bValid = bValid && checkLength(name,"scenario name",3,250);
 					if (bValid) {
-						
-						$('#accordion').append('<h3><a href=\"#\">'+name.val()+'</a></h3><div><form action=\"\" method=\"post\" style=\"background-color:#99CCFF;\">' +
-								'<input type=\"hidden\" name=\"serviceId\" value=\"\" />' +
-								'<input type=\"hidden\" name=\"scenarioId\" value=\"\" />' +
-								'<table class=\"simple\" width=\"100%\"><tbody><tr><th width=\"20%\"><p>Scenario Name:</p></th><td>' +
-								'<p><input type=\"text\" style=\"width:100%;\"  name=\"scenarioName\" value=\"'+name.val()+'\" /></p>' +
-								'<p class=\"tiny\">Example: <i>Valid Request</i> or <i>Invalid Request</i></p></td></tr>' +
-								'<tr><th><p><a href=\"\">Match argument</a>: <span class=\"tiny\">(use for Dynamic response)</span></p></th>' + 
-								'<td><p><textarea name=\"matchStringArg\" style=\"width:100%;\" rows=\"2\" >'+ match.val()+'</textarea></p></td></tr>' +
-								'<tr><th><p>Scenario response message:</p></th><td>'+
-								'<p><textarea class=\"resizable\" name=\"responseMessage\" rows=\"10\" style=\"width:100%;\">'+responsemsg.val() +
-								'</textarea></p><p class=\"tiny\">The message you want your mock service to reply with. Feel free to cut and paste XML, free form text, etc.</p>' +
-								'</td></tr></tbody></table><button id=\"update-scenario\">Update scenario</button><button id=\"delete-scenario\">Delete scenario</button></form></div>').accordion('destroy').accordion({
-							active: false,
-							collapsible: true
-						});
+
+						$.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId.val(), matchStringArg:  match.val(),
+							responseMessage: responsemsg.val() } ,function(data){
+
+								   if (data.result.redirect){
+									   window.location.replace(data.result.redirect);
+									   
+								   }
+								   
+								   
+
+								   }, 'json' );
 						
 								
 						$(this).dialog('close');
+						
 					}
 				},
 				Cancel: function() {
@@ -96,6 +94,7 @@
 			},
 			close: function() {
 				allFields.val('').removeClass('ui-state-error');
+				$("#no_scenarios_message").addClass('hide');
 			}
 		});
 		
@@ -121,11 +120,18 @@
 			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(),
 				   realServiceUrl:  realUrl.val(),  httpContentType: serviceContentType.val(),
 				   hangTime: hangtime.val() } ,function(data){
-					   if (data.data.redirect){
-						   window.location.replace(data.data.redirect);
+					   
+					   if (data.result.redirect){
+						   window.location.replace(data.result.redirect);
 						   
 					   }else {   
-					   	$.prompt('<span style=\"color:red;\">Not updated:</span> ' + data.data.info );
+						if(data.result.serviceUrl){
+							$("#service_real_url").addClass('ui-state-error');
+							}
+						if(data.result.serviceName){
+							$("#service_name").addClass('ui-state-error');
+							}
+					   	$.prompt('<div style=\"color:red;\">Not updated:</div> ' + data.result.message);
 					   }
 
 					   }, 'json' );
@@ -137,19 +143,68 @@
 		$('#delete-service')
 		    .button()
 		    .click(function() {
-			    alert("delete");
+		    	 var serviceId = "${mockservice.id}";
+			    alert("delete service:" + serviceId);
+			    $.prompt(
+		                'Are you sure you want to delete this Service?',
+		                {
+		                    callback: function (proceed) {
+		                        if(proceed) document.location="<c:url value="/setup" />?delete=true&serviceId="+ serviceId;
+		                    },
+		                    buttons: {
+		                        'Delete Service': true,
+		                        Cancel: false
+		                    }
+		                });
 		});
-		$('#delete-scenario')
+		$('.delete-scenario')
 		    .button()
 		    .click(function() {
-			    alert("delete scenario");
+		    	var serviceId = $("#service_id");
+		    	var serviceScenarioId = this.id.split("_")[1];
+			    
+			    $.prompt(
+		                'Are you sure you want to delete this Scenario?',
+		                {
+		                    callback: function (proceed) {
+		                        if(proceed) {
+			                        
+			                         $.post('<c:url value="/scenario"/>', {serviceId: serviceId.val(), delete: true, scenarioId: serviceScenarioId},
+					                         function(data) {}, 'json');
+			                         $("#scenario-accordion-h3_"+serviceScenarioId).addClass('hide');
+			                         $("#scenario-accordion-body_"+serviceScenarioId).addClass('hide');
+			                         $('#accordion').accordion('destroy').accordion({
+			 							active: false,
+										collapsible: true
+									});
+		                        }
+		                        
+		                    },
+		                    buttons: {
+		                        'Delete Service': true,
+		                        Cancel: false
+		                    }
+		                });
 		});	
 		$('.update-scenario')
 		    .button()
 		    .click(function() {
 		    	var serviceId = $("#service_id");
-		    	var scenearioId = this.id.split("_")[1];
-			    alert("update scenario with service_id "+ serviceId.val() + " scenearioId: " + scenearioId);
+		    	var serviceScenarioId = this.id.split("_")[1];
+		    	var serviceScenarioName = $("#scenarioName_"+serviceScenarioId);
+		    	var serviceScenarioMatchStringArg = $("#matchStringArg_"+serviceScenarioId);
+		    	var serviceScenarioResponseMsg = $("#responseMessage_"+serviceScenarioId);
+			    $.post('<c:url value="/scenario"/>', {serviceId: serviceId.val(), scenarioId: serviceScenarioId, scenarioName: serviceScenarioName.val(),
+				    matchStringArg: serviceScenarioMatchStringArg.val() , responseMessage: serviceScenarioResponseMsg.val() },
+                        function(data) {
+					    	if(data.result.success){
+								
+						   	$.prompt('<div style=\"color:red;\">Updated:</div> ' + data.result.success, { timeout: 2000});
+					    	}else {
+					    		$.prompt('<div style=\"color:red;\">Not updated:</div> ' + data.result.message);
+						    }
+				    	
+                        }, 'json');
 		});		
 
 	});
@@ -184,7 +239,7 @@
                 <input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="100" size="100%" value="<c:out value="${mockservice.realServiceUrl}"/>" />
                 <div class="tinyfieldset">You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</div>
                 <label for="service_url">Hang time: </label>
-                <input type="text" id="hang_time" class="text ui-corner-all ui-widget-content" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
+                <input type="text" id="hang_time" class="text ui-corner-all ui-widget-content" style="width:100px;" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
                 <div class="tinyfieldset">The delay time in milliseconds.</div>
                 <label>HTTP header definition:</label>
 	            <select id="service_http_content_type" name="httpContentType">
@@ -233,13 +288,15 @@
 		</div>
 	
 	    <h3>Existing Scenarios</h3>
-		
+		<c:if test="${empty mockservice.scenarios}">
+		<div id="no_scenarios_message"><h4 style="color:red;">No scenarios here.</h4> <p>It's because you have not defined one or someone has deleted them. Running this service as <strong>Static</strong> or <strong>Dynamic</strong> will not work. </p></div>
+		</c:if>
 		<div class="demo">
 			<div id="accordion">
 				
 				<c:forEach var="mockscenario" begin="0" items="${mockservice.scenarios}" varStatus="status">   
-					<h3><a href="#">${mockscenario.scenarioName}</a></h3>
-					<div>
+					<h3 id="scenario-accordion-h3_${mockscenario.id}"><a href="#">${mockscenario.scenarioName}</a></h3>
+					<div id="scenario-accordion-body_${mockscenario.id}">
 					<div class="parentformselected" >
 					
 				            <input type="hidden" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
@@ -277,8 +334,8 @@
 				                </tbody>
 				            </table>
 					        <p align="right">
-						        <button id="update-scenario_${mockscenario.id}" class="update-scenario" name="">Update scenario</button>
-								<button id="delete-scenario" name="delete" onclick="return confirm('Are you sure you want to delete this scenario?');">Delete</button>
+						        <button id="update-scenario_${mockscenario.id}" class="update-scenario" name="update">Update scenario</button>
+								<button id="delete-scenario_${mockscenario.id}" class="delete-scenario" name="delete">Delete</button>
 					        </p>
 						</div>
 					</div>

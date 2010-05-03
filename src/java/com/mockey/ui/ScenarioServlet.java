@@ -16,6 +16,7 @@
 package com.mockey.ui;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mockey.ScenarioValidator;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
+import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -57,7 +59,12 @@ public class ScenarioServlet extends HttpServlet {
 			Service service = store.getServiceById(serviceId);
 			service.deleteScenario(scenarioId);
 			store.saveOrUpdateService(service);
-			resp.sendRedirect("setup?id=" + serviceId);
+
+			PrintWriter out = resp.getWriter();
+			String resultingJSON = "{ \"result\": { \"success\": \"Scenario deleted\"}}";
+			out.println(resultingJSON);
+			out.flush();
+			out.close();
 			return;
 		}
 		if (req.getParameter("cancel") != null) {
@@ -184,18 +191,21 @@ public class ScenarioServlet extends HttpServlet {
 			}
 
 			store.saveOrUpdateService(service);
-			Util.saveSuccessMessage("Service updated", req);
+			PrintWriter out = resp.getWriter();
+			String resultingJSON = "{ \"result\": { \"success\": \"Service updated.\"}}";
+			out.println(resultingJSON);
+			out.flush();
+			out.close();
+			return;
 
+		} else {
+
+			PrintWriter out = resp.getWriter();
+			String resultingJSON =  Util.getJSON(errorMap);
+			out.println(resultingJSON);
+			out.flush();
+			out.close();
+			return;
 		}
-
-		req.setAttribute("mockscenario", scenario);
-		req.setAttribute("mockservice", service);
-		req.setAttribute("universalErrorScenario", store
-				.getUniversalErrorScenario());
-		Util.saveErrorMap(errorMap, req);
-
-		RequestDispatcher dispatch = req
-				.getRequestDispatcher("/service_scenario_setup.jsp");
-		dispatch.forward(req, resp);
 	}
 }
