@@ -134,7 +134,7 @@ public class Service implements PersistableItem, ExecutableService {
 		this.scenarios.remove(scenarioId);
 	}
 
-	public Scenario updateScenario(Scenario scenario) {
+	public Scenario saveOrUpdateScenario(Scenario scenario) {
 		scenario.setServiceId(this.id);
 		return (Scenario) this.scenarios.save(scenario);
 	}
@@ -200,7 +200,7 @@ public class Service implements PersistableItem, ExecutableService {
 		// Recursively set this ID to child Scenarios, if any exist.
 		for (Scenario scenario : getScenarios()) {
 			scenario.setServiceId(this.id);
-			this.updateScenario(scenario);
+			this.saveOrUpdateScenario(scenario);
 		}
 	}
 

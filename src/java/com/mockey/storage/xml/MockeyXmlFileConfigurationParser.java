@@ -79,7 +79,7 @@ public class MockeyXmlFileConfigurationParser {
         digester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
         digester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
         digester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
-        digester.addSetNext(SCENARIO, "updateScenario");
+        digester.addSetNext(SCENARIO, "saveOrUpdateScenario");
 
         // PLAN
         digester.addObjectCreate(PLAN, ServicePlan.class);

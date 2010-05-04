@@ -73,19 +73,12 @@
 
 						$.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId.val(), matchStringArg:  match.val(),
 							responseMessage: responsemsg.val() } ,function(data){
-
-								   if (data.result.redirect){
-									   window.location.replace(data.result.redirect);
-									   
-								   }
-								   
-								   
-
-								   }, 'json' );
-						
-								
+								   console.log(data);
+								  
+							}, 'json' );
 						$(this).dialog('close');
 						
+						document.location="<c:url value="/setup" />?serviceId="+ serviceId.val();
 					}
 				},
 				Cancel: function() {
@@ -115,7 +108,6 @@
 			        serviceName = $("#service_name"),
 			        hangtime = $("#hang_time"),
 			        serviceContentType = $("#service_http_content_type");
-			    if (serviceId == null) {   alert('serviceId is not set.'); } 
 			 
 			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(),
 				   realServiceUrl:  realUrl.val(),  httpContentType: serviceContentType.val(),
@@ -144,7 +136,6 @@
 		    .button()
 		    .click(function() {
 		    	 var serviceId = "${mockservice.id}";
-			    alert("delete service:" + serviceId);
 			    $.prompt(
 		                'Are you sure you want to delete this Service?',
 		                {
@@ -198,8 +189,9 @@
 				    matchStringArg: serviceScenarioMatchStringArg.val() , responseMessage: serviceScenarioResponseMsg.val() },
                         function(data) {
 					    	if(data.result.success){
-								
-						   	$.prompt('<div style=\"color:red;\">Updated:</div> ' + data.result.success, { timeout: 2000});
+					    		$("#scenario-accordion-h3_"+serviceScenarioId+" > a").hide();
+					    		$("#scenario-accordion-h3_"+serviceScenarioId).append("<a href=\"#\">"+serviceScenarioName.val()+"</a>");
+						   		$.prompt('<div style=\"color:red;\">Updated:</div> ' + data.result.success, { timeout: 2000});
 					    	}else {
 					    		$.prompt('<div style=\"color:red;\">Not updated:</div> ' + data.result.message);
 						    }

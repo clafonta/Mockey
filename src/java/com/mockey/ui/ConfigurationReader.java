@@ -165,7 +165,7 @@ public class ConfigurationReader {
                         }
                         if (!existingScenario) {
                             uBean.setServiceId(inMemoryServiceBean.getId());
-                            inMemoryServiceBean.updateScenario(uBean);
+                            inMemoryServiceBean.saveOrUpdateScenario(uBean);
                             store.saveOrUpdateService(inMemoryServiceBean);
                             readResults.addAdditionMsg("<b>Scenario Added</b>: '" + uBean.getScenarioName()
                                     + "' added to existing service '" + inMemoryServiceBean.getServiceName() + "'");

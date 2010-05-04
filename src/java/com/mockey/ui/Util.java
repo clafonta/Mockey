@@ -15,7 +15,6 @@
  */
 package com.mockey.ui;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,70 +22,82 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
-
 public class Util {
 
 	public static final String SUCCESS = "successMessages";
 	public static final String ERROR = "errorMessages";
+
 	/**
 	 * 
 	 * @param message
 	 * @param req
 	 */
 	@SuppressWarnings("unchecked")
-    private static void save(String message,String messageKey, HttpServletRequest req){
-		
-		List<String> msgs = (List<String>)req.getSession().getAttribute(messageKey);
-		if(msgs==null){
+	private static void save(String message, String messageKey,
+			HttpServletRequest req) {
+
+		List<String> msgs = (List<String>) req.getSession().getAttribute(
+				messageKey);
+		if (msgs == null) {
 			msgs = new ArrayList<String>();
 		}
 		msgs.add(message);
 		req.getSession().setAttribute(messageKey, msgs);
 	}
-	
+
 	/**
 	 * 
 	 * @param message
 	 * @param req
 	 */
-	public static void saveErrorMessage(String message,HttpServletRequest req){
+	public static void saveErrorMessage(String message, HttpServletRequest req) {
 		save(message, ERROR, req);
 	}
-	
-	public static void saveSuccessMessage(String message,HttpServletRequest req){
+
+	public static void saveSuccessMessage(String message, HttpServletRequest req) {
 		save(message, SUCCESS, req);
-		
+
 	}
+
 	@SuppressWarnings("unchecked")
-    public static void saveErrorMap(Map errorMap,HttpServletRequest req){
-		if(errorMap!=null){
+	public static void saveErrorMap(Map errorMap, HttpServletRequest req) {
+		if (errorMap != null) {
 			Iterator<String> iter = errorMap.keySet().iterator();
-			while(iter.hasNext()){
-				String key = (String)iter.next();
-				String value = (String)errorMap.get(key);
-				save((key+" : " + value),ERROR,req);
+			while (iter.hasNext()) {
+				String key = (String) iter.next();
+				String value = (String) errorMap.get(key);
+				save((key + " : " + value), ERROR, req);
 			}
 		}
-		
+
 	}
-	
-	public static String getJSON(Map errorMap){
+
+	/**
+	 * 
+	 * @param objectMap
+	 * 
+	 * @return
+	 */
+	public static String getJSON(Map<String, String> objectMap) {
 		StringBuffer returnErrorMap = new StringBuffer();
-		StringBuffer returnCoachingMessage = new StringBuffer();
-		Iterator<String> errorIter = errorMap.keySet().iterator();
+
+		Iterator<String> errorIter = objectMap.keySet().iterator();
 		while (errorIter.hasNext()) {
 			String key = errorIter.next();
-			String value = (String)errorMap.get(key);
-			returnCoachingMessage.append(value);
-			returnErrorMap.append("\""+key+"\": \""+value+"\"" );
-			if(errorIter.hasNext()){
-				returnCoachingMessage.append(" ");
-				returnErrorMap.append(",\n" );
+			String value = (String) objectMap.get(key);
+
+			returnErrorMap.append("\"" + key + "\": \"" + value + "\"");
+			if (errorIter.hasNext()) {
+
+				returnErrorMap.append(",\n");
 			}
 		}
-		
-		String resultingJSON = "{ \"result\": { \"message\": \""+returnCoachingMessage.toString()+"\", "+returnErrorMap.toString()+"}}";
+
+		String resultingJSON = "{ \"result\": { " + returnErrorMap.toString()
+				+ "}}";
+
 		return resultingJSON;
 	}
+	
+	
 }

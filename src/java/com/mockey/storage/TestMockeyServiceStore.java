@@ -106,12 +106,12 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         scenario.setScenarioName("a");
         scenario.setRequestMessage("request message a");
         scenario.setResponseMessage("response message a");
-        service.updateScenario(scenario);
+        service.saveOrUpdateScenario(scenario);
         scenario = new Scenario();
         scenario.setScenarioName("b");
         scenario.setRequestMessage("request message b");
         scenario.setResponseMessage("response message b");
-        service.updateScenario(scenario);
+        service.saveOrUpdateScenario(scenario);
         services.add(service);
         Service service2 = new Service(new Url("http://someservice:8000/eai2"));
         service2.setServiceName("testname2");
@@ -122,12 +122,12 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         scenario2.setScenarioName("a");
         scenario2.setRequestMessage("request message a");
         scenario2.setResponseMessage("response message a");
-        service2.updateScenario(scenario);
+        service2.saveOrUpdateScenario(scenario);
         scenario2 = new Scenario();
         scenario2.setScenarioName("b");
         scenario2.setRequestMessage("request message b");
         scenario2.setResponseMessage("response message b");
-        service2.updateScenario(scenario);
+        service2.saveOrUpdateScenario(scenario);
         services.add(service2);
         return services;
     }

@@ -17,9 +17,9 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mockey.ScenarioValidator;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
-import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -37,111 +36,44 @@ public class ScenarioServlet extends HttpServlet {
 	private static final long serialVersionUID = -5920793024759540668L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
+	
 	public void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		// A Service is needed to associate the
+		// scenario to.
 		Long serviceId = new Long(req.getParameter("serviceId"));
 		Long scenarioId = null;
 		try {
 			scenarioId = new Long(req.getParameter("scenarioId"));
 		} catch (Exception e) {
-			// 
+			// Do nothing. If the value doesn't exist,
+			// then we'll create a new Scenario
+			// for this service.
 		}
 
-		// HACK: saving large message scenarios via GET will reach
-		// the threshold for parameter size, thus we need to override
-		// certain POST action types, and redirect them to the GET
-		// method.
-		String actionTypeGetFlag = req.getParameter("actionTypeGetFlag");
-
+		// Get the service.
+		Service service = store.getServiceById(serviceId);
+		
+		// DELETE scenario logic
 		if (req.getParameter("delete") != null && serviceId != null
 				&& scenarioId != null) {
-			Service service = store.getServiceById(serviceId);
-			service.deleteScenario(scenarioId);
-			store.saveOrUpdateService(service);
+			try {
 
+				service.deleteScenario(scenarioId);
+				store.saveOrUpdateService(service);
+			} catch (Exception e) {
+				// Just in case an invalid service ID
+				// or scenario ID were past in.
+			}
 			PrintWriter out = resp.getWriter();
-			String resultingJSON = "{ \"result\": { \"success\": \"Scenario deleted\"}}";
+			Map<String, String> successMap = new HashMap<String, String>();
+			String resultingJSON = Util.getJSON(successMap);
 			out.println(resultingJSON);
 			out.flush();
 			out.close();
 			return;
 		}
-		if (req.getParameter("cancel") != null) {
-			resp.sendRedirect("setup?id=" + serviceId);
-			return;
-		}
-
-		if (actionTypeGetFlag != null) {
-			doGet(req, resp);
-		} else {
-			super.service(req, resp);
-		}
-
-	}
-
-	/**
-	 * 
-	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
-	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-
-		Long serviceId = new Long(req.getParameter("serviceId"));
-		Long scenarioId = null;
-		try {
-			scenarioId = new Long(req.getParameter("scenarioId"));
-		} catch (Exception e) {
-			//
-		}
-
-		String responseMsg = req.getParameter("responseMessage");
-
-		Service service = store.getServiceById(serviceId);
-
-		Scenario scenario = service.getScenario(scenarioId);
-		if (scenario == null) {
-			scenario = new Scenario();
-		}
-
-		if (responseMsg != null) {
-			scenario.setResponseMessage(responseMsg);
-		}
-
-		req.setAttribute("mockservice", service);
-		req.setAttribute("mockscenario", scenario);
-		req.setAttribute("universalErrorScenario", store
-				.getUniversalErrorScenario());
-		RequestDispatcher dispatch = req
-				.getRequestDispatcher("/service_scenario_setup.jsp");
-		dispatch.forward(req, resp);
-	}
-
-	/**
-	 * 
-	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
-	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-
-		Long serviceId = new Long(req.getParameter("serviceId"));
-		Service service = store.getServiceById(serviceId);
 
 		Scenario scenario = null;
 		try {
@@ -150,7 +82,10 @@ public class ScenarioServlet extends HttpServlet {
 		} catch (Exception e) {
 			//
 		}
-
+		
+		// CREATE OR UPDATE OF SCENARIO
+		// If scenario is null, that means we're creating, 
+		// not updating 
 		if (scenario == null) {
 			scenario = new Scenario();
 		}
@@ -165,20 +100,26 @@ public class ScenarioServlet extends HttpServlet {
 			scenario.setMatchStringArg(req.getParameter("matchStringArg"));
 		}
 
+		// VALIDATION 
 		Map<String, String> errorMap = ScenarioValidator.validate(scenario);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {
 
-			scenario = service.updateScenario(scenario);
+			// If creating a Scenario, then the returned scenario
+			// will now have an id. If updating scenario, then
+			// scenario ID remains the same. 
+			scenario = service.saveOrUpdateScenario(scenario);
 
-			// Error response for this service.
+			// Make this the default 'error response' scenario 
+			// for the service
 			if (req.getParameter("errorScenario") != null) {
 				service.setErrorScenarioId(scenario.getId());
 			} else if (service.getErrorScenarioId() == scenario.getId()) {
 				service.setErrorScenarioId(null);
 			}
 
-			// Universal error response, for all services.
+			// Make this the default universal 'error response', 
+			// for all services defined in Mockey.
 			if (req.getParameter("universalErrorScenario") != null) {
 				store.setUniversalErrorScenarioId(scenario.getId());
 				store.setUniversalErrorServiceId(serviceId);
@@ -189,19 +130,28 @@ public class ScenarioServlet extends HttpServlet {
 				store.setUniversalErrorScenarioId(null);
 				store.setUniversalErrorServiceId(null);
 			}
-
+			
 			store.saveOrUpdateService(service);
 			PrintWriter out = resp.getWriter();
-			String resultingJSON = "{ \"result\": { \"success\": \"Service updated.\"}}";
+			Map<String, String> successMap = new HashMap<String, String>();
+			successMap.put("success", "Scenario updated");
+			// Pass back the scenario ID, which is needed for
+			// new, created scenarios.
+			successMap.put("scenarioId", scenario.getId().toString());
+			String resultingJSON = Util.getJSON(successMap);
 			out.println(resultingJSON);
 			out.flush();
 			out.close();
 			return;
 
 		} else {
-
+			// ERROR STATE
+			// Something is wrong with the input values.
+			// Scenario is not created or updated.
+			// Coaching messages are available in the
+			// error dictionary/map.
 			PrintWriter out = resp.getWriter();
-			String resultingJSON =  Util.getJSON(errorMap);
+			String resultingJSON = Util.getJSON(errorMap);
 			out.println(resultingJSON);
 			out.flush();
 			out.close();
