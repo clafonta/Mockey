@@ -416,7 +416,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	/**
 	 * Every time something gets saved, we write to memory.
 	 */
-	private void writeMemoryToFile() {
+	private synchronized void writeMemoryToFile() {
 		File f = new File(StartUpServlet.MOCK_SERVICE_DEFINITION);
 		try {
 			FileOutputStream fop = new FileOutputStream(f);

@@ -211,7 +211,7 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .ui-dialog .ui-state-error { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; }
 div.scroll {
-height: 600px;
+height: 500px;
 overflow: auto;
 border: 0px solid #666;
 padding: 8px;

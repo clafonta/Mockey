@@ -41,7 +41,21 @@ $(document).ready( function() {
             });
         });
     
-
+    $('.allresponsetype').each( function() {
+        $(this).click(function(){   
+          var response_type = this.id.split("_")[1]; 	
+          //console.log("response type: "+response_type);
+          $.post('<c:url value="/setup"/>', { responseType: response_type, all: true } ,function(data){
+					   //console.log(data);
+					   if(data.result.success){
+						   document.location="<c:url value="/home" />";
+					    }
+				}, 'json' );
+        });
+        
+        
+     });
+    
     $('.gt').each( function() {
         $(this).click(function(){   
           var serviceId = this.id.split("_")[1]; 	
@@ -54,7 +68,7 @@ $(document).ready( function() {
 		$(this).click( function() {
 			var scenarioId = this.id.split("_")[1];
 			var serviceId = this.id.split("_")[2];
-			//alert("scenario id: " + scenarioId + " serviceId: " + serviceId);
+			
 			$.ajax({
 				type: "POST",
 				url: "<c:url value="service_scenario"/>",
@@ -137,11 +151,17 @@ $(document).ready( function() {
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>
 	        <c:when test="${!empty services}">
+	        
 	            <c:set var="serviceIdToShowByDefault" value="<%= request.getParameter("serviceId") %>" scope="request"/>
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
-							<td valign="top" width="35%">
+							<td valign="top" width="40%">
+							  <p> Make all 
+							  <a id="allresponsetype_0" class="allresponsetype response_proxy" href="#">Proxy</a>
+							  <a id="allresponsetype_1" class="allresponsetype response_static" href="#">Static</a>
+							  <a id="allresponsetype_2" class="allresponsetype response_dynamic" href="#">Dynamic</a>
+							  </p>
 							  <div class="scroll">
 	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 	                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" style="margin-bottom:0.2em;padding:0.2em;">

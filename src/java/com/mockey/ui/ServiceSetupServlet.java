@@ -17,6 +17,9 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -42,6 +45,30 @@ public class ServiceSetupServlet extends HttpServlet {
 
 	public void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		
+		if(req.getParameter("all")!=null && req.getParameter("responseType") != null){
+			List<Service> services = store.getServices();
+			try{
+				int serviceResponseType = Integer.parseInt(req.getParameter("responseType"));
+				for (Iterator iterator = services.iterator(); iterator
+						.hasNext();) {
+					Service service = (Service) iterator.next();
+					
+					service.setServiceResponseType(serviceResponseType);
+					store.saveOrUpdateService(service);
+				}
+			}catch(Exception e){
+				log.error("Unable to update service(s", e);
+			}
+			PrintWriter out = resp.getWriter();
+			Map<String, String> successMessage = new HashMap<String, String>();
+			successMessage.put("success", "updated");
+			String resultingJSON = Util.getJSON(successMessage);
+			out.println(resultingJSON);
+			out.flush();
+			out.close();
+			return;
+		}
 		log.debug("Setting up a new service");
 		Long serviceId = null;
 		try {
