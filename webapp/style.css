@@ -213,7 +213,7 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 div.scroll {
 height: 500px;
 overflow: auto;
-border: 0px solid #666;
+border: 0px solid #C0C0C0;
 padding: 8px;
 }
 

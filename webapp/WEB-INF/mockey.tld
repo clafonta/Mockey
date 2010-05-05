@@ -9,7 +9,7 @@
 	<shortname>custom</shortname>
 		<tag>
 		<name>service</name>
-		<tagclass>com.mockey.ui.tags.FulfilledServiceHistoryTag</tagclass>
+		<tagclass>com.mockey.ui.tags.ServiceResponseTypeTag</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>Manages an display of type of service response (Static, Dynamic, or Proxy). Style value '1' displays service respone type. Default style displays all 3 options.</info>
 		<attribute>

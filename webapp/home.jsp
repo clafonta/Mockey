@@ -74,74 +74,39 @@ $(document).ready( function() {
 				url: "<c:url value="service_scenario"/>",
 				data:"scenarioId="+scenarioId+"&serviceId="+serviceId
 			});
-			$(".scenariosByServiceId_"+serviceId).removeClass("response_static");
-			$(".scenariosByServiceId_"+serviceId).addClass("response_not");
-			$("#serviceScenario_"+scenarioId+"_"+serviceId).removeClass("response_not");
-			$("#serviceScenario_"+scenarioId+"_"+serviceId).addClass("response_static");
-		});
-	});
-    $('.serviceResponseTypeProxyLink').each( function() {
-		$(this).click( function() {
-			var serviceId = this.id.split("_")[1];
-			$.ajax({
-				type: "POST",
-				url: "<c:url value="service_scenario"/>",
-				data:"serviceResponseType=0&serviceId="+serviceId
-			});
-			$('#serviceResponseTypeProxy_'+serviceId).removeClass("response_not");
-			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_proxy");
-			$('#serviceResponseTypeStatic_'+serviceId).addClass("response_not");
-			$('#serviceResponseTypeDynamic_'+serviceId).addClass("response_not");
-			$('#staticScenario_'+serviceId).removeClass("show");
-			$('#staticScenario_'+serviceId).addClass("hide");
-			$('#proxyScenario_'+serviceId).removeClass("hide");
-			$('#proxyScenario_'+serviceId).addClass("show");
-			$('#dynamicScenario_'+serviceId).removeClass("show");
-			$('#dynamicScenario_'+serviceId).addClass("hide");
-			
+			$(".scenariosByServiceId_"+serviceId).removeClass("response_static").addClass("response_not");
+			$("#serviceScenario_"+scenarioId+"_"+serviceId).removeClass("response_not").addClass("response_static");
 		});
 	});
 
-    $('.serviceResponseTypeStaticLink').each( function() {
+    
+    $('.serviceResponseTypeLink').each( function() {
 		$(this).click( function() {
-			var serviceId = this.id.split("_")[1];
+			var responseType = this.id.split("_")[1];
+			var serviceId = this.id.split("_")[2];
 			$.ajax({
 				type: "POST",
 				url: "<c:url value="service_scenario"/>",
-				data:"serviceResponseType=1&serviceId="+serviceId
+				data:"serviceResponseType="+responseType+"&serviceId="+serviceId
 			});
-			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_not");
-			$('#serviceResponseTypeStatic_'+serviceId).removeClass("response_not");
-			$('#serviceResponseTypeStatic_'+serviceId).addClass("response_static");
-			$('#serviceResponseTypeDynamic_'+serviceId).addClass("response_not");
-			$('#staticScenario_'+serviceId).removeClass("hide");
-			$('#staticScenario_'+serviceId).addClass("show");
-			$('#proxyScenario_'+serviceId).removeClass("show");
-			$('#proxyScenario_'+serviceId).addClass("hide");
-			$('#dynamicScenario_'+serviceId).removeClass("show");
-			$('#dynamicScenario_'+serviceId).addClass("hide");
+                 
+			$('#serviceResponseType_0_'+serviceId).addClass("response_not");
+			$('#serviceResponseType_1_'+serviceId).addClass("response_not");
+			$('#serviceResponseType_2_'+serviceId).addClass("response_not");
+			$('#staticScenario_'+serviceId).removeClass("show").addClass("hide");
+			$('#proxyScenario_'+serviceId).removeClass("show").addClass("hide");
+			$('#dynamicScenario_'+serviceId).removeClass("show").addClass("hide");
 			
-		});
-	});
-	$('.serviceResponseTypeDynamicLink').each( function() {
-		$(this).click( function() {
-			var serviceId = this.id.split("_")[1];
-			$.ajax({
-				type: "POST",
-				url: "<c:url value="service_scenario"/>",
-				data:"serviceResponseType=2&serviceId="+serviceId
-			});
-			$('#serviceResponseTypeProxy_'+serviceId).addClass("response_not");
-			$('#serviceResponseTypeStatic_'+serviceId).addClass("response_not");
-			$('#serviceResponseTypeDynamic_'+serviceId).removeClass("response_not");
-			$('#serviceResponseTypeDynamic_'+serviceId).addClass("response_dynamic");
-			$('#staticScenario_'+serviceId).removeClass("show");
-			$('#staticScenario_'+serviceId).addClass("hide");
-			$('#proxyScenario_'+serviceId).removeClass("show");
-			$('#proxyScenario_'+serviceId).addClass("hide");
-			$('#dynamicScenario_'+serviceId).removeClass("hide");
-			$('#dynamicScenario_'+serviceId).addClass("show");
-			
+			if(responseType == 0){
+				$('#serviceResponseType_0_'+serviceId).removeClass("response_not").addClass("response_proxy");
+				$('#proxyScenario_'+serviceId).addClass("show");
+			}else if(responseType == 1){
+				$('#serviceResponseType_1_'+serviceId).removeClass("response_not").addClass("response_static");
+				$('#staticScenario_'+serviceId).addClass("show");
+			}else if(responseType == 2){
+				$('#serviceResponseType_2_'+serviceId).removeClass("response_not").addClass("response_dynamic");
+				$('#dynamicScenario_'+serviceId).addClass("show");
+			}
 		});
 	});
     
@@ -198,42 +163,7 @@ $(document).ready( function() {
 							<c:forEach var="mockservice" items="${services}">
 							   <div id="div_<c:out value="${mockservice.id}"/>_" class="service_div display" style="<c:if test="${mockservice.id eq serviceIdToShowByDefault}">display: block;</c:if>" > 
                                
-								<%-- LOVELY JQUERY + JSP TAGS + EL --%>
-								<script type="text/javascript">
-								$(document).ready(function() {
-								    $.prompt.setDefaults({
-								        opacity:0.2
-								    });
-								    $("#update_service_<c:out value="${mockservice.id}"/>").click(function(){
-								        $scenario = $("input[name='scenario_<c:out value="${mockservice.id}"/>']:checked").val();
-								        $serviceResponseType = $("input[name='serviceResponseType_<c:out value="${mockservice.id}"/>']:checked").val();
-								        $hangTime = document.getElementById("hangTime_<c:out value="${mockservice.id}"/>").value;
-								        $serviceId = document.getElementById("serviceId_<c:out value="${mockservice.id}"/>").value;
-								        $httpContentType = document.getElementById("httpContentType_<c:out value="${mockservice.id}"/>").value;
-								        $.post("<c:url value="/service_scenario"/>", {serviceResponseType_<c:out value="${mockservice.id}"/>:$serviceResponseType, serviceId:$serviceId,scenario_<c:out value="${mockservice.id}"/>:$scenario, hangTime_<c:out value="${mockservice.id}"/>:$hangTime, httpContentType_<c:out value="${mockservice.id}"/>:$httpContentType}, function(xml) {
-								            $("#responseMessage_<c:out value="${mockservice.id}"/>").html(
-								                    $("report", xml).text()
-								            );
-								            $.prompt("Service '<c:out value="${mockservice.serviceName}"/>' updated.", { timeout: 2000});
-								        });
-								        $('#serviceResponseTypeProxy_${mockservice.id}').addClass("response_not");
-										$('#serviceResponseTypeStatic_${mockservice.id}').addClass("response_not");
-										$('#serviceResponseTypeDynamic_${mockservice.id}').addClass("response_not");
-									
-										if ($serviceResponseType == '0') {
-											
-											$('#serviceResponseTypeProxy_${mockservice.id}').removeClass("response_not");
-											$('#serviceResponseTypeProxy_${mockservice.id}').addClass("response_proxy");
-										  } else if ($serviceResponseType == '1') {
-												$('#serviceResponseTypeStatic_${mockservice.id}').removeClass("response_not");
-												$('#serviceResponseTypeStatic_${mockservice.id}').addClass("response_static");
-										  }else if ($serviceResponseType == '2') {
-												$('#serviceResponseTypeDynamic_${mockservice.id}').removeClass("response_not");
-												$('#serviceResponseTypeDynamic_${mockservice.id}').addClass("response_dynamic");
-											  }
-								    });
-								});
-								</script>
+								
                                 <div id="updateStatus_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
                                 <div class="parentformselected">
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
