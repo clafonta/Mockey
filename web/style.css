@@ -51,6 +51,9 @@ p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0
 p{margin: 0.5em; padding: 1px;line-height:130%;}
 a{color: #00F;text-decoration:underline}
 
+a.response_static_big, a.response_not_big { height: 1.2em; border: 1px solid #777777; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.3em 0.5em; margin: auto; text-align: center; text-decoration:none; font-size: 1em; }
+a.response_static_big {background-color: #476A34; color:white; }
+a.response_not_big {background-color: #DDDDDD; color:black; }
 a.response_proxy, a.response_static, a.response_not, a.response_dynamic  { height: 1em; width: 2em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.1em 1.5em 0.1em 1.5em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em; }
 a.response_static  { background-color: #CACC7F; color:red; }
 a.response_dynamic  {background-color: #CACC7F; color:blue; }

@@ -74,8 +74,8 @@ $(document).ready( function() {
 				url: "<c:url value="service_scenario"/>",
 				data:"scenarioId="+scenarioId+"&serviceId="+serviceId
 			});
-			$(".scenariosByServiceId_"+serviceId).removeClass("response_static").addClass("response_not");
-			$("#serviceScenario_"+scenarioId+"_"+serviceId).removeClass("response_not").addClass("response_static");
+			$(".scenariosByServiceId_"+serviceId).removeClass("response_static_big").addClass("response_not_big");
+			$("#serviceScenario_"+scenarioId+"_"+serviceId).removeClass("response_not_big").addClass("response_static_big");
 		});
 	});
 
@@ -208,12 +208,12 @@ $(document).ready( function() {
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
-		                                    <li>
+		                                    <li style="padding-top: 0.5em;">
 		                                      <c:url value="/scenario" var="scenarioEditUrl">
 		                                        <c:param name="serviceId" value="${mockservice.id}" />
 		                                        <c:param name="scenarioId" value="${scenario.id}" />
 		                                      </c:url>
-		                                      <a id="serviceScenario_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId_${mockservice.id} <c:choose><c:when test='${mockservice.defaultScenarioId eq scenario.id}'>response_static</c:when><c:otherwise>response_not</c:otherwise></c:choose>" href="#" title="Edit - ${scenario.scenarioName}"  onclick="return false;"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
+		                                      <a id="serviceScenario_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId_${mockservice.id} <c:choose><c:when test='${mockservice.defaultScenarioId eq scenario.id}'>response_static_big</c:when><c:otherwise>response_not_big</c:otherwise></c:choose>" href="#" title="Edit - ${scenario.scenarioName}"  onclick="return false;"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
 		                                    </li>
 		                                  </c:forEach>
 		                                  </c:when>
