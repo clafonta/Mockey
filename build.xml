@@ -6,7 +6,7 @@
 	<property environment="env"/>
 	<property name="src.dir" location="src/java"/>
 	<property name="test.src.dir" value="src/test" />
-	<property name="webapp.dir" value="webapp"/>
+	<property name="webapp.dir" value="web"/>
 
 	<property name="lib.dir" value="${webapp.dir}/WEB-INF/lib"/>
 	<property name="build.dir" location="build"/>
