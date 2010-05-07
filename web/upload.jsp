@@ -2,15 +2,26 @@
 <c:set var="pageTitle" value="Upload" scope="request" />
 <c:set var="currentTab" value="upload" scope="request" />
 <%@include file="/WEB-INF/common/header.jsp" %>
+<script type="text/javascript">
+	$(function() {
+		$("#upload-file").button();
+	});
+</script>
 <div id="main">
-<h3>Upload your service definition(s):</h3>
+
 <%@ include file="/WEB-INF/common/message.jsp"%>
+<div>
 <form id="multi_form" style="margin-left: 20%; margin-right: 20%;"
 	action="<c:url value="/upload"/>" method="POST"
 	enctype="multipart/form-data">
-<p><input class="normal" type="file" name="file" /></p>
-<input type="submit" name="upload" value="Upload" class="button" /> <a
-	href="<c:url value="/home" />">Cancel</a></form>
+	<fieldset>
+		<label>Upload your service definition(s):</label>
+	    <p><input class="normal" type="file" name="file" /></p>
+	    <button id="upload-file">Update service</button>
+	    <a href="<c:url value="/home" />">Cancel</a>
+	</fieldset>
+</form>
+</div>
 <c:if test="${not empty conflicts}">
 	<h2 class="highlight">Conflicts</h2>
 	<ul id="simple" class="conflict_message">

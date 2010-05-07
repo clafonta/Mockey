@@ -12,8 +12,7 @@
 			collapsible: true
 		});
 	});
-</script>	
-<script type="text/javascript">
+
 	$(function() {
 
 		// a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
@@ -117,13 +116,18 @@
 						   window.location.replace(data.result.redirect);
 						   
 					   }else {   
-						if(data.result.serviceUrl){
-							$("#service_real_url").addClass('ui-state-error');
-							}
+						var message = "";
 						if(data.result.serviceName){
 							$("#service_name").addClass('ui-state-error');
+							  message = message + '<div>' + data.result.serviceName +'</div>';
 							}
-					   	$.prompt('<div style=\"color:red;\">Not updated:</div> ' + data.result.message);
+						if(data.result.serviceUrl){
+							$("#service_real_url").addClass('ui-state-error');
+							message = message + '<div>' + data.result.serviceUrl+'</div>';
+							}
+						
+						
+					   	$.prompt('<div style=\"color:red;\">Not updated:</div> ' + message);
 					   }
 
 					   }, 'json' );

@@ -5,62 +5,55 @@
 <c:set var="pageTitle" value="Proxy Settings" scope="request" />
 <c:set var="currentTab" value="proxy" scope="request" />
 <%@include file="/WEB-INF/common/header.jsp" %>
+<script type="text/javascript">
+	$(function() {
+		
+		$("#radio1").buttonset().click(
+				function() {
+					
+					 var proxyEnabled = $("input[name=proxyEnabled]:checked").index(), 
+			         proxyUrl = $("#proxyUrl"),
+			         proxyUsername = $("#proxyUsername"),
+			         proxyPassword = $("#proxyPassword");
+			         if(proxyEnabled==1){
+			        	 proxyEnabled = true;
+				     }
+					 $.post('<c:url value="/proxy/settings"/>', { proxyPassword: proxyPassword.val(), proxyUsername: proxyUsername.val(),
+							proxyUrl:  proxyUrl.val(),  proxyEnabled: proxyEnabled} ,function(data){
+								if (data.result.success){
+									$.prompt('<div style=\"color:red;\">Updated:</div> ' + data.result.success, { timeout: 2000});
+								}else {
+									$.prompt('<div style=\"color:red;\">Not updated:</div> ' + data.result.message);
+								}
+							}, 'json' );
+
+					});
+		
+	});
+	//<form action="<c:url value="/proxy/settings" />" method="POST">
+</script>
 <div id="main">
     <%@ include file="/WEB-INF/common/message.jsp"%>     
-    
-    <div>
-        <p><h1>Proxy Settings</h1></p> 
-	    <p>If Mockey connects to services via some proxy server, here's the place to pipe through it. </p>
-	    <div class="conflict_message" >
-	    	<h3>Note: Only 'enabled' yes/no and proxy URL are exported when using the <strong>Export</strong> 
-	    	feature. We don't export username or password values.</h3>
-	    </div>
-    </div>
-    <div>        
-        <form action="<c:url value="/proxy/settings" />" method="POST">
+    <p><h1>Proxy Settings</h1></p> 
+    <div class="parentform">
+        <fieldset>
+				<div id="radio1">
+		            <input type="radio" id="radio1" name="proxyEnabled" value="true"  <c:if test='${proxyInfo.proxyEnabled}'>checked</c:if> /><label for="radio1">Proxy enabled</label> 
+	                <input type="radio" id="radio2" name="proxyEnabled" value="false" <c:if test='${!proxyInfo.proxyEnabled}'>checked</c:if> /> <label for="radio2">Proxy not enabled</label>
+                </div>
+                <div class="tinyfieldset">If Mockey connects to services via some proxy server, here's the place to pipe through it. Enter information and enable.</div>
+                <label for="proxyUrl">Proxy URL</label> 
+                <input type="text" class="text ui-corner-all ui-widget-content" id="proxyUrl" name="proxyUrl" size="80"  value="<c:out value="${proxyInfo.proxyUrl}"/>" />
+                <div class="tinyfieldset">Typically, this is your corporate proxy server.</div>       
+                <label for="proxyUsername">Proxy username</label>  
+                <input type="text" style="width:200px;"  class="text ui-corner-all ui-widget-content" id="proxyUsername" name="proxyUsername" maxlength="20" size="20" value="" />
+                 <div class="tinyfieldset">We don't store the username on file. </div>
+                <label for="proxyPassword">Proxy password</label>  
+                <input type="password" style="width:200px;" class="text ui-corner-all ui-widget-content" id="proxyPassword" name="proxyPassword" maxlength="20" size="20" value="" />
+                <div class="tinyfieldset">We don't store the password on file. </div>
+          
+	    </fieldset>
        
-            <table class="simple" width="100%">
-                <tbody>
-                    <tr>
-                        <th width="200px"  align="right"><p>Proxy enabled?</p></th>
-                        <td>
-                            <input type="radio" name="proxyEnabled" value="true"
-                                                            <c:if test='${proxyInfo.proxyEnabled}'>checked</c:if> /> Yes <br />
-                            <input type="radio" name="proxyEnabled" value="false"
-                                                            <c:if test='${!proxyInfo.proxyEnabled}'>checked</c:if> /> No                          
-                            
-                        </td>
-                   </tr>
-                    <tr <c:if test='${!proxyInfo.proxyEnabled}'>class="overlabel"</c:if>>
-                        <th align="right"><p>Proxy URL </p>
-                         <p class="tiny">(and :port if needed)</p></th>
-                        <td>
-                            <p><input type="text" name="proxyUrl" size="80"  value="<c:out value="${proxyInfo.proxyUrl}"/>" />  </p>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr <c:if test='${!proxyInfo.proxyEnabled}'>class="overlabel"</c:if>>
-                    
-                        <th align="right"><p>Proxy Username</p></th>
-                        <td>
-                            <p><input type="text" name="proxyUsername" maxlength="20" size="20" value="" /></p>
-                            <p class="tiny">We don't show the username after you click Update</p>
-                        </td>
-                    </tr>
-                    <tr <c:if test='${!proxyInfo.proxyEnabled}'>class="overlabel"</c:if>>
-                        <th align="right"><p>Proxy Password</p></th>
-                        <td>
-                            <p><input type="password" name="proxyPassword" maxlength="20" size="20" value="" /></p>
-                            <p class="tiny">We don't show the password after you click Update</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div align="right">
-                <p style="text-align: bottom;"><input type="submit" name="update" value="Update" /></p>
-            </div>
-        </form>
     </div>    
 </div>
 <jsp:include page="/WEB-INF/common/footer.jsp" />

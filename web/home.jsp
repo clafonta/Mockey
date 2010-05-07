@@ -153,6 +153,8 @@ $(document).ready( function() {
 					        %><img src="<c:url value="/images/geometry.jpg" />" /><%
 					      }else if("unicorn.jpg".equals(moodImage)) {
 					         %><img src="<c:url value="/images/unicorn.jpg" />" /><%
+					      }else if("lebowski.png".equals(moodImage)) {
+					         %><img src="<c:url value="/images/lebowski.png" />" /><%
 					      }else {
 					         %><img src="<c:url value="/images/silhouette.jpg" />" /><%
 					      }
@@ -281,7 +283,7 @@ $(function() {
 mood image <a href="home?mood=silhouette.jpg" class="mood" >A</a>
 <a href="home?mood=unicorn.jpg" class="mood" >B</a>
 <a href="home?mood=geometry.jpg" class="mood" >C</a>
-
+<a href="home?mood=lebowski.png" class="mood" >D</a>
 </p>
 </div>
 <jsp:include page="/WEB-INF/common/footer.jsp" />

@@ -16,6 +16,9 @@
 package com.mockey.ui;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -80,11 +83,14 @@ public class ProxyInfoServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		proxyInfo.setProxyEnabled(proxyEnabled);
-		Util.saveSuccessMessage("Proxy settings set", req);
 		store.setProxy(proxyInfo);
-		proxyInfo = store.getProxy();
-		req.setAttribute("proxyInfo", proxyInfo);
-		RequestDispatcher dispatch = req.getRequestDispatcher("/proxy_setup.jsp");
-		dispatch.forward(req, resp);
+		Map<String, String> successMessage = new HashMap<String, String>();
+		successMessage.put("success", "Proxy settings updated.");
+		String resultingJSON = Util.getJSON(successMessage);
+		PrintWriter out = resp.getWriter();
+		out.println(resultingJSON);
+		out.flush();
+		out.close();
+		return;
 	}
 }
