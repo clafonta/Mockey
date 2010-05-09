@@ -146,17 +146,17 @@ $(document).ready( function() {
 							</td>
 							<td valign="top">
 							<div id='service_list_container'>
-							<div class="service_div display" style="<c:if test="${! empty serviceIdToShowByDefault}">display:none;</c:if><c:if test="${serviceIdToShowByDefault==null}">display:block;</c:if>text-align:right;">
+							<div class="service_div display" style="<c:if test="${! empty serviceIdToShowByDefault}">display:none;</c:if><c:if test="${serviceIdToShowByDefault==null}">display:block;</c:if>text-align:center;">
 							
 						  <%
 					      if("geometry.jpg".equals(moodImage)){
-					        %><img src="<c:url value="/images/geometry.jpg" />" /><%
+					        %><img style="vertical-align:middle" src="<c:url value="/images/geometry.jpg" />" /><%
 					      }else if("unicorn.jpg".equals(moodImage)) {
-					         %><img src="<c:url value="/images/unicorn.jpg" />" /><%
+					         %><img style="vertical-align:middle" src="<c:url value="/images/unicorn.jpg" />" /><%
 					      }else if("lebowski.png".equals(moodImage)) {
-					         %><img src="<c:url value="/images/lebowski.png" />" /><%
+					         %><img style="vertical-align:middle" src="<c:url value="/images/lebowski.png" />" /><%
 					      }else {
-					         %><img src="<c:url value="/images/silhouette.jpg" />" /><%
+					         %><img style="vertical-align:middle" src="<c:url value="/images/silhouette.jpg" />" /><%
 					      }
 					      %>
 							

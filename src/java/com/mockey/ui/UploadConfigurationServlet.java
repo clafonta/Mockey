@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
 
 /**
  * 
@@ -86,8 +85,6 @@ public class UploadConfigurationServlet extends HttpServlet {
                 FileItem item = (FileItem) iter.next();
 
                 if (!item.isFormField()) {
-                    // logger.debug("Upload servlet: found file " +
-                    // item.getFieldName());
 
                     byte[] data = item.get();
                     ConfigurationReader configurationReader = new ConfigurationReader();
@@ -99,8 +96,8 @@ public class UploadConfigurationServlet extends HttpServlet {
 
                 }
             }
-        } catch (FileUploadException e) {
-            Util.saveErrorMessage("Unable to upload file.", req);
+        } catch (Exception e) {
+            Util.saveErrorMessage("Unable to upload or parse file.", req);
         }
 
         RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");

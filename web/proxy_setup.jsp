@@ -7,11 +7,10 @@
 <%@include file="/WEB-INF/common/header.jsp" %>
 <script type="text/javascript">
 	$(function() {
-		
-		$("#radio1").buttonset().click(
+		$("#radio-set").buttonset();
+		$(".boo").click(
 				function() {
-					
-					 var proxyEnabled = $("input[name=proxyEnabled]:checked").index(), 
+					 var proxyEnabled = this.id.split("_")[1];
 			         proxyUrl = $("#proxyUrl"),
 			         proxyUsername = $("#proxyUsername"),
 			         proxyPassword = $("#proxyPassword");
@@ -21,7 +20,7 @@
 					 $.post('<c:url value="/proxy/settings"/>', { proxyPassword: proxyPassword.val(), proxyUsername: proxyUsername.val(),
 							proxyUrl:  proxyUrl.val(),  proxyEnabled: proxyEnabled} ,function(data){
 								if (data.result.success){
-									$.prompt('<div style=\"color:red;\">Updated:</div> ' + data.result.success, { timeout: 2000});
+									$.prompt( data.result.success, { timeout: 2000});
 								}else {
 									$.prompt('<div style=\"color:red;\">Not updated:</div> ' + data.result.message);
 								}
@@ -37,9 +36,9 @@
     <p><h1>Proxy Settings</h1></p> 
     <div class="parentform">
         <fieldset>
-				<div id="radio1">
-		            <input type="radio" id="radio1" name="proxyEnabled" value="true"  <c:if test='${proxyInfo.proxyEnabled}'>checked</c:if> /><label for="radio1">Proxy enabled</label> 
-	                <input type="radio" id="radio2" name="proxyEnabled" value="false" <c:if test='${!proxyInfo.proxyEnabled}'>checked</c:if> /> <label for="radio2">Proxy not enabled</label>
+				<div id="radio-set" style="margin-bottom: 1em;">
+		            <input type="radio" id="radio_true" name="proxyEnabled" class="boo"  <c:if test='${proxyInfo.proxyEnabled}'>checked</c:if> /><label for="radio_true">Proxy enabled</label> 
+	                <input type="radio" id="radio_false" name="proxyEnabled" class="boo" <c:if test='${!proxyInfo.proxyEnabled}'>checked</c:if> /> <label for="radio_false">Proxy not enabled</label>
                 </div>
                 <div class="tinyfieldset">If Mockey connects to services via some proxy server, here's the place to pipe through it. Enter information and enable.</div>
                 <label for="proxyUrl">Proxy URL</label> 
@@ -47,10 +46,10 @@
                 <div class="tinyfieldset">Typically, this is your corporate proxy server.</div>       
                 <label for="proxyUsername">Proxy username</label>  
                 <input type="text" style="width:200px;"  class="text ui-corner-all ui-widget-content" id="proxyUsername" name="proxyUsername" maxlength="20" size="20" value="" />
-                 <div class="tinyfieldset">We don't store the username on file. </div>
+                <div class="tinyfieldset">Username is <strong>not</strong> shown after a page refresh and not available in Export for security reasons.  </div>
                 <label for="proxyPassword">Proxy password</label>  
                 <input type="password" style="width:200px;" class="text ui-corner-all ui-widget-content" id="proxyPassword" name="proxyPassword" maxlength="20" size="20" value="" />
-                <div class="tinyfieldset">We don't store the password on file. </div>
+                <div class="tinyfieldset">Password is <strong>not</strong> shown after a page refresh and not available in Export for security reasons.  </div>
           
 	    </fieldset>
        

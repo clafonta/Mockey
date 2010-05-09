@@ -27,7 +27,7 @@ $(document).ready(function() {
 			});
 		});
 
-		
+	$('#filter-button').button();
 	
 	$('.mockeyResponse').each( function() {
 		var formatButton = $(this).find(".formatButton")[0];
@@ -135,8 +135,9 @@ $(document).ready(function() {
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
     <form action="<c:url value="/history"/>" method="get">
     <p>
-    <input type="text" name="token" size="80"/>
-    <input type="submit" name="Filter" value="Add Filter" />
+    
+    <input type="text" name="token" size="80" class="text ui-corner-all ui-widget-content"/>
+    <button id="filter-button" >Add Filter</button>
     
     <c:if test="${!empty requests}">
       <c:url value="/history" var="deleteAllScenarioUrl">

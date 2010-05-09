@@ -1,7 +1,7 @@
-body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;}
+html, body{	padding-top: 0px;	background: #FFFFFF;font: 95% Calibri,sans-serif;height:100%;}
 .big{font-size: 300%; font-weight:bold;}
 .tiny, .tinyfieldset{font-size: 80%;}
-.tinyfieldset {padding:0.5em 0 2em 0; }
+.tinyfieldset {padding:0.1em 0 2em 0; }
 .setplan{border: thin solid #bdbdbd; margin-top:0.8em; padding:0.8em; }
 .tiny_service_delete{font-size: 80%;}
 .gt{ color: black;}
@@ -200,7 +200,7 @@ div.grippie {background:#EEEEEE url(images/grippie.png) no-repeat scroll center 
 
 label, input { display:block; }
 input.text  {
-margin-bottom:12px;
+margin: 0.8em 0 0.8em 0;
 padding:0.4em;
 width:95%;
 }
@@ -211,7 +211,7 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .ui-dialog .ui-state-error { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; }
 div.scroll {
-height: 500px;
+height:500px;
 overflow: auto;
 border: 0px solid #C0C0C0;
 padding: 8px;
