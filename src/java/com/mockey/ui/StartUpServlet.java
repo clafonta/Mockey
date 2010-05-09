@@ -15,21 +15,15 @@
  */
 package com.mockey.ui;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.Properties;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-
 import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Properties;
 
 public class StartUpServlet extends HttpServlet {
 
@@ -38,21 +32,32 @@ public class StartUpServlet extends HttpServlet {
     private static Properties appProps = new Properties();
     public static final String MOCK_SERVICE_DEFINITION = "mock_service_definitions.xml";
 
+
     public void init() throws ServletException {
 
         String log4jFile = getInitParameter("log4j.properties");
         String appPropFile = getInitParameter("default.properties");
         // base directory of servlet context
         String contextPath = getServletContext().getRealPath(System.getProperty("file.separator"));
+        contextPath = "/";
 
         try {
-            contextPath = "/";
             InputStream log4jInputStream = getServletContext().getResourceAsStream(contextPath + log4jFile);
             Properties log4JProperties = new Properties();
             log4JProperties.load(log4jInputStream);
             PropertyConfigurator.configure(log4JProperties);
 
+        }catch(Exception npe) {
+            System.out.println("Unable to find log4j.properties in servlet context");
+        }
+
+        try {
+            logger.info("default.properties: "+getServletContext().getResource("/web.xml"));
             InputStream appInputStream = getServletContext().getResourceAsStream(contextPath + appPropFile);
+            if(appInputStream == null) {
+                // try classpath
+                appInputStream = getClass().getResourceAsStream(contextPath + appPropFile);
+            }
             appProps.load(appInputStream);
 
             File f = new File(MOCK_SERVICE_DEFINITION);

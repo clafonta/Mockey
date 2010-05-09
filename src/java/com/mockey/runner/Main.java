@@ -34,7 +34,7 @@ public class Main {
 
 
         // Start the default browser in 10 seconds
-        new Thread(new BrowserThread("http://127.0.0.1:", port, 10)).start();
+        new Thread(new BrowserThread("http://127.0.0.1:", port, "/home", 10)).start();
 
 
         // start Jetty
