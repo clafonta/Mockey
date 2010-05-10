@@ -14,8 +14,15 @@
 			         proxyUrl = $("#proxyUrl"),
 			         proxyUsername = $("#proxyUsername"),
 			         proxyPassword = $("#proxyPassword");
-			         if(proxyEnabled==1){
-			        	 proxyEnabled = true;
+			         if(proxyEnabled=='true'){
+			        	 
+			        	 $("#proxy_on").show();
+			        	 $("#proxy_off").hide();
+			        	 
+				     }else {
+				    	 $("#proxy_on").hide();
+				    	 $("#proxy_off").show();
+			        	 
 				     }
 					 $.post('<c:url value="/proxy/settings"/>', { proxyPassword: proxyPassword.val(), proxyUsername: proxyUsername.val(),
 							proxyUrl:  proxyUrl.val(),  proxyEnabled: proxyEnabled} ,function(data){
