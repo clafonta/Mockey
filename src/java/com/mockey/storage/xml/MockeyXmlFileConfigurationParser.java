@@ -15,16 +15,11 @@
  */
 package com.mockey.storage.xml;
 
-import org.apache.commons.digester.Digester;
-import org.xml.sax.InputSource;
-
-import com.mockey.model.PlanItem;
-import com.mockey.model.ProxyServerModel;
-import com.mockey.model.Scenario;
-import com.mockey.model.Service;
-import com.mockey.model.ServicePlan;
+import com.mockey.model.*;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.InMemoryMockeyStorage;
+import org.apache.commons.digester.Digester;
+import org.xml.sax.InputSource;
 
 /**
  * This class consumes the mock service definitions file and saves it to the
@@ -93,9 +88,9 @@ public class MockeyXmlFileConfigurationParser {
         digester.addSetProperties(PLAN_ITEM, "scenario_id", "scenarioId");
         digester.addSetProperties(PLAN_ITEM, "service_response_type", "serviceResponseType");
         digester.addSetNext(PLAN_ITEM, "addPlanItem");
+        
         IMockeyStorage c = (IMockeyStorage) digester.parse(inputSource);
         return c;
-
     }
 
 }

@@ -15,20 +15,19 @@
  */
 package com.mockey.model;
 
+import com.mockey.ClientExecuteProxy;
+import com.mockey.OrderedMap;
+import com.mockey.storage.IMockeyStorage;
+import com.mockey.storage.StorageRegistry;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHost;
+
 import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpHost;
-
-import com.mockey.ClientExecuteProxy;
-import com.mockey.OrderedMap;
-import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.StorageRegistry;
 
 /**
  * A Service is a remote url that can be called.
@@ -182,7 +181,11 @@ public class Service implements PersistableItem, ExecutableService {
 		sb.append("Service name:").append(this.getServiceName()).append("\n");
 		sb.append("Mock URL:").append(this.getMockServiceUrl()).append("\n");
 		sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
-		sb.append("Scheme:").append(this.getUrl().getScheme()).append("\n");
+        if(this.getUrl() != null) {
+		    sb.append("Scheme:").append(this.getUrl().getScheme()).append("\n");
+        }else{
+            logger.warn("I'm not sure why this can be null...");
+        }
 		sb.append("Default scenario ID:").append(this.getDefaultScenarioId())
 				.append("\n");
 		sb.append("HTTP Content:").append(this.getHttpContentType()).append(

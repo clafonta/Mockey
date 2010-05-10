@@ -15,27 +15,20 @@
  */
 package com.mockey.storage;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import com.mockey.OrderedMap;
+import com.mockey.model.*;
+import com.mockey.storage.xml.MockeyXmlFactory;
+import com.mockey.ui.StartUpServlet;
 import org.apache.http.Header;
 import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
-import com.mockey.OrderedMap;
-import com.mockey.model.FulfilledClientRequest;
-import com.mockey.model.PersistableItem;
-import com.mockey.model.ProxyServerModel;
-import com.mockey.model.Scenario;
-import com.mockey.model.Service;
-import com.mockey.model.ServicePlan;
-import com.mockey.model.Url;
-import com.mockey.storage.xml.MockeyXmlFactory;
-import com.mockey.ui.StartUpServlet;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.
@@ -131,9 +124,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return this.mockServiceStore.getOrderedList();
 	}
 
-	public String toString() {
-		return new MockeyStorageWriter().StorageAsString(this);
-	}
+//	public String toString() {
+//		return new MockeyStorageWriter().StorageAsString(this);
+//	}
 
 	/**
 	 * @return list of FulfilledClientRequest objects
