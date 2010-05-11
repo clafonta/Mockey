@@ -15,10 +15,9 @@
 	action="<c:url value="/upload"/>" method="POST"
 	enctype="multipart/form-data">
 	<fieldset>
-		<label>Upload your service definition(s):</label>
-	    <p><input class="normal" type="file" name="file" /></p>
-	    <button id="upload-file">Update service</button>
-	    <a href="<c:url value="/home" />">Cancel</a>
+		<p><label>Upload your service definition(s):</label></p>
+	    <p><input class="normal" type="file" name="file" size="50"/></p>
+	    <p><button id="upload-file">Upload service definitions</button> <a style="float:right;" href="<c:url value="/home" />">Cancel</a></p>
 	</fieldset>
 </form>
 </div>

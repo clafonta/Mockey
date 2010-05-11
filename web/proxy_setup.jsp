@@ -24,6 +24,7 @@
 				    	 $("#proxy_off").show();
 			        	 
 				     }
+				     $('#proxy_message').hide();
 					 $.post('<c:url value="/proxy/settings"/>', { proxyPassword: proxyPassword.val(), proxyUsername: proxyUsername.val(),
 							proxyUrl:  proxyUrl.val(),  proxyEnabled: proxyEnabled} ,function(data){
 								if (data.result.success){
@@ -52,12 +53,15 @@
                 <input type="text" class="text ui-corner-all ui-widget-content" id="proxyUrl" name="proxyUrl" size="80"  value="<c:out value="${proxyInfo.proxyUrl}"/>" />
                 <div class="tinyfieldset">Typically, this is your corporate proxy server.</div>       
                 <label for="proxyUsername">Proxy username</label>  
-                <input type="text" style="width:200px;"  class="text ui-corner-all ui-widget-content" id="proxyUsername" name="proxyUsername" maxlength="20" size="20" value="" />
-                <div class="tinyfieldset">Username is <strong>not</strong> shown after a page refresh and not available in Export for security reasons.  </div>
+                <input type="text" style="width:200px;"  class="text ui-corner-all ui-widget-content" id="proxyUsername" name="proxyUsername" maxlength="20" size="20" value="" /> 
+                <div class="tinyfieldset">Username is <strong>not</strong> shown after a page refresh and not available in Export for security reasons. </div>
                 <label for="proxyPassword">Proxy password</label>  
                 <input type="password" style="width:200px;" class="text ui-corner-all ui-widget-content" id="proxyPassword" name="proxyPassword" maxlength="20" size="20" value="" />
                 <div class="tinyfieldset">Password is <strong>not</strong> shown after a page refresh and not available in Export for security reasons.  </div>
-          
+                <div id="proxy_message" class="info_message tiny"><strong>Note:</strong> the last time these settings were enabled,
+                <c:choose><c:when test='${!empty proxyInfo.proxyUsername}'><span style="color:blue;"><strong>proxy name</strong> was provided</span></c:when><c:otherwise><span style="color:red;"><strong>proxy name</strong> was <strong>not</strong> provided</span></c:otherwise></c:choose> and
+                <c:choose><c:when test='${!empty proxyInfo.proxyPassword}'><span style="color:blue;"><strong>proxy password</strong> was provided</span></c:when><c:otherwise><span style="color:red;"><strong>proxy password</strong> was <strong>not</strong> provided</span></c:otherwise></c:choose>.
+                </div>
 	    </fieldset>
        
     </div>    

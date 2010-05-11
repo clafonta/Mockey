@@ -3,14 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	<display-name>Mockey</display-name>
-	<filter>
-		<filter-name>ProxyInfoFilter</filter-name>
-		<filter-class>com.mockey.ui.ProxyInfoFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>ProxyInfoFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 	<servlet>
 		<servlet-name>MockStartUpServlet</servlet-name>
 		<servlet-class>com.mockey.ui.StartUpServlet</servlet-class>
@@ -88,6 +80,14 @@
 		<servlet-name>RedoRequestServlet</servlet-name>
 		<servlet-class>com.mockey.server.RedoRequestServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>ProxyInfoAJAXServlet</servlet-name>
+		<servlet-class>com.mockey.ui.ProxyInfoAJAXServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProxyInfoAJAXServlet</servlet-name>
+		<url-pattern>/proxystatus</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>RedoRequestServlet</servlet-name>
 		<url-pattern>/doitagain</url-pattern>

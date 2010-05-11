@@ -25,6 +25,17 @@ if(confirm(message)) location.href = url;
 
 $(document).ready(function() {
 	$('textarea.resizable:not(.processed)').TextAreaResizer();
+
+	// 
+	$.getJSON('<c:url value="/proxystatus" />', function(data) {
+		if(data.result.proxy_enabled=='true'){
+       	   $("#proxy_on").show();
+       	   $("#proxy_off").hide();
+	     }else {
+	    	 $("#proxy_on").hide();
+	    	 $("#proxy_off").show(); 
+	     }
+	});
 	
     $('#flush').click(
         function () {
@@ -68,7 +79,7 @@ response.setHeader( "Vary", "User-Agent" );
     <li><a <c:if test="${currentTab == 'upload'}">id ="current"</c:if> href="<c:url value="/upload" />">Upload</a> | </li>
     <li><a <c:if test="${currentTab == 'export'}">id ="current"</c:if> href="<c:url value="/export" />">Export</a> | </li>
     <li><a <c:if test="${currentTab == 'history'}">id ="current"</c:if> href="<c:url value="/history" />">History</a> | </li>
-    <li><a <c:if test="${currentTab == 'proxy'}">id ="current"</c:if> href="<c:url value="/proxy/settings" />">Proxy</a> (<span class="tiny" id="proxy_on" style="color:green; <c:choose><c:when test='${proxyInfo.proxyEnabled}'>display:inline;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">On</span><span id="proxy_off" class="tiny" style="color:red; <c:choose><c:when test='${!proxyInfo.proxyEnabled}'>display:inline;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">Off</span>) | </li>     
+    <li><a <c:if test="${currentTab == 'proxy'}">id ="current"</c:if> href="<c:url value="/proxy/settings" />">Proxy</a> (<span class="tiny" id="proxy_on" style="color:green; display:none;">On</span><span id="proxy_off" class="tiny" style="color:red; display:none;">Off</span>) | </li>     
     <li><a id="flush" href="#">Flush</a> | </li>
     <li><a <c:if test="${currentTab == 'help'}">id ="current"</c:if> href="<c:url value="/help" />">Help</a></li></ul>
 </div>

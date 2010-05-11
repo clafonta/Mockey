@@ -9,8 +9,8 @@ a.gt:hover {color: black;}
 .gt_active, .gt_highlight{	color: #06F; font-weight: bold; font-size:120%;}
 h1, h2, h3, h4, .h1{margin: 1em 0.5em 0.5em 0.5em; padding:1px;}
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
-h1, .h1{ font-size:160%; color: #374E3D;}
-h2 { font-size:140%; color: #374E3D;}
+h1, .h1{ font-size:160%; color: #0077CC;}
+h2 { font-size:140%; color: #0077CC;}
 h3 { font-size:120%; color: #4E2F30;}
 h4 {font-size: 100%;	color: black;font-weight: bold;}
 img {border:0;}
@@ -52,9 +52,9 @@ p{margin: 0.5em; padding: 1px;line-height:130%;}
 a{color: #00F;text-decoration:underline}
 
 a.response_static_big, a.response_not_big { height: 1.2em; border: 1px solid #777777; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.3em 0.5em; margin: auto; text-align: center; text-decoration:none; font-size: 1em; }
-a.response_static_big {background-color: #7C9B85; color:white; }
+a.response_static_big {background-color: #0077CC; color:white; }
 a.response_not_big {background-color: #DDDDDD; color:black; }
-a.response_proxy, a.response_static, a.response_not, a.response_dynamic  { height: 1em; width: 2em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.1em 1.5em 0.1em 1.5em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em; background-color: #7C9B85; color:#FFFFFF;}
+a.response_proxy, a.response_static, a.response_not, a.response_dynamic  { height: 1em; width: 2em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.1em 1.5em 0.1em 1.5em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em; background-color: #0077CC; color:#FFFFFF;}
 a.response_not  { background-color:transparent;color:grey; border: 1px solid #A9A9A9;}
 a.mood {decoration:none; font-size:80%;}
 
@@ -75,10 +75,21 @@ ul#minitabs a{
 	text-decoration: none;
 	padding: 0 0 0.2em 0;
 	border-bottom: 2px solid #FFF;
-	color: #7C9B84;
+	color: #3782B6;
 }
-ul#minitabs a#current{border-color: #374E3D;color:#374E3D;}
-ul#minitabs a:hover{border-color: #374E3D;color: #666}
+ul#minitabs a#current{
+      text-align: left;
+      border: solid 1px #eeeeee;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
+      padding: 2px 4px;
+	background-color: #0077CC; 
+	color: #FFFFFF;     
+	}
+ul#minitabs a:hover{
+	background-color: #FFFFFF; 
+	color: #0077CC;     
+	}
 .hint_message, .alert_message, .conflict_message, .addition_message, .info_message {	margin: 0.8em;	padding: 0.8em;	text-align: left;	color: black;	border: thin solid #d3d3d3;}
 .hint_message{background-color: #f5f5dc;}
 .alert_message{background-color: #FFD7D7;}
