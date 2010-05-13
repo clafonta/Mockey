@@ -15,20 +15,28 @@
  */
 package com.mockey.storage;
 
-import com.mockey.OrderedMap;
-import com.mockey.model.*;
-import com.mockey.storage.xml.MockeyXmlFactory;
-import com.mockey.ui.StartUpServlet;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.http.Header;
 import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.mockey.OrderedMap;
+import com.mockey.model.FulfilledClientRequest;
+import com.mockey.model.PersistableItem;
+import com.mockey.model.ProxyServerModel;
+import com.mockey.model.Scenario;
+import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
+import com.mockey.model.Url;
+import com.mockey.storage.xml.MockeyXmlFactory;
+import com.mockey.ui.StartUpServlet;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.
@@ -90,8 +98,17 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		try {
 			for (Service service : getServices()) {
 				String fullURL = service.getUrl().getFullUrl().trim();
-				if (fullURL.equals(url.trim())) {
+				if (fullURL.equalsIgnoreCase(url.trim())) {
 					return service;
+				}else {
+					Iterator<Url> altUrlIter = service.getAlternativeRealServiceUrls().iterator();
+					while(altUrlIter.hasNext()){
+						Url altUrl = altUrlIter.next();
+						if (fullURL.equalsIgnoreCase(altUrl.getFullUrl().trim())) {
+							return service;
+						}
+					}
+					// Check alternative URLs.
 				}
 			}
 		} catch (Exception e) {

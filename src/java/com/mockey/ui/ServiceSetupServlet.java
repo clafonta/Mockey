@@ -50,9 +50,9 @@ public class ServiceSetupServlet extends HttpServlet {
 			List<Service> services = store.getServices();
 			try{
 				int serviceResponseType = Integer.parseInt(req.getParameter("responseType"));
-				for (Iterator iterator = services.iterator(); iterator
+				for (Iterator<Service> iterator = services.iterator(); iterator
 						.hasNext();) {
-					Service service = (Service) iterator.next();
+					Service service = iterator.next();
 					
 					service.setServiceResponseType(serviceResponseType);
 					store.saveOrUpdateService(service);

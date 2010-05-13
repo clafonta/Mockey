@@ -88,7 +88,7 @@ public class UploadConfigurationServlet extends HttpServlet {
 
                     byte[] data = item.get();
                     ConfigurationReader configurationReader = new ConfigurationReader();
-                    ConfigurationReadResults results = configurationReader.loadConfiguration(data);
+                    ServiceMergeResults results = configurationReader.loadConfiguration(data);
 
                     Util.saveSuccessMessage("Service definitions uploaded.", req);
                     req.setAttribute("conflicts", results.getConflictMsgs());

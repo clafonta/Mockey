@@ -185,7 +185,12 @@ $(document).ready( function() {
 								 <table>
 								 <tbody>
 								 <tr><th width="50px">Service name:</th><td><span class="h1">${mockservice.serviceName}</span></td></tr>
-								 <tr><th>Mock URL:</th><td><p><a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a></p>
+								 <tr><th>Mock URL(s):</th>
+								     <td>
+								     <p><a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a></p>
+								     <c:forEach var="alternativeUrl" items="${mockservice.alternativeRealServiceUrls}">
+								     <p><a href="<mockey:url value="${alternativeUrl}"/>"><mockey:url value="${alternativeUrl}"/></a></p>
+								     </c:forEach>
 							     </td></tr>
 							     <tr><th>This service is set to:</th>
 							         <td>

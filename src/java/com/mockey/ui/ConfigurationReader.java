@@ -96,9 +96,9 @@ public class ConfigurationReader {
 	 * @throws SAXException 
 	 * @throws SAXParseException 
 	 */
-	public ConfigurationReadResults loadConfiguration(byte[] data)
+	public ServiceMergeResults loadConfiguration(byte[] data)
 			throws IOException, SAXParseException, SAXException {
-		ConfigurationReadResults readResults = new ConfigurationReadResults();
+		ServiceMergeResults mergeResults = new ServiceMergeResults();
 
 		String strXMLDefintion = new String(data);
 		MockeyXmlFileConfigurationReader msfr = new MockeyXmlFileConfigurationReader();
@@ -110,7 +110,7 @@ public class ConfigurationReader {
 		// UNIVERSAL RESPONSE SETTINGS
 		if (store.getUniversalErrorScenario() != null
 				&& mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
-			readResults
+			mergeResults
 					.addConflictMsg("<b>Universal error message</b>: one already defined with name '"
 							+ store.getUniversalErrorScenario()
 									.getScenarioName() + "'");
@@ -121,7 +121,7 @@ public class ConfigurationReader {
 					.getUniversalErrorScenario().getId());
 			store.setUniversalErrorServiceId(mockServiceStoreTemporary
 					.getUniversalErrorScenario().getServiceId());
-			readResults
+			mergeResults
 					.addAdditionMsg("<b>Universal error response defined.</b>");
 
 		}
@@ -138,12 +138,12 @@ public class ConfigurationReader {
 		// 2) NO MATCHING MOCK URL
 		// If there is no matching service URL, then create a new
 		// service and associated scenarios.
-		List uploadedServices = mockServiceStoreTemporary.getServices();
-		Iterator iter2 = uploadedServices.iterator();
+		List<Service> uploadedServices = mockServiceStoreTemporary.getServices();
+		Iterator<Service> iter2 = uploadedServices.iterator();
 		while (iter2.hasNext()) {
 			Service uploadedServiceBean = (Service) iter2.next();
-			List serviceBeansInMemory = store.getServices();
-			Iterator iter3 = serviceBeansInMemory.iterator();
+			List<Service> serviceBeansInMemory = store.getServices();
+			Iterator<Service> iter3 = serviceBeansInMemory.iterator();
 			boolean existingServiceWithMatchingMockUrl = false;
 			Service inMemoryServiceBean = null;
 			while (iter3.hasNext()) {
@@ -151,7 +151,7 @@ public class ConfigurationReader {
 				if (inMemoryServiceBean.getMockServiceUrl().equals(
 						uploadedServiceBean.getMockServiceUrl())) {
 					existingServiceWithMatchingMockUrl = true;
-					readResults
+					mergeResults
 							.addConflictMsg("<b>Service not added</b>: Matching mock URL '"
 									+ uploadedServiceBean.getMockServiceUrl()
 									+ "' with"
@@ -165,43 +165,12 @@ public class ConfigurationReader {
 				// We null it, to not stomp on any services
 				uploadedServiceBean.setId(null);
 				store.saveOrUpdateService(uploadedServiceBean);
-				readResults.addAdditionMsg("<b>Service Added</b>: '"
+				mergeResults.addAdditionMsg("<b>Service Added</b>: '"
 						+ uploadedServiceBean.getServiceName() + "'");
 
 			} else {
-				// Just save scenarios
-				Iterator uIter = uploadedServiceBean.getScenarios().iterator();
-				Iterator mIter = inMemoryServiceBean.getScenarios().iterator();
-				while (uIter.hasNext()) {
-					Scenario uBean = (Scenario) uIter.next();
-					boolean existingScenario = false;
-					Scenario mBean = null;
-					while (mIter.hasNext()) {
-						mBean = (Scenario) mIter.next();
-						if (mBean.getScenarioName().equals(
-								uBean.getScenarioName())) {
-							existingScenario = true;
-							break;
-						}
-					}
-					if (!existingScenario) {
-						uBean.setServiceId(inMemoryServiceBean.getId());
-						inMemoryServiceBean.saveOrUpdateScenario(uBean);
-						store.saveOrUpdateService(inMemoryServiceBean);
-						readResults.addAdditionMsg("<b>Scenario Added</b>: '"
-								+ uBean.getScenarioName()
-								+ "' added to existing service '"
-								+ inMemoryServiceBean.getServiceName() + "'");
-					} else {
-						readResults
-								.addConflictMsg("<b>Scenario not added</b>: '"
-										+ mBean.getScenarioName()
-										+ "', already defined in service '"
-										+ inMemoryServiceBean.getServiceName()
-										+ "'");
-					}
-
-				}
+				// Just merge scenarios per matching services
+				mergeResults = mergeServices(uploadedServiceBean, inMemoryServiceBean, mergeResults);
 			}
 
 		}
@@ -214,6 +183,53 @@ public class ConfigurationReader {
 			store.saveOrUpdateServicePlan(servicePlan);
 		}
 
+		return mergeResults;
+	}
+	
+	/**
+	 * 
+	 * @param uploadedServiceBean
+	 * @param inMemoryServiceBean
+	 * @param readResults
+	 * @return
+	 */
+	public ServiceMergeResults mergeServices(Service uploadedServiceBean, Service inMemoryServiceBean, ServiceMergeResults readResults){
+		// Just save scenarios
+		if(readResults==null){
+			readResults = new ServiceMergeResults();
+		}
+		Iterator<Scenario> uIter = uploadedServiceBean.getScenarios().iterator();
+		Iterator<Scenario> mIter = inMemoryServiceBean.getScenarios().iterator();
+		while (uIter.hasNext()) {
+			Scenario uploadedScenario = (Scenario) uIter.next();
+			boolean existingScenario = false;
+			Scenario mBean = null;
+			while (mIter.hasNext()) {
+				mBean = (Scenario) mIter.next();
+				if (mBean.getScenarioName().equals(
+						uploadedScenario.getScenarioName())) {
+					existingScenario = true;
+					break;
+				}
+			}
+			if (!existingScenario) {
+				uploadedScenario.setServiceId(inMemoryServiceBean.getId());
+				inMemoryServiceBean.saveOrUpdateScenario(uploadedScenario);
+				store.saveOrUpdateService(inMemoryServiceBean);
+				readResults.addAdditionMsg("<b>Scenario Added</b>: '"
+						+ uploadedScenario.getScenarioName()
+						+ "' added to existing service '"
+						+ inMemoryServiceBean.getServiceName() + "'");
+			} else {
+				readResults
+						.addConflictMsg("<b>Scenario not added</b>: '"
+								+ mBean.getScenarioName()
+								+ "', already defined in service '"
+								+ inMemoryServiceBean.getServiceName()
+								+ "'");
+			}
+
+		}
 		return readResults;
 	}
 }

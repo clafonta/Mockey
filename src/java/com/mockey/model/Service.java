@@ -15,19 +15,21 @@
  */
 package com.mockey.model;
 
-import com.mockey.ClientExecuteProxy;
-import com.mockey.OrderedMap;
-import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.StorageRegistry;
+import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHost;
 
-import java.io.UnsupportedEncodingException;
-import java.net.UnknownHostException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
+import com.mockey.ClientExecuteProxy;
+import com.mockey.OrderedMap;
+import com.mockey.storage.IMockeyStorage;
+import com.mockey.storage.StorageRegistry;
 
 /**
  * A Service is a remote url that can be called.
@@ -53,6 +55,8 @@ public class Service implements PersistableItem, ExecutableService {
 	private String httpMethod = "GET";
 	private Url realServiceUrl;
 	private List<FulfilledClientRequest> fulfilledRequests;
+	private List<Url> alternativeRealServiceUrls = new ArrayList<Url>();
+	
 
 	private static Log logger = LogFactory.getLog(Service.class);
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
@@ -442,6 +446,18 @@ public class Service implements PersistableItem, ExecutableService {
 		name = name + " (auto generated)";
 
 		return name;
+	}
+
+	public List<Url> getAlternativeRealServiceUrls() {
+		return alternativeRealServiceUrls;
+	}
+
+	public void setAlternativeRealServiceUrls(List<Url> alternativeRealServiceUrls) {
+		this.alternativeRealServiceUrls = alternativeRealServiceUrls;
+	}
+	
+	public void saveOrUpdateAlternativeUrl(Url url){
+		this.alternativeRealServiceUrls.add(url);
 	}
 
 }

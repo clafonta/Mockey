@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -26,9 +24,7 @@ public class InspectFulfilledRequestServlet extends HttpServlet {
 
     private static final long serialVersionUID = 8401356766354139506L;
     private IMockeyStorage store = StorageRegistry.MockeyStorage;
-    private Logger logger = Logger.getLogger(InspectFulfilledRequestServlet.class);
-
-
+    
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         
     	String contentType = req.getParameter("content_type");

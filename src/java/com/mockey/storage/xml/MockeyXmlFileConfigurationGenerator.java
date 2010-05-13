@@ -27,6 +27,7 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 
 public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
@@ -90,6 +91,18 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				serviceElement.setAttribute("default_scenario_id", "" + (mockServiceBean.getDefaultScenarioId()!=null ?  mockServiceBean.getDefaultScenarioId(): ""));
 				serviceElement.setAttribute("service_response_type", "" + mockServiceBean.getServiceResponseType());
 
+				// Alternative real service URLs
+				List<Url> altUrls = mockServiceBean.getAlternativeRealServiceUrls();
+				Iterator<Url> urlIter = altUrls.iterator();
+
+				while (urlIter.hasNext()) {
+					Url url = (Url) urlIter.next();
+					Element urlElement = document.createElement("alt_url");
+					CDATASection cdataResponseElement = document.createCDATASection(url.getFullUrl());
+					urlElement.appendChild(cdataResponseElement);
+					serviceElement.appendChild(urlElement);
+				}
+				// Scenarios
 				List scenarios = mockServiceBean.getScenarios();
 				Iterator iter = scenarios.iterator();
 

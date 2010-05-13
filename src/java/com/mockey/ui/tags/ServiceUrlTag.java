@@ -21,6 +21,8 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 
+import com.mockey.model.Url;
+
 public class ServiceUrlTag extends TagSupport {
 
 	private static final long serialVersionUID = -8902512566431524818L;
@@ -48,6 +50,9 @@ public class ServiceUrlTag extends TagSupport {
 					.getRequest();
 			
 			url.append("http://" + request.getServerName()+":"+request.getServerPort()+request.getContextPath());
+			if(!value.startsWith(Url.MOCK_SERVICE_PATH)){
+				url.append(Url.MOCK_SERVICE_PATH);
+			}
 			url.append(value);
 			JspWriter out = pageContext.getOut();
 

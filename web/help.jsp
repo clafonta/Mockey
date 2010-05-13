@@ -83,7 +83,7 @@
     to a <strong>mockservice.xml</strong> file. Conversely, upon the next web 
     app restart, <strong>upload</strong> your <strong>mockservice.xml</strong> configuration. 
      </p>
-    
+    <!--  
     <h2>Service Error Response</h2>
     <p>
     <b>You define this.</b> It is a service scenario flagged as a 'Service Error Response', it will be returned by Mockey if an error occurs 
@@ -98,7 +98,7 @@
     feature is to provide one place to define a universal error message, without the need to create an error
     scenario for each service. 
     </p>
-  
+    -->
     <h2>Good Things to Test</h2>
     <p>
 	    Here's a short list of things Mockey is good for. 

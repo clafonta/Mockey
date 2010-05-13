@@ -33,6 +33,7 @@ public class MockeyXmlFileConfigurationParser {
     private final static String ROOT = "mockservice";
     private final static String PROXYSERVER = ROOT + "/proxy_settings";
     private final static String SERVICE = ROOT + "/service";
+    private final static String SERVICE_ALT_URL = SERVICE + "/alt_url";
     private final static String SCENARIO = SERVICE + "/scenario";
     private final static String PLAN = ROOT + "/service_plan";
     private final static String PLAN_ITEM = PLAN + "/plan_item";
@@ -64,10 +65,12 @@ public class MockeyXmlFileConfigurationParser {
         digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrlByString");
         digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
         digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
-        
-
         digester.addSetNext(SERVICE, "saveOrUpdateService");
 
+        digester.addObjectCreate(SERVICE_ALT_URL, Url.class);
+        digester.addBeanPropertySetter(SERVICE_ALT_URL, "url");
+        digester.addSetNext(SERVICE_ALT_URL, "saveOrUpdateAlternativeUrl");
+        
         digester.addObjectCreate(SCENARIO, Scenario.class);
         digester.addSetProperties(SCENARIO, "id", "id");
         digester.addSetProperties(SCENARIO, "name", "scenarioName");

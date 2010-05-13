@@ -84,6 +84,14 @@
 		<servlet-name>ProxyInfoAJAXServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ProxyInfoAJAXServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>ServiceMergeServlet</servlet-name>
+		<servlet-class>com.mockey.ui.ServiceMergeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ServiceMergeServlet</servlet-name>
+		<url-pattern>/merge</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ProxyInfoAJAXServlet</servlet-name>
 		<url-pattern>/proxystatus</url-pattern>

@@ -56,9 +56,24 @@ public class Url {
      */
     public Url(String url) {
         parse(url);
-
     }
-
+    
+    /**
+     * Empty constructor, needed for reflection but not useful unless parse method
+     * is called shortly after. 
+     * 
+     */
+    public Url(){
+    	
+    }
+    
+    /**
+     * Calls parse. Method setter used in reflection.
+     * @param url
+     */
+    public void setUrl(String url){
+    	this.parse(url);
+    }
     /**
      * If https or http cannot be determined, then HTTP will be the default. If
      * path cannot be determined, then 80 for HTTP scheme is default, 443 for

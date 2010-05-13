@@ -74,12 +74,13 @@ response.setHeader( "Vary", "User-Agent" );
 <% } %>
 
 <ul id="minitabs">
+    <li><a title="Service Setup - create new service" href="<c:url value="/setup" />" style="color:red;font-size:1em;">+</a></li>
+    <li><a <c:if test="${currentTab == 'merge'}">id ="current"</c:if> title="Merge - combine services" href="<c:url value="/merge" />" style=""><img vertical-align="middle" src="<c:url value="/images/merge.png" />"/></a></li>
     <li><a <c:if test="${currentTab == 'home'}">id ="current"</c:if> href="<c:url value="/home" />">Services</a></li>
-    <li>(<a href="<c:url value="/setup" />" class="tiny" style="color:red;">Create</a>) | </li>
-    <li><a <c:if test="${currentTab == 'upload'}">id ="current"</c:if> href="<c:url value="/upload" />">Upload</a> | </li>
-    <li><a <c:if test="${currentTab == 'export'}">id ="current"</c:if> href="<c:url value="/export" />">Export</a> | </li>
-    <li><a <c:if test="${currentTab == 'history'}">id ="current"</c:if> href="<c:url value="/history" />">History</a> | </li>
-    <li><a <c:if test="${currentTab == 'proxy'}">id ="current"</c:if> href="<c:url value="/proxy/settings" />">Proxy</a> (<span class="tiny" id="proxy_on" style="color:green; display:none;">On</span><span id="proxy_off" class="tiny" style="color:red; display:none;">Off</span>) | </li>     
-    <li><a id="flush" href="#">Flush</a> | </li>
+    <li><a <c:if test="${currentTab == 'upload'}">id ="current"</c:if> href="<c:url value="/upload" />">Import</a></li>
+    <li><a <c:if test="${currentTab == 'export'}">id ="current"</c:if> href="<c:url value="/export" />">Export</a></li>
+    <li><a <c:if test="${currentTab == 'history'}">id ="current"</c:if> href="<c:url value="/history" />">History</a></li>
+    <li><a <c:if test="${currentTab == 'proxy'}">id ="current"</c:if> href="<c:url value="/proxy/settings" />">Proxy (<span class="tiny" id="proxy_on" style="display:none;">ON</span><span id="proxy_off" class="tiny" style="display:none;">OFF</span>)</a></li>     
+    <li><a id="flush" href="#">Flush</a></li>
     <li><a <c:if test="${currentTab == 'help'}">id ="current"</c:if> href="<c:url value="/help" />">Help</a></li></ul>
 </div>
