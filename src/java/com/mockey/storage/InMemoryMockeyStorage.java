@@ -97,19 +97,16 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 		try {
 			for (Service service : getServices()) {
-				String fullURL = service.getUrl().getFullUrl().trim();
-				if (fullURL.equalsIgnoreCase(url.trim())) {
-					return service;
-				}else {
-					Iterator<Url> altUrlIter = service.getAlternativeRealServiceUrls().iterator();
-					while(altUrlIter.hasNext()){
-						Url altUrl = altUrlIter.next();
-						if (fullURL.equalsIgnoreCase(altUrl.getFullUrl().trim())) {
-							return service;
-						}
+
+				Iterator<Url> altUrlIter = service.getRealServiceUrls()
+						.iterator();
+				while (altUrlIter.hasNext()) {
+					Url altUrl = altUrlIter.next();
+					if (url.equalsIgnoreCase(altUrl.getFullUrl().trim())) {
+						return service;
 					}
-					// Check alternative URLs.
 				}
+
 			}
 		} catch (Exception e) {
 			logger
@@ -119,7 +116,10 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 		logger.debug("Didn't find service with Service path: " + url
 				+ ".  Creating a new one.");
-		Service service = new Service(new Url(url));
+		Service service = new Service();
+
+		service.saveOrUpdateRealServiceUrl(new Url(url));
+
 		store.saveOrUpdateService(service);
 		return service;
 	}
@@ -127,7 +127,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public Service saveOrUpdateService(Service mockServiceBean) {
 		PersistableItem item = mockServiceStore.save(mockServiceBean);
 		this.writeMemoryToFile();
-		return (Service)item;
+		return (Service) item;
 	}
 
 	public void deleteService(Service mockServiceBean) {
@@ -141,9 +141,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return this.mockServiceStore.getOrderedList();
 	}
 
-//	public String toString() {
-//		return new MockeyStorageWriter().StorageAsString(this);
-//	}
+	// public String toString() {
+	// return new MockeyStorageWriter().StorageAsString(this);
+	// }
 
 	/**
 	 * @return list of FulfilledClientRequest objects

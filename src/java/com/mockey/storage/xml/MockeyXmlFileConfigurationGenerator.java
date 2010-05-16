@@ -1,18 +1,3 @@
-/*
- * Copyright 2002-2006 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.mockey.storage.xml;
 
 import java.util.Iterator;
@@ -30,6 +15,11 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 
+/**
+ * Builds DOM representing Mockey Service configurations. 
+ * @author chad.lafontaine
+ *
+ */
 public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 	/** Basic logger */
 	//private static Logger logger = Logger.getLogger(MockeyXmlFileConfigurationGenerator.class);
@@ -81,27 +71,25 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				// defined with the same ID.
 				// serviceElement.setAttribute("id", mockServiceBean.getId());
 				// *************************************
-				//serviceElement.setAttribute("id", ""+mockServiceBean.getId());
 				serviceElement.setAttribute("name", mockServiceBean.getServiceName());
 				serviceElement.setAttribute("description", mockServiceBean.getDescription());
-				serviceElement.setAttribute("url", mockServiceBean.getMockServiceUrl());
-				serviceElement.setAttribute("proxyurl", mockServiceBean.getRealServiceUrl());
+				
+				// DEPRECATED. 
+				// 'proxyurl' was used when Service only supported 1 real url. 
+				//serviceElement.setAttribute("proxyurl", mockServiceBean.getRealServiceUrl());
 				serviceElement.setAttribute("hang_time", "" + mockServiceBean.getHangTime());
 				serviceElement.setAttribute("http_content_type", "" + mockServiceBean.getHttpContentType());
 				serviceElement.setAttribute("default_scenario_id", "" + (mockServiceBean.getDefaultScenarioId()!=null ?  mockServiceBean.getDefaultScenarioId(): ""));
 				serviceElement.setAttribute("service_response_type", "" + mockServiceBean.getServiceResponseType());
 
-				// Alternative real service URLs
-				List<Url> altUrls = mockServiceBean.getAlternativeRealServiceUrls();
-				Iterator<Url> urlIter = altUrls.iterator();
-
-				while (urlIter.hasNext()) {
-					Url url = (Url) urlIter.next();
-					Element urlElement = document.createElement("alt_url");
-					CDATASection cdataResponseElement = document.createCDATASection(url.getFullUrl());
-					urlElement.appendChild(cdataResponseElement);
+				// New real service URLs
+				for(Url realUrl: mockServiceBean.getRealServiceUrls()){
+					Element urlElement = document.createElement("real_url");
+					urlElement.setAttribute("url", realUrl.getFullUrl());
+					//urlElement.appendChild(cdataResponseElement);
 					serviceElement.appendChild(urlElement);
 				}
+				
 				// Scenarios
 				List scenarios = mockServiceBean.getScenarios();
 				Iterator iter = scenarios.iterator();
@@ -117,9 +105,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 					CDATASection cdataMatchElement = document.createCDATASection(scenario.getMatchStringArg());
 					scenarioMatchStringElement.appendChild(cdataMatchElement);
 					scenarioElement.appendChild(scenarioMatchStringElement);
-					// this.setText(document, scenarioElement,
-					// scenario.getMatchStringArg());
-
+					
 					Element scenarioResponseElement = document.createElement("scenario_response");
 					CDATASection cdataResponseElement = document.createCDATASection(scenario.getResponseMessage());
 					scenarioResponseElement.appendChild(cdataResponseElement);

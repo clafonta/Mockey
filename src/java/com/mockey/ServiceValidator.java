@@ -16,65 +16,66 @@
 package com.mockey;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.mockey.model.Service;
+import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 /**
- * Validator for contents of a MockServiceBean definition. 
+ * Validator for contents of a MockServiceBean definition.
+ * 
  * @author chad.lafontaine
- *
+ * 
  */
 public class ServiceValidator {
-    /** Basic logger */
-    private static Logger logger = Logger.getLogger(ServiceValidator.class);
-    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+	/** Basic logger */
+	private static Logger logger = Logger.getLogger(ServiceValidator.class);
+	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
-    /**
-     * Return a mapping of input field names and error messages. If the mock
-     * service state is valid, then an empty Map is returned.
-     * 
-     * @param ms
-     * @return
-     */
-    public static Map<String, String> validate(Service ms) {
-        Map<String, String> errorMap = new HashMap<String, String>();
+	/**
+	 * Return a mapping of input field names and error messages. If the mock
+	 * service state is valid, then an empty Map is returned.
+	 * 
+	 * @param ms
+	 * @return
+	 */
+	public static Map<String, String> validate(Service ms) {
+		Map<String, String> errorMap = new HashMap<String, String>();
 
-        if ((ms.getServiceName() == null) || (ms.getServiceName().trim().length() < 1)
-                || (ms.getServiceName().trim().length() > 250)) {
-            errorMap.put("serviceName", "Service name must not be empty or greater than 250 chars.");
-        }
-        
+		if ((ms.getServiceName() == null)
+				|| (ms.getServiceName().trim().length() < 1)
+				|| (ms.getServiceName().trim().length() > 250)) {
+			errorMap
+					.put("serviceName",
+							"Service name must not be empty or greater than 250 chars.");
+		}
 
-        // Make sure there doesn't exist a service
-        // w/ the same serviceURL.
-        try {
-            List<Service> testServices = store.getServices();
-            Iterator<Service> iter = testServices.iterator();
+		// Make sure there doesn't exist a service
+		// w/ the same non-empty real URL.
+		try {
+			
+			for (Service testService : store.getServices()) {
+				
+				Url firstMatch = testService.getFirstMatchingRealServiceUrl(ms);
+				if (firstMatch != null && !testService.getId().equals(ms.getId())) {
+					errorMap
+							.put(
+									"serviceUrl",
+									"Your Real service URL entry '"+firstMatch.getFullUrl()+"' is already managed by the '"
+											+ testService.getServiceName()
+											+ "' service. Please choose another URL pattern. ");
+				}
+			}
 
-            Service ts;
+		} catch (Exception e) {
+			logger.error(
+					"Unable to verify if there are duplicate service URLs", e);
+		}
 
-            while (iter.hasNext()) {
-                ts = iter.next();
-
-                // We have a match AND service IDs don't match.
-                if (ts.getMockServiceUrl().equals(ms.getMockServiceUrl()) && (ts.getId() != ms.getId())) {
-                    errorMap.put("serviceUrl", "Real service URL is already used by the '" + ts.getServiceName()
-                            + "' service. Please choose another URL pattern. ");
-
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Unable to verify if there are duplicate service URLs", e);
-        }
-
-        return errorMap;
-    }
+		return errorMap;
+	}
 }

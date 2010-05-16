@@ -22,75 +22,96 @@ package com.mockey.model;
  */
 public class Scenario implements PersistableItem {
 
-    private Long id;
-    private Long serviceId;
-    private String scenarioName;
-    private String requestMessage;
-    private String responseMessage;
-    private String matchStringArg = null;
+	private Long id;
+	private Long serviceId;
+	private String scenarioName;
+	private String requestMessage;
+	private String responseMessage;
+	private String matchStringArg = null;
 
-    public String getScenarioName() {
-        return scenarioName;
-    }
+	public String getScenarioName() {
+		return scenarioName;
+	}
 
-    public void setScenarioName(String name) {
-        this.scenarioName = name;
-    }
+	public void setScenarioName(String name) {
+		this.scenarioName = name;
+	}
 
-    public String getRequestMessage() {
-        return requestMessage;
-    }
+	public String getRequestMessage() {
+		return requestMessage;
+	}
 
-    public void setRequestMessage(String requestMessage) {
-        this.requestMessage = requestMessage;
-    }
+	public void setRequestMessage(String requestMessage) {
+		this.requestMessage = requestMessage;
+	}
 
-    public String getResponseMessage() {
-        return responseMessage;
-    }
+	public String getResponseMessage() {
+		return responseMessage;
+	}
 
-    public void setResponseMessage(String responseMessage) {
-        this.responseMessage = responseMessage;
-    }
+	public void setResponseMessage(String responseMessage) {
+		this.responseMessage = responseMessage;
+	}
 
-    public String getMatchStringArg() {
-        return matchStringArg;
-    }
+	public String getMatchStringArg() {
+		return matchStringArg;
+	}
 
-    public void setMatchStringArg(String matchStringArg) {
-        this.matchStringArg = matchStringArg;
-    }
+	public void setMatchStringArg(String matchStringArg) {
+		this.matchStringArg = matchStringArg;
+	}
 
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("Scenario name:" + this.getScenarioName());
-        sb.append("Match string:" + this.getMatchStringArg());
-        sb.append("Request msg:" + this.getRequestMessage());
-        sb.append("Response msg:" + this.getResponseMessage());
-        return sb.toString();
-    }
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("Scenario name:" + this.getScenarioName());
+		sb.append("Match string:" + this.getMatchStringArg());
+		sb.append("Request msg:" + this.getRequestMessage());
+		sb.append("Response msg:" + this.getResponseMessage());
+		return sb.toString();
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setServiceId(Long serviceId) {
-        this.serviceId = serviceId;
-    }
+	public void setServiceId(Long serviceId) {
+		this.serviceId = serviceId;
+	}
 
-    public Long getServiceId() {
-        return serviceId;
-    }
+	public Long getServiceId() {
+		return serviceId;
+	}
 
-    public boolean hasMatchArgument() {
-        if (getMatchStringArg() != null && getMatchStringArg().trim().length() > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+	public boolean hasMatchArgument() {
+		if (getMatchStringArg() != null
+				&& getMatchStringArg().trim().length() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * 
+	 * @param otherScenario
+	 * @return true if scenario name and scenario response message are equal
+	 *         (case ignored), otherwise false.
+	 */
+	public boolean equals(Scenario otherScenario) {
+		try {
+			if (this.scenarioName.equalsIgnoreCase(otherScenario
+					.getScenarioName())
+					&& this.responseMessage.equalsIgnoreCase(otherScenario
+							.getResponseMessage())) {
+				return true;
+			}
+		} catch (Exception e) {
+
+		}
+		return false;
+	}
 }

@@ -20,6 +20,35 @@ public class Url {
     private String host;
     private String path;
 
+//    /**
+//     * 
+//     * @param otherUrl
+//     * @return
+//     */
+//    public boolean equals(Url otherUrl){
+//    	boolean same = false;
+//    	if(otherUrl!=null){
+//    		try{
+//    			// 
+//    			if(this.scheme == null && otherUrl.getScheme() ){
+//    				
+//    			}
+//    		}catch(Exception e){
+//    			
+//    		}
+//    	}
+//    	return same;
+//    }
+//    
+//    private boolean equal(String arg1, String arg2){
+//    	boolean same = false;
+//    	if(arg1!=null && arg2!=null){
+//    		
+//    	}else if(arg1!=null){
+//    		
+//    	}
+//    	return same;
+//    }
     /**
      * @return the scheme
      */
@@ -55,6 +84,7 @@ public class Url {
      * @param url
      */
     public Url(String url) {
+    	
         parse(url);
     }
     
@@ -80,8 +110,10 @@ public class Url {
      * HTTPS.
      * 
      * @param url
+     * @throws UrlException 
      */
-    public void parse(String url) {
+    public void parse(String url)  {
+    	
         // extract the scheme
         int beginIndex = url.indexOf(MOCK_SERVICE_PATH);
         if (beginIndex > -1) {
@@ -206,4 +238,6 @@ public class Url {
         }
         return relativePath;
     }
+    
+    
 }

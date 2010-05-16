@@ -3,6 +3,7 @@ package com.mockey;
 import org.testng.annotations.Test;
 
 import com.mockey.model.Service;
+import com.mockey.model.Url;
 
 
 @Test
@@ -10,28 +11,25 @@ public class MockServiceBeanTest {
 
     @Test
     public void parsesRealServiceUrlIntoHostAndPath() {
-        Service bean = new Service();
-
-        bean.setRealServiceUrlByString("mfasa-qa2.chase.com/auth/fcc/login");
-
-        assert "mfasa-qa2.chase.com".equals(bean.getUrl().getHost()) : "Real Service Host should be: mfasa-qa2.chase.com";
-        assert "/auth/fcc/login".equals(bean.getUrl().getPath()) : "Real service path should be: /auth/fcc/login";
+        
+        Url url = new Url("mfasa-qa2.chase.com/auth/fcc/login");
+        assert "mfasa-qa2.chase.com".equals(url.getHost()) : "Real Service Host should be: mfasa-qa2.chase.com";
+        assert "/auth/fcc/login".equals(url.getPath()) : "Real service path should be: /auth/fcc/login";
     }
 
     @Test
     public void parsesSchemeFromRealServiceUrl() {
         Service bean = new Service();
+        Url url = new Url("HTtP://www.google.com");
+        assert "www.google.com".equals(url.getHost()) : "expected www.google.com got "+url.getHost();
+        assert "http".equalsIgnoreCase(url.getScheme());
 
-        bean.setRealServiceUrlByString("HTtP://www.google.com");
-        assert "www.google.com".equals(bean.getUrl().getHost()) : "expected www.google.com got "+bean.getUrl().getHost();
-        assert "http".equalsIgnoreCase(bean.getUrl().getScheme());
+        url.setUrl("https://gmail.com");
+        assert "gmail.com".equals(url.getHost());
+        assert "https".equals(url.getScheme());
 
-        bean.setRealServiceUrlByString("https://gmail.com");
-        assert "gmail.com".equals(bean.getUrl().getHost());
-        assert "https".equals(bean.getUrl().getScheme());
-
-        bean.setRealServiceUrlByString("wired.com");
-        assert "wired.com".equals(bean.getUrl().getHost());
-        assert "http".equals(bean.getUrl().getScheme());
+        url.setUrl("wired.com");
+        assert "wired.com".equals(url.getHost());
+        assert "http".equals(url.getScheme());
     }
 }

@@ -16,6 +16,7 @@
 package com.mockey.storage.xml;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.StringReader;
 
 import org.xml.sax.InputSource;
@@ -42,7 +43,8 @@ public class MockeyXmlFileConfigurationReader {
 	}
 
 	public static void main(String[] args) throws Exception {
-		String strXMLFilename = "c:\\mockservice.xml";
+		
+		String strXMLFilename = "/Users/chadlafontaine/Work/Mockey/mock_service_definitions.xml";
 
 		java.io.FileInputStream fis = new java.io.FileInputStream(strXMLFilename);
 

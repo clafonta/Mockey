@@ -17,7 +17,6 @@ package com.mockey.ui.tags;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
@@ -35,6 +34,7 @@ public class MessageTag extends TagSupport {
 	public void setSeparator(String separator) {
 		this.separator = separator;
 	}
+	@SuppressWarnings("unchecked")
 	public int doStartTag() {
 		StringBuffer successMessage = new StringBuffer();
 		try {

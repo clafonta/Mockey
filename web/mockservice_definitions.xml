@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <mockservice version="1.0" xml:lang="en-US">
   <service description ="Dashboard's dev test site. "  hang_time="1000"  name="Bing" proxyurl="http://www.bing.com">
-    <alt_url>http://www.google.com</alt_url>
-    <alt_url>http://www.cnn.com</alt_url>
-    <alt_url>http://www.chase.com</alt_url>
+    <real_url>http://www.google.com</real_url>
+    <real_url>http://www.cnn.com</real_url>
+    <real_url>http://www.chase.com</real_url>
     <content_type><![CDATA[sampletype of contenttype of TWO]]></content_type>
     <scenario name="Scenario A">
       <scenario_match><![CDATA[tns:nala;a]]></scenario_match>      

@@ -40,10 +40,14 @@ $(document).ready( function() {
 				    //alert("Hey! " + sourceValues + " " + destinationServiceId.val());
 	
 				    $.post('<c:url value="/merge"/>', { 'serviceIdMergeSource[]': sourceIdValues, serviceIdMergeDestination: destinationServiceId.val() } ,function(data){
-						if(data.result.conflicts)
-					   	$.prompt('<div>Service merge results:</div> <div style=\"color:red\">Conflicts</div>' + data.result.conflicts 
-							   	+ "<div style=\"color:blue\">Additions</div>"+data.result.additions);
-					   } , 'json');	
+						if(data.result.conflicts) {
+						   	$.prompt('<div>Service merge results:</div> <div style=\"color:red\">Conflicts</div>' + data.result.conflicts 
+								   	+ "<div style=\"color:blue\">Additions</div>"+data.result.additions);
+						     } else {
+						    	 $.prompt('<div>Services merged.</div>');
+						     }
+						   } , 'json');	
+					    
 			    }	
 		});
 
@@ -109,21 +113,16 @@ you should <a href="">Export</a> your service definitions first. If things go ba
 									<div>
 									     <div class="merge-checkbox-message"><label for="source-serviceid_${mockservice.id}"><input type="checkbox" name="souceCheckGroup" id="source-serviceid_${mockservice.id}" value="${mockservice.id}" class="source-checkbox" /> Check this box if you want to merge this service into another.</label></div>
 										 <div><h4>Mock URL(s)</h4></div>
-										 <div class="tiny"><a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a></div>
-									     <c:forEach var="alternativeUrl" items="${mockservice.alternativeRealServiceUrls}">
-									     <div class="tiny"><a href="<mockey:url value="${alternativeUrl}"/>"><mockey:url value="${alternativeUrl}"/></a></div>
+									     <c:forEach var="alternativeUrl" items="${mockservice.realServiceUrls}">
+									     	<div class="tiny"><a href="<mockey:url value="${alternativeUrl}"/>"><mockey:url value="${alternativeUrl}" breakpoint="5"/></a></div>
 									     </c:forEach>
+									     <c:if test="${empty mockservice.realServiceUrls}"><div class="alert_message">No real URL defined for this service.</div></c:if>
 									     <div><h4>Scenarios</h4></div>
-									     <c:choose>
-		                                  <c:when test="${not empty mockservice.scenarios}">
-		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
-		                                    <div class="tiny"><a href="#" class="response_not"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a></div>
-		                                  </c:forEach>
-		                                  </c:when>
-		                                  <c:otherwise>
-		                                  	<div class="alert_message">No scenarios defined for this service.</div>
-		                                  </c:otherwise>
-		                                </c:choose>
+		                                 <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
+		                                   	<div class="tiny"><a href="#" class="response_not"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a></div>
+		                                 </c:forEach>
+		                                 <c:if test="${not empty mockservice.scenarios}"><div class="alert_message">No scenarios defined for this service.</div></c:if>
+		                           
 									</div>
 							    </c:forEach>
 							    </div>
@@ -135,9 +134,8 @@ you should <a href="">Export</a> your service definitions first. If things go ba
 									<div id="destination-service-body_${mockservice.id}">
 									     <div class="merge-checkbox-message"><label for="destination-serviceid_${mockservice.id}"><input type="checkbox" name="destinationCheckGroup" id="destination-serviceid_${mockservice.id}" value="${mockservice.id}" class="source-checkbox" /> Check this box if you want to merge into this service.</label></div>
 										 <div><h4>Mock URL(s)</h4></div>
-										 <div class="tiny"><a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a></div>
-									     <c:forEach var="alternativeUrl" items="${mockservice.alternativeRealServiceUrls}">
-									     <div class="tiny"><a href="<mockey:url value="${alternativeUrl}"/>"><mockey:url value="${alternativeUrl}"/></a></div>
+									     <c:forEach var="alternativeUrl" items="${mockservice.realServiceUrls}">
+									     <div class="tiny"><a href="<mockey:url value="${alternativeUrl}"/>"><mockey:url value="${alternativeUrl}" breakpoint="5"/></a></div>
 									     </c:forEach>
 									     <div><h4>Scenarios</h4></div>
 									     <c:choose>

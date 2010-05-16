@@ -77,10 +77,10 @@ public class RequestFromClient {
         parseParameters();
     }
 
-    public String getRawRequestAsString(Service service){
+    public String getRawRequestAsString(Url url){
         
         try {
-            URI uri = URIUtils.createURI(service.getUrl().getScheme(), service.getUrl().getHost(), -1, service.getUrl().getPath(), 
+            URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(), 
                     this.buildParameterRequest(), null);
             return uri.toString();
         } catch (Exception e) {
@@ -100,12 +100,12 @@ public class RequestFromClient {
      * @throws URISyntaxException 
      * @throws UnsupportedEncodingException 
      */
-    public HttpRequest postToRealServer(Service serviceBean) throws URISyntaxException, UnsupportedEncodingException {
+    public HttpRequest postToRealServer(Url url, String httpMethod) throws URISyntaxException, UnsupportedEncodingException {
         // TODO: Cleanup the logic to handle creating a GET vs POST
         HttpRequest request;
-        URI uri = URIUtils.createURI(serviceBean.getUrl().getScheme(), serviceBean.getUrl().getHost(), -1, serviceBean.getUrl().getPath(), 
+        URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(), 
                 this.buildParameterRequest(), null);
-        if (serviceBean.getHttpMethod().equals("GET")) {
+        if (("GET").equalsIgnoreCase(httpMethod)) {
             request = new HttpGet(uri);
         } else {
             HttpPost post = new HttpPost(uri);

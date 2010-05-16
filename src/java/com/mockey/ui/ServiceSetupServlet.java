@@ -17,6 +17,7 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,19 +46,21 @@ public class ServiceSetupServlet extends HttpServlet {
 
 	public void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
-		if(req.getParameter("all")!=null && req.getParameter("responseType") != null){
+
+		if (req.getParameter("all") != null
+				&& req.getParameter("responseType") != null) {
 			List<Service> services = store.getServices();
-			try{
-				int serviceResponseType = Integer.parseInt(req.getParameter("responseType"));
+			try {
+				int serviceResponseType = Integer.parseInt(req
+						.getParameter("responseType"));
 				for (Iterator<Service> iterator = services.iterator(); iterator
 						.hasNext();) {
 					Service service = iterator.next();
-					
+
 					service.setServiceResponseType(serviceResponseType);
 					store.saveOrUpdateService(service);
 				}
-			}catch(Exception e){
+			} catch (Exception e) {
 				log.error("Unable to update service(s", e);
 			}
 			PrintWriter out = resp.getWriter();
@@ -77,7 +80,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			// Do nothing
 		}
 
-		if (req.getParameter("delete") != null && serviceId != null) {
+		if (req.getParameter("deleteService") != null && serviceId != null) {
 			Service service = store.getServiceById(serviceId);
 			store.deleteService(service);
 			store.deleteFulfilledClientRequestsForService(serviceId);
@@ -128,7 +131,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			service = store.getServiceById(serviceId);
 		}
 		if (service == null) {
-			service = new Service(null);
+			service = new Service();
 		}
 
 		req.setAttribute("mockservice", service);
@@ -152,33 +155,55 @@ public class ServiceSetupServlet extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		String realSrvUrl = req.getParameter("realServiceUrl");
-		Url urlObj = new Url(realSrvUrl);
-		Service service = new Service(urlObj);
+		String[] realSrvUrl = req.getParameterValues("realServiceUrl[]");
+
+		Service service = new Service();
+
 		Long serviceId = null;
 
 		try {
 			serviceId = new Long(req.getParameter("serviceId"));
+			service = store.getServiceById(serviceId);
 		} catch (Exception e) {
 			// Do nothing
 		}
-		if (serviceId != null) {
-			service = store.getServiceById(serviceId);
+		if (service == null) {
+			service = new Service();
 		}
+		// NEW REAL URL LIST
+		// 1. Overwrite list of predefined URLs
+		// 2. Ensure non-empty trim String for new Url objects. 
+		if (realSrvUrl != null) {
+			List<Url> newUrlList = new ArrayList<Url>();
+			for (int i = 0; i < realSrvUrl.length; i++) {
+				String url = realSrvUrl[i];
+				if (url.trim().length() > 0) {
 
-		try {
-			if (req.getParameter("hangTime") != null) {
-				service.setHangTime(Integer.parseInt(req
-						.getParameter("hangTime")));
+					newUrlList.add(new Url(realSrvUrl[i].trim()));
+				}
+
 			}
-		} catch (Exception e) {
-
+			service.setRealServiceUrls(newUrlList);
 		}
-		service.setRealServiceUrl(urlObj);
-		service.setServiceName(req.getParameter("serviceName"));
+		
+		// UPDATE HANGTIME - optional
+		try {
+			service.setHangTime(Integer.parseInt(req.getParameter("hangTime")));
+
+		} catch (Exception e) {
+			// DO NOTHING
+		}
+
+		// NAME - optional
+		if (req.getParameter("serviceName") != null) {
+		   service.setServiceName(req.getParameter("serviceName"));
+		}
+		
+		// DESCRIPTION - optional
 		if (req.getParameter("description") != null) {
 			service.setDescription(req.getParameter("description"));
 		}
+		// CONTENT TYPE - optional
 		if (req.getParameter("httpContentType") != null) {
 			service.setHttpContentType(req.getParameter("httpContentType"));
 		}
@@ -191,24 +216,22 @@ public class ServiceSetupServlet extends HttpServlet {
 			Util.saveSuccessMessage("Service updated.", req);
 			Service updatedService = store.saveOrUpdateService(service);
 
-			
 			String redirectUrl = Url.getContextAwarePath("/setup?serviceId="
 					+ updatedService.getId(), req.getContextPath());
 			PrintWriter out = resp.getWriter();
-			String resultingJSON = "{ \"result\": { \"redirect\": \""+redirectUrl+"\"}}";
+			String resultingJSON = "{ \"result\": { \"redirect\": \""
+					+ redirectUrl + "\"}}";
 			out.println(resultingJSON);
 			out.flush();
 			out.close();
 			return;
-			
 
 		} else {
-			
-		
+
 			PrintWriter out = resp.getWriter();
 			String resultingJSON = Util.getJSON(errorMap);
 			out.println(resultingJSON);
-			
+
 			out.flush();
 			out.close();
 

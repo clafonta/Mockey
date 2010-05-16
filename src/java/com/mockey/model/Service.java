@@ -1,18 +1,3 @@
-/*
- * Copyright 2008-2010 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.mockey.model;
 
 import java.io.UnsupportedEncodingException;
@@ -48,15 +33,13 @@ public class Service implements PersistableItem, ExecutableService {
 	private String description;
 	private Long defaultScenarioId;
 	private Long errorScenarioId;
-	private String httpContentType;
+	private String httpContentType = "text/html;charset=utf-8";
 	private int hangTime = 0;
 	private OrderedMap<Scenario> scenarios = new OrderedMap<Scenario>();
 	private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 	private String httpMethod = "GET";
-	private Url realServiceUrl;
 	private List<FulfilledClientRequest> fulfilledRequests;
-	private List<Url> alternativeRealServiceUrls = new ArrayList<Url>();
-	
+	private List<Url> realServiceUrls = new ArrayList<Url>();
 
 	private static Log logger = LogFactory.getLog(Service.class);
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
@@ -72,17 +55,7 @@ public class Service implements PersistableItem, ExecutableService {
 	// default constructor for xml.
 	// DO NOT REMOVE. DO NOT CALL.
 	public Service() {
-	}
-
-	public Service(Url realServiceUrl) {
-		this.realServiceUrl = realServiceUrl;
-		if (this.realServiceUrl != null
-				&& this.realServiceUrl.getFullUrl() != null) {
-			this.setServiceName(getNiceNameForService(this.realServiceUrl
-					.getFullUrl()));
-		} else {
-			this.setServiceName("");
-		}
+		this.setServiceName("");
 	}
 
 	public String getHttpMethod() {
@@ -114,7 +87,9 @@ public class Service implements PersistableItem, ExecutableService {
 	}
 
 	public void setServiceName(String name) {
+
 		this.serviceName = name;
+
 	}
 
 	public int getHangTime() {
@@ -142,34 +117,18 @@ public class Service implements PersistableItem, ExecutableService {
 		return (Scenario) this.scenarios.save(scenario);
 	}
 
-	public String getMockServiceUrl() {
-		if (this.realServiceUrl != null) {
-			return realServiceUrl.getFullUrl();
-		} else {
-			return "";
-		}
-	}
 
 	/**
-	 * Helper method.
+	 * DO NOT REMOVE. This is needed by XML reader and has a reference to the
+	 * method signature via reflection. Thank Digester.
 	 * 
-	 * @return returns a the full URI path to this service, pre-pending
-	 *         "/service" to the mock service URL
+	 * @param realServiceUrl
+	 * @deprecated - this method will call
+	 *             <code>saveOrUpdateRealServiceUrl(Url)</code>
+	 * @see #saveOrUpdateRealServiceUrl(Url)
 	 */
-	public String getServiceUrl() {
-		return (Url.MOCK_SERVICE_PATH + this.getMockServiceUrl());
-	}
-
-	public Url getUrl() {
-		return this.realServiceUrl;
-	}
-
-	public void setRealServiceUrl(Url realServiceUrl) {
-		this.realServiceUrl = realServiceUrl;
-	}
-
 	public void setRealServiceUrlByString(String realServiceUrl) {
-		this.realServiceUrl = new Url(realServiceUrl);
+		this.saveOrUpdateRealServiceUrl(new Url(realServiceUrl));
 	}
 
 	public String getHttpContentType() {
@@ -183,13 +142,16 @@ public class Service implements PersistableItem, ExecutableService {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Service name:").append(this.getServiceName()).append("\n");
-		sb.append("Mock URL:").append(this.getMockServiceUrl()).append("\n");
-		sb.append("Real URL:").append(this.getRealServiceUrl()).append("\n");
-        if(this.getUrl() != null) {
-		    sb.append("Scheme:").append(this.getUrl().getScheme()).append("\n");
-        }else{
-            logger.warn("I'm not sure why this can be null...");
-        }
+		sb.append("Real URL(s):\n"); 
+		if (this.realServiceUrls != null && !this.realServiceUrls.isEmpty()) {
+			Iterator<Url> iter = this.realServiceUrls.iterator();
+			while (iter.hasNext()) {
+				sb.append(iter.next() + "\n");
+			}
+		} else {
+			sb.append("(no real urls defined for this service)\n");
+		}
+
 		sb.append("Default scenario ID:").append(this.getDefaultScenarioId())
 				.append("\n");
 		sb.append("HTTP Content:").append(this.getHttpContentType()).append(
@@ -215,18 +177,29 @@ public class Service implements PersistableItem, ExecutableService {
 		return id;
 	}
 
+	/**
+	 * 
+	 * @deprecated
+	 * @see #getRealServiceUrls()
+	 */
 	public String getRealServiceUrl() {
-		if (this.realServiceUrl != null) {
-			return String.valueOf(realServiceUrl);
-		} else {
-			return "";
-		}
+		return "[DEPRECATED]";
+
 	}
 
-	public HttpHost getHttpHost() {
-		return new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(),
-				realServiceUrl.getScheme());
-	}
+	/**
+	 * @deprecated - create on httphost per real service url.
+	 * @return - may return null
+	 */
+//	public HttpHost getHttpHost() {
+//		Url realServiceUrl = this.getUrl();
+//		if (realServiceUrl != null) {
+//			return new HttpHost(realServiceUrl.getHost(), realServiceUrl
+//					.getPort(), realServiceUrl.getScheme());
+//		} else {
+//			return null;
+//		}
+//	}
 
 	public void setServiceResponseType(int serviceResponseType) {
 		this.serviceResponseType = serviceResponseType;
@@ -278,10 +251,10 @@ public class Service implements PersistableItem, ExecutableService {
 	 * The core method to execute the request as either a Proxy, Dynamic, or
 	 * Static Scenario.
 	 */
-	public ResponseFromService execute(RequestFromClient request) {
+	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl, String methodType) {
 		ResponseFromService response = null;
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
-			response = proxyTheRequest(request);
+			response = proxyTheRequest(request,realServiceUrl, methodType);
 		} else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
 			response = executeDynamicScenario(request);
 		} else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
@@ -290,7 +263,7 @@ public class Service implements PersistableItem, ExecutableService {
 		return response;
 	}
 
-	private ResponseFromService proxyTheRequest(RequestFromClient request) {
+	private ResponseFromService proxyTheRequest(RequestFromClient request, Url realServiceUrl, String methodType) {
 
 		logger.debug("proxying a moxie.");
 		// If proxy on, then
@@ -311,7 +284,7 @@ public class Service implements PersistableItem, ExecutableService {
 		ResponseFromService response = null;
 		try {
 			logger.debug("Initiating request through proxy");
-			response = clientExecuteProxy.execute(proxyServer, this, request);
+			response = clientExecuteProxy.execute(proxyServer, realServiceUrl, methodType, request);
 		} catch (Exception e) {
 			// We're here for various reasons.
 			// 1) timeout from calling real service.
@@ -430,7 +403,7 @@ public class Service implements PersistableItem, ExecutableService {
 		return response;
 	}
 
-	private static String getNiceNameForService(String arg) {
+	private String getNiceNameForService(String arg) {
 		String name = arg;
 		// Remove parameters
 		int index = arg.indexOf("?");
@@ -448,16 +421,96 @@ public class Service implements PersistableItem, ExecutableService {
 		return name;
 	}
 
-	public List<Url> getAlternativeRealServiceUrls() {
-		return alternativeRealServiceUrls;
+	public List<Url> getRealServiceUrls() {
+		return realServiceUrls;
 	}
 
-	public void setAlternativeRealServiceUrls(List<Url> alternativeRealServiceUrls) {
-		this.alternativeRealServiceUrls = alternativeRealServiceUrls;
-	}
-	
-	public void saveOrUpdateAlternativeUrl(Url url){
-		this.alternativeRealServiceUrls.add(url);
+	public void setRealServiceUrls(List<Url> realServiceUrls) {
+		this.realServiceUrls = realServiceUrls;
 	}
 
+	/**
+	 * 
+	 * @param url
+	 */
+	public void saveOrUpdateRealServiceUrl(Url url) {
+
+		if (url != null) {
+
+			boolean found = false;
+			for (int i = 0; i < this.realServiceUrls.size(); i++) {
+				Url tmpUrl = this.realServiceUrls.get(i);
+				if (tmpUrl.getFullUrl().equalsIgnoreCase(url.getFullUrl())) {
+					this.realServiceUrls.remove(i);
+					this.realServiceUrls.add(i, url);
+					found = true;
+					break;
+				}
+			}
+			if (!found && !url.getFullUrl().trim().isEmpty()) {
+				this.realServiceUrls.add(url);
+			}
+
+			// BONUS
+			// If this service name is undefined, then we try to determine
+			// an informative name based on the url
+			if (this.serviceName != null && this.serviceName.trim().isEmpty()) {
+				this.setServiceName(this
+						.getNiceNameForService(url.getFullUrl()));
+			}
+
+		}
+	}
+
+	/**
+	 * 
+	 * @param otherService
+	 * @return non null if _this_ and otherService both have non-empty list of
+	 *         <code>Url</code> objects with a matching <code>Url</code> object.
+	 *         Otherwise, returns false;
+	 */
+	public Url getFirstMatchingRealServiceUrl(Service otherService) {
+
+		Url matchUrl = null;
+		if (this.realServiceUrls != null && otherService != null
+				&& !otherService.getRealServiceUrls().isEmpty()) {
+
+			for (Url otherUrl : otherService.getRealServiceUrls()) {
+				if (this.hasRealServiceUrl(otherUrl)) {
+					matchUrl = otherUrl;
+					break;
+				}
+			}
+		}
+		return matchUrl;
+	}
+
+	public boolean hasRealServiceUrl(Url url) {
+		boolean has = false;
+		try {
+			for (Url urlTmp : this.realServiceUrls) {
+				if (urlTmp.getFullUrl().equalsIgnoreCase(url.getFullUrl())) {
+					has = true;
+					break;
+				}
+			}
+		} catch (Exception e) {
+			// do nothing
+		}
+		return has;
+	}
+
+	public static void main(String[] args) {
+
+		Service a = new Service();
+		Service b = new Service();
+		Url aUrl = new Url("http://www.google.com");
+		Url cUrl = new Url("http://www.cnn.com");
+		Url bUrl = new Url("http://www.cnn.com");
+		a.saveOrUpdateRealServiceUrl(aUrl);
+		a.saveOrUpdateRealServiceUrl(cUrl);
+		b.saveOrUpdateRealServiceUrl(bUrl);
+		System.out.print("Answer: " + a.getFirstMatchingRealServiceUrl(b));
+
+	}
 }

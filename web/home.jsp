@@ -5,19 +5,23 @@
 <jsp:include page="/WEB-INF/common/header.jsp" />
 <%
     java.util.Map cookieTable = new java.util.HashMap();
+    String moodImage = null;
     javax.servlet.http.Cookie[] cookies = request.getCookies();
-    for (int i=0; i < cookies.length; i++){
-        cookieTable.put(cookies[i].getName(), cookies[i].getValue());
-    }
-    String moodImage = request.getParameter("mood");
-    if(moodImage!=null){
-    	javax.servlet.http.Cookie myCookie = new Cookie("mood", moodImage);
-	    //myCookie.setMaxAge(0);
-	    //myCookie.setDomain(".somedomain.com");      
-	    response.addCookie(myCookie);
-    }
-    else if (cookieTable.containsKey("mood")) {
-        moodImage = (String)cookieTable.get("mood");
+    
+    if(cookies!=null){
+	    for (int i=0; i < cookies.length; i++){
+	        cookieTable.put(cookies[i].getName(), cookies[i].getValue());
+	    }
+	    moodImage = request.getParameter("mood");
+	    if(moodImage!=null){
+	    	javax.servlet.http.Cookie myCookie = new Cookie("mood", moodImage);
+		    //myCookie.setMaxAge(0);
+		    //myCookie.setDomain(".somedomain.com");      
+		    response.addCookie(myCookie);
+	    }
+	    else if (cookieTable.containsKey("mood")) {
+	        moodImage = (String)cookieTable.get("mood");
+	    }
     }
 
     
@@ -31,7 +35,7 @@ $(document).ready( function() {
                 'Are you sure you want to delete this Service?',
                 {
                     callback: function (proceed) {
-                        if(proceed) document.location="<c:url value="/setup" />?delete=true&serviceId="+ serviceId;
+                        if(proceed) document.location="<c:url value="/setup" />?deleteService=yes&serviceId="+ serviceId;
                     },
                     buttons: {
                         'Delete Service': true,
@@ -129,10 +133,10 @@ $(document).ready( function() {
 							  </p>
 							  <div class="scroll">
 	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
-	                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" style="margin-bottom:0.2em;padding:0.2em;">
+	                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" >
 	                                <span style="float:right;"><a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
 	                                <div class="toggle_button" style="margin:0.2em;">
-									      <a class="gt" onclick="return true;" href="#" title="<mockey:url value="${mockservice.serviceUrl}"/>" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
+									      <a class="gt" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
 									      
 									</div>
 	                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
@@ -187,9 +191,8 @@ $(document).ready( function() {
 								 <tr><th width="50px">Service name:</th><td><span class="h1">${mockservice.serviceName}</span></td></tr>
 								 <tr><th>Mock URL(s):</th>
 								     <td>
-								     <p><a href="<mockey:url value="${mockservice.serviceUrl}"/>"><mockey:url value="${mockservice.serviceUrl}"/></a></p>
-								     <c:forEach var="alternativeUrl" items="${mockservice.alternativeRealServiceUrls}">
-								     <p><a href="<mockey:url value="${alternativeUrl}"/>"><mockey:url value="${alternativeUrl}"/></a></p>
+								     <c:forEach var="realUrl" items="${mockservice.realServiceUrls}">
+								     <p><a href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></p>
 								     </c:forEach>
 							     </td></tr>
 							     <tr><th>This service is set to:</th>
@@ -274,7 +277,7 @@ $(function() {
       .stop()
       .hide()
       .filter( function() { return this.id.match('div_' + serviceId+'_'); })   
-      .show('fast');    
+      .show();    
     return true; 
   
   })

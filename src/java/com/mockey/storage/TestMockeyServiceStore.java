@@ -10,7 +10,6 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.Url;
 
 public class TestMockeyServiceStore implements IMockeyStorage {
 
@@ -97,7 +96,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     public List<Service> getServices() {
         List<Service> services = new ArrayList<Service>();
-        Service service = new Service(new Url("http://someservice:8000/eai2"));
+        Service service = new Service();
         service.setServiceName("testname");
         service.setDescription("test description");
         
@@ -113,7 +112,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         scenario.setResponseMessage("response message b");
         service.saveOrUpdateScenario(scenario);
         services.add(service);
-        Service service2 = new Service(new Url("http://someservice:8000/eai2"));
+        Service service2 = new Service();
         service2.setServiceName("testname2");
         service2.setDescription("test description2");
         

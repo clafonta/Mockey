@@ -89,6 +89,10 @@
 				$("#no_scenarios_message").addClass('hide');
 			}
 		});
+		$('#add-row').click(function() {
+			$('#real_service_url_list').append('<input type=\"text\" id=\"service_real_url\" class=\"text ui-corner-all ui-widget-content\" name=\"realServiceUrl\" maxlength=\"100\" size=\"90%\" value=\"\" />');
+			
+		});
 		
 		$('#create-scenario')
 			.button()
@@ -102,6 +106,11 @@
 		    	$.prompt.setDefaults({
 			        opacity:0.2
 			    });
+		    	var realServiceUrlValues = new Array();
+				$.each($('input:text[name=realServiceUrl]'), function() {
+					realServiceUrlValues.push($(this).val());
+				       
+				    });	
 			    var serviceId = $("#service_id"),
 			        realUrl = $("#service_real_url"),
 			        serviceName = $("#service_name"),
@@ -109,7 +118,7 @@
 			        serviceContentType = $("#service_http_content_type");
 			 
 			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(),
-				   realServiceUrl:  realUrl.val(),  httpContentType: serviceContentType.val(),
+				   'realServiceUrl[]':  realServiceUrlValues,  httpContentType: serviceContentType.val(),
 				   hangTime: hangtime.val() } ,function(data){
 					   
 					   if (data.result.redirect){
@@ -122,9 +131,9 @@
 							  message = message + '<div>' + data.result.serviceName +'</div>';
 							}
 						if(data.result.serviceUrl){
-							$("#service_real_url").addClass('ui-state-error');
+						//	$("#realServiceUrl").addClass('ui-state-error');
 							message = message + '<div>' + data.result.serviceUrl+'</div>';
-							}
+						}
 						
 						
 					   	$.prompt('<div style=\"color:red;\">Not updated:</div> ' + message);
@@ -144,7 +153,7 @@
 		                'Are you sure you want to delete this Service?',
 		                {
 		                    callback: function (proceed) {
-		                        if(proceed) document.location="<c:url value="/setup" />?delete=true&serviceId="+ serviceId;
+		                        if(proceed) document.location="<c:url value="/setup" />?deleteService=true&serviceId="+ serviceId;
 		                    },
 		                    buttons: {
 		                        'Delete Service': true,
@@ -164,7 +173,7 @@
 		                    callback: function (proceed) {
 		                        if(proceed) {
 			                        
-			                         $.post('<c:url value="/scenario"/>', {serviceId: serviceId.val(), delete: true, scenarioId: serviceScenarioId},
+			                         $.post('<c:url value="/scenario"/>', {serviceId: serviceId.val(), deleteScenario: 'yes', scenarioId: serviceScenarioId},
 					                         function(data) {}, 'json');
 			                         $("#scenario-accordion-h3_"+serviceScenarioId).addClass('hide');
 			                         $("#scenario-accordion-body_"+serviceScenarioId).addClass('hide');
@@ -229,10 +238,16 @@
         </c:if>
         <fieldset>
 				<label for="service_name">Service name:</label>
-	            <input type="text" id="service_name" class="text ui-corner-all ui-widget-content" name="service_name" maxlength="100" size="100%" value="<c:out value="${mockservice.serviceName}"/>" />
+	            <input type="text" id="service_name" class="text ui-corner-all ui-widget-content" name="service_name" maxlength="100" size="90%" value="<c:out value="${mockservice.serviceName}"/>" />
 	            <div class="tinyfieldset">Use a self descriptive name. For example, if you were to use this for 'authentication' testing, then call it 'Authentication'.</div>
-	            <label for="service_url">Real service URL: </label>
-                <input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="100" size="100%" value="<c:out value="${mockservice.realServiceUrl}"/>" />
+	            <label for="service_url" id="real_service_url_label">Real service URLs</label>
+	            <div id="real_service_url_list">
+					<c:forEach var="realServiceUrl" items="${mockservice.realServiceUrls}">
+						<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="100" size="90%" value="${realServiceUrl}" />
+					</c:forEach>
+				</div>
+				<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="100" size="90%" value="" />
+					<a title="Add row" id="add-row" href="#" style="color:red;text-decoration:none;font-size:1em;">+</a>
                 <div class="tinyfieldset">You'll need this URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</div>
                 <label for="service_url">Hang time: </label>
                 <input type="text" id="hang_time" class="text ui-corner-all ui-widget-content" style="width:100px;" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
@@ -285,7 +300,7 @@
 	
 	    <h3>Existing Scenarios</h3>
 		<c:if test="${empty mockservice.scenarios}">
-		<div id="no_scenarios_message"><h4 style="color:red;">No scenarios here.</h4> <p>It's because you have not defined one or someone has deleted them. Running this service as <strong>Static</strong> or <strong>Dynamic</strong> will not work. </p></div>
+		<div id="no_scenarios_message" ><p class="info_message"><span style="color:#FFFFFF;">No scenarios here.</span> It's because you have not defined one or someone has deleted them. Running this service as <strong>Static</strong> or <strong>Dynamic</strong> will not work. </p></div>
 		</c:if>
 		<div class="demo">
 			<div id="accordion">

@@ -27,6 +27,7 @@ public class ServiceUrlTag extends TagSupport {
 
 	private static final long serialVersionUID = -8902512566431524818L;
 	private String value;
+	private int breakpoint = -1;
 
 	/**
 	 * @return the value
@@ -36,7 +37,8 @@ public class ServiceUrlTag extends TagSupport {
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param value
+	 *            the value to set
 	 */
 	public void setValue(String value) {
 		this.value = value;
@@ -44,19 +46,24 @@ public class ServiceUrlTag extends TagSupport {
 
 	public int doStartTag() {
 		try {
-			value = (String)ExpressionEvaluatorManager.evaluate("value", value, String.class, pageContext);	        
+			value = (String) ExpressionEvaluatorManager.evaluate("value",
+					value, String.class, pageContext);
 			StringBuffer url = new StringBuffer();
 			HttpServletRequest request = (HttpServletRequest) pageContext
 					.getRequest();
-			
-			url.append("http://" + request.getServerName()+":"+request.getServerPort()+request.getContextPath());
-			if(!value.startsWith(Url.MOCK_SERVICE_PATH)){
+
+			url.append("http://" + request.getServerName() + ":"
+					+ request.getServerPort() + request.getContextPath());
+			if (!value.startsWith(Url.MOCK_SERVICE_PATH)) {
 				url.append(Url.MOCK_SERVICE_PATH);
 			}
 			url.append(value);
 			JspWriter out = pageContext.getOut();
-
-			out.println(url.toString());
+			if (this.breakpoint > -1) {
+				out.println(insertPeriodically(url.toString(), "&#8203;",breakpoint) );
+			} else {
+				out.println(url.toString());
+			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -67,5 +74,42 @@ public class ServiceUrlTag extends TagSupport {
 		return SKIP_BODY;
 	}
 
-	
+	/**
+	 * Inserts
+	 * 
+	 * <pre>
+	 * &#8203;
+	 * </pre>
+	 * 
+	 * (zero-width space) into _value_ at every 'breakPoint' position.
+	 * 
+	 * @param breakPoint
+	 */
+	public void setBreakpoint(int breakPoint) {
+		this.breakpoint = breakPoint;
+	}
+
+	public int getBreakPoint() {
+		return breakpoint;
+	}
+
+	// From Stackoverflow
+	private String insertPeriodically(String text, String insert, int period) {
+		StringBuilder builder = new StringBuilder(text.length()
+				+ insert.length() * (text.length() / period) + 1);
+
+		int index = 0;
+		String prefix = "";
+		while (index < text.length()) {
+			// Don't put the insert in the very first iteration.
+			// This is easier than appending it *after* each substring
+			builder.append(prefix);
+			prefix = insert;
+			builder.append(text.substring(index, Math.min(index + period, text
+					.length())));
+			index += period;
+		}
+		return builder.toString();
+	}
+
 }

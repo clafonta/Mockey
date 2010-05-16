@@ -56,7 +56,7 @@ public class ScenarioServlet extends HttpServlet {
 		Service service = store.getServiceById(serviceId);
 		
 		// DELETE scenario logic
-		if (req.getParameter("delete") != null && serviceId != null
+		if (req.getParameter("deleteScenario") != null && serviceId != null
 				&& scenarioId != null) {
 			try {
 

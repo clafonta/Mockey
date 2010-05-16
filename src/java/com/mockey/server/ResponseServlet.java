@@ -72,8 +72,8 @@ public class ResponseServlet extends HttpServlet {
         Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
         service.setHttpMethod(originalHttpReqFromClient.getMethod());       
        
-        ResponseFromService response = service.execute(request);
-        logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr());
+        ResponseFromService response = service.execute(request, serviceUrl,originalHttpReqFromClient.getMethod() );
+        logRequestAsFulfilled(service, serviceUrl, request, response, originalHttpReqFromClient.getRemoteAddr());
 
         try {
             // Wait for a minute.
@@ -97,9 +97,9 @@ public class ResponseServlet extends HttpServlet {
         }
     }
     
-    private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response, String ip) throws UnsupportedEncodingException {
+    private void logRequestAsFulfilled(Service service, Url url, RequestFromClient request, ResponseFromService response, String ip) throws UnsupportedEncodingException {
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-        fulfilledClientRequest.setRawRequest(request.getRawRequestAsString(service));
+        fulfilledClientRequest.setRawRequest(request.getRawRequestAsString(url));
         fulfilledClientRequest.setRequestorIP(ip);
         fulfilledClientRequest.setServiceId(service.getId());
         fulfilledClientRequest.setServiceName(service.getServiceName());       

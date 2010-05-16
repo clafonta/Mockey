@@ -39,117 +39,117 @@ import com.mockey.storage.StorageRegistry;
  */
 public class RedoRequestServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 7709751584129936447L;
-    private IMockeyStorage store = StorageRegistry.MockeyStorage;
-    
-    /**
+	private static final long serialVersionUID = 7709751584129936447L;
+	private IMockeyStorage store = StorageRegistry.MockeyStorage;
+
+	// private Logger logger = Logger.getLogger(RedoRequestServlet.class);
+	/**
      * 
      */
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Long fulfilledClientRequestId = new Long(req.getParameter("fulfilledClientRequestId"));
-        FulfilledClientRequest pastFulfilledClientRequest = store
-                .getFulfilledClientRequestsById(fulfilledClientRequestId);
-        String pipeDelimitedHeaderInfo = req.getParameter("requestHeader");
-        String parameters = req.getParameter("requestParameters");
-        String body = req.getParameter("requestBody");
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		Long fulfilledClientRequestId = new Long(req
+				.getParameter("fulfilledClientRequestId"));
+		FulfilledClientRequest pastFulfilledClientRequest = store
+				.getFulfilledClientRequestsById(fulfilledClientRequestId);
+		String pipeDelimitedHeaderInfo = req.getParameter("requestHeader");
+		String parameters = req.getParameter("requestParameters");
+		String body = req.getParameter("requestBody");
 
-        Url serviceUrl = new Url(pastFulfilledClientRequest.getRawRequest());
-        StringBuffer redoUrl = new StringBuffer();
+		Url serviceUrl = new Url(pastFulfilledClientRequest.getRawRequest());
+		StringBuffer redoUrl = new StringBuffer();
 
-        // 1. Cut out the parameters
-        String fullUrl = serviceUrl.getFullUrl();
-        int indexOfParam = fullUrl.indexOf("?");
-        if (indexOfParam > 0) {
-            fullUrl = fullUrl.substring(0, indexOfParam);
-        }
-        redoUrl.append("/service/" + fullUrl);
+		// 1. Cut out the parameters
+		String fullUrl = serviceUrl.getFullUrl();
+		int indexOfParam = fullUrl.indexOf("?");
+		if (indexOfParam > 0) {
+			fullUrl = fullUrl.substring(0, indexOfParam);
+		}
+		redoUrl.append("/service/" + fullUrl);
 
-        RedoRequestWrapper requestWrapper = new RedoRequestWrapper(req);
-        // 2. Set the URI
-        String contextRoot = req.getContextPath();
-        if (!contextRoot.endsWith("/")) {
-            contextRoot = contextRoot + "/";
-        }
-        String requestURI = contextRoot + "service/" + fullUrl;
-        requestWrapper.setRequestURI(requestURI);
-        // 3. Replace with new parameters.
+		RedoRequestWrapper requestWrapper = new RedoRequestWrapper(req);
+		// 2. Set the URI
+		String contextRoot = req.getContextPath();
+		if (!contextRoot.endsWith("/")) {
+			contextRoot = contextRoot + "/";
+		}
+		String requestURI = contextRoot + "service/" + fullUrl;
+		requestWrapper.setRequestURI(requestURI);
+		// 3. Replace with new parameters.
 
-        List<NameValuePair> newParameters = buildNameValue(parameters);
-        for (int i = 0; i < newParameters.size(); i++) {
-            requestWrapper.addParameter(newParameters.get(i).getName(), newParameters.get(i).getValue());
-        }
-        // 4. New Body
-        requestWrapper.setBody(body);
+		List<NameValuePair> newParameters = buildNameValue(parameters);
+		for (int i = 0; i < newParameters.size(); i++) {
+			requestWrapper.addParameter(newParameters.get(i).getName(),
+					newParameters.get(i).getValue());
+		}
+		// 4. New Body
+		requestWrapper.setBody(body);
 
-        // 5. Build headers
-        List<NameValuePair> headers = buildNameValue(pipeDelimitedHeaderInfo);
-        if (headers != null) {
-            for (int i = 0; i < headers.size(); i++) {
-                requestWrapper.addHeader(headers.get(i).getName(), headers.get(i).getValue());
-            }
-        }
-        // String servletPath = requestWrapper.getServletPath();
-        // String requestUrl = requestWrapper.getRequestURL().toString();
-        // String requestUri = requestWrapper.getRequestURI();
-        // String queryString = requestWrapper.getQueryString();
+		// 5. Build headers
+		List<NameValuePair> headers = buildNameValue(pipeDelimitedHeaderInfo);
+		if (headers != null) {
+			for (int i = 0; i < headers.size(); i++) {
+				requestWrapper.addHeader(headers.get(i).getName(), headers.get(
+						i).getValue());
+			}
+		}
+		// String servletPath = requestWrapper.getServletPath();
+		// String requestUrl = requestWrapper.getRequestURL().toString();
+		// String requestUri = requestWrapper.getRequestURI();
+		// String queryString = requestWrapper.getQueryString();
 
-        String newPath = redoUrl.toString();
-        RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(newPath); //
-        requestDispatcher.forward(requestWrapper, resp);
+		String newPath = redoUrl.toString();
+		RequestDispatcher requestDispatcher = requestWrapper
+				.getRequestDispatcher(newPath); //
+		requestDispatcher.forward(requestWrapper, resp);
 
-    }
+	}
 
-    private List<NameValuePair> buildNameValue(String pipeDelimitedHeaders) {
-        List<NameValuePair> list = new ArrayList<NameValuePair>();
-        StringTokenizer st = new StringTokenizer(pipeDelimitedHeaders, "|");
-        while (st.hasMoreTokens()) {
-            String nameValuePair = st.nextToken();
-            int equalsIndex = nameValuePair.indexOf("=");
-            if (equalsIndex > -1) {
-                String name = nameValuePair.substring(0, equalsIndex);
-                String value = nameValuePair.substring(equalsIndex + 1);
-                NameValuePair pair = new NameValuePair(name, value);
-                list.add(pair);
-            }
-        }
-        return list;
-    }
+	private List<NameValuePair> buildNameValue(String pipeDelimitedHeaders) {
+		List<NameValuePair> list = new ArrayList<NameValuePair>();
+		StringTokenizer st = new StringTokenizer(pipeDelimitedHeaders, "|");
+		while (st.hasMoreTokens()) {
+			String nameValuePair = st.nextToken();
+			int equalsIndex = nameValuePair.indexOf("=");
+			if (equalsIndex > -1) {
+				String name = nameValuePair.substring(0, equalsIndex);
+				String value = nameValuePair.substring(equalsIndex + 1);
+				NameValuePair pair = new NameValuePair(name, value);
+				list.add(pair);
+			}
+		}
+		return list;
+	}
 
-    private class NameValuePair {
-        private String name;
-        private String value;
+	private class NameValuePair {
+		private String name;
+		private String value;
 
-        public NameValuePair(String name, String value) {
-            this.name = name;
-            this.value = value;
-        }
+		public NameValuePair(String name, String value) {
+			this.name = name;
+			this.value = value;
+		}
 
-        public void setValue(String value) {
-            this.value = value;
-        }
+		public String getValue() {
+			return value;
+		}
 
-        public String getValue() {
-            return value;
-        }
+		public String getName() {
+			return name;
+		}
+	}
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    public static void main(String[] args) {
-        String pipeDelimitedHeaders = "z=y|x=y||";
-        RedoRequestServlet fakeRequestServlet = new RedoRequestServlet();
-        List<NameValuePair> pairs = fakeRequestServlet.buildNameValue(pipeDelimitedHeaders);
-        if (pairs != null) {
-            for (int i = 0; i < pairs.size(); i++) {
-                System.out.println(pairs.get(i).getName() + "=" + pairs.get(i).getValue());
-            }
-        }
-    }
+	public static void main(String[] args) {
+		String pipeDelimitedHeaders = "z=y|x=y||";
+		RedoRequestServlet fakeRequestServlet = new RedoRequestServlet();
+		List<NameValuePair> pairs = fakeRequestServlet
+				.buildNameValue(pipeDelimitedHeaders);
+		if (pairs != null) {
+			for (int i = 0; i < pairs.size(); i++) {
+				System.out.println(pairs.get(i).getName() + "="
+						+ pairs.get(i).getValue());
+			}
+		}
+	}
 
 }

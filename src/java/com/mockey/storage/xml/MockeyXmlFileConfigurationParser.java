@@ -33,7 +33,7 @@ public class MockeyXmlFileConfigurationParser {
     private final static String ROOT = "mockservice";
     private final static String PROXYSERVER = ROOT + "/proxy_settings";
     private final static String SERVICE = ROOT + "/service";
-    private final static String SERVICE_ALT_URL = SERVICE + "/alt_url";
+    private final static String SERVICE_REAL_URL = SERVICE + "/real_url";
     private final static String SCENARIO = SERVICE + "/scenario";
     private final static String PLAN = ROOT + "/service_plan";
     private final static String PLAN_ITEM = PLAN + "/plan_item";
@@ -48,28 +48,30 @@ public class MockeyXmlFileConfigurationParser {
         digester.setValidating(false);
         digester.addObjectCreate(ROOT, InMemoryMockeyStorage.class);
 
-        digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");//   
-        digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");//   
+        digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");   
+        digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");   
 
         digester.addObjectCreate(PROXYSERVER, ProxyServerModel.class);
-        digester.addSetProperties(PROXYSERVER, "proxy_url", "proxyUrl");//
-        digester.addSetProperties(PROXYSERVER, "proxy_enabled", "proxyEnabled");//
+        digester.addSetProperties(PROXYSERVER, "proxy_url", "proxyUrl");
+        digester.addSetProperties(PROXYSERVER, "proxy_enabled", "proxyEnabled");
         digester.addSetNext(PROXYSERVER, "setProxy");
 
         digester.addObjectCreate(SERVICE, Service.class);
 
-        digester.addSetProperties(SERVICE, "name", "serviceName");//           
+        digester.addSetProperties(SERVICE, "name", "serviceName");           
         digester.addSetProperties(SERVICE, "description", "description");
         digester.addSetProperties(SERVICE, "http_content_type", "httpContentType");
-        digester.addSetProperties(SERVICE, "hang_time", "hangTime");//        
+        digester.addSetProperties(SERVICE, "hang_time", "hangTime");  
+        
         digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrlByString");
         digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
         digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
         digester.addSetNext(SERVICE, "saveOrUpdateService");
 
-        digester.addObjectCreate(SERVICE_ALT_URL, Url.class);
-        digester.addBeanPropertySetter(SERVICE_ALT_URL, "url");
-        digester.addSetNext(SERVICE_ALT_URL, "saveOrUpdateAlternativeUrl");
+        digester.addObjectCreate(SERVICE_REAL_URL, Url.class);
+        //digester.addBeanPropertySetter(SERVICE_REAL_URL, "url");
+        digester.addSetProperties(SERVICE_REAL_URL, "url", "url");
+        digester.addSetNext(SERVICE_REAL_URL, "saveOrUpdateRealServiceUrl");
         
         digester.addObjectCreate(SCENARIO, Scenario.class);
         digester.addSetProperties(SCENARIO, "id", "id");
