@@ -83,10 +83,20 @@ public class ServiceMergeServlet extends HttpServlet {
 				responseMap.put("additions", mergeResults.getAdditionMsg());
 				responseMap.put("conflicts", mergeResults.getConflictMsg());
 			}
-
+			
 		} catch (Exception e) {
 			// Do nothing
 			log.error("Something wrong with merging services.", e);
+		}
+		
+		// IF NO CONFLICTS, THEN DELETE OLD SOURCE SERVICES
+		if(mergeResults!=null && (mergeResults.getConflictMsgs()==null || mergeResults.getConflictMsgs().isEmpty())){
+			for (int i = 0; i < serviceMergeIdList.length; i++) {
+				serviceIdMergeSource = new Long(serviceMergeIdList[i]);
+				Service service = store.getServiceById(serviceIdMergeSource);
+				store.deleteService(service);
+			}
+			
 		}
 
 		PrintWriter out = resp.getWriter();

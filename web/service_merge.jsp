@@ -44,7 +44,17 @@ $(document).ready( function() {
 						   	$.prompt('<div>Service merge results:</div> <div style=\"color:red\">Conflicts</div>' + data.result.conflicts 
 								   	+ "<div style=\"color:blue\">Additions</div>"+data.result.additions);
 						     } else {
-						    	 $.prompt('<div>Services merged.</div>');
+						    	 $.prompt('<div>Services merged and Source services have been deleted.</div>',
+						    			 {
+						                     callback: function (proceed) {
+						                         document.location="<c:url value="/home" />?&serviceId="+ destinationServiceId.val();
+						                     },
+						                     buttons: {
+						                         'Ok': true
+						                     }
+						                 }
+								    	 );
+						    	 
 						     }
 						   } , 'json');	
 					    
@@ -94,8 +104,8 @@ $(document).ready( function() {
     <div id="main">
         <h1>Merge Services</h1>
         <p>Merging services means a putting all scenarios and multiple <i>real urls</i> together, under one service definition. If you're not sure about this, 
-you should <a href="">Export</a> your service definitions first. If things go bad for you, then you can 
-<strong>Flush</strong> and re-import your saved definitions file.</p>
+you should <a href="">Export</a> your service definitions first. If things go bad, try 
+<strong>Flush</strong> and re-import your last saved definitions file.</p>
         <c:choose>
 	        <c:when test="${!empty services}">
 	        <div class="parentform">

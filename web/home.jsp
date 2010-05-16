@@ -263,7 +263,7 @@ $(document).ready( function() {
     </div>
 	        </c:when>
 	        <c:otherwise>
-			  <p class="alert_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. </p>
+			  <p class="info_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. </p>
 			</c:otherwise>
         </c:choose>
 <c:if test="${mode ne 'edit_plan'}">
@@ -286,6 +286,7 @@ $(function() {
 
 </script>
 </c:if>
+<c:if test="${!empty services}">
 <div style="display:block;text-align:right;">
 <p>
 mood image <a href="home?mood=silhouette.jpg" class="mood" >A</a>
@@ -294,4 +295,6 @@ mood image <a href="home?mood=silhouette.jpg" class="mood" >A</a>
 <a href="home?mood=lebowski.png" class="mood" >D</a>
 </p>
 </div>
+</c:if>
+
 <jsp:include page="/WEB-INF/common/footer.jsp" />
