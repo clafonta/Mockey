@@ -41,7 +41,7 @@ public interface IMockeyStorage {
 
 	public ServicePlan getServicePlanById(Long servicePlanId);
 	public List<ServicePlan> getServicePlans();
-	public void saveOrUpdateServicePlan(ServicePlan servicePlan);
+	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan);
 	public void deleteServicePlan(ServicePlan servicePlan);
 	
 	public Scenario getUniversalErrorScenario();

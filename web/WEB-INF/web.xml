@@ -57,7 +57,7 @@
 		<servlet-class>com.mockey.ui.ProxyInfoServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>MockServicePlanSetupServlet</servlet-name>
+		<servlet-name>ServicePlanSetupServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ServicePlanSetupServlet</servlet-class>
 	</servlet>
 	<servlet>
@@ -113,7 +113,7 @@
 		<url-pattern>/service_scenario</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>MockServicePlanSetupServlet</servlet-name>
+		<servlet-name>ServicePlanSetupServlet</servlet-name>
 		<url-pattern>/plan/setup</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>

@@ -16,9 +16,11 @@
 package com.mockey.ui;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -32,7 +34,6 @@ import org.apache.commons.logging.LogFactory;
 import com.mockey.model.PlanItem;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -56,7 +57,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
      * @throws IOException
      *             basic
      */
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("Service Plan setup/delete");
         ServicePlan servicePlan = null;
         Long servicePlanId = null;
@@ -68,138 +69,86 @@ public class ServicePlanSetupServlet extends HttpServlet {
             // Do nothing
         }
         String action = req.getParameter("action");
-        if ("delete_plan".equals(action) && servicePlan != null) {
+        if ("delete_plan".equals(action)) {
 
-            Util.saveErrorMessage("Service plan <b>" + servicePlan.getName() + "</b> deleted.", req);
-            store.deleteServicePlan(servicePlan);
-            String contextRoot = req.getContextPath();
-            resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));
+        	Map<String, String> successMap = new HashMap<String, String>();
+        	try{
+        		store.deleteServicePlan(servicePlan);
+        		successMap.put("success", "Service plan " + servicePlan.getName() + " deleted");
+        	}catch(Exception e){
+        		successMap.put("success", "Service plan deleted.");
+        	}
+            PrintWriter out = resp.getWriter();
+			String resultingJSON = Util.getJSON(successMap);
+			out.println(resultingJSON);
+			out.flush();
+			out.close();
             return;
         } else if ("set_plan".equals(action) && servicePlan != null) {
 
-            setPlan(servicePlan);
-            Util.saveSuccessMessage("Service plan " + servicePlan.getName() + " is set.", req);
-            String contextRoot = req.getContextPath();
-            resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));
-            return;
-        } else if ("edit_plan".equals(action)) {
-            req.setAttribute("mode", "edit_plan");
-
-            if (servicePlan != null) {
-                allServices = new ArrayList<Service>();
-                Iterator<PlanItem> iter = servicePlan.getPlanItemList().iterator();
-                while (iter.hasNext()) {
-                    PlanItem pi = (PlanItem) iter.next();
-                    Service msb = store.getServiceById(pi.getServiceId());
-                    if (msb != null) {
-                        msb.setHangTime(pi.getHangTime());
-                        msb.setDefaultScenarioId(pi.getScenarioId());
-                        msb.setServiceResponseType(pi.getServiceResponseType());
-                        allServices.add(msb);
-                    }
-                }
+        	Map<String, String> successMap = new HashMap<String, String>();
+        	try{
+        		setPlan(servicePlan);
+        		String msg = "Service plan " + servicePlan.getName() + " set";
+        		successMap.put("success", msg);
+        		Util.saveSuccessMessage(msg, req); // For redirect
+        	}
+            catch(Exception e){
+            	successMap.put("fail", "Service plan not set. Please check your logs for insight.");
             }
-
-        }
-        if (servicePlan == null) {
-            servicePlan = new ServicePlan();
-        }
+            PrintWriter out = resp.getWriter();
+			String resultingJSON = Util.getJSON(successMap);
+			out.println(resultingJSON);
+			out.flush();
+			out.close();
+            return;
+        } else if ("save_plan".equals(action)) {
+        	
+        	if(servicePlan == null){
+        		servicePlan = new ServicePlan();
+        	}
+        	servicePlan.setName(req.getParameter("servicePlanName"));
+        	ServicePlan savedServicePlan = createOrUpdatePlan(servicePlan);
+        	PrintWriter out = resp.getWriter();
+			Map<String, String> successMap = new HashMap<String, String>();
+			String msg = "Service plan " + servicePlan.getName() + " saved";
+			Util.saveSuccessMessage(msg, req); // For redirect
+			successMap.put("success",msg );
+			successMap.put("planid", ""+savedServicePlan.getId());
+			String resultingJSON = Util.getJSON(successMap);
+			out.println(resultingJSON);
+			out.flush();
+			out.close();
+			return;
+        } 
+        
         req.setAttribute("services", allServices);
         req.setAttribute("plans", store.getServicePlans());
-        req.setAttribute("plan", servicePlan);
-        req.setAttribute("universalError", store.getUniversalErrorScenario());
         RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
         dispatch.forward(req, resp);
     }
 
-    /**
-     * 
-     * 
-     * @param req
-     *            basic request
-     * @param resp
-     *            basic resp
-     * @throws ServletException
-     *             basic
-     * @throws IOException
-     *             basic
-     */    
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ServicePlan servicePlan = new ServicePlan();
-        Long servicePlanId = null;
 
-        try {
-            servicePlanId = new Long(req.getParameter("plan_id"));
-        } catch (Exception e) {
-            // Do nothing
-        }
-        if (servicePlanId != null) {
-            servicePlan = this.store.getServicePlanById(servicePlanId);
-        }
-        servicePlan.setName(req.getParameter("plan_name"));
-        servicePlan.setDescription(req.getParameter("plan_description"));
-        String[] planItems = req.getParameterValues("plan_item");
-        boolean createPlan = true;
-        if (planItems != null) {
-            for (int i = 0; i < planItems.length; i++) {
-
-                String serviceId = planItems[i];
-                String ssIdKey = "scenario_" + serviceId;
-                String serviceResponseTypeKey = "serviceResponseType_" + serviceId;
-                String hangTime = "hangTime_" + serviceId;
-                int hangTimeInt = 500;
-                String scenarioId = req.getParameter(ssIdKey);
-                String serviceOnlyButtonKey = req.getParameter("update_service_" + serviceId);
-                int serviceResponseTypeKeyInt = 0;
-                try {
-                    serviceResponseTypeKeyInt = Integer.parseInt(req.getParameter(serviceResponseTypeKey));
-                } catch (Exception e) {
-
-                }
-                try {
-                    hangTimeInt = Integer.parseInt(req.getParameter(hangTime));
-                } catch (Exception e) {
-
-                }
-
-                if (serviceOnlyButtonKey != null) {
-                    createPlan = false;
-                    Service msb = store.getServiceById(Long.parseLong(serviceId));
-                    if (scenarioId != null) {
-                        msb.setDefaultScenarioId(Long.parseLong(scenarioId));
-                    }
-                    msb.setServiceResponseType(serviceResponseTypeKeyInt);
-                    store.saveOrUpdateService(msb);
-                    Util.saveSuccessMessage("Service \"" + msb.getServiceName() + "\" updated.", req);
-                    break;
-                }
-                PlanItem planItem = new PlanItem();
-                if (scenarioId != null) {
-                    planItem.setScenarioId(new Long(scenarioId));
-                }
-                planItem.setHangTime(hangTimeInt);
-                planItem.setServiceId(new Long(serviceId));
-                planItem.setServiceResponseType(serviceResponseTypeKeyInt);
-                servicePlan.addPlanItem(planItem);
-            }
-        }
-
-        if (createPlan) {
-
-            Util.saveSuccessMessage("Service plan updated.", req);
-            store.saveOrUpdateServicePlan(servicePlan);
-
-        }
-
-        req.setAttribute("services", store.getServices());
-        req.setAttribute("plans", store.getServicePlans());
-        req.setAttribute("plan", servicePlan);
-        req.setAttribute("universalError", store.getUniversalErrorScenario());
-        RequestDispatcher dispatch = req.getRequestDispatcher("/home.jsp");
-        dispatch.forward(req, resp);
+    private ServicePlan createOrUpdatePlan(ServicePlan servicePlan){
+    	List<PlanItem> planItemList = new ArrayList<PlanItem>();
+    	for(Service service: store.getServices()){
+    		PlanItem planItem = new PlanItem();
+    		planItem.setHangTime(service.getHangTime());
+    		planItem.setServiceId(service.getId());
+    		planItem.setScenarioId(service.getDefaultScenarioId());
+    		planItem.setServiceResponseType(service.getServiceResponseType());
+    		planItemList.add(planItem);
+    		
+    	}
+    	servicePlan.setPlanItemList(planItemList);
+    	return store.saveOrUpdateServicePlan(servicePlan);
+    	
     }
 
     private void setPlan(ServicePlan servicePlan) {    	
+    	if (servicePlan == null) {
+            servicePlan = new ServicePlan();
+        }
     	for (PlanItem planItem : servicePlan.getPlanItemList()) {
             Service service = store.getServiceById(planItem.getServiceId());
             if (service != null) {

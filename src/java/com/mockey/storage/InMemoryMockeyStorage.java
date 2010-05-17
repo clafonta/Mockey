@@ -194,9 +194,11 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return this.servicePlanStore.getOrderedList();
 	}
 
-	public void saveOrUpdateServicePlan(ServicePlan servicePlan) {
-		this.servicePlanStore.save(servicePlan);
+	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan) {
+		PersistableItem item = this.servicePlanStore.save(servicePlan);
 		this.writeMemoryToFile();
+		return (ServicePlan)item;
+		
 	}
 
 	public Scenario getUniversalErrorScenario() {

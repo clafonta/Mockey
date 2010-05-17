@@ -46,8 +46,6 @@ public class HomeServlet extends HttpServlet {
         } else {
             req.setAttribute("services", store.getServices());
             req.setAttribute("plans", store.getServicePlans());
-            req.setAttribute("plan", new ServicePlan());
-            req.setAttribute("universalError", store.getUniversalErrorScenario());
         }
 
         RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");

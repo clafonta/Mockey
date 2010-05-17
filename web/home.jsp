@@ -28,6 +28,55 @@
 %>
 <script>
 $(document).ready( function() {
+	$("#tabs").tabs();
+	$('#create-plan')
+		.button()
+		.click(function() {
+			
+			var servicePlanName = $('input[name=servicePlanName]').val()
+			$.post('<c:url value="/plan/setup"/>', { action: 'save_plan', servicePlanName: servicePlanName } ,function(data){
+				   //console.log(data);
+				   if(data.result.success && data.result.planid){
+					   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+					   // We redirect here. Because appending HTML would require we append this 
+					   // click function, (which appends to itself, not good). Looping here.
+					   // We redirect for now. 
+					   document.location="<c:url value="/home" />"; 
+					   
+				    }
+			}, 'json' );
+		});
+
+	
+	$('.delete-plan').each( function() {
+		$(this).click( function() {
+			var planId = this.id.split("_")[1];
+			$.post('<c:url value="/plan/setup"/>', { action: 'delete_plan', plan_id: planId } ,function(data){
+				  
+				   if(data.result.success){
+					   $('#deleted').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+					   $('#plan_'+planId).hide();
+				    }
+			}, 'json' );
+			
+		});
+	});
+
+	$('.set-plan').each( function() {
+		$(this).click( function() {
+			var planId = this.id.split("_")[1];
+			$.post('<c:url value="/plan/setup"/>', { action: 'set_plan', plan_id: planId } ,function(data){
+				  
+				   if(data.result.success){
+					   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					   document.location="<c:url value="/home" />"; 
+				    }
+			}, 'json' );
+			
+		});
+	});
+	
+	
     $('.tiny_service_delete').each( function() {
         $(this).click( function() {
             var serviceId = this.id.split("_")[1];
@@ -128,27 +177,60 @@ $(document).ready( function() {
 	            <tbody>
 		              <tr>                                                                                 
 							<td valign="top" width="40%">
-							  <p> Make all 
-							  <a id="allresponsetype_0" class="allresponsetype response_proxy" href="#">Proxy</a>
-							  <a id="allresponsetype_1" class="allresponsetype response_static" href="#">Static</a>
-							  <a id="allresponsetype_2" class="allresponsetype response_dynamic" href="#">Dynamic</a>
-							  </p>
-							  <div class="scroll">
-	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
-	                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" >
-	                                <span style="float:right;"><a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
-	                                <div class="toggle_button" style="margin:0.2em;">
-									      <a class="gt" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a>
-									      
-									</div>
-	                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
-	                                <c:if test="${empty mockservice.scenarios}">
-	                                  <span style="float:right;font-size:80%;color:yellow;background-color:red;padding:0 0.2em 0 0.2em;">(no scenarios)</span>
-	                                </c:if>                 
-	                                
-									</div>
-							    </c:forEach>
+							<div id="tabs">
+								<ul>
+									<li><a href="#tabs-1">Services</a></li>
+									<li><a href="#tabs-2">Plans</a></li>
+								</ul>
+							  	<div id="tabs-1">
+								  <p> Make all 
+									  <a id="allresponsetype_0" class="allresponsetype response_proxy" href="#">Proxy</a>
+									  <a id="allresponsetype_1" class="allresponsetype response_static" href="#">Static</a>
+									  <a id="allresponsetype_2" class="allresponsetype response_dynamic" href="#">Dynamic</a>
+								  </p>
+								  <div class="scroll">
+		                            	<c:forEach var="mockservice" items="${services}"  varStatus="status">	  
+			                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" >
+				                                <span style="float:right;"><a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
+				                                <div class="toggle_button" style="margin:0.2em;">
+												      <a class="gt" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="30"/></a>
+												</div>
+				                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
+				                                <c:if test="${empty mockservice.scenarios}">
+				                                  <span style="float:right;font-size:80%;color:yellow;background-color:red;padding:0 0.2em 0 0.2em;">(no scenarios)</span>
+				                                </c:if>
+											</div>
+								    	</c:forEach>
+								    </div>
 							    </div>
+							    <div id="tabs-2">
+								    <div class="scroll">
+								        <div>To <strong>create a plan</strong>, go to the Services tab, make your settings, and
+								        then tab to here to create (or save). 
+								        </div>
+								        <div style="padding:1em 0em;">
+								        <input type="text" id="servicePlanName" name="servicePlanName"></input>
+								        <button id="create-plan">Create plan</button>
+								        
+								        </div>
+								        <div style="padding-bottom:1em;">To <strong>set a plan</strong>, click on the plan name below. You will be redirected to the Services tab.  
+								        </div>
+								         <c:if test="${empty plans}">
+									      <div class="info_message" id="no-plans-msg"> No plans here. </div>
+									    </c:if>
+									    <div id="plan-list">
+									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
+			                                <div id="plan_${plan.id}" class="parentform" ><a href="#" id="set-plan_${plan.id}" class="set-plan">${plan.name}</a>
+			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
+			                                </div>
+									    </c:forEach>
+									    <div class="tiny" style="padding-top:1em;" id="no-plans-msg"><a href="<c:url value="help#plan"/>">What's a plan?</a></div>
+			                            
+									    </div>
+									   
+							    	</div>
+							    </div>
+							</div>
 							</td>
 							<td valign="top">
 							<div id='service_list_container'>

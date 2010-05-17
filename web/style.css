@@ -228,7 +228,7 @@ overflow: auto;
 border: 0px solid #C0C0C0;
 padding: 8px;
 }
-#updated, #foo{
+#updated, #foo, #deleted{
     position: fixed;
     width: 150px;
     background: red;

@@ -17,6 +17,9 @@
 <span id="updated" class="hide">
 	Updated
 </span>
+<span id="deleted" class="hide">
+	Deleted
+</span>
 <c:if test="${not empty errorMessages}">
 
 	<p id="bar" class="alert_message">

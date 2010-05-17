@@ -3,6 +3,7 @@
 <c:set var="currentTab" value="help" scope="request" />
 
 <jsp:include page="/WEB-INF/common/header.jsp" />
+
 <div id="main">
 	
 	<h2>The Big Picture</h2>
@@ -18,7 +19,11 @@
 	 There's support for HTTP and HTTPS interactions (if your proxy server or endpoint service is https). Be sure to check out your service's History
 	 to inspect and save a past conversation as a Service Scenario.                       
     </p>
-   
+    <a href="#plan" name="plan"></a> 
+    <h2>Service Plan</h2>
+    <p>
+    
+    </p>
     <a href="#scenario" name="scenario"></a>
 	<h2>Mock Service Scenario</h2>
 	<p>

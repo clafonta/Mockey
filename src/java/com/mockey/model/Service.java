@@ -117,7 +117,6 @@ public class Service implements PersistableItem, ExecutableService {
 		return (Scenario) this.scenarios.save(scenario);
 	}
 
-
 	/**
 	 * DO NOT REMOVE. This is needed by XML reader and has a reference to the
 	 * method signature via reflection. Thank Digester.
@@ -142,7 +141,7 @@ public class Service implements PersistableItem, ExecutableService {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Service name:").append(this.getServiceName()).append("\n");
-		sb.append("Real URL(s):\n"); 
+		sb.append("Real URL(s):\n");
 		if (this.realServiceUrls != null && !this.realServiceUrls.isEmpty()) {
 			Iterator<Url> iter = this.realServiceUrls.iterator();
 			while (iter.hasNext()) {
@@ -188,21 +187,18 @@ public class Service implements PersistableItem, ExecutableService {
 	}
 
 	/**
-	 * @deprecated - create on httphost per real service url.
-	 * @return - may return null
+	 * 
+	 * @param serviceResponseType
+	 *            - 0 (proxy), 1 (static), or 2 (dynamic). Any other value will
+	 *            default to PROXY.
 	 */
-//	public HttpHost getHttpHost() {
-//		Url realServiceUrl = this.getUrl();
-//		if (realServiceUrl != null) {
-//			return new HttpHost(realServiceUrl.getHost(), realServiceUrl
-//					.getPort(), realServiceUrl.getScheme());
-//		} else {
-//			return null;
-//		}
-//	}
-
 	public void setServiceResponseType(int serviceResponseType) {
-		this.serviceResponseType = serviceResponseType;
+		if (serviceResponseType == 1 || serviceResponseType == 0
+				|| serviceResponseType == 2) {
+			this.serviceResponseType = serviceResponseType;
+		} else {
+			this.serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
+		}
 	}
 
 	public int getServiceResponseType() {
@@ -251,10 +247,11 @@ public class Service implements PersistableItem, ExecutableService {
 	 * The core method to execute the request as either a Proxy, Dynamic, or
 	 * Static Scenario.
 	 */
-	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl, String methodType) {
+	public ResponseFromService execute(RequestFromClient request,
+			Url realServiceUrl, String methodType) {
 		ResponseFromService response = null;
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
-			response = proxyTheRequest(request,realServiceUrl, methodType);
+			response = proxyTheRequest(request, realServiceUrl, methodType);
 		} else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
 			response = executeDynamicScenario(request);
 		} else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
@@ -263,7 +260,8 @@ public class Service implements PersistableItem, ExecutableService {
 		return response;
 	}
 
-	private ResponseFromService proxyTheRequest(RequestFromClient request, Url realServiceUrl, String methodType) {
+	private ResponseFromService proxyTheRequest(RequestFromClient request,
+			Url realServiceUrl, String methodType) {
 
 		logger.debug("proxying a moxie.");
 		// If proxy on, then
@@ -284,7 +282,8 @@ public class Service implements PersistableItem, ExecutableService {
 		ResponseFromService response = null;
 		try {
 			logger.debug("Initiating request through proxy");
-			response = clientExecuteProxy.execute(proxyServer, realServiceUrl, methodType, request);
+			response = clientExecuteProxy.execute(proxyServer, realServiceUrl,
+					methodType, request);
 		} catch (Exception e) {
 			// We're here for various reasons.
 			// 1) timeout from calling real service.

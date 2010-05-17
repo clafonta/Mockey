@@ -142,8 +142,9 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
     }
 
-    public void saveOrUpdateServicePlan(ServicePlan servicePlan) {
+    public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan) {
         // TODO Auto-generated method stub
+    	return null;
 
     }
 
