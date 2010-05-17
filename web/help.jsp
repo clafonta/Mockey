@@ -42,7 +42,7 @@
 	service definition for you. Be sure to check the service defintion's
 	history link to inspect the request and response messages.
 	
-		<div class="hint_message">
+		<div class="info_message">
 		    <h3>How to Record</h3>
 			<p>
 			First, place Mockey's URL in front of the service URL you want to

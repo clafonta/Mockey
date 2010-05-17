@@ -189,7 +189,7 @@ $(document).ready(function() {
             </c:forEach>
         </c:when>
         <c:otherwise>
-            <div><h4 style="color:red;">No history here.</h4> <p>It's because no one talks to Mockey or someone just cleared the history. Mockey is feeling unwanted.</p></div>
+            <p class="info_message">No history here. It's because no one talks to Mockey or someone just cleared the history. Mockey is feeling unwanted.</p>
         </c:otherwise>
     </c:choose>
 </div>

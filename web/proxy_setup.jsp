@@ -28,7 +28,7 @@
 					 $.post('<c:url value="/proxy/settings"/>', { proxyPassword: proxyPassword.val(), proxyUsername: proxyUsername.val(),
 							proxyUrl:  proxyUrl.val(),  proxyEnabled: proxyEnabled} ,function(data){
 								if (data.result.success){
-									$.prompt( data.result.success, { timeout: 2000});
+									$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 								}else {
 									$.prompt('<div style=\"color:red;\">Not updated:</div> ' + data.result.message);
 								}
@@ -59,8 +59,8 @@
                 <input type="password" style="width:200px;" class="text ui-corner-all ui-widget-content" id="proxyPassword" name="proxyPassword" maxlength="20" size="20" value="" />
                 <div class="tinyfieldset">Password is <strong>not</strong> shown after a page refresh and not available in Export for security reasons.  </div>
                 <div id="proxy_message" class="info_message tiny"><strong>Note:</strong> the last time these settings were enabled,
-                <c:choose><c:when test='${!empty proxyInfo.proxyUsername}'><span style="color:blue;"><strong>proxy name</strong> was provided</span></c:when><c:otherwise><span style="color:red;"><strong>proxy name</strong> was <strong>not</strong> provided</span></c:otherwise></c:choose> and
-                <c:choose><c:when test='${!empty proxyInfo.proxyPassword}'><span style="color:blue;"><strong>proxy password</strong> was provided</span></c:when><c:otherwise><span style="color:red;"><strong>proxy password</strong> was <strong>not</strong> provided</span></c:otherwise></c:choose>.
+                <c:choose><c:when test='${!empty proxyInfo.proxyUsername}'><span style="color:blue;"><strong>proxy name</strong> was provided</span></c:when><c:otherwise><span style="color:yellow;"><strong>proxy name</strong> was <strong>not</strong> provided</span></c:otherwise></c:choose> and
+                <c:choose><c:when test='${!empty proxyInfo.proxyPassword}'><span style="color:blue;"><strong>proxy password</strong> was provided</span></c:when><c:otherwise><span style="color:yellow;"><strong>proxy password</strong> was <strong>not</strong> provided</span></c:otherwise></c:choose>.
                 </div>
 	    </fieldset>
        
