@@ -80,6 +80,7 @@ $(document).ready( function() {
 			});
 			$(".scenariosByServiceId_"+serviceId).removeClass("response_static_big").addClass("response_not_big");
 			$("#serviceScenario_"+scenarioId+"_"+serviceId).removeClass("response_not_big").addClass("response_static_big");
+			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 		});
 	});
 
@@ -111,6 +112,7 @@ $(document).ready( function() {
 				$('#serviceResponseType_2_'+serviceId).removeClass("response_not").addClass("response_dynamic");
 				$('#dynamicScenario_'+serviceId).addClass("show");
 			}
+			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 		});
 	});
     

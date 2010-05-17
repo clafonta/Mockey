@@ -9,11 +9,14 @@
 			$("#foo").fadeIn(2000).fadeTo(5000, 1).fadeOut(2000);
 		});
 	</script>
-	<span id="foo" style="float:right; color:yellow; background-color:red;padding:0.2em;">
-		<mockey:message/>
-		</span>
+	
 </c:if>
-
+<span id="foo" class="hide" style="float:right; color:yellow; background-color:red;padding:0.2em;">
+	<mockey:message/>
+</span>
+<span id="updated" class="hide">
+	Updated
+</span>
 <c:if test="${not empty errorMessages}">
 
 	<p id="bar" class="alert_message">

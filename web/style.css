@@ -228,5 +228,15 @@ overflow: auto;
 border: 0px solid #C0C0C0;
 padding: 8px;
 }
+#updated{
+    position: fixed;
+    width: 150px;
+    background: red;
+    text-align: center;
+    top: 10px;
+    right: 10px;
+    color:yellow;
+    padding: 0.1em;
+}
 
 
