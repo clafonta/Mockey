@@ -46,6 +46,7 @@ div.parentformselected {
 form#multi_form{	padding: 0.8em;}
 ul#simple { list-style: none;	}
 ul#simple li {	margin:0.5em; }
+
 .edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
 p{margin: 0.5em; padding: 1px;line-height:130%;}
@@ -54,7 +55,7 @@ a{color: #00F;text-decoration:underline}
 a.response_static_big, a.response_not_big { height: 1.2em; border: 1px solid #777777; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.3em 0.5em; margin: auto; text-align: center; text-decoration:none; font-size: 1em; }
 a.response_static_big {background-color: #0077CC; color:white; }
 a.response_not_big {background-color: #DDDDDD; color:black; }
-a.response_proxy, a.response_static, a.response_not, a.response_dynamic  { height: 1em; width: 2em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.1em 1.5em 0.1em 1.5em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em; background-color: #0077CC; color:#FFFFFF;}
+a.response_proxy, a.response_static, a.response_not, a.response_set, a.response_dynamic  { height: 1em; width: 2em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.1em 1.5em 0.1em 1.5em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em; background-color: #0077CC; color:#FFFFFF;}
 a.response_not  { background-color:transparent;color:grey; border: 1px solid #A9A9A9;}
 a.mood {decoration:none; font-size:80%;}
 
@@ -211,6 +212,7 @@ div.grippie {background:#EEEEEE url(images/grippie.png) no-repeat scroll center 
 .remove_grey {padding: 0 0.5em 0 0.2em; color:#C0C0C0;text-decoration:none;font-size:80%;margin-bottom:02em;}
 .remove_grey:hover{color:#FF0000;}
 label, input { display:inline; }
+label {font-weight:900;}
 input.text  {
 margin: 0.8em 0 0.8em 0;
 padding:0.4em;
@@ -238,5 +240,10 @@ padding: 8px;
     color:yellow;
     padding: 0.1em;
 }
-
+.invisiblefield {border:0;padding-left:0; margin-left:0; color:blue; width:100%;}
+.service { list-style: none; word-break:break-all;	}
+.service div {	margin:0.5em 0 0.5em 0; }
+div.service-value {color:#0077CC; font-weight:bold;}
+div.service-label {color:#555555; border-top:1px solid #BDBDBD;padding-top:0.8em;}
+div.not-top {margin-top:2em;}
 

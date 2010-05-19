@@ -70,9 +70,11 @@ public class ResponseServlet extends HttpServlet {
         }
         Url serviceUrl = new Url(requestedUrl);
         Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
-        service.setHttpMethod(originalHttpReqFromClient.getMethod());       
+        Url urlToExecute = urlToExecute = service.getDefaultRealUrl();
        
-        ResponseFromService response = service.execute(request, serviceUrl,originalHttpReqFromClient.getMethod() );
+        service.setHttpMethod(originalHttpReqFromClient.getMethod());       
+        
+        ResponseFromService response = service.execute(request, urlToExecute,originalHttpReqFromClient.getMethod() );
         logRequestAsFulfilled(service, serviceUrl, request, response, originalHttpReqFromClient.getRemoteAddr());
 
         try {

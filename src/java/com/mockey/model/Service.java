@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpHost;
 
 import com.mockey.ClientExecuteProxy;
 import com.mockey.OrderedMap;
@@ -32,12 +31,14 @@ public class Service implements PersistableItem, ExecutableService {
 	private String serviceName;
 	private String description;
 	private Long defaultScenarioId;
+	private int defaultRealUrlIndex = 0;
 	private Long errorScenarioId;
 	private String httpContentType = "text/html;charset=utf-8";
 	private int hangTime = 0;
 	private OrderedMap<Scenario> scenarios = new OrderedMap<Scenario>();
 	private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 	private String httpMethod = "GET";
+	private String url = "";
 	private List<FulfilledClientRequest> fulfilledRequests;
 	private List<Url> realServiceUrls = new ArrayList<Url>();
 
@@ -512,4 +513,49 @@ public class Service implements PersistableItem, ExecutableService {
 		System.out.print("Answer: " + a.getFirstMatchingRealServiceUrl(b));
 
 	}
+
+	/**
+	 * 
+	 * @param url
+	 * @see #getUrl()
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	/**
+	 * Mock URL. It's possible that this URL looks like one of the Real URLs.
+	 * But, this value can be anything, but should be unique in the list of
+	 * Services.
+	 * 
+	 * @return
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+
+	public int getDefaultRealUrlIndex() {
+		return this.defaultRealUrlIndex;
+	}
+
+	public void setDefaultRealUrlIndex(int i) {
+		this.defaultRealUrlIndex = i;
+	}
+	
+	public Url getDefaultRealUrl(){
+		Url d = null;
+		try{
+			d = this.realServiceUrls.get(this.defaultRealUrlIndex);
+		}catch(Exception e){
+			// OK, let's try and be smart. 
+			// Reset index. 
+			this.defaultRealUrlIndex = 0;
+			if(!this.realServiceUrls.isEmpty()){
+				d = this.realServiceUrls.get(0);
+			}
+		}
+		return d;
+	}
+
 }

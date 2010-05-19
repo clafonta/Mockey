@@ -127,8 +127,27 @@ $(document).ready( function() {
 				url: "<c:url value="service_scenario"/>",
 				data:"scenarioId="+scenarioId+"&serviceId="+serviceId
 			});
-			$(".scenariosByServiceId_"+serviceId).removeClass("response_static_big").addClass("response_not_big");
-			$("#serviceScenario_"+scenarioId+"_"+serviceId).removeClass("response_not_big").addClass("response_static_big");
+			$(".scenariosByServiceId-on_"+serviceId).hide();
+			$(".scenariosByServiceId-off_"+serviceId).show();
+			$("#serviceScenarioOFF_"+scenarioId+"_"+serviceId).hide();
+			$("#serviceScenarioON_"+scenarioId+"_"+serviceId).show();
+			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+		});
+	});
+
+    $('.setRealUrlLink').each( function() {
+		$(this).click( function() {
+			var row = this.id.split("_")[1];
+			var serviceId = this.id.split("_")[2];
+			$.ajax({
+				type: "POST",
+				url: "<c:url value="service_scenario"/>",
+				data:"defaultUrlIndex="+row+"&serviceId="+serviceId
+			});
+			$(".realUrl-on_"+serviceId).hide();
+			$(".realUrl-off_"+serviceId).show();
+			$("#realUrlOFF_"+row+"_"+serviceId).hide();
+			$("#realUrlON_"+row+"_"+serviceId).show();
 			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 		});
 	});
@@ -152,13 +171,13 @@ $(document).ready( function() {
 			$('#dynamicScenario_'+serviceId).removeClass("show").addClass("hide");
 			
 			if(responseType == 0){
-				$('#serviceResponseType_0_'+serviceId).removeClass("response_not").addClass("response_proxy");
+				$('#serviceResponseType_0_'+serviceId).removeClass("response_not").addClass("response_set");
 				$('#proxyScenario_'+serviceId).addClass("show");
 			}else if(responseType == 1){
-				$('#serviceResponseType_1_'+serviceId).removeClass("response_not").addClass("response_static");
+				$('#serviceResponseType_1_'+serviceId).removeClass("response_not").addClass("response_set");
 				$('#staticScenario_'+serviceId).addClass("show");
 			}else if(responseType == 2){
-				$('#serviceResponseType_2_'+serviceId).removeClass("response_not").addClass("response_dynamic");
+				$('#serviceResponseType_2_'+serviceId).removeClass("response_not").addClass("response_set");
 				$('#dynamicScenario_'+serviceId).addClass("show");
 			}
 			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
@@ -270,44 +289,70 @@ $(document).ready( function() {
 	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a> |
 	                             <a class="tiny" href="<c:url value="/home"/>" title="hide me">hide</a> 
                                  </div>
-								 <table>
-								 <tbody>
-								 <tr><th width="50px">Service name:</th><td><span class="h1">${mockservice.serviceName}</span></td></tr>
-								 <tr><th>Mock URL(s):</th>
-								     <td>
-								     <c:forEach var="realUrl" items="${mockservice.realServiceUrls}">
-								     <p><a href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></p>
-								     </c:forEach>
-							     </td></tr>
-							     <tr><th>This service is set to:</th>
-							         <td>
- 										<span class="h1 hide<c:if test="${mockservice.serviceResponseType eq 2}"> show</c:if>" id="dynamicScenario_${mockservice.id}">Dynamic</span>
-							       		<span class="h1 hide<c:if test="${mockservice.serviceResponseType eq 0}"> show</c:if>" id="proxyScenario_${mockservice.id}">Proxy</span>
-			                       		<span class="h1 hide<c:if test="${mockservice.serviceResponseType eq 1}"> show</c:if>" id="staticScenario_${mockservice.id}">Static</span>
-							       
-							         </td></tr>
-							         <tr><th>Select a static scenario:</th>
-							         <td>
-										<p>
-		                                   <c:if test="${empty mockservice.scenarios and mockservice.serviceResponseType ne 0}">
+                                 
+                                 <div class="service">
+                                   <div class="service-label">Service name:</div>
+                                   <div class="service-value">${mockservice.serviceName}</div>
+                                   <div class="service-label not-top">Mock URL:</div>
+                                   <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
+                                   <div class="service-label not-top">Real URL(s):</div>
+                                   <table class="simple">
+                                   <c:forEach var="realUrl" items="${mockservice.realServiceUrls}" varStatus="status" >
+								     
+								       <tr>
+								       <td width="10px;"> 
+								       		 <c:choose>
+		                                        <c:when test='${mockservice.defaultRealUrlIndex+1 == status.count}'>
+		                                          <c:set var="off_class" value="hide" />
+		                                          <c:set var="on_class" value="" />
+		                                        </c:when>
+		                                        <c:otherwise>
+		                                          <c:set var="off_class" value="" />
+		                                          <c:set var="on_class" value="hide" />
+		                                        </c:otherwise>
+		                                      </c:choose>
 		                                     
-		                                      <div>
-		                                        <p class="alert_message">You need to <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">create</a> a scenario before using "Scenario".</p>
-		                                        <input type="hidden" name="serviceResponseType_<c:out value="${mockservice.id}"/>" value="false" />
-		                                      </div>
-		                                   </c:if>
-		                                </p>
-		                                <ul id="simple" class="group">
+		                                      <a href="#" id="realUrlON_${status.count}_${mockservice.id}" class="realUrl-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
+		                                      <a href="#" id="realUrlOFF_${status.count}_${mockservice.id}" class="setRealUrlLink realUrl-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
+								       
+								       </td>
+								       <td>
+								       <a href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></td>
+								       </tr>
+								     
+								     </c:forEach>
+								   </table>
+                                   <c:if test="${empty mockservice.realServiceUrls}">
+                                   <div class="info_message">No real URLS defined.</div>
+                                   </c:if>
+                                   <div class="service-label not-top">This service is set to:</div>
+                                   <div class="service-value">
+                                   	<span class="hide<c:if test="${mockservice.serviceResponseType eq 2}"> show</c:if>" id="dynamicScenario_${mockservice.id}">Dynamic</span>
+							       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 0}"> show</c:if>" id="proxyScenario_${mockservice.id}">Proxy</span>
+			                       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 1}"> show</c:if>" id="staticScenario_${mockservice.id}">Static</span>
+                                   </div>
+                                   <div class="service-label not-top">Select a static scenario:</div>
+                                   <div>
+                                   <ul id="simple" class="group">
 	                                    
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
 		                                    <li style="padding-top: 0.5em;">
-		                                      <c:url value="/scenario" var="scenarioEditUrl">
-		                                        <c:param name="serviceId" value="${mockservice.id}" />
-		                                        <c:param name="scenarioId" value="${scenario.id}" />
-		                                      </c:url>
-		                                      <a id="serviceScenario_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId_${mockservice.id} <c:choose><c:when test='${mockservice.defaultScenarioId eq scenario.id}'>response_static_big</c:when><c:otherwise>response_not_big</c:otherwise></c:choose>" href="#" title="Edit - ${scenario.scenarioName}"  onclick="return false;"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
+		                                      <c:choose>
+		                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
+		                                          <c:set var="off_class" value="hide" />
+		                                          <c:set var="on_class" value="" />
+		                                        </c:when>
+		                                        <c:otherwise>
+		                                          <c:set var="off_class" value="" />
+		                                          <c:set var="on_class" value="hide" />
+		                                        </c:otherwise>
+		                                      </c:choose>
+		                                     
+		                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
+		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
+		                                      <mockey:slug text="${scenario.scenarioName}" maxLength="40"/>
 		                                    </li>
 		                                  </c:forEach>
 		                                  </c:when>
@@ -315,25 +360,29 @@ $(document).ready( function() {
 		                                    <c:url value="/scenario" var="scenarioUrl">
 									            <c:param name="serviceId" value="${mockservice.id}" />
 									        </c:url>
-		                                  	<li class="alert_message"><span>You need to <a href="<c:out value="${setupUrl}"/>" title="Create service scenario" border="0" />create</a>
+									         <c:url value="/setup" var="setupScenarioUrl">
+					                                <c:param name="serviceId" value="${mockservice.id}" />
+					                                <c:param name="createScenario" value="yes" />
+					                             </c:url>
+		                                  	<li class="alert_message"><span>You need to <a href="<c:out value="${setupScenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
 		                                     a scenario before using "Static or Dynamic Scenario".</span></li>
 		                                  </c:otherwise>
 		                                </c:choose>
 	                                </ul>
-							         
-							         </td></tr>
-								 </tbody>
-								 </table>
-                                 <p>
+                                   </div>
+                                 </div>
+                                 
+								
+                                 <div>
 			                       <strong>Hang time (milliseconds):</strong> ${mockservice.hangTime} 
-	                             </p>
-	                             <p>
+	                             </div>
+	                             <div>
 			                       <strong>Content type:</strong>   
 	                    			<c:choose>
 	                    			<c:when test="${!empty mockservice.httpContentType}">${mockservice.httpContentType}</c:when>
 	                    			<c:otherwise><span style="color:red;">not set</span></c:otherwise>
 	                    			</c:choose>
-			                     </p>
+			                     </div>
                               </div>
                               </div>
                               </c:forEach>

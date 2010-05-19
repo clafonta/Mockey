@@ -20,35 +20,6 @@ public class Url {
     private String host;
     private String path;
 
-//    /**
-//     * 
-//     * @param otherUrl
-//     * @return
-//     */
-//    public boolean equals(Url otherUrl){
-//    	boolean same = false;
-//    	if(otherUrl!=null){
-//    		try{
-//    			// 
-//    			if(this.scheme == null && otherUrl.getScheme() ){
-//    				
-//    			}
-//    		}catch(Exception e){
-//    			
-//    		}
-//    	}
-//    	return same;
-//    }
-//    
-//    private boolean equal(String arg1, String arg2){
-//    	boolean same = false;
-//    	if(arg1!=null && arg2!=null){
-//    		
-//    	}else if(arg1!=null){
-//    		
-//    	}
-//    	return same;
-//    }
     /**
      * @return the scheme
      */

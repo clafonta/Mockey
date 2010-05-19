@@ -97,7 +97,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 		try {
 			for (Service service : getServices()) {
-
+				//1. Check for matching name.
+				
+				Url serviceMockUrl = new Url(service.getUrl());
+				if(url.matches(serviceMockUrl.getFullUrl())){
+					return service;
+				}
+				//2. If no Mock url match, then check real URLs.
 				Iterator<Url> altUrlIter = service.getRealServiceUrls()
 						.iterator();
 				while (altUrlIter.hasNext()) {
@@ -117,9 +123,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		logger.debug("Didn't find service with Service path: " + url
 				+ ".  Creating a new one.");
 		Service service = new Service();
-
-		service.saveOrUpdateRealServiceUrl(new Url(url));
-
+		Url newUrl = new Url(url);
+		service.setUrl(newUrl.getFullUrl());
+		service.saveOrUpdateRealServiceUrl(newUrl);
 		store.saveOrUpdateService(service);
 		return service;
 	}

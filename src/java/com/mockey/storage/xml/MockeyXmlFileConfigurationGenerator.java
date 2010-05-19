@@ -73,14 +73,12 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				// *************************************
 				serviceElement.setAttribute("name", mockServiceBean.getServiceName());
 				serviceElement.setAttribute("description", mockServiceBean.getDescription());
-				
-				// DEPRECATED. 
-				// 'proxyurl' was used when Service only supported 1 real url. 
-				//serviceElement.setAttribute("proxyurl", mockServiceBean.getRealServiceUrl());
 				serviceElement.setAttribute("hang_time", "" + mockServiceBean.getHangTime());
+				serviceElement.setAttribute("url", "" + mockServiceBean.getUrl());
 				serviceElement.setAttribute("http_content_type", "" + mockServiceBean.getHttpContentType());
 				serviceElement.setAttribute("default_scenario_id", "" + (mockServiceBean.getDefaultScenarioId()!=null ?  mockServiceBean.getDefaultScenarioId(): ""));
 				serviceElement.setAttribute("service_response_type", "" + mockServiceBean.getServiceResponseType());
+				serviceElement.setAttribute("default_real_url_index", ""+mockServiceBean.getDefaultRealUrlIndex());
 
 				// New real service URLs
 				for(Url realUrl: mockServiceBean.getRealServiceUrls()){

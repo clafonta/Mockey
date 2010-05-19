@@ -17,6 +17,8 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.Service;
+import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -44,7 +47,9 @@ public class ScenarioUpdateServlet extends HttpServlet {
 		String scenarioId = req.getParameter("scenarioId");
 		String httpContentType = req.getParameter("httpContentType");
 		String serviceResponseType = req.getParameter("serviceResponseType");
+		String defaultUrlIndex = req.getParameter("defaultUrlIndex");
 		Service service = store.getServiceById(new Long(serviceId));
+
 		try {
 			if (serviceResponseType != null) {
 				service
@@ -54,6 +59,14 @@ public class ScenarioUpdateServlet extends HttpServlet {
 		} catch (Exception e) {
 			log
 					.debug("Updating service without a 'service response type' value");
+		}
+
+		try {
+			int index = Integer.parseInt(defaultUrlIndex);
+			
+			service.setDefaultRealUrlIndex(index-1);
+		} catch (Exception e) {
+
 		}
 
 		try {
@@ -79,11 +92,11 @@ public class ScenarioUpdateServlet extends HttpServlet {
 			log.debug("Updating service without a 'default scenario ID' value");
 		}
 		store.saveOrUpdateService(service);
-		String returnHTML = "Updated";
 
 		PrintWriter out = resp.getWriter();
-
-		out.println("<weather><report>" + returnHTML + "</report></weather>");
+		Map<String, String> objectMap = new HashMap<String, String>();
+		Util.getJSON(objectMap);
+		out.println(Util.getJSON(objectMap));
 		out.flush();
 		out.close();
 

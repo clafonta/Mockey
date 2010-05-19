@@ -61,9 +61,13 @@ public class MockeyXmlFileConfigurationParser {
         digester.addSetProperties(SERVICE, "name", "serviceName");           
         digester.addSetProperties(SERVICE, "description", "description");
         digester.addSetProperties(SERVICE, "http_content_type", "httpContentType");
-        digester.addSetProperties(SERVICE, "hang_time", "hangTime");  
+        digester.addSetProperties(SERVICE, "hang_time", "hangTime"); 
+        digester.addSetProperties(SERVICE, "url", "url"); 
+        
         
         digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrlByString");
+        digester.addSetProperties(SERVICE, "default_real_url_index", "defaultRealUrlIndex");
+        
         digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
         digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
         digester.addSetNext(SERVICE, "saveOrUpdateService");

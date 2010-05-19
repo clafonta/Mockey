@@ -199,10 +199,17 @@ public class ServiceSetupServlet extends HttpServlet {
 		   service.setServiceName(req.getParameter("serviceName"));
 		}
 		
+		
 		// DESCRIPTION - optional
 		if (req.getParameter("description") != null) {
 			service.setDescription(req.getParameter("description"));
 		}
+		
+		// MOCK URL - optional
+		if (req.getParameter("url") != null) {
+			service.setUrl(req.getParameter("url"));
+		}
+		
 		// CONTENT TYPE - optional
 		if (req.getParameter("httpContentType") != null) {
 			service.setHttpContentType(req.getParameter("httpContentType"));
