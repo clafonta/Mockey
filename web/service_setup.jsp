@@ -4,7 +4,7 @@
 <c:set var="pageTitle" value="Configure" scope="request" />
 <c:set var="currentTab" value="create" scope="request" />
 <%@include file="/WEB-INF/common/header.jsp" %>
-<script type="text/javascript">
+<script type="text/javascript"><!--
    
 
 	$(function() {
@@ -114,11 +114,14 @@
 			  var inputTxt = $('#mock-url').val();  
 
 			  $('#service_url').bind('keyup keypress', function() { 
+				  
 			      $('#mock-url')[0].value = inputTxt + $(this)[0].value;
 			      $('#mock-url-init').hide();
 			      $('#mock-url').show();
 			      
 			  });
+
+			  
 
 			});
 							
@@ -244,7 +247,7 @@
 
 	});
 	
-</script>
+--></script>
 
 
 <div id="main">

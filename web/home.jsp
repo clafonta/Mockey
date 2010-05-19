@@ -317,7 +317,7 @@ $(document).ready( function() {
 								       
 								       </td>
 								       <td>
-								       <a href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></td>
+								       <a class="tiny" href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></td>
 								       </tr>
 								     
 								     </c:forEach>

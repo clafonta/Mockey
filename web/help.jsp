@@ -22,7 +22,13 @@
     <a href="#plan" name="plan"></a> 
     <h2>Service Plan</h2>
     <p>
-    
+    A service plan is a snap shot of your service and scenario settings. For example, you toggle your service
+    and scenario settings to represent a Gold Member. Then you toggle your service and scenario settings to 
+    represent a Silver Member. Instead of spending your time toggling back an forth, you would save your settings
+    for the Gold Member as a "Gold Member" plan and Silver Member settings as "Silver Member" plan. 
+    <div class="info_message sidebarme"><strong>Note:</strong> Service Plans are not the most reliable things. If you 
+    frequently add and remove scenarios or create and delete services, the service plans get stale and start to
+    smell bad. </div>
     </p>
     <a href="#scenario" name="scenario"></a>
 	<h2>Mock Service Scenario</h2>
@@ -48,7 +54,7 @@
 	history link to inspect the request and response messages.
 	
 		<div class="info_message">
-		    <h3>How to Record</h3>
+		    <h4>How to Record</h4>
 			<p>
 			First, place Mockey's URL in front of the service URL you want to
 			record, something like this:

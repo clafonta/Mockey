@@ -7,8 +7,7 @@
 <%@include file="/WEB-INF/common/header.jsp" %>
 <script type="text/javascript">
 	$(function() {
-		$("#radio-set").buttonset();
-		$(".boo").click(
+		$(".proxy-enable").click(
 				function() {
 					 var proxyEnabled = this.id.split("_")[1];
 			         proxyUrl = $("#proxyUrl"),
@@ -16,12 +15,18 @@
 			         proxyPassword = $("#proxyPassword");
 			         if(proxyEnabled=='true'){
 			        	 
-			        	 $("#proxy_on").show();
+			        	 $("#proxy_true").removeClass('response_not').addClass('response_set');
+			        	 $("#proxy_false").removeClass('response_set').addClass('response_not');
+			        	 // Nav menu items
+			        	 $("#proxy_on").show(); 
 			        	 $("#proxy_off").hide();
 			        	 
 				     }else {
-				    	 $("#proxy_on").hide();
-				    	 $("#proxy_off").show();
+				    	 $("#proxy_false").removeClass('response_not').addClass('response_set');
+			        	 $("#proxy_true").removeClass('response_set').addClass('response_not');
+			        	 // Nav menu items
+			        	 $("#proxy_on").hide(); 
+			        	 $("#proxy_off").show();
 			        	 
 				     }
 				     $('#proxy_message').hide();
@@ -43,15 +48,25 @@
     <%@ include file="/WEB-INF/common/message.jsp"%>     
     <p><h1>Proxy Settings</h1></p> 
     <div class="parentform">
-        <fieldset>
-				<div id="radio-set" style="margin-bottom: 1em;">
-		            <input type="radio" id="radio_true" name="proxyEnabled" class="boo"  <c:if test='${proxyInfo.proxyEnabled}'>checked</c:if> /><label for="radio_true">Proxy enabled</label> 
-	                <input type="radio" id="radio_false" name="proxyEnabled" class="boo" <c:if test='${!proxyInfo.proxyEnabled}'>checked</c:if> /> <label for="radio_false">Proxy not enabled</label>
-                </div>
-                <div class="tinyfieldset">If Mockey connects to services via some proxy server, here's the place to pipe through it. Enter information and enable.</div>
-                <label for="proxyUrl">Proxy URL</label> 
-                <input type="text" class="text ui-corner-all ui-widget-content" id="proxyUrl" name="proxyUrl" size="80"  value="<c:out value="${proxyInfo.proxyUrl}"/>" />
-                <div class="tinyfieldset">Typically, this is your corporate proxy server.</div>       
+       			<p>If Mockey connects to services via some proxy server, here's the place to pipe through it. Enter information and enable.</p>
+                <p>
+					<c:choose>
+					<c:when test='${proxyInfo.proxyEnabled}'>
+						<c:set var="off_class" value="response_not" />
+						<c:set var="on_class" value="response_set" />
+					</c:when>
+					<c:otherwise>
+						<c:set var="off_class" value="response_set" />
+						<c:set var="on_class" value="response_not" />
+					</c:otherwise>
+					</c:choose> <a href="#" id="proxy_true" class="proxy-enable ${on_class}"
+					onclick="return false;">&nbsp;ON&nbsp;</a> <a href="#" id="proxy_false"
+					class="proxy-enable ${off_class}" onclick="return false;">OFF</a>
+                </p>
+        <fieldset>        
+          <label for="proxyUrl">Proxy URL</label> 
+          <input type="text" class="text ui-corner-all ui-widget-content" id="proxyUrl" name="proxyUrl" size="80"  value="<c:out value="${proxyInfo.proxyUrl}"/>" />
+          <div class="tinyfieldset">Typically, this is your corporate proxy server.</div>       
                 <label for="proxyUsername">Proxy username</label>  
                 <input type="text" style="width:200px;"  class="text ui-corner-all ui-widget-content" id="proxyUsername" name="proxyUsername" maxlength="20" size="20" value="" /> 
                 <div class="tinyfieldset">Username is <strong>not</strong> shown after a page refresh and not available in Export for security reasons. </div>

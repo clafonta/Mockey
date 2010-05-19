@@ -301,13 +301,17 @@ public class Service implements PersistableItem, ExecutableService {
 			if (error != null) {
 				response.setBody(error.getResponseMessage());
 			} else {
-				String maybe = "";
-				if (e instanceof UnknownHostException) {
-					maybe = "\n<span class=\"info_message\">Looks like your proxy settings may be invalid. We can't find the system you need to talk to. </span>\n\n";
+				StringBuffer msg = new StringBuffer();
+				msg.append("Yikes! We encountered an error. ");
+				if (proxyServer != null && proxyServer.isProxyEnabled()) {
+					msg.append("Proxy settings are ENABLED pointing to '"
+							+ proxyServer.getProxyHost() + "'. ");
+				} else {
+					msg.append("Proxy settings are NOT ENABLED. ");
 				}
-				response
-						.setBody("Yikes! We encountered this error (let's hope it's informative). "
-								+ maybe + e.getClass() + ": " + e.getMessage());
+				msg.append("ERROR: ");
+				msg.append("[" + e.getClass() + "] " + e.getMessage());
+				response.setBody(msg.toString());
 			}
 		}
 		return response;
@@ -534,7 +538,6 @@ public class Service implements PersistableItem, ExecutableService {
 		return url;
 	}
 
-
 	public int getDefaultRealUrlIndex() {
 		return this.defaultRealUrlIndex;
 	}
@@ -542,16 +545,16 @@ public class Service implements PersistableItem, ExecutableService {
 	public void setDefaultRealUrlIndex(int i) {
 		this.defaultRealUrlIndex = i;
 	}
-	
-	public Url getDefaultRealUrl(){
+
+	public Url getDefaultRealUrl() {
 		Url d = null;
-		try{
+		try {
 			d = this.realServiceUrls.get(this.defaultRealUrlIndex);
-		}catch(Exception e){
-			// OK, let's try and be smart. 
-			// Reset index. 
+		} catch (Exception e) {
+			// OK, let's try and be smart.
+			// Reset index.
 			this.defaultRealUrlIndex = 0;
-			if(!this.realServiceUrls.isEmpty()){
+			if (!this.realServiceUrls.isEmpty()) {
 				d = this.realServiceUrls.get(0);
 			}
 		}
