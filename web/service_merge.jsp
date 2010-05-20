@@ -121,7 +121,7 @@ you should <a href="">Export</a> your service definitions first. If things go ba
 	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 		                            <h3><a href="#" id="source-service_${mockservice.id}"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a></h3> 
 									<div>
-									     <div class="merge-checkbox-message"><label for="source-serviceid_${mockservice.id}"><input type="checkbox" name="souceCheckGroup" id="source-serviceid_${mockservice.id}" value="${mockservice.id}" class="source-checkbox" /> Check this box if you want to merge this service into another.</label></div>
+									     <div class="info_message"><label for="source-serviceid_${mockservice.id}"><input type="checkbox" name="souceCheckGroup" id="source-serviceid_${mockservice.id}" value="${mockservice.id}" class="source-checkbox" /> Check this box if you want to merge this service into another.</label></div>
 										 <div><h4>Mock URL(s)</h4></div>
 									     <c:forEach var="alternativeUrl" items="${mockservice.realServiceUrls}">
 									     	<div class="tiny"><a href="<mockey:url value="${alternativeUrl}"/>"><mockey:url value="${alternativeUrl}" breakpoint="5"/></a></div>
@@ -142,7 +142,7 @@ you should <a href="">Export</a> your service definitions first. If things go ba
 	                            <c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 		                            <h3 id="destination-service-h3_${mockservice.id}" ><a href="#" id="destination-service_${mockservice.id}" class="destination-service-name-display"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></a></h3> 
 									<div id="destination-service-body_${mockservice.id}">
-									     <div class="merge-checkbox-message"><label for="destination-serviceid_${mockservice.id}"><input type="checkbox" name="destinationCheckGroup" id="destination-serviceid_${mockservice.id}" value="${mockservice.id}" class="source-checkbox" /> Check this box if you want to merge into this service.</label></div>
+									     <div class="info_message"><label for="destination-serviceid_${mockservice.id}"><input type="checkbox" name="destinationCheckGroup" id="destination-serviceid_${mockservice.id}" value="${mockservice.id}" class="source-checkbox" /> Check this box if you want to merge into this service.</label></div>
 										 <div><h4>Mock URL(s)</h4></div>
 									     <c:forEach var="alternativeUrl" items="${mockservice.realServiceUrls}">
 									     <div class="tiny"><a href="<mockey:url value="${alternativeUrl}"/>"><mockey:url value="${alternativeUrl}" breakpoint="5"/></a></div>

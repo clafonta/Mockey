@@ -202,10 +202,11 @@ $(document).ready( function() {
 									<li><a href="#tabs-2">Plans</a></li>
 								</ul>
 							  	<div id="tabs-1">
-								  <p> Make all 
-									  <a id="allresponsetype_0" class="allresponsetype response_proxy" href="#">Proxy</a>
-									  <a id="allresponsetype_1" class="allresponsetype response_static" href="#">Static</a>
-									  <a id="allresponsetype_2" class="allresponsetype response_dynamic" href="#">Dynamic</a>
+							  	  Toggle all with the following:
+								  <p> 
+									  <a id="allresponsetype_0" class="allresponsetype response_set" href="#">Proxy</a>
+									  <a id="allresponsetype_1" class="allresponsetype response_set" href="#">Static</a>
+									  <a id="allresponsetype_2" class="allresponsetype response_set" href="#">Dynamic</a>
 								  </p>
 								  <div class="scroll">
 		                            	<c:forEach var="mockservice" items="${services}"  varStatus="status">	  
@@ -224,18 +225,20 @@ $(document).ready( function() {
 							    </div>
 							    <div id="tabs-2">
 								    <div class="scroll">
-								        <div>To <strong>create a plan</strong>, go to the Services tab, make your settings, and
-								        then tab to here to create (or save). 
-								        </div>
-								        <div style="padding:1em 0em;">
-								        <input type="text" id="servicePlanName" name="servicePlanName"></input>
-								        <button id="create-plan">Create plan</button>
-								        
+								        <div style="padding-bottom:1em;">
+								        <form style="padding:0; margin:0;">
+								        <fieldset>
+								        <p>To <strong>create a plan</strong>, go to the Services tab, make your settings, and
+								        then tab to here to create (or save). </p>
+								        <p><input type="text" style="width:90%;" id="servicePlanName" class="text ui-corner-all ui-widget-content" name="servicePlanName"></input></p>
+								        <p><button id="create-plan">Create plan</button></p>
+								        </fieldset>
+								        </form>
 								        </div>
 								        <div style="padding-bottom:1em;">To <strong>set a plan</strong>, click on the plan name below. You will be redirected to the Services tab.  
 								        </div>
 								         <c:if test="${empty plans}">
-									      <div class="info_message" id="no-plans-msg"> No plans here. </div>
+									      <div class="info_message" id="no-plans-msg"> No plans here - yet! You should make one. </div>
 									    </c:if>
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
@@ -300,7 +303,7 @@ $(document).ready( function() {
                                    <c:forEach var="realUrl" items="${mockservice.realServiceUrls}" varStatus="status" >
 								     
 								       <tr>
-								       <td width="10px;"> 
+								       <td width="70"> 
 								       		 <c:choose>
 		                                        <c:when test='${mockservice.defaultRealUrlIndex+1 == status.count}'>
 		                                          <c:set var="off_class" value="hide" />
@@ -316,7 +319,7 @@ $(document).ready( function() {
 		                                      <a href="#" id="realUrlOFF_${status.count}_${mockservice.id}" class="setRealUrlLink realUrl-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
 								       
 								       </td>
-								       <td>
+								       <td style="text-align:left;">
 								       <a class="tiny" href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></td>
 								       </tr>
 								     

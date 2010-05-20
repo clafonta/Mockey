@@ -22,9 +22,7 @@ public class ServiceResponseTypeTag extends TagSupport {
 	private int style = -1;
 
 	private Long serviceId = null;
-	private static final String CSS_CLASS_RESPONSE_PROXY = "response_proxy";
-	private static final String CSS_CLASS_RESPONSE_STATIC = "response_static";
-	private static final String CSS_CLASS_RESPONSE_DYNAMIC = "response_dynamic";
+	private static final String CSS_CLASS_RESPONSE_SET = "response_set";
 	private static final String CSS_CLASS_RESPONSE_NOT = "response_not";
 
 	public Long getServiceId() {
@@ -54,15 +52,15 @@ public class ServiceResponseTypeTag extends TagSupport {
 			}
 			switch (type) {
 			case 0:
-				proxyClass = CSS_CLASS_RESPONSE_PROXY;
+				proxyClass = CSS_CLASS_RESPONSE_SET;
 				text = "<a class=\""+proxyClass+"\">P</a>";
 				break;
 			case 1:
-				staticClass = CSS_CLASS_RESPONSE_STATIC;
+				staticClass = CSS_CLASS_RESPONSE_SET;
 				text = "<a class=\""+staticClass+"\">S</a>";
 				break;
 			case 2:
-				dynamicClass = CSS_CLASS_RESPONSE_DYNAMIC;
+				dynamicClass = CSS_CLASS_RESPONSE_SET;
 				text = "<a class=\""+dynamicClass+"\">D</a>";
 				break;
 			default:
