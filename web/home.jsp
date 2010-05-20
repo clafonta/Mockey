@@ -3,29 +3,7 @@
 <c:set var="pageTitle" value="Home" scope="request" />
 <c:set var="currentTab" value="home" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
-<%
-    java.util.Map cookieTable = new java.util.HashMap();
-    String moodImage = null;
-    javax.servlet.http.Cookie[] cookies = request.getCookies();
-    
-    if(cookies!=null){
-	    for (int i=0; i < cookies.length; i++){
-	        cookieTable.put(cookies[i].getName(), cookies[i].getValue());
-	    }
-	    moodImage = request.getParameter("mood");
-	    if(moodImage!=null){
-	    	javax.servlet.http.Cookie myCookie = new Cookie("mood", moodImage);
-		    //myCookie.setMaxAge(0);
-		    //myCookie.setDomain(".somedomain.com");      
-		    response.addCookie(myCookie);
-	    }
-	    else if (cookieTable.containsKey("mood")) {
-	        moodImage = (String)cookieTable.get("mood");
-	    }
-    }
 
-    
-%>
 <script>
 $(document).ready( function() {
 	$("#tabs").tabs();
@@ -186,6 +164,30 @@ $(document).ready( function() {
     
  });
 </script>
+
+<%
+    java.util.Map cookieTable = new java.util.HashMap();
+    String moodImage = null;
+    javax.servlet.http.Cookie[] cookies = request.getCookies();
+    
+    if(cookies!=null){
+	    for (int i=0; i < cookies.length; i++){
+	        cookieTable.put(cookies[i].getName(), cookies[i].getValue());
+	    }
+	    moodImage = request.getParameter("mood");
+	    if(moodImage!=null){
+	    	javax.servlet.http.Cookie myCookie = new Cookie("mood", moodImage);
+		    //myCookie.setMaxAge(0);
+		    //myCookie.setDomain(".somedomain.com");      
+		    response.addCookie(myCookie);
+	    }
+	    else if (cookieTable.containsKey("mood")) {
+	        moodImage = (String)cookieTable.get("mood");
+	    }
+    }
+
+    
+%>
     <div id="main">
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>

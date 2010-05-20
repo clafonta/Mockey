@@ -70,7 +70,7 @@ $(document).ready(function() {
 
 <div id="logo">
     <a href="<c:url value="/home" />"><img src="<c:url value="/images/logo.png" />" /></a>
-    
+    <span style="float:right;"><img style="height:60px; " src="<c:url value="/images/silhouette.jpg" />" /></span>
 	<%@ include file="/WEB-INF/common/message.jsp"%>
 	<%
 	String ua = request.getHeader( "User-Agent" );
@@ -81,10 +81,11 @@ $(document).ready(function() {
 	<% if( isMSIE ){ %>
 	  <span class="alert_message" style="position:absolute; top:0; right:200; width:500px;">This isn't designed for <b>Internet Explorer 6.0</b>. You should use another browser.</span>
 	<% } %>
-	<div style="margin-bottom:3em;">
-	<ul class="sf-menu ">
+	
+	<div id="topnav" style="margin-bottom:3em;width:100%;">
+	<ul class="sf-menu" >
 		<li class="<c:if test="${currentTab == 'home'}">current</c:if>"><a
-			href="<c:url value="/home" />">Services  <img src="<c:url value="/images/nav-arrow-down.png" />" /></a>
+			href="<c:url value="/home" />">Services  <span class="sf-sub-indicator"> &#187;</span></a>
 			<ul>
 				<li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
 				<a title="Merge - combine services" href="<c:url value="/merge" />"
@@ -109,4 +110,6 @@ $(document).ready(function() {
 	</ul>
 	</div>
 	<div style="border-bottom:1px solid #CCCCCC;"></div>
+	
 </div>
+
