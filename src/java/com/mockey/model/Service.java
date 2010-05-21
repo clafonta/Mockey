@@ -445,8 +445,9 @@ public class Service implements PersistableItem, ExecutableService {
 			for (int i = 0; i < this.realServiceUrls.size(); i++) {
 				Url tmpUrl = this.realServiceUrls.get(i);
 				if (tmpUrl.getFullUrl().equalsIgnoreCase(url.getFullUrl())) {
-					this.realServiceUrls.remove(i);
-					this.realServiceUrls.add(i, url);
+					
+					this.realServiceUrls.set(i, url);
+					
 					found = true;
 					break;
 				}

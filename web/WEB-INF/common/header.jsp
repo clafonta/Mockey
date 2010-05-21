@@ -70,7 +70,7 @@ $(document).ready(function() {
 
 <div id="logo">
     <a href="<c:url value="/home" />"><img src="<c:url value="/images/logo.png" />" /></a>
-    <span style="float:right;"><img style="height:60px; " src="<c:url value="/images/silhouette.jpg" />" /></span>
+    <span style="float:right;"><img style="height:60px; " src="<c:url value="/images/silhouette.png" />" /></span>
 	<%@ include file="/WEB-INF/common/message.jsp"%>
 	<%
 	String ua = request.getHeader( "User-Agent" );
@@ -87,11 +87,15 @@ $(document).ready(function() {
 		<li class="<c:if test="${currentTab == 'home'}">current</c:if>"><a
 			href="<c:url value="/home" />">Services  <span class="sf-sub-indicator"> &#187;</span></a>
 			<ul>
+				<li><a title="Service Setup - create new service"
+					href="<c:url value="/setup" />">Create a Service</a></li>
 				<li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
 				<a title="Merge - combine services" href="<c:url value="/merge" />"
 					style="">Merge Services</a></li>
-				<li><a title="Service Setup - create new service"
-					href="<c:url value="/setup" />">Create a Service</a></li>
+				<li <c:if test="${currentTab == 'multiply'}">class="current"</c:if>>
+				<a title="Real URL injecting" href="<c:url value="/inject" />"
+					style="">URL injecting</a></li>
+				
 			</ul>
 		</li>
 		<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>

@@ -130,7 +130,7 @@
 	    </ul>
 	    ...you probably have this in a configuration file (not in code, right?). You may want to define a <i>base</i> url parameter, 
 	    like this:
-	    <div class="code">
+	    <div class="code code_text">
 		    <ul>
 		      <li>DEV_BASE_URL=http://localhost:8090/Mockey/service/</li>      
 		      <li>SERVICE_URL_1=http://someservice.com/catalog/product</li>

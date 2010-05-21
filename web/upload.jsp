@@ -15,13 +15,11 @@
 <p>Import your service definition(s) here. Import will try to <i>merge</i> services already defined with services defined in your import file. If you're not sure about this, 
 you should <a href="">Export</a> your service definitions first. If things go bad for you, then you can 
 <strong>Flush</strong> and re-import your saved definitions file.</p>
-<form id="multi_form" style="margin-left: 20%; margin-right: 20%;"
-	action="<c:url value="/upload"/>" method="POST"
-	enctype="multipart/form-data">
+<form class="centerform" action="<c:url value="/upload"/>" method="POST" enctype="multipart/form-data">
 	<fieldset>
 		
 	    <p><input class="normal" type="file" name="file" size="50"/></p>
-	    <p><button id="upload-file">Import service definitions</button> <a style="float:right;" href="<c:url value="/home" />">Cancel</a></p>
+	    <p align="right"><button id="upload-file">Import service definitions</button></p>
 	</fieldset>
 </form>
 </div>

@@ -141,9 +141,10 @@ $(document).ready( function() {
 				data:"serviceResponseType="+responseType+"&serviceId="+serviceId
 			});
                  
-			$('#serviceResponseType_0_'+serviceId).addClass("response_not");
-			$('#serviceResponseType_1_'+serviceId).addClass("response_not");
-			$('#serviceResponseType_2_'+serviceId).addClass("response_not");
+			$('#serviceResponseType_0_'+serviceId).removeClass("response_set").addClass("response_not");
+			$('#serviceResponseType_1_'+serviceId).removeClass("response_set").addClass("response_not");
+			$('#serviceResponseType_2_'+serviceId).removeClass("response_set").addClass("response_not");
+			
 			$('#staticScenario_'+serviceId).removeClass("show").addClass("hide");
 			$('#proxyScenario_'+serviceId).removeClass("show").addClass("hide");
 			$('#dynamicScenario_'+serviceId).removeClass("show").addClass("hide");
@@ -164,36 +165,20 @@ $(document).ready( function() {
     
  });
 </script>
-
-<%
-    java.util.Map cookieTable = new java.util.HashMap();
-    String moodImage = null;
-    javax.servlet.http.Cookie[] cookies = request.getCookies();
-    
-    if(cookies!=null){
-	    for (int i=0; i < cookies.length; i++){
-	        cookieTable.put(cookies[i].getName(), cookies[i].getValue());
-	    }
-	    moodImage = request.getParameter("mood");
-	    if(moodImage!=null){
-	    	javax.servlet.http.Cookie myCookie = new Cookie("mood", moodImage);
-		    //myCookie.setMaxAge(0);
-		    //myCookie.setDomain(".somedomain.com");      
-		    response.addCookie(myCookie);
-	    }
-	    else if (cookieTable.containsKey("mood")) {
-	        moodImage = (String)cookieTable.get("mood");
-	    }
-    }
-
-    
-%>
     <div id="main">
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>
 	        <c:when test="${!empty services}">
-	        
-	            <c:set var="serviceIdToShowByDefault" value="<%= request.getParameter("serviceId") %>" scope="request"/>
+	            <c:choose>
+				    <c:when test="${empty param.serviceId}">
+				        
+				        <c:set var="serviceIdToShowByDefault" value="${services[0].id}" scope="request"/>
+				    </c:when>
+				    <c:otherwise>
+				        <c:set var="serviceIdToShowByDefault" value="${param.serviceId}" scope="request"/>
+				    </c:otherwise>
+				</c:choose>
+	            
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
@@ -213,40 +198,53 @@ $(document).ready( function() {
 								  <div class="scroll">
 		                            	<c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 			                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" >
+			                                
+				                            	<c:url value="/setup" var="setupUrl">
+				                                	<c:param name="serviceId" value="${mockservice.id}" />
+				                             	</c:url>
 				                                <span style="float:right;"><a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
-				                                <div class="toggle_button" style="margin:0.2em;">
-												      <a class="gt" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>"><mockey:slug text="${mockservice.serviceName}" maxLength="30"/></a>
+				                                
+												<div style="margin-bottom:0.5em;">
+												<mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
 												</div>
 				                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
-				                                <c:if test="${empty mockservice.scenarios}">
-				                                  <span style="float:right;font-size:80%;color:yellow;background-color:red;padding:0 0.2em 0 0.2em;">(no scenarios)</span>
-				                                </c:if>
+				                                <span class="toggle_button tiny">
+												      <a class="gt" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>">view</a> |
+												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a>
+												</span>
+												 <c:if test="${empty mockservice.scenarios}">
+						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>
+						                         </c:if>
+				                               
 											</div>
 								    	</c:forEach>
 								    </div>
 							    </div>
 							    <div id="tabs-2">
 								    <div class="scroll">
-								        <div style="padding-bottom:1em;">
-								        <form style="padding:0; margin:0;">
+								        <div class="parentform">
 								        <fieldset>
-								        <p>To <strong>create a plan</strong>, go to the Services tab, make your settings, and
-								        then tab to here to create (or save). </p>
+								        To <strong>create a plan</strong>, go to the Services tab, make your settings, and
+								        then tab to here to create (or save). 
 								        <p><input type="text" style="width:90%;" id="servicePlanName" class="text ui-corner-all ui-widget-content" name="servicePlanName"></input></p>
 								        <p><button id="create-plan">Create plan</button></p>
 								        </fieldset>
-								        </form>
+								        
 								        </div>
-								        <div style="padding-bottom:1em;">To <strong>set a plan</strong>, click on the plan name below. You will be redirected to the Services tab.  
-								        </div>
+								        <p>To <strong>set a plan</strong>, click on the plan below. You will be redirected to the Services tab.  
+								        </p>
 								         <c:if test="${empty plans}">
 									      <div class="info_message" id="no-plans-msg"> No plans here - yet! You should make one. </div>
 									    </c:if>
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
-			                                <div id="plan_${plan.id}" class="parentform" ><a href="#" id="set-plan_${plan.id}" class="set-plan">${plan.name}</a>
+			                                
 			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
+			                                <div id="plan_${plan.id}" class="parentform" >
+			                                <div><mockey:slug text="${plan.name}" maxLength="40"/></div>
+			                                <a href="#" id="set-plan_${plan.id}" class="set-plan tiny">set me as the plan</a>
 			                                </div>
+			                               
 									    </c:forEach>
 									    <div class="tiny" style="padding-top:1em;" id="no-plans-msg"><a href="<c:url value="help#plan"/>">What's a plan?</a></div>
 			                            
@@ -260,17 +258,7 @@ $(document).ready( function() {
 							<div id='service_list_container'>
 							<div class="service_div display" style="<c:if test="${! empty serviceIdToShowByDefault}">display:none;</c:if><c:if test="${serviceIdToShowByDefault==null}">display:block;</c:if>text-align:center;">
 							
-						  <%
-					      if("geometry.jpg".equals(moodImage)){
-					        %><img style="vertical-align:middle" src="<c:url value="/images/geometry.jpg" />" /><%
-					      }else if("unicorn.jpg".equals(moodImage)) {
-					         %><img style="vertical-align:middle" src="<c:url value="/images/unicorn.jpg" />" /><%
-					      }else if("lebowski.png".equals(moodImage)) {
-					         %><img style="vertical-align:middle" src="<c:url value="/images/lebowski.png" />" /><%
-					      }else {
-					         %><img style="vertical-align:middle" src="<c:url value="/images/silhouette.jpg" />" /><%
-					      }
-					      %>
+						     Nothing here to display. Move along. 
 							
 							</div>
 							
@@ -282,22 +270,9 @@ $(document).ready( function() {
                                 <div class="parentformselected">
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
                                 
-							    <div class="service_edit_links">
-	                            <c:url value="/setup" var="setupUrl">
-	                                <c:param name="serviceId" value="${mockservice.id}" />
-	                             </c:url>
-	                             <c:url value="/setup" var="deleteUrl">
-	                                <c:param name="serviceId" value="${mockservice.id}" />
-	                                <c:param name="delete" value="true" />
-	                             </c:url>
-	                             <a class="tiny" href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> |
-	                             <a class="tiny_service_delete" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">delete</a> |
-	                             <a class="tiny" href="<c:url value="/home"/>" title="hide me">hide</a> 
-                                 </div>
-                                 
                                  <div class="service">
                                    <div class="service-label">Service name:</div>
-                                   <div class="service-value">${mockservice.serviceName}</div>
+                                   <div class="service-value big">${mockservice.serviceName}</div>
                                    <div class="service-label not-top">Mock URL:</div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
                                    <div class="service-label not-top">Real URL(s):</div>
@@ -331,7 +306,7 @@ $(document).ready( function() {
                                    <div class="info_message">No real URLS defined.</div>
                                    </c:if>
                                    <div class="service-label not-top">This service is set to:</div>
-                                   <div class="service-value">
+                                   <div class="service-value big">
                                    	<span class="hide<c:if test="${mockservice.serviceResponseType eq 2}"> show</c:if>" id="dynamicScenario_${mockservice.id}">Dynamic</span>
 							       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 0}"> show</c:if>" id="proxyScenario_${mockservice.id}">Proxy</span>
 			                       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 1}"> show</c:if>" id="staticScenario_${mockservice.id}">Static</span>
@@ -370,7 +345,7 @@ $(document).ready( function() {
 					                                <c:param name="createScenario" value="yes" />
 					                             </c:url>
 		                                  	<li class="alert_message"><span>You need to <a href="<c:out value="${setupScenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
-		                                     a scenario before using "Static or Dynamic Scenario".</span></li>
+		                                     a scenario before using <strong>Static</strong> or <strong>Dynamic</strong> scenario</span></li>
 		                                  </c:otherwise>
 		                                </c:choose>
 	                                </ul>
@@ -409,7 +384,7 @@ $(document).ready( function() {
 
 $(function() {
 
-  $('a','div.toggle_button').click(function() {
+  $('a','span.toggle_button').click(function() {
     var serviceId = this.id.split("_")[1];
     $('div.display','#service_list_container')
       .stop()
@@ -423,16 +398,6 @@ $(function() {
 });
 
 </script>
-</c:if>
-<c:if test="${!empty services}">
-<div style="display:block;text-align:right;">
-<p>
-mood image <a href="home?mood=silhouette.jpg" class="mood" >A</a>
-<a href="home?mood=unicorn.jpg" class="mood" >B</a>
-<a href="home?mood=geometry.jpg" class="mood" >C</a>
-<a href="home?mood=lebowski.png" class="mood" >D</a>
-</p>
-</div>
 </c:if>
 
 <jsp:include page="/WEB-INF/common/footer.jsp" />

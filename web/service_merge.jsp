@@ -14,11 +14,13 @@ $(document).ready( function() {
 	    // Accordion initialize
 		$("#accordion1").accordion({
 			active: false,
-			collapsible: true
+			collapsible: true,
+			autoHeight: false
 		});
 		$("#accordion2").accordion({
 			active: false,
-			collapsible: true
+			collapsible: true,
+			autoHeight: false
 		});
 
 		// Merge button initialize

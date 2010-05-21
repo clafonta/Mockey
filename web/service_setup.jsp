@@ -339,7 +339,7 @@
 	
 	    <h3>Existing Scenarios</h3>
 		<c:if test="${empty mockservice.scenarios}">
-		<div id="no_scenarios_message" ><p class="info_message"><span style="color:#FFFFFF;">No scenarios here.</span> It's because you have not defined one or someone has deleted them. Running this service as <strong>Static</strong> or <strong>Dynamic</strong> will not work. </p></div>
+		<div id="no_scenarios_message" ><p class="info_message"><strong>No scenarios here.</strong> It's because you have not defined one or someone has deleted them. Running this service as <strong>Static</strong> or <strong>Dynamic</strong> will not work. </p></div>
 		</c:if>
 		<div class="demo">
 			<div id="accordion">
