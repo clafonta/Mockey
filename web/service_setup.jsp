@@ -327,14 +327,15 @@
 				<fieldset>
 					<label for="scenario_name">Scenario name</label>
 					<input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
-					<label for="scenario_match">Match argument (for Dynamic response type)</label>
+					<label for="scenario_match">Match argument</label>
 					<input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
+					<div class="tinyfieldset">Used for Dynamic response type. Case sensitive.</div>
 					<label for="scenario_response">Response content</label>
 					<textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
 				</fieldset> 
 				</form>
 			</div>
-			<p style="float:right;"><button id="create-scenario">Create new scenario</button></p>
+			<p align="right"><button id="create-scenario">Create new scenario</button></p>
 		</div>
 	
 	    <h3>Existing Scenarios</h3>
