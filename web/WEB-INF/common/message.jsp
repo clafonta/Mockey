@@ -6,7 +6,10 @@
 <c:if test="${not empty successMessages}">
 	<script type="text/javascript">
 		    $(document).ready(function() {
-			$("#foo").fadeIn(2000).fadeTo(5000, 1).fadeOut(2000);
+			$("#foo").fadeIn(1000).fadeTo(3000, 1).fadeOut(1000);
+			<c:if test="${not empty errorMessages}">
+			$("#error-info").fadeIn(2000).fadeTo(5000, 1).fadeOut(2000);
+			</c:if>
 		});
 	</script>
 	
@@ -21,7 +24,7 @@
 	Deleted
 </span>
 <c:if test="${not empty errorMessages}">
-	<span id="error-info">
+	<span id="error-info" class="hide">
 	<c:forEach var="msg" items="${errorMessages}">
 		<c:out value="${msg}" escapeXml="false" />
 	</c:forEach>
