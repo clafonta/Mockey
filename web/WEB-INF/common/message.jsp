@@ -21,12 +21,11 @@
 	Deleted
 </span>
 <c:if test="${not empty errorMessages}">
-
-	<p id="bar" class="alert_message">
+	<span id="error-info">
 	<c:forEach var="msg" items="${errorMessages}">
-		<c:out value="${msg}" escapeXml="false" /> <br />
+		<c:out value="${msg}" escapeXml="false" />
 	</c:forEach>
-	</p>
+	</span>
 	<c:remove var="errorMessages" scope="session" />
 
 </c:if>

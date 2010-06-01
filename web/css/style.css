@@ -217,6 +217,17 @@ padding: 8px;
     color:yellow;
     padding: 0.1em;
 }
+#error-info{
+    position: fixed;
+    width: 675px;
+    background: red;
+    text-align: center;
+    top: 10px;
+    color:yellow;
+    padding: 0.2em;
+    z-index:300;
+    
+}
 .invisiblefield {border:0;padding-left:0; margin-left:0; color:blue; width:100%;background:transparent;}
 .service { list-style: none; word-break:break-all;	}
 .service div {	margin:0.5em 0 0.5em 0; }

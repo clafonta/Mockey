@@ -9,7 +9,7 @@
         <webroots>
           <root url="file://$MODULE_DIR$/../web" relative="/" />
         </webroots>
-        <context-artifact name="Mockey:Web" />
+        <context-artifact name="Syrup:Web" />
       </configuration>
     </facet>
   </component>
