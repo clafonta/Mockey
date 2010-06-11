@@ -143,6 +143,14 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 	}
 
+	public List<Long> getServiceIds(){
+		List<Long> ids = new ArrayList<Long>();
+		for(Service service: this.getServices()){
+			ids.add(service.getId());
+		}
+		return ids;
+	}
+	
 	public List<Service> getServices() {
 		return this.mockServiceStore.getOrderedList();
 	}

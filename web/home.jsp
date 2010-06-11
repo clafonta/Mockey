@@ -141,22 +141,22 @@ $(document).ready( function() {
 				data:"serviceResponseType="+responseType+"&serviceId="+serviceId
 			});
                  
-			$('#serviceResponseType_0_'+serviceId).removeClass("response_set").addClass("response_not");
-			$('#serviceResponseType_1_'+serviceId).removeClass("response_set").addClass("response_not");
-			$('#serviceResponseType_2_'+serviceId).removeClass("response_set").addClass("response_not");
+			$('.serviceResponseType_0_'+serviceId).removeClass("response_set").addClass("response_not");
+			$('.serviceResponseType_1_'+serviceId).removeClass("response_set").addClass("response_not");
+			$('.serviceResponseType_2_'+serviceId).removeClass("response_set").addClass("response_not");
 			
 			$('#staticScenario_'+serviceId).removeClass("show").addClass("hide");
 			$('#proxyScenario_'+serviceId).removeClass("show").addClass("hide");
 			$('#dynamicScenario_'+serviceId).removeClass("show").addClass("hide");
 			
 			if(responseType == 0){
-				$('#serviceResponseType_0_'+serviceId).removeClass("response_not").addClass("response_set");
+				$('.serviceResponseType_0_'+serviceId).removeClass("response_not").addClass("response_set");
 				$('#proxyScenario_'+serviceId).addClass("show");
 			}else if(responseType == 1){
-				$('#serviceResponseType_1_'+serviceId).removeClass("response_not").addClass("response_set");
+				$('.serviceResponseType_1_'+serviceId).removeClass("response_not").addClass("response_set");
 				$('#staticScenario_'+serviceId).addClass("show");
 			}else if(responseType == 2){
-				$('#serviceResponseType_2_'+serviceId).removeClass("response_not").addClass("response_set");
+				$('.serviceResponseType_2_'+serviceId).removeClass("response_not").addClass("response_set");
 				$('#dynamicScenario_'+serviceId).addClass("show");
 			}
 			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
@@ -189,12 +189,15 @@ $(document).ready( function() {
 									<li><a href="#tabs-2">Plans</a></li>
 								</ul>
 							  	<div id="tabs-1">
-							  	  Toggle all with the following:
+							  	  <div class="info_message tiny"/>
+							  	  Click one of the following buttons to set 
+							  	  response type for <strong>each service</strong>.
 								  <p> 
-									  <a id="allresponsetype_0" class="allresponsetype response_set" href="#">Proxy</a>
-									  <a id="allresponsetype_1" class="allresponsetype response_set" href="#">Static</a>
-									  <a id="allresponsetype_2" class="allresponsetype response_set" href="#">Dynamic</a>
+									  <a id="allresponsetype_0" class="allresponsetype response_not" style="text-decoration:none;" href="#"> Proxy </a>
+									  <a id="allresponsetype_1" class="allresponsetype response_not" style="text-decoration:none; margin-left:2px;margin-right:2px;" href="#"> Static </a>
+									  <a id="allresponsetype_2" class="allresponsetype response_not" style="text-decoration:none;" href="#">Dynamic</a>
 								  </p>
+								  </div>
 								  <div class="scroll">
 		                            	<c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 			                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" >
@@ -270,6 +273,9 @@ $(document).ready( function() {
                                 <div class="parentformselected">
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
                                 
+                                 <div class="toggle_button tiny" style="text-align: right;">
+                                                      <a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" title="Edit service definition">edit</a>
+                                                </div>
                                  <div class="service">
                                    <div class="service-label">Service name:</div>
                                    <div class="service-value big">${mockservice.serviceName}</div>
@@ -311,6 +317,7 @@ $(document).ready( function() {
 							       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 0}"> show</c:if>" id="proxyScenario_${mockservice.id}">Proxy</span>
 			                       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 1}"> show</c:if>" id="staticScenario_${mockservice.id}">Static</span>
                                    </div>
+                                   <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
                                    <div class="service-label not-top">Select a static scenario:</div>
                                    <div>
                                    <ul id="simple" class="group">

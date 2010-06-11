@@ -17,6 +17,7 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,23 +95,41 @@ public class InjectRealUrlPerServiceServlet extends HttpServlet {
 
 		String matchPattern = req.getParameter("match");
 		String[] replacementArray = req.getParameterValues("replacement[]");
-		
+
 		Map<String, String> statusMessage = new HashMap<String, String>();
 		if (matchPattern != null && replacementArray != null) {
-			
-			for (Service service : store.getServices()) {
+
+			for (Long serviceId : store.getServiceIds()) {
+				Service service = store.getServiceById(serviceId);
+				List<Url> newUrlList = new ArrayList<Url>();
+				// Build a list of real Url objects.
 				for (Url realUrl : service.getRealServiceUrls()) {
 					for (String replacement : replacementArray) {
-						Url newUrl = new Url(realUrl.getFullUrl().replaceAll(
-								matchPattern, replacement));
-						if (!service.hasRealServiceUrl(newUrl)) {
-							
-							service.saveOrUpdateRealServiceUrl(newUrl);
+						// We don't want to inject empty string match
+						if (replacement.trim().length() > 0) {
+							Url newUrl = new Url(realUrl.getFullUrl()
+									.replaceAll(matchPattern, replacement));
+							if (!service.hasRealServiceUrl(newUrl)) {
+								newUrlList.add(newUrl);
+								// Note: you should not save or update
+								// the realServiceUrl or service while
+								// iterating through the list itself, or you'll
+								// get
+								// a java.util.ConcurrentModificationException
+								// Wait until 'after'
+							}
 						}
 					}
-
 				}
+				// Save/update this new Url object list.
+				for (Url newUrl : newUrlList) {
+					service.saveOrUpdateRealServiceUrl(newUrl);
+				}
+
+				// Now update the service.
+				store.saveOrUpdateService(service);
 			}
+
 			statusMessage.put("success", "URL injecting complete.");
 		} else {
 			statusMessage.put("fail",

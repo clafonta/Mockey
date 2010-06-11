@@ -131,7 +131,7 @@ you should <a href="">Export</a> your service definitions first. If things go ba
 									     <c:if test="${empty mockservice.realServiceUrls}"><div class="alert_message">No real URL defined for this service.</div></c:if>
 									     <div><h4>Scenarios</h4></div>
 		                                 <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
-		                                   	<div class="tiny"><a href="#" class="response_not"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a></div>
+		                                   	<div class="tiny"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></div>
 		                                 </c:forEach>
 		                                 <c:if test="${not empty mockservice.scenarios}"><div class="alert_message">No scenarios defined for this service.</div></c:if>
 		                           
@@ -153,7 +153,7 @@ you should <a href="">Export</a> your service definitions first. If things go ba
 									     <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
-		                                    <div class="tiny"><a href="#" class="response_not"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a></div>
+		                                    <div class="tiny"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></div>
 		                                  </c:forEach>
 		                                  </c:when>
 		                                  <c:otherwise>

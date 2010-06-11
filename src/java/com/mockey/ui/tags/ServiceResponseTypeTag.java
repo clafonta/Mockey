@@ -71,16 +71,22 @@ public class ServiceResponseTypeTag extends TagSupport {
 			
 				text = "<a class=\"serviceResponseTypeLink "
 						+ proxyClass
+						+ " serviceResponseType_0_"
+						+ serviceIdentifier
 						+ "\" id=\"serviceResponseType_0_"
 						+ serviceIdentifier
 						+ "\" onclick=\"return false;\" href=\"#\" title=\"Proxy response\">P</a>"
 						+ " <a class=\"serviceResponseTypeLink "
 						+ staticClass
+						+ " serviceResponseType_1_"
+						+ serviceIdentifier
 						+ "\" id=\"serviceResponseType_1_"
 						+ serviceIdentifier
 						+ "\" onclick=\"return false;\" href=\"#\" title=\"Static response\">S</a>"
 						+ " <a class=\"serviceResponseTypeLink "
 						+ dynamicClass
+						+ " serviceResponseType_2_"
+						+ serviceIdentifier
 						+ "\" id=\"serviceResponseType_2_"
 						+ serviceIdentifier
 						+ "\" onclick=\"return false;\" href=\"#\" title=\"Dynamic response\">D</a>";

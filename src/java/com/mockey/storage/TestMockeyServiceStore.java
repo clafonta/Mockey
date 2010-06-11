@@ -236,4 +236,10 @@ public class TestMockeyServiceStore implements IMockeyStorage {
         return null;
     }
 
+	@Override
+	public List<Long> getServiceIds() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
