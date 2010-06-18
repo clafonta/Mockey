@@ -53,15 +53,15 @@ public class ServiceResponseTypeTag extends TagSupport {
 			switch (type) {
 			case 0:
 				proxyClass = CSS_CLASS_RESPONSE_SET;
-				text = "<a class=\""+proxyClass+"\">P</a>";
+				text = "Proxy";
 				break;
 			case 1:
 				staticClass = CSS_CLASS_RESPONSE_SET;
-				text = "<a class=\""+staticClass+"\">S</a>";
+				text = "Static";
 				break;
 			case 2:
 				dynamicClass = CSS_CLASS_RESPONSE_SET;
-				text = "<a class=\""+dynamicClass+"\">D</a>";
+				text = "Dynamic";
 				break;
 			default:
 				text = "";

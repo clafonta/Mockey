@@ -72,18 +72,18 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				// serviceElement.setAttribute("id", mockServiceBean.getId());
 				// *************************************
 				serviceElement.setAttribute("name", mockServiceBean.getServiceName());
-				serviceElement.setAttribute("description", mockServiceBean.getDescription());
-				serviceElement.setAttribute("hang_time", "" + mockServiceBean.getHangTime());
-				serviceElement.setAttribute("url", "" + mockServiceBean.getUrl());
-				serviceElement.setAttribute("http_content_type", "" + mockServiceBean.getHttpContentType());
-				serviceElement.setAttribute("default_scenario_id", "" + (mockServiceBean.getDefaultScenarioId()!=null ?  mockServiceBean.getDefaultScenarioId(): ""));
-				serviceElement.setAttribute("service_response_type", "" + mockServiceBean.getServiceResponseType());
-				serviceElement.setAttribute("default_real_url_index", ""+mockServiceBean.getDefaultRealUrlIndex());
+				serviceElement.setAttribute("description", getSafeForXmlOutputString(mockServiceBean.getDescription()));
+				serviceElement.setAttribute("hang_time", getSafeForXmlOutputString("" + mockServiceBean.getHangTime()));
+				serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
+				serviceElement.setAttribute("http_content_type", getSafeForXmlOutputString("" + mockServiceBean.getHttpContentType()));
+				serviceElement.setAttribute("default_scenario_id", getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId()))); 
+				serviceElement.setAttribute("service_response_type", getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
+				serviceElement.setAttribute("default_real_url_index", getSafeForXmlOutputString(""+mockServiceBean.getDefaultRealUrlIndex()));
 
 				// New real service URLs
 				for(Url realUrl: mockServiceBean.getRealServiceUrls()){
 					Element urlElement = document.createElement("real_url");
-					urlElement.setAttribute("url", realUrl.getFullUrl());
+					urlElement.setAttribute("url", getSafeForXmlOutputString(realUrl.getFullUrl()));
 					//urlElement.appendChild(cdataResponseElement);
 					serviceElement.appendChild(urlElement);
 				}
@@ -97,15 +97,15 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 					//logger.debug("building XML representation for MockServiceScenarioBean:\n" + scenario.toString());
 					Element scenarioElement = document.createElement("scenario");
 					scenarioElement.setAttribute("id", scenario.getId().toString());
-					scenarioElement.setAttribute("name", scenario.getScenarioName());
+					scenarioElement.setAttribute("name", getSafeForXmlOutputString(scenario.getScenarioName()));
 
 					Element scenarioMatchStringElement = document.createElement("scenario_match");
-					CDATASection cdataMatchElement = document.createCDATASection(scenario.getMatchStringArg());
+					CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario.getMatchStringArg()));
 					scenarioMatchStringElement.appendChild(cdataMatchElement);
 					scenarioElement.appendChild(scenarioMatchStringElement);
 					
 					Element scenarioResponseElement = document.createElement("scenario_response");
-					CDATASection cdataResponseElement = document.createCDATASection(scenario.getResponseMessage());
+					CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario.getResponseMessage()));
 					scenarioResponseElement.appendChild(cdataResponseElement);
 					scenarioElement.appendChild(scenarioResponseElement);
 					serviceElement.appendChild(scenarioElement);
@@ -143,5 +143,13 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		}
 
 		return rootElement;
+	}
+	
+	private String getSafeForXmlOutputString(String arg){
+		if(arg!=null){
+			return arg.trim();
+		}else {
+			return "";
+		}
 	}
 }

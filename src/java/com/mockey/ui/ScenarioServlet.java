@@ -25,6 +25,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.mockey.ScenarioValidator;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
@@ -36,7 +40,6 @@ public class ScenarioServlet extends HttpServlet {
 	private static final long serialVersionUID = -5920793024759540668L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
-	
 	public void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
@@ -54,7 +57,7 @@ public class ScenarioServlet extends HttpServlet {
 
 		// Get the service.
 		Service service = store.getServiceById(serviceId);
-		
+
 		// DELETE scenario logic
 		if (req.getParameter("deleteScenario") != null && serviceId != null
 				&& scenarioId != null) {
@@ -82,17 +85,22 @@ public class ScenarioServlet extends HttpServlet {
 		} catch (Exception e) {
 			//
 		}
-		
+
 		// CREATE OR UPDATE OF SCENARIO
-		// If scenario is null, that means we're creating, 
-		// not updating 
+		// If scenario is null, that means we're creating,
+		// not updating
 		if (scenario == null) {
 			scenario = new Scenario();
 		}
 
-		if (req.getParameter("scenarioName") != null) {
-			scenario.setScenarioName(req.getParameter("scenarioName"));
+		String scenarioName = req.getParameter("scenarioName");
+		if (scenarioName == null || scenarioName.trim().length() == 0) {
+			// Let's be nice and make up a name.
+			scenarioName = "Scenario for " + service.getServiceName()
+					+ "(name auto-generated)";
 		}
+		scenario.setScenarioName(scenarioName);
+
 		if (req.getParameter("responseMessage") != null) {
 			scenario.setResponseMessage(req.getParameter("responseMessage"));
 		}
@@ -100,17 +108,17 @@ public class ScenarioServlet extends HttpServlet {
 			scenario.setMatchStringArg(req.getParameter("matchStringArg"));
 		}
 
-		// VALIDATION 
+		// VALIDATION
 		Map<String, String> errorMap = ScenarioValidator.validate(scenario);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {
 
 			// If creating a Scenario, then the returned scenario
 			// will now have an id. If updating scenario, then
-			// scenario ID remains the same. 
+			// scenario ID remains the same.
 			scenario = service.saveOrUpdateScenario(scenario);
 
-			// Make this the default 'error response' scenario 
+			// Make this the default 'error response' scenario
 			// for the service
 			if (req.getParameter("errorScenario") != null) {
 				service.setErrorScenarioId(scenario.getId());
@@ -118,7 +126,7 @@ public class ScenarioServlet extends HttpServlet {
 				service.setErrorScenarioId(null);
 			}
 
-			// Make this the default universal 'error response', 
+			// Make this the default universal 'error response',
 			// for all services defined in Mockey.
 			if (req.getParameter("universalErrorScenario") != null) {
 				store.setUniversalErrorScenarioId(scenario.getId());
@@ -130,16 +138,22 @@ public class ScenarioServlet extends HttpServlet {
 				store.setUniversalErrorScenarioId(null);
 				store.setUniversalErrorServiceId(null);
 			}
-			
+
 			store.saveOrUpdateService(service);
 			PrintWriter out = resp.getWriter();
-			Map<String, String> successMap = new HashMap<String, String>();
-			successMap.put("success", "Scenario updated");
-			// Pass back the scenario ID, which is needed for
-			// new, created scenarios.
-			successMap.put("scenarioId", scenario.getId().toString());
-			String resultingJSON = Util.getJSON(successMap);
-			out.println(resultingJSON);
+			
+			JSONObject object = new JSONObject();
+			JSONObject resultObject = new JSONObject();
+			try {
+				
+				object.put("success", "Scenario updated");
+				object.put("scenarioId", scenario.getId().toString());
+				object.put("serviceId", service.getId().toString());
+				resultObject.put("result", object);
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+			}
+			out.println(resultObject);
 			out.flush();
 			out.close();
 			return;
