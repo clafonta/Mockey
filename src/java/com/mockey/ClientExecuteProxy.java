@@ -82,6 +82,11 @@ public class ClientExecuteProxy {
 			throws Exception {
 		log.info("Request: " + String.valueOf(realServiceUrl));
 
+		// To turn off the default hostname verification on HTTPS connection;
+	    SSLUtilities.trustAllHostnames(); 
+	    // To turn off the default certificate validation on HTTPS connection.
+	    SSLUtilities.trustAllHttpsCertificates();
+
 		// general setup
 		SchemeRegistry supportedSchemes = new SchemeRegistry();
 

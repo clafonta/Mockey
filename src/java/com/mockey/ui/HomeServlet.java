@@ -16,6 +16,8 @@
 package com.mockey.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,34 +25,47 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mockey.model.ServicePlan;
+import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 public class HomeServlet extends HttpServlet {
 
-    private static final long serialVersionUID = -5485332140449853235L;
+	private static final long serialVersionUID = -5485332140449853235L;	
+	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
-    private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String action = req.getParameter("action");
+		if (action != null && "deleteAllServices".equals(action)) {
+			IMockeyStorage store = StorageRegistry.MockeyStorage;
+			store.deleteEverything();
+			String contextRoot = req.getContextPath();
+			resp.sendRedirect(Url.getContextAwarePath("/home", contextRoot));
+			return;
+		} else {
+			List<Service> orderedServices = new ArrayList<Service>();
+			for (Service serviceToInsert : store.getServices()) {
+				int insertIndex = 0;
+				for(Service existingService: orderedServices){
+					char a = serviceToInsert.getServiceName().toUpperCase().trim().charAt(0);
+					char b = existingService.getServiceName().toUpperCase().trim().charAt(0);
+					if(a<b){
+						break;
+					}
+					insertIndex++;
+				}
+				orderedServices.add(insertIndex, serviceToInsert);
+			}
+			req.setAttribute("services", orderedServices);
+			req.setAttribute("plans", store.getServicePlans());
+		}
 
-        String action = req.getParameter("action");
-        if (action != null && "deleteAllServices".equals(action)) {
-            IMockeyStorage store = StorageRegistry.MockeyStorage;
-            store.deleteEverything();
-            String contextRoot = req.getContextPath();
-            resp.sendRedirect(Url.getContextAwarePath("/home", contextRoot));
-            return;
-        } else {
-            req.setAttribute("services", store.getServices());
-            req.setAttribute("plans", store.getServicePlans());
-        }
+		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 
-        RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
-
-        dispatch.forward(req, resp);
-    }
+		dispatch.forward(req, resp);
+	}
 
 }
