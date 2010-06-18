@@ -16,8 +16,6 @@
 package com.mockey.ui;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -25,7 +23,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -46,20 +43,8 @@ public class HomeServlet extends HttpServlet {
 			resp.sendRedirect(Url.getContextAwarePath("/home", contextRoot));
 			return;
 		} else {
-			List<Service> orderedServices = new ArrayList<Service>();
-			for (Service serviceToInsert : store.getServices()) {
-				int insertIndex = 0;
-				for(Service existingService: orderedServices){
-					char a = serviceToInsert.getServiceName().toUpperCase().trim().charAt(0);
-					char b = existingService.getServiceName().toUpperCase().trim().charAt(0);
-					if(a<b){
-						break;
-					}
-					insertIndex++;
-				}
-				orderedServices.add(insertIndex, serviceToInsert);
-			}
-			req.setAttribute("services", orderedServices);
+			
+			req.setAttribute("services", Util.orderAlphabeticallyByServiceName(store.getServices()));
 			req.setAttribute("plans", store.getServicePlans());
 		}
 

@@ -28,7 +28,7 @@ public class ServiceMergeServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		req.setAttribute("services", store.getServices());
+		req.setAttribute("services", Util.orderAlphabeticallyByServiceName(store.getServices()));
 		req.setAttribute("plans", store.getServicePlans());
 
 		RequestDispatcher dispatch = req
