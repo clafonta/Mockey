@@ -33,7 +33,7 @@ $(document).ready(function() {
 		animation:   {opacity:'show',height:'show'},  // fade-in and slide-down animation
 		speed:       'fast',                          // faster animation speed
 		autoArrows:  false,                           // disable generation of arrow mark-up
-		dropShadows: false                            // disable drop shadows
+		dropShadows: true                            // disable drop shadows
 	});
 	// 
 	$.getJSON('<c:url value="/proxystatus" />', function(data) {
@@ -87,12 +87,12 @@ $(document).ready(function() {
 		<li class="<c:if test="${currentTab == 'home'}">current</c:if>"><a
 			href="<c:url value="/home" />">Services  <span class="sf-sub-indicator"> &#187;</span></a>
 			<ul>
-				<li><a title="Service Setup - create new service"
+				<li <c:if test="${currentTab == 'setup'}">class="current"</c:if>><a title="Service Setup - create new service"
 					href="<c:url value="/setup" />">Create a Service</a></li>
 				<li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
 				<a title="Merge - combine services" href="<c:url value="/merge" />"
 					style="">Merge Services</a></li>
-				<li <c:if test="${currentTab == 'multiply'}">class="current"</c:if>>
+				<li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
 				<a title="Real URL injecting" href="<c:url value="/inject" />"
 					style="">URL injecting</a></li>
 				

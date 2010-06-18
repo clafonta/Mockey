@@ -2,7 +2,7 @@
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <c:set var="actionKey" value="edit_service" scope="request" />
 <c:set var="pageTitle" value="Configure" scope="request" />
-<c:set var="currentTab" value="create" scope="request" />
+<c:set var="currentTab" value="setup" scope="request" />
 <%@include file="/WEB-INF/common/header.jsp" %>
 <script type="text/javascript"><!--
    
