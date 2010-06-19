@@ -92,6 +92,14 @@
 		<servlet-name>InjectRealUrlPerServiceServlet</servlet-name>
 		<servlet-class>com.mockey.ui.InjectRealUrlPerServiceServlet</servlet-class>
 	</servlet>
+	<servlet>
+        <servlet-name>ScenarioViewAjaxServlet</servlet-name>
+        <servlet-class>com.mockey.ui.ScenarioViewAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ScenarioViewAjaxServlet</servlet-name>
+        <url-pattern>/view/scenario</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>InjectRealUrlPerServiceServlet</servlet-name>
 		<url-pattern>/inject</url-pattern>
@@ -100,7 +108,6 @@
 		<servlet-name>ServiceMergeServlet</servlet-name>
 		<url-pattern>/merge</url-pattern>
 	</servlet-mapping>
-	
 	<servlet-mapping>
 		<servlet-name>ProxyInfoAJAXServlet</servlet-name>
 		<url-pattern>/proxystatus</url-pattern>

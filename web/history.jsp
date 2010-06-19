@@ -90,12 +90,8 @@ $(document).ready(function() {
                   //i want to fade result into these 2 divs...
                   $('#letmesee_'+requestId).hide().html(html).fadeIn();
                 }
-
 			});
-			
-			
 		});
-	  
 	});
 
 	$('.hideFulfilledRequestLink').each( function() {

@@ -162,14 +162,38 @@ $(document).ready( function() {
 			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 		});
 	});
+
+    $('#dialog').dialog({ autoOpen: false, minHeight: 300 });
+    
+    $('.viewServiceScenarioLink').each( function() {
+        $(this).click( function() {
+        	var scenarioId = this.id.split("_")[1];
+            var serviceId = this.id.split("_")[2];
+            $.ajax({
+                type: "GET",
+                url: "<c:url value="/view/scenario"/>?serviceId="+serviceId+"&scenarioId="+scenarioId,
+                success: function(html) {
+                  $('#dialog').dialog('open');
+                  $('#dialog').hide().html(html).fadeIn();
+                }
+            });
+            return false;
+        });
+    });
+
+    $('.hideServiceScenarioLink').each( function() {
+        $(this).click( function() {
+           
+        });
+    });
     
  });
 </script>
     <div id="main">
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>
-	        <c:when test="${!empty services}">
-	            <c:choose>
+	        <c:when test="${!empty services}">    
+	          <c:choose>
 				    <c:when test="${empty param.serviceId}">
 				        
 				        <c:set var="serviceIdToShowByDefault" value="${services[0].id}" scope="request"/>
@@ -178,7 +202,9 @@ $(document).ready( function() {
 				        <c:set var="serviceIdToShowByDefault" value="${param.serviceId}" scope="request"/>
 				    </c:otherwise>
 				</c:choose>
-	            
+	             <div id="dialog" title="Scenerio Preview">
+                    <p>Details appended here.</p>
+                </div>
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
@@ -273,8 +299,8 @@ $(document).ready( function() {
                                 <div class="parentformselected">
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
                                 
-                                 <div class="toggle_button tiny" style="text-align: right;">
-                                                      <a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" title="Edit service definition">edit</a>
+                                 <div class="toggle_button" style="text-align: right;">
+                                                      <a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" title="Edit service definition" style="color:#FF0084;font-weight:bold;">Edit this Service and its Scenarios</a>
                                                 </div>
                                  <div class="service">
                                    <div class="service-label">Service name:</div>
@@ -339,7 +365,7 @@ $(document).ready( function() {
 		                                     
 		                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
 		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
-		                                      <mockey:slug text="${scenario.scenarioName}" maxLength="40"/>
+		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
 		                                    </li>
 		                                  </c:forEach>
 		                                  </c:when>

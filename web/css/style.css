@@ -62,9 +62,9 @@ a{color: #00F;text-decoration:underline}
 .response_not  { background-color: #FFFFFF;color:#A6B2CC; text-decoration:none; }
 .response_set  { background-color: #CFDEFF; color:#0077CC;}
 a.response_set:hover, a.response_not:hover {background: #B1D1E8;}
-
-.mood {decoration:none; font-size:80%;}
-
+#scenario-preview-name {font-weight:bold; font-size:1.0em;}
+#scenario-preview-response-footer {font-size:0.8em;color:#00AA00;}
+#scenario-preview-response-textarea textarea {border: none; display:block;margin-bottom:0pt;width:100%; font-size:0.7em;height: 300px;font-family: Courier New, monospace;font-weight:100; font-stretch: ultra-condensed;}
 a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
@@ -75,7 +75,6 @@ div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid 
 div#logo{text-align: left }
 .spread{margin-left:0.8em;font-size:80%;}
 span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;}
-
 .hint_message, .alert_message, .conflict_message, .addition_message, .info_message {	margin: 0.8em;	padding: 0.8em;	text-align: left;	color: black;	border: thin solid #d3d3d3;}
 .hint_message{background-color: #3782B6;}
 .alert_message{background-color: #FC829F;}
@@ -130,12 +129,11 @@ div.jqi{
       background-color: #ffffff;      
       text-align: left;
       border: solid 1px #eeeeee;
-      -moz-border-radius: 10px;
-      -webkit-border-radius: 10px;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
       padding: 7px;
 }
 div.jqi .jqicontainer{
-      font-weight: bold;
 }
 div.jqi .jqiclose{
       position: absolute;
@@ -143,7 +141,6 @@ div.jqi .jqiclose{
       width: 18px;
       cursor: default;
       color: #bbbbbb;
-      font-weight: bold;
 }
 div.jqi .jqimessage{
       padding: 10px;
@@ -155,23 +152,25 @@ div.jqi .jqibuttons{
       padding: 5px 0 5px 0;
       border: solid 1px #eeeeee;
       background-color: #f4f4f4;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
 }
 div.jqi button{
       padding: 3px 10px;
       margin: 0 10px;
-      background-color: #2F6073;
+      background-color: #CFDEFF;
       border: solid 1px #f4f4f4;
-      color: #ffffff;
-      font-weight: bold;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
 }
 div.jqi button:hover{
-      background-color: #728A8C;
+      background-color: #B1D1E8;
 }
 div.jqi button.jqidefaultbutton{
-      background-color: #F60;
+      background-color: #CFDEFF;
 }
 .jqiwarning .jqi .jqibuttons{
-      background-color: #F60;
+      background-color: #FF0084;
 }
 .js .display { display:none; }
 
