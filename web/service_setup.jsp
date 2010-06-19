@@ -56,8 +56,48 @@
 			} else {
 				return true;
 			}
+
 		}
 		
+		$("#dialog-form").dialog({
+			<%
+			   if(request.getParameter("serviceId")!=null && request.getParameter("createScenario")!=null){
+				   %>autoOpen:true,<%
+			   }else {
+				   %>autoOpen: false,<%
+			   }
+			   %>
+			
+			height: 600,
+			width: 650,
+			modal: true,
+			buttons: {
+				'Create scenario': function() {
+					var bValid = true;
+					var serviceId = $("#service_id");
+					allFields.removeClass('ui-state-error');
+					bValid = bValid && checkLength(name,"scenario name",3,250);
+					if (bValid) {
+
+						$.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId.val(), matchStringArg:  match.val(),
+							responseMessage: responsemsg.val() } ,function(data){
+								   console.log(data);
+								  
+							}, 'json' );
+						$(this).dialog('close');
+						
+						document.location="<c:url value="/setup" />?serviceId="+ serviceId.val();
+					}
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+				}
+			},
+			close: function() {
+				allFields.val('').removeClass('ui-state-error');
+				$("#no_scenarios_message").addClass('hide');
+			}
+		});
 		$('#add-row').click(function() {
 			$('#real_service_url_list').append('<input type=\"text\" id=\"service_real_url\" class=\"text ui-corner-all ui-widget-content\" name=\"realServiceUrl\" maxlength=\"100\" size=\"90%\" value=\"\" />');
 			
@@ -225,10 +265,6 @@
     </c:choose>
     <span style="float:right;"><a href="${returnToServiceUrl}">Return to main page</a></span>
     <h1>Service Setup</h1>  
-    <div id="dialog-modal" title="Basic modal dialog">
-	    <p>Adding the modal overlay screen makes the dialog look more prominent because it dims out the page content.</p>
-	</div>
-    
     <div class="parentform">
         <c:if test="${!empty mockservice.id}">
             <input type="hidden" id="service_id" name="serviceId" value="<c:out value="${mockservice.id}"/>" />
