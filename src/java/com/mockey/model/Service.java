@@ -2,12 +2,9 @@ package com.mockey.model;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +13,7 @@ import com.mockey.ClientExecuteProxy;
 import com.mockey.OrderedMap;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
+import com.mockey.ui.Util;
 
 /**
  * A Service is a remote url that can be called.
@@ -28,7 +26,6 @@ public class Service implements PersistableItem, ExecutableService  {
 	public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
 	public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
 	public final static int SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO = 2;
-	private final Pattern pattern = Pattern.compile("(\\d+)\\s+(.*)");
 
 	private Long id;
 	private String serviceName;
@@ -105,8 +102,10 @@ public class Service implements PersistableItem, ExecutableService  {
 	}
 
 	public List<Scenario> getScenarios() {
-		return scenarios.getOrderedList();
+		return Util.orderAlphabeticallyByScenarioName(scenarios.getOrderedList());
 	}
+	
+	
 
 	public Scenario getScenario(Long scenarioId) {
 		return (Scenario) scenarios.get(scenarioId);

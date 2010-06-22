@@ -16,17 +16,15 @@
 package com.mockey.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 
 public class Util {
@@ -101,6 +99,28 @@ public class Util {
 		Collections.sort(services, new ServiceNameComparator());
 		
 		return services;
+	}
+	
+	/**
+	 * Returns the services list ordered alphabetically.
+	 * @param services
+	 * @return
+	 */
+	public static List<Scenario> orderAlphabeticallyByScenarioName(
+			List<Scenario> scenarios) {
+
+		// Custom comparator
+		class ScenarioNameComparator implements Comparator<Scenario> {
+
+			public int compare(Scenario s1, Scenario s2) {
+				return s1.getScenarioName().compareToIgnoreCase(
+						s2.getScenarioName());
+			}
+		}
+		// Sort me. 
+		Collections.sort(scenarios, new ScenarioNameComparator());
+		
+		return scenarios;
 	}
 
 	/**

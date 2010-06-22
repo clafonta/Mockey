@@ -14,7 +14,7 @@
 	</script>
 	
 </c:if>
-<span id="foo" class="hide">
+<span id="message" class="hide">
 	<mockey:message/>
 </span>
 <span id="updated" class="hide">

@@ -233,6 +233,7 @@ padding: 8px;
     z-index:300;
     
 }
+a.power-link {color:#FF0084;}
 .invisiblefield {border:0;padding-left:0; margin-left:0; color:blue; width:100%;background:transparent;}
 .service { list-style: none; word-break:break-all;	}
 .service div {	margin:0.5em 0 0.5em 0; }

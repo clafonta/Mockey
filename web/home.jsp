@@ -53,22 +53,139 @@ $(document).ready( function() {
 			
 		});
 	});
-	
+
+    $("#dialog-delete-service-confirm").dialog({
+        resizable: false,
+        height:120,
+        modal: true,
+        autoOpen: false
+    });
 	
     $('.tiny_service_delete').each( function() {
         $(this).click( function() {
             var serviceId = this.id.split("_")[1];
-            $.prompt(
-                'Are you sure you want to delete this Service?',
-                {
-                    callback: function (proceed) {
-                        if(proceed) document.location="<c:url value="/setup" />?deleteService=yes&serviceId="+ serviceId;
-                    },
+            $('#dialog-delete-service-confirm').dialog('open');
+	            $('#dialog-delete-service-confirm').dialog({
+	                buttons: {
+	                  "Delete service": function() {
+	            	      document.location="<c:url value="/setup" />?deleteService=yes&serviceId="+ serviceId;
+	                  }, 
+	                  Cancel: function(){
+		                  $(this).dialog('close');
+	                  }
+	                }
+	          }); 
+	          return false;
+            });
+        });
+
+    // SCENARIO CREATION JAVASCRIPT
+    $("#dialog-create-scenario").dialog({
+        resizable: true,
+        height:500,
+        width:700,
+        modal: false,
+        autoOpen: false
+    });
+    var name = $("#scenario_name"),
+        match = $("#scenario_match"),
+        responsemsg = $("#scenario_response"),
+		allFields = $([]).add(name).add(match).add(responsemsg),
+		tips = $(".validateTips");  
+	
+    function updateTips(t) {
+        tips
+            .text(t)
+            .addClass('ui-state-highlight');
+        setTimeout(function() {
+            tips.removeClass('ui-state-highlight', 1500);
+        }, 500);
+    }
+
+    function checkLength(o,n,min,max) {
+
+        if ( o.val().length > max || o.val().length < min ) {
+            o.addClass('ui-state-error');
+            updateTips("Length of " + n + " must be between "+min+" and "+max+".");
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    function checkRegexp(o,regexp,n) {
+
+        if ( !( regexp.test( o.val() ) ) ) {
+            o.addClass('ui-state-error');
+            updateTips(n);
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+    $('.createScenarioLink').each( function() {
+        $(this).click( function() {
+            var serviceId = this.id.split("_")[1];
+            $('#dialog-create-scenario').dialog('open');
+                $('#dialog-create-scenario').dialog({
                     buttons: {
-                        'Delete Service': true,
-                        Cancel: false
+                      "Create scenario": function() {
+                	       var bValid = true;  
+                	       allFields.removeClass('ui-state-error');
+                	       bValid = bValid && checkLength(name,"scenario name",3,250);
+                	       if (bValid) {
+			                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
+			                        responseMessage: responsemsg.val() } ,function(data){
+			                               console.log(data);
+			                              
+			                        }, 'json' );  
+	                           $(this).dialog('close');
+	                           document.location="<c:url value="/home" />?serviceId="+ serviceId;
+	                           
+                	       }
+                      }, 
+                      Cancel: function(){
+                          $(this).dialog('close');
+                      }
                     }
-                });
+              }); 
+              return false;
+            });
+        });
+
+    $("#dialog-delete-scenario-confirm").dialog({
+        resizable: false,
+        height:120,
+        modal: false,
+        autoOpen: false
+    });
+    
+    $('.deleteScenarioLink').each( function() {
+        $(this).click( function() {
+        	var scenarioId = this.id.split("_")[1];
+            var serviceId = this.id.split("_")[2];
+            $('#dialog-delete-scenario-confirm').dialog('open');
+                $('#dialog-delete-scenario-confirm').dialog({
+                    buttons: {
+                      "Delete scenario": function() {
+                          // Post the DELETE call.  
+                    	  $.post('<c:url value="/scenario"/>', {serviceId: serviceId, deleteScenario: 'yes', scenarioId: scenarioId},
+                                  function(data) {}, 'json');
+                          // Hide the info. 
+                          $('#service-scenario-info_'+scenarioId + '_'+ serviceId ).hide();
+                          $(this).dialog('close');
+                          $(this).dialog( "destroy" )
+                          $('#deleted').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+                          
+                      }, 
+                      Cancel: function(){
+                          $(this).dialog('close');
+                      }
+                    }
+              }); 
+              return false;
             });
         });
     
@@ -163,7 +280,7 @@ $(document).ready( function() {
 		});
 	});
 
-    $('#dialog').dialog({ autoOpen: false, minHeight: 300 });
+    $('#dialog').dialog({ autoOpen: false, minHeight: 300, width:700, height:500 });
     
     $('.viewServiceScenarioLink').each( function() {
         $(this).click( function() {
@@ -204,6 +321,28 @@ $(document).ready( function() {
 				</c:choose>
 	             <div id="dialog" title="Scenerio Preview">
                     <p>Details appended here.</p>
+                </div>
+                <div id="dialog-delete-service-confirm" title="Delete Service">
+                    <p>Are you sure you want to delete this Service?</p>
+                </div>
+                <div id="dialog-delete-scenario-confirm" title="Delete Service Scenario">
+                    <p>Are you sure you want to delete this Scenario?</p>
+                </div>
+                <div id="dialog-create-scenario" title="Create Service Scenario">
+                    <p class="validateTips">Scenario name is required.</p>
+                    <p>
+                    <form>
+	                <fieldset>
+	                    <label for="scenario_name">Scenario name</label>
+	                    <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
+	                    <label for="scenario_match">Match argument</label>
+	                    <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
+	                    <div class="tinyfieldset">Used for Dynamic response type. Case sensitive.</div>
+	                    <label for="scenario_response">Response content</label>
+	                    <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
+	                </fieldset> 
+	                </form>
+                    </p>
                 </div>
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
@@ -298,16 +437,13 @@ $(document).ready( function() {
                                 <div id="updateStatus_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
                                 <div class="parentformselected">
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
-                                
-                                 <div class="toggle_button" style="text-align: right;">
-                                                      <a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" title="Edit service definition" style="color:#FF0084;font-weight:bold;">Edit this Service and its Scenarios</a>
-                                                </div>
                                  <div class="service">
-                                   <div class="service-label">Service name:</div>
-                                   <div class="service-value big">${mockservice.serviceName}</div>
-                                   <div class="service-label not-top">Mock URL:</div>
+                                    
+                                   <div class="service-label">Service name: <span style="float:right;" class="tiny"><a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" class="power-link" title="Edit service definition">Edit</a></span></div>
+                                   <div class="service-value big">${mockservice.serviceName} </div>
+                                   <div class="service-label not-top">Mock URL: <span style="float:right;" class="tiny"><a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" class="power-link" title="Edit service definition">Edit</a></span></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
-                                   <div class="service-label not-top">Real URL(s):</div>
+                                   <div class="service-label not-top">Real URL(s): <span style="float:right;" class="tiny"><a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" class="power-link" title="Edit service definition">Edit</a></span></div>
                                    <table class="simple">
                                    <c:forEach var="realUrl" items="${mockservice.realServiceUrls}" varStatus="status" >
 								     
@@ -344,14 +480,17 @@ $(document).ready( function() {
 			                       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 1}"> show</c:if>" id="staticScenario_${mockservice.id}">Static</span>
                                    </div>
                                    <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
-                                   <div class="service-label not-top">Select a static scenario:</div>
+                                   
+                                   <div class="service-label not-top">Select a static scenario:
+                                   <span style="float:right;"><a href="#" class="createScenarioLink power-link" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
+                                   </div>
                                    <div>
                                    <ul id="simple" class="group">
 	                                    
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
-		                                    <li style="padding-top: 0.5em;">
+		                                    <li style="padding-top: 0.5em;" id="service-scenario-info_${scenario.id}_${mockservice.id}">
 		                                      <c:choose>
 		                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
 		                                          <c:set var="off_class" value="hide" />
@@ -366,6 +505,7 @@ $(document).ready( function() {
 		                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
 		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
 		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
+		                                      <span> <a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
 		                                    </li>
 		                                  </c:forEach>
 		                                  </c:when>
@@ -377,8 +517,7 @@ $(document).ready( function() {
 					                                <c:param name="serviceId" value="${mockservice.id}" />
 					                                <c:param name="createScenario" value="yes" />
 					                             </c:url>
-		                                  	<li class="alert_message"><span>You need to <a href="<c:out value="${setupScenarioUrl}"/>" title="Create service scenario" border="0" />create</a>
-		                                     a scenario before using <strong>Static</strong> or <strong>Dynamic</strong> scenario</span></li>
+		                                  	<li class="alert_message"><span>You need to create a scenario before using <strong>Static</strong> or <strong>Dynamic</strong> scenario</span></li>
 		                                  </c:otherwise>
 		                                </c:choose>
 	                                </ul>
