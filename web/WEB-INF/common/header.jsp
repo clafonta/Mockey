@@ -45,21 +45,32 @@ $(document).ready(function() {
 	    	 $("#proxy_off").show(); 
 	     }
 	});
-	
-    $('#flush').click(
-        function () {
-             $.prompt(
-                    'Are you sure? This will delete everything. You may want to <a href="<c:url value="/export" />">export your stuff</a> first.', {
-                        callback: function (proceed) {
-                            if(proceed) document.location="<c:url value="/home?action=deleteAllServices" />";
-                        },
+        $("#dialog-flush-confirm").dialog({
+            resizable: false,
+            height:120,
+            modal: false,
+            autoOpen: false
+        });
+            
+        $('#flush').each( function() {
+            $(this).click( function() {
+            	$('#dialog-flush-confirm').show();
+                $('#dialog-flush-confirm').dialog('open');
+                    $('#dialog-flush-confirm').dialog({
+                        resizable: false,
                         buttons: {
-                            'Delete Everything': true,
-                            Cancel: false
+                          "Delete everything": function() {
+                              document.location="<c:url value="/home?action=deleteAllServices" />";                          
+                          }, 
+                          Cancel: function(){
+                              $(this).dialog('close');
+                          }
                         }
-                    }
-                );
-        })
+                  }); 
+                  return false;
+                });
+               $('#dialog-flush-confirm').dialog("destroy");
+            });
 });
 
 
@@ -69,7 +80,7 @@ $(document).ready(function() {
 <div id="container">
 
 <div id="logo">
-    <a href="<c:url value="/home" />"><img src="<c:url value="/images/logo.png" />" /></a>
+    <a href="<c:url value="/home" />" class="nav"><img style="vertical-align:middle; height:30px;" src="<c:url value="/images/logo.png" />" /><span style="vertical-align:middle;font-size:20px; text-shadow: 0px 0px 1px #FF0084;" class="nav power-link">Mockey</span></a>
     <span style="float:right;"><img style="height:60px; " src="<c:url value="/images/silhouette.png" />" /></span>
 	<%@ include file="/WEB-INF/common/message.jsp"%>
 	<%
@@ -81,7 +92,7 @@ $(document).ready(function() {
 	<% if( isMSIE ){ %>
 	  <span class="alert_message" style="position:absolute; top:0; right:200; width:500px;">This isn't designed for <b>Internet Explorer 6.0</b>. You should use another browser.</span>
 	<% } %>
-	
+	<div id="dialog-flush-confirm" class="hide" title="Flush history">Are you sure? This will delete everything. You may want to <a href="<c:url value="/export" />">export your stuff</a> first.</div>
 	<div id="topnav" style="margin-bottom:3em;width:100%;">
 	<ul class="sf-menu" >
 		<li class="<c:if test="${currentTab == 'home'}">current</c:if>"><a

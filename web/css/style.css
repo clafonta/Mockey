@@ -47,8 +47,8 @@ div.parentformselected {
 .parentformselected {border: thin solid #F1A8A8;}
 .centerform {padding: 0.8em;margin-left: 20%; margin-right: 20%;}
 
-ul#simple { list-style: none;	}
-ul#simple li {	margin:0.5em; }
+ul.simple { list-style: none;	}
+ul.simple li {	margin:0.5em; }
 
 .edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
@@ -62,9 +62,6 @@ a{color: #00F;text-decoration:underline}
 .response_not  { background-color: #FFFFFF;color:#A6B2CC; text-decoration:none; }
 .response_set  { background-color: #CFDEFF; color:#0077CC;}
 a.response_set:hover, a.response_not:hover {background: #B1D1E8;}
-#scenario-preview-name {font-weight:bold; font-size:1.0em;}
-#scenario-preview-response-footer {font-size:0.8em;color:#00AA00;}
-#scenario-preview-response-textarea textarea {border: none; display:block;margin-bottom:0pt;width:100%; font-size:0.7em;height: 300px;font-family: Courier New, monospace;font-weight:100; font-stretch: ultra-condensed;}
 a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
@@ -72,7 +69,7 @@ div#container{width:875px;margin:0 auto}
 div#main{width: 100%; margin-top: 10px }
 div{margin-top: 1px }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
-div#logo{text-align: left }
+div#logo{text-align: left;  }
 .spread{margin-left:0.8em;font-size:80%;}
 span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;}
 .hint_message, .alert_message, .conflict_message, .addition_message, .info_message {	margin: 0.8em;	padding: 0.8em;	text-align: left;	color: black;	border: thin solid #d3d3d3;}
@@ -238,7 +235,27 @@ a.power-link {color:#FF0084;}
 .service { list-style: none; word-break:break-all;	}
 .service div {	margin:0.5em 0 0.5em 0; }
 div.service-value {color:#0077CC; font-weight:bold;}
-div.service-label {color:#555555; border-top:1px solid #BDBDBD;padding-top:0.8em;}
+div.service-label {color:#555555; padding-top:0.8em;}
+div.border-top{border-top:1px solid #BDBDBD;}
 div.not-top {margin-top:2em;}
 .sidebarme{margin-left:60%; margin-right:5%;}
 .warning_no_scenario{font-size:0.8em;color:red;font-weight:bold;margin-top:1em;}
+/* EDIT SCENARIO FORM */
+/*
+<div id="edit-scenario-scenarioId_6serviceId_9" class="scenario-preview">
+<p class='edit-scenario-name-label'>Name:</p>
+<p><input type='text' class='edit-scenario-name-value' id='edit-scenario-name-scenarioId_" + scenario.getId() + "serviceId_"
+                    + serviceId + "' value='" + scenario.getScenarioName().trim() + "'/></p>
+<p class='edit-scenario-match-label'>Match:</p>
+<p><input type='text' class='edit-scenario-match-value' id='edit-scenario-match-scenarioId_" + scenario.getMatchStringArg()
+                    + "serviceId_" + serviceId + "' value='" + scenario.getScenarioName().trim() + "'/></p>
+<p class='edit-scenario-response-label'>Response:</p>
+<p><textarea class='edit-scenario-response-value' id='edit-scenario-response-scenarioId_" + scenario.getMatchStringArg()
+                    + "serviceId_" + serviceId + "'>"
+                    + scenario.getResponseMessage().trim() + "</textarea></p>");
+<p><a href='#' class='edit-scenario-save-button' id='edit-scenario-save-button'>Save scenario</a></p></div>
+</div>
+*/
+.edit-scenario-name-label, .edit-scenario-match-label, .edit-scenario-response-label {font-weight:bold; font-size:1.0em;}
+.edit-scenario-name-value, .edit-scenario-match-value {margin:0.8em 0; padding:0.4em; width:95%; }
+.edit-scenario-response-value {display:block;margin-bottom:0pt;width:100%; font-size:0.2em;height: 300px;font-family: Courier New, monospace;font-weight:100; font-stretch: ultra-condensed;}

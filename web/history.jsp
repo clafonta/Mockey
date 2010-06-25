@@ -103,32 +103,38 @@ $(document).ready(function() {
 		});
 	});
 
-
-
-
-	
-});
-
-$(document).ready(function() {
-    $('#clear_history').click(
-        function () {
-             $.prompt(
-                    'Are you sure? This will delete all fulfilled request for all requesting IPs.', {
-                        callback: function (proceed) {
-                            if(proceed) document.location="<c:url value="/history?action=delete_all" />";
-                        },
-                        buttons: {
-                            'Delete All History': true,
-                            Cancel: false
-                        }
+   
+    $("#dialog-clear-history-confirm").dialog({
+        resizable: false,
+        height:120,
+        modal: false,
+        autoOpen: false
+    });
+        
+    $('.clear_history').each( function() {
+        $(this).click( function() {
+            
+            $('#dialog-clear-history-confirm').dialog('open');
+                $('#dialog-clear-history-confirm').dialog({
+                    buttons: {
+                      "Delete history": function() {
+                         document.location="<c:url value="/history?action=delete_all" />";                              
+                      }, 
+                      Cancel: function(){
+                          $(this).dialog('close');
+                      }
                     }
-                );
-        })
+              }); 
+              return false;
+            });
+        });
+        
 });
 
 </script>
 <div id="main">
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
+    <div id="dialog-clear-history-confirm" title="Delete history">Are you sure? This will delete all fulfilled requests for all requesting IPs.</div>
     <form action="<c:url value="/history"/>" method="get">
     <p>
     
@@ -139,7 +145,7 @@ $(document).ready(function() {
       <c:url value="/history" var="deleteAllScenarioUrl">
          <c:param name="action" value="delete_all" />
       </c:url>
-      <a  class="spread" id="clear_history" href="#">Clear History</a>  
+      <a  class="spread clear_history" href="#">Clear History</a>  
     </c:if>
     <c:if test="${!empty historyFilter.tokens}">  
        <a class="spread" href="<c:url value="/history?action=remove_all_tokens"/>">Clear Filters</a>

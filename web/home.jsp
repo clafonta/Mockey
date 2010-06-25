@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
+<%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
+
 <c:set var="pageTitle" value="Home" scope="request" />
 <c:set var="currentTab" value="home" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
@@ -127,7 +129,12 @@ $(document).ready( function() {
     }
     $('.createScenarioLink').each( function() {
         $(this).click( function() {
+        	$.ajaxSetup({ cache: false });
             var serviceId = this.id.split("_")[1];
+            // Clear input
+            $('#scenario_name').val('');
+            $('#scenario_match').val('');
+            $('#scenario_response').val(''); 
             $('#dialog-create-scenario').dialog('open');
                 $('#dialog-create-scenario').dialog({
                     buttons: {
@@ -142,6 +149,8 @@ $(document).ready( function() {
 			                              
 			                        }, 'json' );  
 	                           $(this).dialog('close');
+	                           $('#scenario-list_'+serviceId).append('WOOT');
+	                           // Should insert block. Instead of refresh call. 
 	                           document.location="<c:url value="/home" />?serviceId="+ serviceId;
 	                           
                 	       }
@@ -151,6 +160,7 @@ $(document).ready( function() {
                       }
                     }
               }); 
+              
               return false;
             });
         });
@@ -211,7 +221,8 @@ $(document).ready( function() {
     	  $("#parentform_"+serviceId).addClass("parentformselected");
         });
      });
-
+    
+   
     $('.serviceScenarioResponseTypeLink').each( function() {
 		$(this).click( function() {
 			var scenarioId = this.id.split("_")[1];
@@ -288,10 +299,36 @@ $(document).ready( function() {
             var serviceId = this.id.split("_")[2];
             $.ajax({
                 type: "GET",
+                dataType: 'json',
                 url: "<c:url value="/view/scenario"/>?serviceId="+serviceId+"&scenarioId="+scenarioId,
-                success: function(html) {
-                  $('#dialog').dialog('open');
-                  $('#dialog').hide().html(html).fadeIn();
+                success: function(data) {
+                	$('#scenario_name').val(data.name);
+                	$('#scenario_match').val(data.match);
+                	$('#scenario_response').val(data.response); 
+                	$('#dialog-create-scenario').dialog('open');
+                    $('#dialog-create-scenario').dialog({
+                        buttons: {
+                          "Update scenario": function() {
+                               var bValid = true;  
+                               allFields.removeClass('ui-state-error');
+                               bValid = bValid && checkLength(name,"scenario name",3,250);
+                               if (bValid) {
+                                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId, matchStringArg: match.val(),
+                                        responseMessage: responsemsg.val() } ,function(data){
+                                               console.log(data);
+                                              
+                                        }, 'json' );  
+                                   $('#view-scenario_'+scenarioId+'_' +serviceId).fadeOut(function(){ $(this).text(name.val()).fadeIn() });
+                                   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+                                   return false;
+                                   
+                               }
+                          }, 
+                          "Close": function(){
+                              $(this).dialog('close');
+                          }
+                        }
+                  });       
                 }
             });
             return false;
@@ -319,31 +356,7 @@ $(document).ready( function() {
 				        <c:set var="serviceIdToShowByDefault" value="${param.serviceId}" scope="request"/>
 				    </c:otherwise>
 				</c:choose>
-	             <div id="dialog" title="Scenerio Preview">
-                    <p>Details appended here.</p>
-                </div>
-                <div id="dialog-delete-service-confirm" title="Delete Service">
-                    <p>Are you sure you want to delete this Service?</p>
-                </div>
-                <div id="dialog-delete-scenario-confirm" title="Delete Service Scenario">
-                    <p>Are you sure you want to delete this Scenario?</p>
-                </div>
-                <div id="dialog-create-scenario" title="Create Service Scenario">
-                    <p class="validateTips">Scenario name is required.</p>
-                    <p>
-                    <form>
-	                <fieldset>
-	                    <label for="scenario_name">Scenario name</label>
-	                    <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
-	                    <label for="scenario_match">Match argument</label>
-	                    <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
-	                    <div class="tinyfieldset">Used for Dynamic response type. Case sensitive.</div>
-	                    <label for="scenario_response">Response content</label>
-	                    <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
-	                </fieldset> 
-	                </form>
-                    </p>
-                </div>
+
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
@@ -406,13 +419,11 @@ $(document).ready( function() {
 									    </c:if>
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
-			                                
-			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
 			                                <div id="plan_${plan.id}" class="parentform" >
-			                                <div><mockey:slug text="${plan.name}" maxLength="40"/></div>
-			                                <a href="#" id="set-plan_${plan.id}" class="set-plan tiny">set me as the plan</a>
+			                                <mockey:slug text="${plan.name}" maxLength="40"/>
+			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
+			                                <div><a href="#" id="set-plan_${plan.id}" class="set-plan tiny">set me as the plan</a></div>
 			                                </div>
-			                               
 									    </c:forEach>
 									    <div class="tiny" style="padding-top:1em;" id="no-plans-msg"><a href="<c:url value="help#plan"/>">What's a plan?</a></div>
 			                            
@@ -439,11 +450,14 @@ $(document).ready( function() {
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
                                  <div class="service">
                                     
-                                   <div class="service-label">Service name: <span style="float:right;" class="tiny"><a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" class="power-link" title="Edit service definition">Edit</a></span></div>
+                                   <div class="service-label">Service name: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div class="service-value big">${mockservice.serviceName} </div>
-                                   <div class="service-label not-top">Mock URL: <span style="float:right;" class="tiny"><a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" class="power-link" title="Edit service definition">Edit</a></span></div>
+                                   <div class="service-def-spacer"></div>
+                                   <div class="service-label border-top">Mock URL: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
-                                   <div class="service-label not-top">Real URL(s): <span style="float:right;" class="tiny"><a href="<c:url value="/setup?serviceId=${mockservice.id}"/>" class="power-link" title="Edit service definition">Edit</a></span></div>
+                                   <div class="service-def-spacer"></div>
+                                   
+                                   <div class="service-label not-top border-top">Real URL(s): <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <table class="simple">
                                    <c:forEach var="realUrl" items="${mockservice.realServiceUrls}" varStatus="status" >
 								     
@@ -473,7 +487,8 @@ $(document).ready( function() {
                                    <c:if test="${empty mockservice.realServiceUrls}">
                                    <div class="info_message">No real URLS defined.</div>
                                    </c:if>
-                                   <div class="service-label not-top">This service is set to:</div>
+                                   
+                                   <div class="service-label border-top">This service is set to:</div>
                                    <div class="service-value big">
                                    	<span class="hide<c:if test="${mockservice.serviceResponseType eq 2}"> show</c:if>" id="dynamicScenario_${mockservice.id}">Dynamic</span>
 							       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 0}"> show</c:if>" id="proxyScenario_${mockservice.id}">Proxy</span>
@@ -481,11 +496,11 @@ $(document).ready( function() {
                                    </div>
                                    <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
                                    
-                                   <div class="service-label not-top">Select a static scenario:
+                                   <div class="service-label border-top" style="margin-top:1em;">Select a static scenario:
                                    <span style="float:right;"><a href="#" class="createScenarioLink power-link" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
                                    <div>
-                                   <ul id="simple" class="group">
+                                   <ul id="scenario-list_${mockservice.id}" class="simple group">
 	                                    
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
@@ -525,8 +540,8 @@ $(document).ready( function() {
                                  </div>
                                  
 								
-                                 <div>
-			                       <strong>Hang time (milliseconds):</strong> ${mockservice.hangTime} 
+                                 <div class="not-top">
+			                       <strong>Hang time (milliseconds):</strong> ${mockservice.hangTime} <mockey-tag:editServiceLink serviceId="${mockservice.id}"/>
 	                             </div>
 	                             <div>
 			                       <strong>Content type:</strong>   
@@ -545,6 +560,32 @@ $(document).ready( function() {
 						
 		            </tbody>
 		        </table>
+		        
+		        <div id="dialog" title="Scenerio Preview">
+                    <p>Details appended here.</p>
+                </div>
+                <div id="dialog-delete-service-confirm" title="Delete Service">
+                    <p>Are you sure you want to delete this Service?</p>
+                </div>
+                <div id="dialog-delete-scenario-confirm" title="Delete Service Scenario">
+                    <p>Are you sure you want to delete this Scenario?</p>
+                </div>
+                <div id="dialog-create-scenario" title="Create Service Scenario">
+                    <p class="validateTips">Scenario name is required.</p>
+                    <p>
+                    <form>
+                    <fieldset>
+                        <label for="scenario_name">Scenario name</label>
+                        <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
+                        <label for="scenario_match">Match argument</label>
+                        <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
+                        <div class="tinyfieldset">Used for Dynamic response type. Case sensitive.</div>
+                        <label for="scenario_response">Response content</label>
+                        <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
+                    </fieldset> 
+                    </form>
+                    </p>
+                </div>
     </div>
 	        </c:when>
 	        <c:otherwise>
