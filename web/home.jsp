@@ -145,14 +145,10 @@ $(document).ready( function() {
                 	       if (bValid) {
 			                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
 			                        responseMessage: responsemsg.val() } ,function(data){
-			                               console.log(data);
-			                              
+			                        	
 			                        }, 'json' );  
-	                           $(this).dialog('close');
-	                           $('#scenario-list_'+serviceId).append('WOOT');
-	                           // Should insert block. Instead of refresh call. 
+	                           $(this).dialog('close');              
 	                           document.location="<c:url value="/home" />?serviceId="+ serviceId;
-	                           
                 	       }
                       }, 
                       Cancel: function(){
@@ -501,6 +497,7 @@ $(document).ready( function() {
                                    </div>
                                    <div>
                                    <ul id="scenario-list_${mockservice.id}" class="simple group">
+	                                    <div id="result1" class="jTemplatesTest"></div>
 	                                    
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
@@ -560,7 +557,7 @@ $(document).ready( function() {
 						
 		            </tbody>
 		        </table>
-		        
+		      
 		        <div id="dialog" title="Scenerio Preview">
                     <p>Details appended here.</p>
                 </div>
