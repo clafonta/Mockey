@@ -570,7 +570,7 @@ $(document).ready( function() {
                 <div id="dialog-delete-scenario-confirm" title="Delete Service Scenario">
                     <p>Are you sure you want to delete this Scenario?</p>
                 </div>
-                <div id="dialog-create-scenario" title="Create Service Scenario">
+                <div id="dialog-create-scenario" title="Service Scenario">
                     <p class="validateTips">Scenario name is required.</p>
                     <p>
                     <form>
