@@ -78,7 +78,7 @@ $(document).ready(function() {
       $(untagspan).toggle();
     });
 
-	$('.viewFulfilledRequestLink').each( function() {
+	$('.viewFulfilledRequestLink_orig').each( function() {
 		$(this).click( function() {
 			var requestId = this.id.split("_")[1];	
 		    $(this).toggle();		
@@ -92,6 +92,66 @@ $(document).ready(function() {
                 }
 			});
 		});
+	});
+
+	$('.viewFulfilledRequestLink').each( function() {
+        $(this).click( function() {
+            var requestId = this.id.split("_")[1];  
+            $(this).toggle();       
+            $('#hideFulfilledRequest_'+requestId).toggle();
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '<c:url value="/conversation/record"/>?&conversationRecordId='+requestId,
+                success: function(data) {
+                  //i want to fade result into these 2 divs...
+                  //<textarea name="requestUrl_${request.id}" rows="5" cols="50"></textarea>
+                  //<textarea name="requestParameters_${request.id}" rows="5" cols="50"></textarea>
+                  //<textarea name="requestHeaders_${request.id}" rows="5" cols="50"></textarea>
+                  //<textarea name="requestBody_${request.id}" rows="5" cols="50"></textarea>
+                  $('#requestUrl_'+requestId).val(data.requestUrl);
+                  $('#requestParameters_'+requestId).val(data.requestParameters);
+                  $('#requestHeaders_'+requestId).val(data.requestHeaders);
+                  $('#requestBody_'+requestId).val(data.requestBody);
+                  $('#responseStatus_'+requestId).val(data.responseStatus);
+                  $('#responseHeader_'+requestId).val(data.responseHeader);
+                  $('#responseBody_'+requestId).val(data.responseBody);
+                  $('#letmesee_'+requestId).show(); 
+                  
+                }
+            });
+        });
+    });
+
+	$('.save-as-a-service-scenario').button().click(function() {
+		var serviceId = this.id.split("_")[1];
+        // Clear input
+        $('#scenario_name').val('');
+        $('#scenario_match').val('');
+        $('#scenario_response').val(''); 
+        $('#dialog-create-scenario').dialog('open');
+            $('#dialog-create-scenario').dialog({
+                buttons: {
+                  "Create scenario": function() {
+                       var bValid = true;  
+                       allFields.removeClass('ui-state-error');
+                       bValid = bValid && checkLength(name,"scenario name",3,250);
+                       if (bValid) {
+                           $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
+                                responseMessage: responsemsg.val() } ,function(data){
+                                    
+                                }, 'json' );  
+                           $(this).dialog('close');              
+                           document.location="<c:url value="/home" />?serviceId="+ serviceId;
+                       }
+                  }, 
+                  Cancel: function(){
+                      $(this).dialog('close');
+                  }
+                }
+          }); 
+          
+          return false;
 	});
 
 	$('.hideFulfilledRequestLink').each( function() {
@@ -184,7 +244,29 @@ $(document).ready(function() {
 	                 <b><a href="<c:out value="${serviceUrl}"/>" title="<c:out value="${request.serviceName}"/>"><mockey:slug text="${request.serviceName}" maxLength="20"/></a></b>
 	                 <div style="padding-top:0.2em;">
 	                 <b>URL:</b> <mockey:slug text="${request.rawRequest}" maxLength="180"/> </div>                    
-	                 <div id="letmesee_${request.id}">
+	                 <div id="letmesee_orig${request.id}">
+	                 
+                     </div>
+                     <div id="letmesee_${request.id}" style="display:none;">
+                        <div>
+                        <h3>Request</h3>
+	                        
+	                        <textarea id="requestUrl_${request.id}" name="requestUrl"></textarea>
+	                        <textarea id="requestParameters_${request.id}" name="requestParameters" rows="5" cols="50"></textarea>
+	                        <textarea id="requestHeaders_${request.id}"  name="requestHeaders" rows="5" cols="50"></textarea>
+	                        <textarea id="requestBody_${request.id}" name="requestBody" rows="5" cols="50"></textarea>
+	                        
+                        </div>
+                        <div>
+                        <h3>Response</h3>
+                            
+                               <textarea id="responseStatus_${request.id}" name="responseStatus" rows="5" cols="50"></textarea>
+                               <textarea id="responseHeader_${request.id}"  name="requestHeader" rows="5" cols="50"></textarea>
+                               <textarea id="responseBody_${request.id}" name="responseBody" rows="5" cols="50"></textarea>
+                            
+                            <button class="save-as-a-service-scenario">Save me as a scenario</button>
+                            
+                        </div>
                      </div>
                    </div>                   
                 </div>
@@ -194,6 +276,7 @@ $(document).ready(function() {
             <p class="info_message">No history here. It's because no one talks to Mockey or someone just cleared the history. Mockey is feeling unwanted.</p>
         </c:otherwise>
     </c:choose>
+    <jsp:include page="/WEB-INF/common/inc_scenario_create_dialog.jsp" />
 </div>
 
 

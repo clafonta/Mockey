@@ -37,9 +37,11 @@ $(document).ready(function() {
 	// 
 	$.getJSON('<c:url value="/proxystatus" />', function(data) {
 		if(data.result.proxy_enabled=='true'){
-       	   $("#proxy_on").show();
-       	   $("#proxy_off").hide();
+			$("#proxy_unknown").hide();
+	       	$("#proxy_on").show();
+       	    $("#proxy_off").hide();
 	     }else {
+	    	 $("#proxy_unknown").hide();
 	    	 $("#proxy_on").hide();
 	    	 $("#proxy_off").show(); 
 	     }
@@ -105,7 +107,6 @@ $(document).ready(function() {
 				<li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
 				<a title="Real URL injecting" href="<c:url value="/inject" />"
 					style="">URL injecting</a></li>
-				
 			</ul>
 		</li>
 		<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
@@ -115,9 +116,9 @@ $(document).ready(function() {
 		<li <c:if test="${currentTab == 'history'}">class="current"</c:if>>
 			<a href="<c:url value="/history" />">History</a></li>
 		<li <c:if test="${currentTab == 'proxy'}">class="current"</c:if>>
-			<a href="<c:url value="/proxy/settings" />">Proxy (<span
-			class="tiny" id="proxy_on" style="display: none;">ON</span><span
-			id="proxy_off" class="tiny" style="display: none;">OFF</span>)</a></li>
+			<a href="<c:url value="/proxy/settings" />">
+			Proxy (<span id="proxy_unknown" class="tiny" >___</span><span id="proxy_on" class="tiny" 
+			style="display: none;">ON</span><span id="proxy_off" class="tiny" style="display: none;">OFF</span>)</a></li>
 		<li><a id="flush" href="#">Flush</a></li>
 		<li <c:if test="${currentTab == 'help'}">class="current"</c:if>><a
 			href="<c:url value="/help" />">Help</a></li>

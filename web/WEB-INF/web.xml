@@ -96,6 +96,14 @@
         <servlet-name>ScenarioViewAjaxServlet</servlet-name>
         <servlet-class>com.mockey.ui.ScenarioViewAjaxServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>HistoryAjaxServlet</servlet-name>
+        <servlet-class>com.mockey.ui.HistoryAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HistoryAjaxServlet</servlet-name>
+        <url-pattern>/conversation/record</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ScenarioViewAjaxServlet</servlet-name>
         <url-pattern>/view/scenario</url-pattern>
