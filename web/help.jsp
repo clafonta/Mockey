@@ -89,10 +89,9 @@
 
     <h2>Export/Upload - huh?</h2>
     <p>
-    There isn't a database for this web tool, everything is kept in memory. 
+    There isn't a database for this web tool, everything is kept in memory and written to a local file. 
     After you get everything set up, <strong>export</strong> your configuration
-    to a <strong>mockservice.xml</strong> file. Conversely, upon the next web 
-    app restart, <strong>upload</strong> your <strong>mockservice.xml</strong> configuration. 
+    to a <strong>mockservice.xml</strong> file; you can share this file with others if you like.  
      </p>
     <!--  
     <h2>Service Error Response</h2>

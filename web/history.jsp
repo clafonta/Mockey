@@ -27,6 +27,8 @@ $(document).ready(function() {
 			});
 		});
 
+    $(".tabs").tabs();
+			
 	$('#filter-button').button();
 	
 	$('.mockeyResponse').each( function() {
@@ -104,11 +106,6 @@ $(document).ready(function() {
                 dataType: 'json',
                 url: '<c:url value="/conversation/record"/>?&conversationRecordId='+requestId,
                 success: function(data) {
-                  //i want to fade result into these 2 divs...
-                  //<textarea name="requestUrl_${request.id}" rows="5" cols="50"></textarea>
-                  //<textarea name="requestParameters_${request.id}" rows="5" cols="50"></textarea>
-                  //<textarea name="requestHeaders_${request.id}" rows="5" cols="50"></textarea>
-                  //<textarea name="requestBody_${request.id}" rows="5" cols="50"></textarea>
                   $('#requestUrl_'+requestId).val(data.requestUrl);
                   $('#requestParameters_'+requestId).val(data.requestParameters);
                   $('#requestHeaders_'+requestId).val(data.requestHeaders);
@@ -123,36 +120,7 @@ $(document).ready(function() {
         });
     });
 
-	$('.save-as-a-service-scenario').button().click(function() {
-		var serviceId = this.id.split("_")[1];
-        // Clear input
-        $('#scenario_name').val('');
-        $('#scenario_match').val('');
-        $('#scenario_response').val(''); 
-        $('#dialog-create-scenario').dialog('open');
-            $('#dialog-create-scenario').dialog({
-                buttons: {
-                  "Create scenario": function() {
-                       var bValid = true;  
-                       allFields.removeClass('ui-state-error');
-                       bValid = bValid && checkLength(name,"scenario name",3,250);
-                       if (bValid) {
-                           $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
-                                responseMessage: responsemsg.val() } ,function(data){
-                                    
-                                }, 'json' );  
-                           $(this).dialog('close');              
-                           document.location="<c:url value="/home" />?serviceId="+ serviceId;
-                       }
-                  }, 
-                  Cancel: function(){
-                      $(this).dialog('close');
-                  }
-                }
-          }); 
-          
-          return false;
-	});
+
 
 	$('.hideFulfilledRequestLink').each( function() {
 		$(this).click( function() {
@@ -193,6 +161,8 @@ $(document).ready(function() {
 
 </script>
 <div id="main">
+    <jsp:include page="/WEB-INF/common/inc_scenario_create_dialog.jsp" />
+
     <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
     <div id="dialog-clear-history-confirm" title="Delete history">Are you sure? This will delete all fulfilled requests for all requesting IPs.</div>
     <form action="<c:url value="/history"/>" method="get">
@@ -235,7 +205,7 @@ $(document).ready(function() {
                      
                      <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a>
                      <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;" style="display:none;">hide</a> |    
-                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">tag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">untag</span></a>
+                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">flag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">unflag</span></a>
                      <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink remove_grey" style="margin-left:2em;">x</a>	              
 	               </div>
 	               <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
@@ -248,23 +218,48 @@ $(document).ready(function() {
 	                 
                      </div>
                      <div id="letmesee_${request.id}" style="display:none;">
-                        <div>
-                        <h3>Request</h3>
-	                        
-	                        <textarea id="requestUrl_${request.id}" name="requestUrl"></textarea>
-	                        <textarea id="requestParameters_${request.id}" name="requestParameters" rows="5" cols="50"></textarea>
-	                        <textarea id="requestHeaders_${request.id}"  name="requestHeaders" rows="5" cols="50"></textarea>
-	                        <textarea id="requestBody_${request.id}" name="requestBody" rows="5" cols="50"></textarea>
-	                        
+	                    
+                        <div style="background-color: #FFFFCC; padding: 0.2em 0.4em; margin: 0.2em 0.0em;">
+	                        <h2>Request</h2>
+	                        <div class="tabs">
+	                                    <ul>
+	                                        <li><a href="#tabs-2_${request.id}">Parameters</a></li>
+	                                        <li><a href="#tabs-3_${request.id}">Headers</a></li>
+	                                        <li><a href="#tabs-4_${request.id}">Body</a></li>
+	                                    </ul>
+	                                    <div id="tabs-2_${request.id}">
+	                                    <textarea class="noborder_textarea" id="requestParameters_${request.id}" name="requestParameters" rows="5" cols="50"></textarea>
+	                                    </div>
+	                                     <div id="tabs-3_${request.id}">
+	                                    <textarea class="noborder_textarea" id="requestHeaders_${request.id}"  name="requestHeaders" rows="5" cols="50"></textarea>
+	                                    </div>
+	                                    <div id="tabs-4_${request.id}">
+	                                    <textarea class="noborder_textarea" id="requestBody_${request.id}" name="requestBody" rows="5" cols="50"></textarea>
+	                                    </div>
+	                        </div>
                         </div>
-                        <div>
-                        <h3>Response</h3>
-                            
-                               <textarea id="responseStatus_${request.id}" name="responseStatus" rows="5" cols="50"></textarea>
-                               <textarea id="responseHeader_${request.id}"  name="requestHeader" rows="5" cols="50"></textarea>
-                               <textarea id="responseBody_${request.id}" name="responseBody" rows="5" cols="50"></textarea>
-                            
-                            <button class="save-as-a-service-scenario">Save me as a scenario</button>
+                        <div style="background-color: #8AFFAB; padding: 0.2em 0.4em; margin: 0.2em 0.0em;">
+                        <h2>Response</h2>
+                            <div class="tabs">
+                                        <ul>
+                                            <li><a href="#resp-tabs-2_${request.id}">Headers</a></li>
+                                            <li><a href="#resp-tabs-3_${request.id}">Body</a></li>
+                                            <li><a href="#resp-tabs-1_${request.id}">Status</a></li>
+                                        </ul>
+                                        <div id="resp-tabs-2_${request.id}">
+                                           <textarea class="noborder_textarea" id="responseHeader_${request.id}"  name="requestHeader" rows="5" cols="50"></textarea>
+                                        </div>
+                                         <div id="resp-tabs-3_${request.id}">
+                                           <textarea class="noborder_textarea" id="responseBody_${request.id}" name="responseBody" rows="5" cols="50"></textarea>
+                                        </div>
+                                        <div id="resp-tabs-1_${request.id}">
+                                           <textarea class="noborder_textarea" id="responseStatus_${request.id}" name="responseStatus" rows="5" cols="50"></textarea>
+                                        </div>
+                                        
+                            </div>
+                            <div>
+                            <button id="save-as-a-service-scenario_${request.id}" class="save-as-a-service-scenario">Save me as a scenario</button>
+                            </div>
                             
                         </div>
                      </div>
@@ -276,7 +271,6 @@ $(document).ready(function() {
             <p class="info_message">No history here. It's because no one talks to Mockey or someone just cleared the history. Mockey is feeling unwanted.</p>
         </c:otherwise>
     </c:choose>
-    <jsp:include page="/WEB-INF/common/inc_scenario_create_dialog.jsp" />
 </div>
 
 

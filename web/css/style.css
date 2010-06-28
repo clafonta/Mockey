@@ -7,7 +7,7 @@ html, body{	padding-top: 0px;	background: #FFFFFF;font: 0.9em Helvetica,Arial,sa
 .gt{ color: black;}
 a.gt:hover {color: black;}
 .gt_active, .gt_highlight{	color: #06F; font-weight: bold; font-size:120%;}
-h1, h2, h3, .h1{margin: 1em 0.5em 0.5em 0.5em; padding:1px;}
+h1, h2, h3, .h1{margin: 1em 0em 0.5em 0em; padding:1px;}
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
 h1, .h1{ font-size:160%; color: #0077CC;}
 h2 { font-size:140%; color: #0077CC;}
@@ -52,7 +52,7 @@ ul.simple li {	margin:0.5em; }
 
 .edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
-p{margin: 0.5em; padding: 1px;line-height:130%;}
+p{margin: 0.5em 0.0em; padding: 1px;line-height:130%;}
 a{color: #00F;text-decoration:underline}
 .response_not, .response_set { height: 1em;  -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.5em 0.8em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em;
    border: 1px solid #A9A9A9; 
@@ -241,21 +241,7 @@ div.not-top {margin-top:2em;}
 .sidebarme{margin-left:60%; margin-right:5%;}
 .warning_no_scenario{font-size:0.8em;color:red;font-weight:bold;margin-top:1em;}
 /* EDIT SCENARIO FORM */
-/*
-<div id="edit-scenario-scenarioId_6serviceId_9" class="scenario-preview">
-<p class='edit-scenario-name-label'>Name:</p>
-<p><input type='text' class='edit-scenario-name-value' id='edit-scenario-name-scenarioId_" + scenario.getId() + "serviceId_"
-                    + serviceId + "' value='" + scenario.getScenarioName().trim() + "'/></p>
-<p class='edit-scenario-match-label'>Match:</p>
-<p><input type='text' class='edit-scenario-match-value' id='edit-scenario-match-scenarioId_" + scenario.getMatchStringArg()
-                    + "serviceId_" + serviceId + "' value='" + scenario.getScenarioName().trim() + "'/></p>
-<p class='edit-scenario-response-label'>Response:</p>
-<p><textarea class='edit-scenario-response-value' id='edit-scenario-response-scenarioId_" + scenario.getMatchStringArg()
-                    + "serviceId_" + serviceId + "'>"
-                    + scenario.getResponseMessage().trim() + "</textarea></p>");
-<p><a href='#' class='edit-scenario-save-button' id='edit-scenario-save-button'>Save scenario</a></p></div>
-</div>
-*/
 .edit-scenario-name-label, .edit-scenario-match-label, .edit-scenario-response-label {font-weight:bold; font-size:1.0em;}
 .edit-scenario-name-value, .edit-scenario-match-value {margin:0.8em 0; padding:0.4em; width:95%; }
 .edit-scenario-response-value {display:block;margin-bottom:0pt;width:100%; font-size:0.2em;height: 300px;font-family: Courier New, monospace;font-weight:100; font-stretch: ultra-condensed;}
+.noborder_textarea {border:none; width:100%; height:100px;overflow: auto;}

@@ -37,26 +37,12 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 			scenario = service.getScenario(new Long(scenarioIdAsString));
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("serviceId", ""+serviceId);
+			jsonObject.put("serviceName", ""+service.getServiceName());
 			jsonObject.put("scenarioId", ""+ scenario.getId());
 			jsonObject.put("name", scenario.getScenarioName());
 			jsonObject.put("match", scenario.getMatchStringArg());
 			jsonObject.put("response", scenario.getResponseMessage());
-			/*
-			output.append("<div id='edit-scenario-scenarioId_" + scenario.getId() + "serviceId_" + serviceId
-					+ "' class='scenario-preview'>");
-			output.append("<p class='edit-scenario-name-label'>Name:</p>");
-			output.append("<p><input type='text' class='edit-scenario-name-value text ui-widget-content ui-corner-all' id='edit-scenario-name-scenarioId_" + scenario.getId() + "serviceId_"
-					+ serviceId + "' value='" + scenario.getScenarioName().trim() + "'/></p>");
-			output.append("<p class='edit-scenario-match-label'>Match:</p>");
-			output.append("<p><input type='text' class='edit-scenario-match-value text ui-widget-content ui-corner-all' id='edit-scenario-match-scenarioId_" + scenario.getMatchStringArg()
-					+ "serviceId_" + serviceId + "' value='" + scenario.getScenarioName().trim() + "'/></p>");
-			output.append("<p class='edit-scenario-response-label'>Response:</p>");
-			output.append("<p><textarea class='resizable edit-scenario-response-value text ui-widget-content ui-corner-all' id='edit-scenario-response-scenarioId_" + scenario.getMatchStringArg()
-					+ "serviceId_" + serviceId + "'  rows='10'>"
-					+ scenario.getResponseMessage().trim() + "</textarea></p>");
-			output.append("<p><a href='#' class='edit-scenario-save-button' id='edit-scenario-save-button'>Save scenario</a></p>");
-			output.append("</div>");
-			*/
+
 			out.println(jsonObject.toString());
 		} catch (Exception e) {
 			out.println("{ \"error\": \"Unable to find scenario \"}");

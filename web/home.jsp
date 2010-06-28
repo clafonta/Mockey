@@ -59,7 +59,7 @@ $(document).ready( function() {
     $("#dialog-delete-service-confirm").dialog({
         resizable: false,
         height:120,
-        modal: true,
+        modal: false,
         autoOpen: false
     });
 	
@@ -78,86 +78,6 @@ $(document).ready( function() {
 	                }
 	          }); 
 	          return false;
-            });
-        });
-
-    // SCENARIO CREATION JAVASCRIPT
-    $("#dialog-create-scenario").dialog({
-        resizable: true,
-        height:500,
-        width:700,
-        modal: false,
-        autoOpen: false
-    });
-    var name = $("#scenario_name"),
-        match = $("#scenario_match"),
-        responsemsg = $("#scenario_response"),
-		allFields = $([]).add(name).add(match).add(responsemsg),
-		tips = $(".validateTips");  
-	
-    function updateTips(t) {
-        tips
-            .text(t)
-            .addClass('ui-state-highlight');
-        setTimeout(function() {
-            tips.removeClass('ui-state-highlight', 1500);
-        }, 500);
-    }
-
-    function checkLength(o,n,min,max) {
-
-        if ( o.val().length > max || o.val().length < min ) {
-            o.addClass('ui-state-error');
-            updateTips("Length of " + n + " must be between "+min+" and "+max+".");
-            return false;
-        } else {
-            return true;
-        }
-
-    }
-
-    function checkRegexp(o,regexp,n) {
-
-        if ( !( regexp.test( o.val() ) ) ) {
-            o.addClass('ui-state-error');
-            updateTips(n);
-            return false;
-        } else {
-            return true;
-        }
-
-    }
-    $('.createScenarioLink').each( function() {
-        $(this).click( function() {
-        	$.ajaxSetup({ cache: false });
-            var serviceId = this.id.split("_")[1];
-            // Clear input
-            $('#scenario_name').val('');
-            $('#scenario_match').val('');
-            $('#scenario_response').val(''); 
-            $('#dialog-create-scenario').dialog('open');
-                $('#dialog-create-scenario').dialog({
-                    buttons: {
-                      "Create scenario": function() {
-                	       var bValid = true;  
-                	       allFields.removeClass('ui-state-error');
-                	       bValid = bValid && checkLength(name,"scenario name",3,250);
-                	       if (bValid) {
-			                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
-			                        responseMessage: responsemsg.val() } ,function(data){
-			                        	
-			                        }, 'json' );  
-	                           $(this).dialog('close');              
-	                           document.location="<c:url value="/home" />?serviceId="+ serviceId;
-                	       }
-                      }, 
-                      Cancel: function(){
-                          $(this).dialog('close');
-                      }
-                    }
-              }); 
-              
-              return false;
             });
         });
 
@@ -298,6 +218,7 @@ $(document).ready( function() {
                 dataType: 'json',
                 url: "<c:url value="/view/scenario"/>?serviceId="+serviceId+"&scenarioId="+scenarioId,
                 success: function(data) {
+                    $('#service-name-for-scenario').text(data.serviceName);
                 	$('#scenario_name').val(data.name);
                 	$('#scenario_match').val(data.match);
                 	$('#scenario_response').val(data.response); 
@@ -340,6 +261,7 @@ $(document).ready( function() {
  });
 </script>
     <div id="main">
+    
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <c:choose>
 	        <c:when test="${!empty services}">    
@@ -444,10 +366,12 @@ $(document).ready( function() {
                                 <div id="updateStatus_<c:out value="${mockservice.id}"/>" class="outputTextArea"></div>
                                 <div class="parentformselected">
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
+                                <input type="hidden" name="serviceName" id="serviceName_${mockservice.id}" value="${mockservice.serviceName}" />
+                                
                                  <div class="service">
                                     
                                    <div class="service-label">Service name: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
-                                   <div class="service-value big">${mockservice.serviceName} </div>
+                                   <div class="service-value big">${mockservice.serviceName}</div>
                                    <div class="service-def-spacer"></div>
                                    <div class="service-label border-top">Mock URL: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
@@ -557,7 +481,8 @@ $(document).ready( function() {
 						
 		            </tbody>
 		        </table>
-		      
+		        <jsp:include page="/WEB-INF/common/inc_scenario_create_dialog.jsp" />
+		       
 		        <div id="dialog" title="Scenerio Preview">
                     <p>Details appended here.</p>
                 </div>
@@ -567,22 +492,7 @@ $(document).ready( function() {
                 <div id="dialog-delete-scenario-confirm" title="Delete Service Scenario">
                     <p>Are you sure you want to delete this Scenario?</p>
                 </div>
-                <div id="dialog-create-scenario" title="Service Scenario">
-                    <p class="validateTips">Scenario name is required.</p>
-                    <p>
-                    <form>
-                    <fieldset>
-                        <label for="scenario_name">Scenario name</label>
-                        <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
-                        <label for="scenario_match">Match argument</label>
-                        <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
-                        <div class="tinyfieldset">Used for Dynamic response type. Case sensitive.</div>
-                        <label for="scenario_response">Response content</label>
-                        <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
-                    </fieldset> 
-                    </form>
-                    </p>
-                </div>
+                
     </div>
 	        </c:when>
 	        <c:otherwise>
