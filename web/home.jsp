@@ -9,6 +9,7 @@
 <script>
 $(document).ready( function() {
 	$("#tabs").tabs();
+	
 	$('#create-plan')
 		.button()
 		.click(function() {
@@ -209,48 +210,7 @@ $(document).ready( function() {
 
     $('#dialog').dialog({ autoOpen: false, minHeight: 300, width:700, height:500 });
     
-    $('.viewServiceScenarioLink').each( function() {
-        $(this).click( function() {
-        	var scenarioId = this.id.split("_")[1];
-            var serviceId = this.id.split("_")[2];
-            $.ajax({
-                type: "GET",
-                dataType: 'json',
-                url: "<c:url value="/view/scenario"/>?serviceId="+serviceId+"&scenarioId="+scenarioId,
-                success: function(data) {
-                    $('#service-name-for-scenario').text(data.serviceName);
-                	$('#scenario_name').val(data.name);
-                	$('#scenario_match').val(data.match);
-                	$('#scenario_response').val(data.response); 
-                	$('#dialog-create-scenario').dialog('open');
-                    $('#dialog-create-scenario').dialog({
-                        buttons: {
-                          "Update scenario": function() {
-                               var bValid = true;  
-                               allFields.removeClass('ui-state-error');
-                               bValid = bValid && checkLength(name,"scenario name",3,250);
-                               if (bValid) {
-                                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId, matchStringArg: match.val(),
-                                        responseMessage: responsemsg.val() } ,function(data){
-                                               console.log(data);
-                                              
-                                        }, 'json' );  
-                                   $('#view-scenario_'+scenarioId+'_' +serviceId).fadeOut(function(){ $(this).text(name.val()).fadeIn() });
-                                   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
-                                   return false;
-                                   
-                               }
-                          }, 
-                          "Close": function(){
-                              $(this).dialog('close');
-                          }
-                        }
-                  });       
-                }
-            });
-            return false;
-        });
-    });
+    
 
     $('.hideServiceScenarioLink').each( function() {
         $(this).click( function() {
