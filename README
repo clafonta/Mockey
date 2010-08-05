@@ -14,3 +14,10 @@ Features
  * Ability to 'play back' conversations for when endpoint services are not available
  * Ability to run EVERYTHING in a sandbox - your application and the endpoint webservices your application is consuming. 
 
+What is Mockey not good at?
+====================
+
+ * Large payloads used in conversations, e.g. 10MB per message
+ * Transport protocols other than HTTP, e.g. FTP. 
+ * Complicated conversations e.g. if X, then call this database, else if Y, call 'rake FOO', else make kick off Maven. 
+ * Solving everything
