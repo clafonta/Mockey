@@ -19,5 +19,5 @@ What is Mockey not good at?
 
  * Large payloads used in conversations, e.g. 10MB per message
  * Transport protocols other than HTTP, e.g. FTP. 
- * Complicated conversations e.g. if X, then call this database, else if Y, call 'rake FOO', else make kick off Maven. 
+ * Complicated conversations e.g. if X, then call this database, else if Y, call 'rake FOO', else kick-off-Maven. 
  * Solving everything
