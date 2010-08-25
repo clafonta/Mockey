@@ -1,17 +1,29 @@
 /*
- * Copyright 2008-2010 the original author or authors.
+ * This file is part of Mockey, a tool for testing application 
+ * interactions over HTTP, with a focus on testing web services, 
+ * specifically web applications that consume XML, JSON, and HTML.
+ *  
+ * Copyright (C) 2009-2010  Authors:
+ * 
+ * chad.lafontaine (chad.lafontaine AT gmail DOT com)
+ * neil.cronin (neil AT rackle DOT com) 
+ * lorin.kobashigawa (lkb AT kgawa DOT com)
+ * rob.meyer (rob AT bigdis DOT com)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 package com.mockey;
 
@@ -77,48 +89,37 @@ public class ClientExecuteProxy {
 	//
 	// }
 
-	public ResponseFromService execute(ProxyServerModel proxyServer,
-			Url realServiceUrl, String httpMethod, RequestFromClient request)
-			throws Exception {
+	public ResponseFromService execute(ProxyServerModel proxyServer, Url realServiceUrl, String httpMethod,
+			RequestFromClient request) throws Exception {
 		log.info("Request: " + String.valueOf(realServiceUrl));
-
-		// To turn off the default hostname verification on HTTPS connection;
-	    SSLUtilities.trustAllHostnames(); 
-	    // To turn off the default certificate validation on HTTPS connection.
-	    SSLUtilities.trustAllHttpsCertificates();
 
 		// general setup
 		SchemeRegistry supportedSchemes = new SchemeRegistry();
 
 		// Register the "http" and "https" protocol schemes, they are
 		// required by the default operator to look up socket factories.
-		supportedSchemes.register(new Scheme("http", PlainSocketFactory
-				.getSocketFactory(), 80));
-		supportedSchemes.register(new Scheme("https", SSLSocketFactory
-				.getSocketFactory(), 443));
+		supportedSchemes.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		supportedSchemes.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
 
 		// prepare parameters
 		HttpParams params = new BasicHttpParams();
 		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
 		HttpProtocolParams.setContentCharset(params, HTTP.ISO_8859_1);
 		HttpProtocolParams.setUseExpectContinue(params, false);
-		ClientConnectionManager ccm = new ThreadSafeClientConnManager(params,
-				supportedSchemes);
+		ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
 
 		if (proxyServer.isProxyEnabled()) {
 			// make sure to use a proxy that supports CONNECT
-			httpclient.getCredentialsProvider().setCredentials(
-					proxyServer.getAuthScope(), proxyServer.getCredentials());
-			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
-					proxyServer.getHttpHost());
+			httpclient.getCredentialsProvider()
+					.setCredentials(proxyServer.getAuthScope(), proxyServer.getCredentials());
+			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyServer.getHttpHost());
 		}
 
-		HttpHost htttphost = new HttpHost(realServiceUrl.getHost(),
-				realServiceUrl.getPort(), realServiceUrl.getScheme());
+		HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(),
+				realServiceUrl.getScheme());
 
-		HttpResponse response = httpclient.execute(htttphost, request
-				.postToRealServer(realServiceUrl, httpMethod));
+		HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl, httpMethod));
 
 		ResponseFromService responseMessage = new ResponseFromService(response);
 
