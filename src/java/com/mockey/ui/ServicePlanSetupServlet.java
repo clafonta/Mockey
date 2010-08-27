@@ -27,8 +27,11 @@
  */
 package com.mockey.ui;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,9 +96,9 @@ public class ServicePlanSetupServlet extends HttpServlet {
 		if (apiStore.getApiDocServiceByName(API_SETPLAN_SERVICE_NAME) == null) {
 			ApiDocService apiDocService = new ApiDocService();
 			apiDocService.setName(API_SETPLAN_SERVICE_NAME);
-			ServletContext context = getServletContext();
-			String contextRoot = context.getContextPath();
-			apiDocService.setServicePath(Url.getContextAwarePath("/plan/setup?type=json&action=set_plan&plan_id=", contextRoot));
+			
+			//apiDocService.setServicePath(Url.getContextAwarePath("/plan/setup?type=json&action=set_plan&plan_id=", contextRoot));
+			apiDocService.setServicePath("/plan/setup?type=json&action=set_plan&plan_id=");
 			
 			// *****************************
 			// REQUEST DEFINITION

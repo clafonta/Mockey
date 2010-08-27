@@ -21,13 +21,24 @@ request.setAttribute("api_setplan_service_name",ServicePlanSetupServlet.API_SETP
 
 %>
 <c:if test="${serviceName eq api_setplan_service_name}">
-<table>
-<tr><th>Service Plan</th><th>Configuration URL</th></tr>
-<c:forEach var="servicePlan" items="${servicePlans}"  varStatus="status">
-      <tr>
-        <td valign="top">${servicePlan.name}</td>
-        <td valign="top" class="tiny"><a href="${fullUrl}${servicePath}${servicePlan.id}">${fullUrl}${servicePath}${servicePlan.id}</a></td>
-      </tr>
-</c:forEach>
-</table>
+<c:choose>
+  <c:when test="${empty servicePlans}">
+  <div class="info_message">
+  <strong>No Service Plans defined</strong>, so there's nothing you can do with this configuration API - <i>yet</i>. Create a 
+  Service Plan first (see <a href="<c:url value="/home"/>">here</a> and then hit the <b>Plans</b> tab), and come back here. 
+  </div>
+  </c:when>
+  <c:otherwise>
+		<table class="api">
+		<tr><th>Service Plan</th><th>Configuration URL</th></tr>
+		<c:forEach var="servicePlan" items="${servicePlans}"  varStatus="status">
+		      <tr>
+		        <td valign="top">${servicePlan.name}</td>
+		        <td valign="top" class="tiny">
+		        <a href="${fullUrl}<c:url value="${servicePath}"/>${servicePlan.id}">${fullUrl}<c:url value="${servicePath}"/>${servicePlan.id}</a></td>
+		      </tr>
+		</c:forEach>
+		</table>
+    </c:otherwise>
+</c:choose>   
 </c:if>
