@@ -59,6 +59,7 @@
 	<servlet>
 		<servlet-name>ServicePlanSetupServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ServicePlanSetupServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>ScenarioUpdateServlet</servlet-name>
@@ -100,6 +101,14 @@
         <servlet-name>HistoryAjaxServlet</servlet-name>
         <servlet-class>com.mockey.ui.HistoryAjaxServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ApiDocumentationServlet</servlet-name>
+        <servlet-class>com.mockey.ui.ApiDocumentationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ApiDocumentationServlet</servlet-name>
+        <url-pattern>/service_api</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>HistoryAjaxServlet</servlet-name>
         <url-pattern>/conversation/record</url-pattern>

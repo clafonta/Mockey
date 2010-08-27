@@ -120,8 +120,13 @@ $(document).ready(function() {
 			Proxy (<span id="proxy_unknown" class="tiny" >___</span><span id="proxy_on" class="tiny" 
 			style="display: none;">ON</span><span id="proxy_off" class="tiny" style="display: none;">OFF</span>)</a></li>
 		<li><a id="flush" href="#">Flush</a></li>
-		<li <c:if test="${currentTab == 'help'}">class="current"</c:if>><a
-			href="<c:url value="/help" />">Help</a></li>
+        <li class="<c:if test="${currentTab == 'help'}">current</c:if>"><a
+            href="<c:url value="/help" />">Help  <span class="sf-sub-indicator"> &#187;</span></a>
+            <ul>
+                <li <c:if test="${currentTab == 'api'}">class="current"</c:if>><a title="Configuration API"
+                    href="<c:url value="/service_api" />">Configuration API</a></li>
+            </ul>
+        </li>
 	</ul>
 	</div>
 	<div style="border-bottom:1px solid #CCCCCC;"></div>

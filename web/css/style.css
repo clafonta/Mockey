@@ -118,6 +118,15 @@ table.history td{
 	padding: 1px;
 	
 }
+table.api{border-collapse: collapse;border: thin solid #bdbdbd; background: #FFFFFF; }
+table.api th{ border: 1px inset #DDDDDD; font-weight: bold;padding: 0.5em; }
+table.api td{
+    border: 1px inset #DDDDDD;
+    text-align: left;
+    padding: 0.5em;
+    margin:0.8em;
+    
+}
 .jqifade{
       position: absolute;
       background-color: #aaaaaa;
