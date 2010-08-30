@@ -81,7 +81,7 @@ public class JettyRunner {
         server.setHandler(contexts);
 
         server.start();
-        new Thread(new BrowserThread("http://localhost", String.valueOf(port), "/home", 0)).start();
+        new Thread(new BrowserThread("http://localhost", String.valueOf(port), "/startup.html", 0)).start();
 
         server.join();
     }
