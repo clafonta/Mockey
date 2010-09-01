@@ -25,7 +25,7 @@
         <h3>Request</h3>
         <p class="code">${apiservice.servicePath}</p>
         <h4>Parameters</h4>
-        <div class="api_message">
+        
         <table class="api">
             <tr><th>Field</th><th>Description of possible value(s)</th></tr>
             <c:forEach var="attribute" items="${apiservice.apiRequest.attributes}"  varStatus="status">
@@ -41,19 +41,17 @@
                   </tr>
             </c:forEach>
         </table>
-        </div>
+        
         <h3>Response</h3>
-        <div class="api_message">
-	        <table class="api">
-	            <tr><th>Field</th><th>Description</th></tr>
-	            <c:forEach var="attribute" items="${apiservice.apiResponse.attributes}"  varStatus="status">
-	                  <tr>
-	                    <td valign="top">${attribute.fieldName}</td>
-	                    <td valign="top">${attribute.fieldDescription}</td>
-	                  </tr>
-	            </c:forEach>
-	        </table>
-        </div>
+        <table class="api">
+            <tr><th>Field</th><th>Description</th></tr>
+            <c:forEach var="attribute" items="${apiservice.apiResponse.attributes}"  varStatus="status">
+                  <tr>
+                    <td valign="top">${attribute.fieldName}</td>
+                    <td valign="top">${attribute.fieldDescription}</td>
+                  </tr>
+            </c:forEach>
+        </table>
         <h4>Example Response</h4>
         <div class="code">${apiservice.apiResponse.example}</div> 
         

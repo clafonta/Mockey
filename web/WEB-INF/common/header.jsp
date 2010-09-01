@@ -81,7 +81,7 @@ $(document).ready(function() {
 <div id="container">
 
 <div id="logo">
-    <a href="<c:url value="/home" />" class="nav"><img style="vertical-align:middle; height:30px;" src="<c:url value="/images/logo.png" />" /><span style="vertical-align:middle;font-size:20px; text-shadow: 0px 0px 1px #FF0084;" class="nav power-link">Mockey</span></a>
+    <a href="<c:url value="/home" />" class="nav"><img style="vertical-align:middle; height:30px;" src="<c:url value="/images/logo.png" />" /><span style="vertical-align:middle;font-size:20px; text-shadow: 0px 0px 1px #FF0084;" class="nav">Mockey</span></a>
     <span style="float:right;"><img style="height:60px; " src="<c:url value="/images/silhouette.png" />" /></span>
 	<%@ include file="/WEB-INF/common/message.jsp"%>
 	<%

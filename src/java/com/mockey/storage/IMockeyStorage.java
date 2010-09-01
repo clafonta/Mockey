@@ -53,6 +53,8 @@ public interface IMockeyStorage {
 	public void deleteService(Service service);
 
 	public ServicePlan getServicePlanById(Long servicePlanId);
+	public ServicePlan getServicePlanByName(String servicePlanName);
+
 	public List<ServicePlan> getServicePlans();
 	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan);
 	public void deleteServicePlan(ServicePlan servicePlan);

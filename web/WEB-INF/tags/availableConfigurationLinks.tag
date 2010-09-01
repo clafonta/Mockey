@@ -16,8 +16,8 @@ URL serverURLObj = new URL(request.getScheme(), // http
 		request.getServerName(), // host
 		request.getServerPort(), // port
         "");
-request.setAttribute("fullUrl",serverURLObj.toString());
-request.setAttribute("api_setplan_service_name",ServicePlanSetupServlet.API_SETPLAN_SERVICE_NAME);
+request.setAttribute("baseUrl",serverURLObj.toString());
+request.setAttribute("api_setplan_service_name",ServicePlanConfigurationAPI.API_SERVICE_PLAN_CONFIGURATION_NAME);
 
 %>
 <c:if test="${serviceName eq api_setplan_service_name}">
@@ -30,15 +30,28 @@ request.setAttribute("api_setplan_service_name",ServicePlanSetupServlet.API_SETP
   </c:when>
   <c:otherwise>
 		<table class="api">
-		<tr><th>Service Plan</th><th>Configuration URL</th></tr>
-		<c:forEach var="servicePlan" items="${servicePlans}"  varStatus="status">
-		      <tr>
-		        <td valign="top">${servicePlan.name}</td>
-		        <td valign="top" class="tiny">
-		        <a href="${fullUrl}<c:url value="${servicePath}"/>${servicePlan.id}">${fullUrl}<c:url value="${servicePath}"/>${servicePlan.id}</a></td>
-		      </tr>
-		</c:forEach>
-		</table>
+        <tr><th>Service Plan</th><th>Configuration URL</th></tr>
+        
+        <c:forEach var="servicePlan" items="${servicePlans}"  varStatus="status">
+              <tr>
+                <td valign="top">${servicePlan.name}</td>
+                <td valign="top" class="tiny">
+                <c:url var="setPlanByIdUrl" value="${servicePath}">
+                    <c:param name="<%= ServicePlanConfigurationAPI.API_SETPLAN_PARAMETER_ACTION %>" value="set_plan" />
+                    <c:param name="<%= ServicePlanConfigurationAPI.API_SETPLAN_PARAMETER_TYPE %>" value="json" />
+                    <c:param name="<%= ServicePlanConfigurationAPI.API_SETPLAN_PARAMETER_PLAN_ID %>" value="${servicePlan.id}" />
+                </c:url>
+                <c:url var="setPlanByNameUrl" value="${servicePath}">
+                    <c:param name="<%= ServicePlanConfigurationAPI.API_SETPLAN_PARAMETER_ACTION %>" value="set_plan" />
+                    <c:param name="<%= ServicePlanConfigurationAPI.API_SETPLAN_PARAMETER_TYPE %>" value="json" />
+                    <c:param name="<%= ServicePlanConfigurationAPI.API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME %>" value="${servicePlan.name}" />  
+                </c:url>
+                <a href="${baseUrl}${setPlanByIdUrl}">${baseUrl}${setPlanByIdUrl}</a> OR <br/>
+                <a href="${baseUrl}${setPlanByNameUrl}">${baseUrl}${setPlanByNameUrl}</a>
+                </td>
+              </tr>
+        </c:forEach>
+        </table>
     </c:otherwise>
 </c:choose>   
 </c:if>

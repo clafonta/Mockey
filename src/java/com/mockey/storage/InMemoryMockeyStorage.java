@@ -215,6 +215,18 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public ServicePlan getServicePlanById(Long servicePlanId) {
 		return servicePlanStore.get(servicePlanId);
 	}
+	
+	@Override
+	public ServicePlan getServicePlanByName(String servicePlanName) {
+		 ServicePlan sp = null;
+		 for(ServicePlan servicePlan: this.getServicePlans()){
+			 if(servicePlan.getName()!=null && servicePlan.getName().equalsIgnoreCase(servicePlanName)){
+				 sp = servicePlan;
+				 break;
+			 }
+		 }
+		return sp;
+	}
 
 	public List<ServicePlan> getServicePlans() {
 		return this.servicePlanStore.getOrderedList();
@@ -469,4 +481,6 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			logger.debug("Unable to write file", e);
 		}
 	}
+
+	
 }

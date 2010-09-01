@@ -27,16 +27,12 @@
  */
 package com.mockey.ui;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +51,6 @@ import com.mockey.model.ApiDocService;
 import com.mockey.model.PlanItem;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
-import com.mockey.model.Url;
 import com.mockey.storage.IApiStorage;
 import com.mockey.storage.IApiStorageInMemory;
 import com.mockey.storage.IMockeyStorage;
@@ -68,7 +63,7 @@ import com.mockey.storage.StorageRegistry;
  * @author chadlafontaine
  * 
  */
-public class ServicePlanSetupServlet extends HttpServlet {
+public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanConfigurationAPI {
 
 	private static final long serialVersionUID = -2964632050151431391L;
 
@@ -76,14 +71,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
 
 	private IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private IApiStorage apiStore = IApiStorageInMemory.getInstance();
-	public static final String API_SETPLAN_SERVICE_NAME = "Service Plan (Save, Delete, Set)";
-	private static final String API_SETPLAN_PARAMETER_ACTION = "action";
-	private static final String API_SETPLAN_PARAMETER_TYPE = "type";
-
-	private static final String API_SETPLAN_PARAMETER_PLAN_ID = "plan_id";
-	private static final String API_ACTION_DELETE_PLAN = "delete_plan";
-	private static final String API_ACTION_SAVE_PLAN = "save_plan";
-	private static final String API_ACTION_SET_PLAN = "set_plan";
+	
 
 	/**
 	 * Loads up the HTTP API Documentation in memory for this service. The HTTP
@@ -91,15 +79,19 @@ public class ServicePlanSetupServlet extends HttpServlet {
 	 * is displayed to the end user via the Service API help page.
 	 */
 	public void init() throws ServletException {
+		// *****************************
 		// THIS SERVICE API DESCRIPTION CONTRACT
-
-		if (apiStore.getApiDocServiceByName(API_SETPLAN_SERVICE_NAME) == null) {
+		// *****************************
+		// This information is used in the API JSP document, used to describe
+		// how to make setting changes from a head-less client. 
+		
+		if (apiStore.getApiDocServiceByName(API_SERVICE_PLAN_CONFIGURATION_NAME) == null) {
 			ApiDocService apiDocService = new ApiDocService();
-			apiDocService.setName(API_SETPLAN_SERVICE_NAME);
-			
-			//apiDocService.setServicePath(Url.getContextAwarePath("/plan/setup?type=json&action=set_plan&plan_id=", contextRoot));
-			apiDocService.setServicePath("/plan/setup?type=json&action=set_plan&plan_id=");
-			
+			apiDocService.setName(API_SERVICE_PLAN_CONFIGURATION_NAME);
+			// TODO: We need to use a pattern matching replace e.g. ${0} ${1}
+			// with array ["a", "b"] for VALUES
+			apiDocService.setServicePath("/plan/setup");
+
 			// *****************************
 			// REQUEST DEFINITION
 			// *****************************
@@ -109,19 +101,28 @@ public class ServicePlanSetupServlet extends HttpServlet {
 			// Parameter - 'action'
 			ApiDocAttribute reqAttributeAction = new ApiDocAttribute();
 			reqAttributeAction.setFieldName(API_SETPLAN_PARAMETER_ACTION);
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_ACTION_DELETE_PLAN,
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_SETPLAN_PARAMETER_ACTION_VALUE_DELETE_PLAN,
 					"Delete the service plan definition given a valid plan_id parameter."));
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_ACTION_SAVE_PLAN,
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_SETPLAN_PARAMETER_ACTION_VALUE_SAVE_PLAN,
 					"Saves current configuration settings as a service plan definition."));
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_ACTION_SET_PLAN,
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_SETPLAN_PARAMETER_ACTION_VALUE_SET_PLAN,
 					"Sets a service plan given a valid plan_id parameter."));
 			apiDocRequest.addAttribute(reqAttributeAction);
+
 			// Parameter - 'plan_id'
 			ApiDocAttribute reqAttributePlanId = new ApiDocAttribute();
 			reqAttributePlanId.setFieldName(API_SETPLAN_PARAMETER_PLAN_ID);
 			reqAttributePlanId.addFieldValues(new ApiDocFieldValue("[identifier]", "A valid service plan identifier."));
-			reqAttributeAction.setExample("123");
+			reqAttributePlanId.setExample("123");
 			apiDocRequest.addAttribute(reqAttributePlanId);
+
+			// Parameter - 'service_plan_name'
+			ApiDocAttribute reqAttributePlanName = new ApiDocAttribute();
+			reqAttributePlanName.setFieldName(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME);
+			reqAttributePlanName.addFieldValues(new ApiDocFieldValue("[string]",
+					"The service plan name needed to create or save/update. If plan_id not provided, then this value is used to locate the service plan for setting or updating."));
+			reqAttributePlanName.setExample("The Gold Service Plan");
+			apiDocRequest.addAttribute(reqAttributePlanName);
 
 			// Parameter - 'type'
 			ApiDocAttribute reqAttributeType = new ApiDocAttribute();
@@ -140,8 +141,9 @@ public class ServicePlanSetupServlet extends HttpServlet {
 			try {
 				JSONObject jsonResponseObject = new JSONObject();
 				JSONObject jsonResultObject = new JSONObject();
-				jsonResultObject.put("success",
-						"Some informative coaching message. If success isn't a value, then maybe you have a 'fail' message.");
+				jsonResultObject
+						.put("success",
+								"Some informative coaching message. If success isn't a value, then maybe you have a 'fail' message.");
 				jsonResultObject.put("planId", "1234");
 				jsonResultObject.put("planName", "Some service name");
 				jsonResponseObject.put("result", jsonResultObject);
@@ -149,30 +151,32 @@ public class ServicePlanSetupServlet extends HttpServlet {
 			} catch (Exception e) {
 				log.error("Unabel to build a sample JSON message. ", e);
 			}
-			
+
 			// Response attribute 'planId'
 			ApiDocAttribute resAttributePlanId = new ApiDocAttribute();
 			resAttributePlanId.setFieldName("planId");
 			resAttributePlanId.setFieldDescription("Identifier of a Service Plan");
 			apiResponse.addAttribute(resAttributePlanId);
-			
+
 			// Response attribute 'planName'
 			ApiDocAttribute resAttributePlanName = new ApiDocAttribute();
 			resAttributePlanName.setFieldName("planName");
 			resAttributePlanName.setFieldDescription("Name of a Service Plan");
 			apiResponse.addAttribute(resAttributePlanName);
-			
+
 			// Response attribute 'success'
 			ApiDocAttribute resAttributeSuccess = new ApiDocAttribute();
 			resAttributeSuccess.setFieldName("success");
-			resAttributeSuccess.setFieldDescription("Successfully set, deleted, or saved a plan.  You get 'fail' or 'success', not both.");
+			resAttributeSuccess
+					.setFieldDescription("Successfully set, deleted, or saved a plan.  You get 'fail' or 'success', not both.");
 			apiResponse.addAttribute(resAttributeSuccess);
-			
+
 			ApiDocAttribute resAttributeFail = new ApiDocAttribute();
 			resAttributeFail.setFieldName("fail");
-			resAttributeFail.setFieldDescription("Failed to set, delete, or save a plan. You get 'fail' or 'success', not both.");
+			resAttributeFail
+					.setFieldDescription("Failed to set, delete, or save a plan. You get 'fail' or 'success', not both.");
 			apiResponse.addAttribute(resAttributeFail);
-			
+
 			apiDocService.setApiResponse(apiResponse);
 			apiStore.saveOrUpdateService(apiDocService);
 		}
@@ -198,16 +202,39 @@ public class ServicePlanSetupServlet extends HttpServlet {
 			ServicePlan servicePlan = null;
 			Long servicePlanId = null;
 			List<Service> allServices = store.getServices();
+			// *********************
+			// BEST EFFORT HERE. 
+			// We try to find the service by ID.
+			// If not found, we try by NAME.
+			// Otherwise, let the rest of the logic do its thing.
+			// *********************
+
 			try {
 				servicePlanId = new Long(req.getParameter(API_SETPLAN_PARAMETER_PLAN_ID));
 				servicePlan = store.getServicePlanById(servicePlanId);
 			} catch (Exception e) {
-				// Do nothing
+				if (req.getParameter(API_SETPLAN_PARAMETER_PLAN_ID) != null) {
+					log.debug("No service plan with ID '" + req.getParameter(API_SETPLAN_PARAMETER_PLAN_ID)
+							+ "' found.", e);
+				}
 			}
+			if (servicePlan == null) {
+				try {
+					String servicePlanName = req.getParameter(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME);
+					servicePlan = store.getServicePlanByName(servicePlanName.trim());
+				} catch (Exception e) {
+					if (req.getParameter(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME) != null) {
+						log.debug(
+								"No service plan with NAME '"
+										+ req.getParameter(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME) + "' found.", e);
+					}
+				}
+			}
+
 			JSONObject jsonResultObject = new JSONObject();
 
 			String action = req.getParameter(API_SETPLAN_PARAMETER_ACTION);
-			if (API_ACTION_DELETE_PLAN.equals(action)) {
+			if (API_SETPLAN_PARAMETER_ACTION_VALUE_DELETE_PLAN.equals(action)) {
 				JSONObject jsonObject = new JSONObject();
 
 				try {
@@ -226,7 +253,7 @@ public class ServicePlanSetupServlet extends HttpServlet {
 				out.flush();
 				out.close();
 				return;
-			} else if (API_ACTION_SET_PLAN.equals(action) && servicePlan != null) {
+			} else if (API_SETPLAN_PARAMETER_ACTION_VALUE_SET_PLAN.equals(action) && servicePlan != null) {
 				JSONObject jsonObject = new JSONObject();
 
 				try {
@@ -246,24 +273,47 @@ public class ServicePlanSetupServlet extends HttpServlet {
 				out.flush();
 				out.close();
 				return;
-			} else if (API_ACTION_SAVE_PLAN.equals(action)) {
+			} else if (API_SETPLAN_PARAMETER_ACTION_VALUE_SAVE_PLAN.equals(action)) {
 
 				if (servicePlan == null) {
 					servicePlan = new ServicePlan();
 				}
-				servicePlan.setName(req.getParameter("servicePlanName"));
-				ServicePlan savedServicePlan = createOrUpdatePlan(servicePlan);
-				PrintWriter out = resp.getWriter();
-				// Map<String, String> successMap = new HashMap<String,
-				// String>();
-				String msg = "Service plan " + servicePlan.getName() + " saved";
-				Util.saveSuccessMessage(msg, req); // For redirect
-				JSONObject jsonObject = new JSONObject();
+				// ***************************
+				// LET'S PREVENT EMPTY PLAN NAMES
+				// ***************************
 
+				String servicePlanName = req.getParameter(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME);
+				if (servicePlanName == null) {
+					// If possible, carry over the name from an existing Plan.
+					servicePlanName = servicePlan.getName();
+				}
+				// If all fails, inject a name.
+				if (servicePlanName == null || servicePlanName.trim().length() == 0) {
+					servicePlanName = "Plan (auto-generated-name)";
+				}
+				servicePlan.setName(servicePlanName.trim());
+
+				// ***************************
+				// SAVE/UPDATE THE PLAN
+				// ***************************
+				ServicePlan savedServicePlan = createOrUpdatePlan(servicePlan);
+
+				// ***************************
+				// SAVE/UPDATE THE PLAN
+				// ***************************
+				PrintWriter out = resp.getWriter();
+				String msg = "Service plan " + servicePlan.getName() + " saved";
+
+				// HACK: For redirect IF JavaScript decides to (if type is not
+				// JSON)
+				if (!"json".equalsIgnoreCase(req.getParameter(API_SETPLAN_PARAMETER_TYPE))) {
+					Util.saveSuccessMessage(msg, req);
+				}
+				// JSON response
+				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("success", msg);
 				jsonObject.put("planid", "" + savedServicePlan.getId());
 				jsonObject.put("planName", "" + savedServicePlan.getName());
-
 				jsonResultObject.put("result", jsonObject);
 				out.println(jsonResultObject.toString());
 				out.flush();

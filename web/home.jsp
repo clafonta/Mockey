@@ -10,24 +10,49 @@
 $(document).ready( function() {
 	$("#tabs").tabs();
 	
-	$('#create-plan')
-		.button()
-		.click(function() {
-			
-			var servicePlanName = $('input[name=servicePlanName]').val()
-			$.post('<c:url value="/plan/setup"/>', { action: 'save_plan', servicePlanName: servicePlanName } ,function(data){
-				   //console.log(data);
-				   if(data.result.success && data.result.planid){
-					   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
-					   // We redirect here. Because appending HTML would require we append this 
-					   // click function, (which appends to itself, not good). Looping here.
-					   // We redirect for now. 
-					   document.location="<c:url value="/home" />"; 
-					   
-				    }
-			}, 'json' );
-		});
-
+    $('.invisible-focusable').addClass("invisiblefield");  
+	$('.invisible-focusable').focus(function() {  
+        $(this).removeClass("invisiblefield").addClass("invisiblefiled-in-focus");  
+    });  
+	$('.invisible-focusable').blur(function() {  
+        $(this).removeClass("invisiblefiled-in-focus").addClass("invisiblefield");   
+    }); 
+    
+	$('.createPlanLink').each( function() {
+        $(this).click( function() {
+            // Clear input
+             
+            $('#dialog-create-plan').dialog('open');
+                $('#dialog-create-plan').dialog({
+                    buttons: {
+                      "Create plan": function() {
+                           var bValid = true;  
+                           if (bValid) {
+                        	   var servicePlanName = $('input[name=service_plan_name]').val();  
+                        	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName } ,function(data){
+                                   //console.log(data);
+                                   if(data.result.success && data.result.planid){
+                                       $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+                                       // We redirect here. Because appending HTML would require we append this 
+                                       // click function, (which appends to itself, not good). Looping here.
+                                       // We redirect for now. 
+                                       $(this).dialog('close');              
+                                       document.location="<c:url value="/home" />"; 
+                                       
+                                    }
+                            }, 'json' );
+                               
+                           }
+                      }, 
+                      Cancel: function(){
+                          $(this).dialog('close');
+                      }
+                    }
+              }); 
+              
+              return false;
+            });
+        });
 	
 	$('.delete-plan').each( function() {
 		$(this).click( function() {
@@ -46,16 +71,39 @@ $(document).ready( function() {
 	$('.set-plan').each( function() {
 		$(this).click( function() {
 			var planId = this.id.split("_")[1];
-			$.post('<c:url value="/plan/setup"/>', { action: 'set_plan', plan_id: planId } ,function(data){
+			$.post('<c:url value="/plan/setup"/>', { action: 'set_plan', plan_id: planId, type: 'redirect' } ,function(data){
 				  
 				   if(data.result.success){
-					   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					   //$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 					   document.location="<c:url value="/home" />"; 
 				    }
 			}, 'json' );
 			
 		});
 	});
+
+	$('.save-plan').each( function() {
+        $(this).click( function() {
+            var planId = this.id.split("_")[1];
+            var servicePlanName = $('input[name=servicePlanName_'+planId+']').val()
+            
+            $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', plan_id: planId, service_plan_name: servicePlanName, type: 'json' } ,function(data){
+                  
+                   if(data.result.success){
+                       $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+                    }
+            }, 'json' );
+            
+        });
+    });
+
+	$("#dialog-create-plan").dialog({
+        resizable: true,
+        height:200,
+        width:400,
+        modal: false,
+        autoOpen: false
+    });
 
     $("#dialog-delete-service-confirm").dialog({
         resizable: false,
@@ -223,6 +271,17 @@ $(document).ready( function() {
     <div id="main">
     
         <%@ include file="/WEB-INF/common/message.jsp" %>
+        
+        <!-- SERVICE PLAN CREATE DIALOG -->
+        <div id="dialog-create-plan" title="Service Plan">
+            <p>
+            <fieldset>
+                <label for="service_plan_name">Service Plan name</label>
+                <input type="text" name="service_plan_name" id="service_plan_name" class="text ui-widget-content ui-corner-all" />
+            </fieldset> 
+            </p>
+        </div>
+        
         <c:choose>
 	        <c:when test="${!empty services}">    
 	          <c:choose>
@@ -245,7 +304,8 @@ $(document).ready( function() {
 									<li><a href="#tabs-2">Plans</a></li>
 								</ul>
 							  	<div id="tabs-1">
-							  	  <div class="info_message tiny"/>
+							  	  <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
+							  	  <div class="info_message tiny">
 							  	  Click one of the following buttons to set 
 							  	  response type for <strong>each service</strong>.
 								  <p> 
@@ -280,31 +340,33 @@ $(document).ready( function() {
 								    </div>
 							    </div>
 							    <div id="tabs-2">
+							        <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
 								    <div class="scroll">
-								        <div class="parentform">
-								        <fieldset>
-								        To <strong>create a plan</strong>, go to the Services tab, make your settings, and
-								        then tab to here to create (or save). 
-								        <p><input type="text" style="width:90%;" id="servicePlanName" class="text ui-corner-all ui-widget-content" name="servicePlanName"></input></p>
-								        <p><button id="create-plan">Create plan</button></p>
-								        </fieldset>
-								        
-								        </div>
-								        <p>To <strong>set a plan</strong>, click on the plan below. You will be redirected to the Services tab.  
-								        </p>
 								         <c:if test="${empty plans}">
 									      <div class="info_message" id="no-plans-msg"> No plans here - yet! You should make one. </div>
 									    </c:if>
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
-			                                <div id="plan_${plan.id}" class="parentform" >
-			                                <mockey:slug text="${plan.name}" maxLength="40"/>
+			                                <div id="plan_${plan.id}" class="childform" >
 			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
-			                                <div><a href="#" id="set-plan_${plan.id}" class="set-plan tiny">set me as the plan</a></div>
+			                                
+			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
+			                                <div>  
+			                                  <a href="#" id="set-plan_${plan.id}" class="set-plan tiny">Set As Plan</a> |
+			                                  <a href="#" id="save-plan_${plan.id}" class="save-plan tiny">Save/Update</a></div>
 			                                </div>
 									    </c:forEach>
 									    <div class="tiny" style="padding-top:1em;" id="no-plans-msg"><a href="<c:url value="help#plan"/>">What's a plan?</a></div>
-			                            
+			                            <div class="info_message tiny">
+			                            <p>To <strong>create a plan</strong>, go to the Services tab, make your settings, and
+                                        then tab to here to create (or save). </p>
+                                        <p>To <strong>set a plan</strong>, click on the <b>Set As Plan</b> link. Note: you 
+                                        will be redirected to the Services tab. </p>
+                                        <p>
+                                        To <strong>update a plan</strong>, go to the <b>Services</b> tab, make the 
+                                        necessary updates you need and return here. Clicking <b>Save/Update</b> will 
+                                        update the service plan name and settings. </p>
+                                        </div>
 									    </div>
 									   
 							    	</div>
@@ -377,7 +439,7 @@ $(document).ready( function() {
                                    <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
                                    
                                    <div class="service-label border-top" style="margin-top:1em;">Select a static scenario:
-                                   <span style="float:right;"><a href="#" class="createScenarioLink power-link" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
+                                   <span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
                                    <div>
                                    <ul id="scenario-list_${mockservice.id}" class="simple group">
