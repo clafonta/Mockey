@@ -46,25 +46,26 @@ public class Util {
 	public static final String ERROR = "errorMessages";
 
 	/**
+	 * Saves the LAST message.
 	 * 
 	 * @param message
 	 * @param req
 	 */
-	@SuppressWarnings("unchecked")
 	private static void save(String message, String messageKey,
 			HttpServletRequest req) {
-
-		List<String> msgs = (List<String>) req.getSession().getAttribute(
-				messageKey);
-		if (msgs == null) {
-			msgs = new ArrayList<String>();
-		}
+		
+		// HISTORY: This method use to save a List of messages
+		// for the purpose to display to the end user. But since
+		// this solution can be tweak by a head-less client, 
+		// the list of informative messages to the user became 
+		// perplexing. 
+		List<String> msgs = new ArrayList<String>();
 		msgs.add(message);
 		req.getSession().setAttribute(messageKey, msgs);
 	}
 
 	/**
-	 * 
+	 * Saves the last (most recent) error message. 
 	 * @param message
 	 * @param req
 	 */
@@ -72,6 +73,11 @@ public class Util {
 		save(message, ERROR, req);
 	}
 
+	/**
+	 * Saves the last (most recent) success message. 
+	 * @param message
+	 * @param req
+	 */
 	public static void saveSuccessMessage(String message, HttpServletRequest req) {
 		save(message, SUCCESS, req);
 
@@ -165,6 +171,7 @@ public class Util {
 	 * @param objectMap
 	 * 
 	 * @return
+	 * @deprecated - Should use JSONObject API, not this crappola.
 	 */
 	public static String getJSON(Map<String, String> objectMap) {
 		StringBuffer returnErrorMap = new StringBuffer();

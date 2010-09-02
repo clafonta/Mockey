@@ -46,7 +46,9 @@ $(document).ready( function() {
                       }
                     }
               }); 
-              
+              // Reset the size.
+              $('#dialog-create-plan').dialog({height: 250 });
+                
               return false;
             });
         });
@@ -54,14 +56,27 @@ $(document).ready( function() {
 	$('.delete-plan').each( function() {
 		$(this).click( function() {
 			var planId = this.id.split("_")[1];
-			$.post('<c:url value="/plan/setup"/>', { action: 'delete_plan', plan_id: planId } ,function(data){
-				  
-				   if(data.result.success){
-					   $('#deleted').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
-					   $('#plan_'+planId).hide();
-				    }
-			}, 'json' );
-			
+			$('#dialog-delete-service-plan-confirm').dialog('open');
+            $('#dialog-delete-service-plan-confirm').dialog({
+                buttons: {
+                  "Delete Plan": function() {
+                      // Post the DELETE call.  
+                      $.post('<c:url value="/plan/setup"/>', { action: 'delete_plan', plan_id: planId } ,function(data){
+			                   if(data.result.success){
+			                       $('#deleted').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+			                       $('#plan_'+planId).hide();
+			                    }
+			            }, 'json' );
+                      $(this).dialog('close');                      
+                  }, 
+                  Cancel: function(){
+                      $(this).dialog('close');
+                  }
+                }
+          }); 
+          $('#dialog-delete-service-plan-confirm').dialog({height: 200 });
+            
+          return false;
 		});
 	});
 
@@ -71,7 +86,6 @@ $(document).ready( function() {
 			$.post('<c:url value="/plan/setup"/>', { action: 'set_plan', plan_id: planId, type: 'redirect' } ,function(data){
 				  
 				   if(data.result.success){
-					   //$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 					   document.location="<c:url value="/home" />"; 
 				    }
 			}, 'json' );
@@ -96,14 +110,6 @@ $(document).ready( function() {
     });
 
 	
-
-    $("#dialog-delete-service-confirm").dialog({
-        resizable: false,
-        height:120,
-        modal: false,
-        autoOpen: false
-    });
-	
     $('.tiny_service_delete').each( function() {
         $(this).click( function() {
             var serviceId = this.id.split("_")[1];
@@ -118,6 +124,8 @@ $(document).ready( function() {
 	                  }
 	                }
 	          }); 
+	          $('#dialog-delete-service-confirm').dialog({height: 200 });
+			      
 	          return false;
             });
         });
@@ -138,7 +146,6 @@ $(document).ready( function() {
                           // Hide the info. 
                           $('#service-scenario-info_'+scenarioId + '_'+ serviceId ).hide();
                           $(this).dialog('close');
-                          $(this).dialog( "destroy" )
                           $('#deleted').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
                           
                       }, 
@@ -147,6 +154,8 @@ $(document).ready( function() {
                       }
                     }
               }); 
+              $('#dialog-delete-scenario-confirm').dialog({height: 200 });
+                
               return false;
             });
         });
@@ -244,9 +253,11 @@ $(document).ready( function() {
 	});
 
     $('#dialog').dialog({ autoOpen: false, minHeight: 300, width:700, height:500 });
-    $('#dialog-delete-scenario-confirm').dialog({autoOpen: false, minHeight: 120, width: 300, height: 120, modal: false, resizable: false });
-    $("#dialog-create-plan").dialog({minHeight: 200, height:200, width: 400,  modal: false, autoOpen: false, resizable: true });
-
+    $('#dialog-delete-service-plan-confirm').dialog({autoOpen: false, height: 150, resizable: false });
+    $('#dialog-delete-scenario-confirm').dialog({autoOpen: false, minHeight: 250, width: 300, height: 120, modal: false, resizable: false });
+    $("#dialog-create-plan").dialog({minHeight: 250, height:250, width: 500,  modal: false, autoOpen: false, resizable: true });
+    $("#dialog-delete-service-confirm").dialog({ resizable: false, height: 120, modal: false, autoOpen: false });
+    
     $('.hideServiceScenarioLink').each( function() {
         $(this).click( function() {
            
@@ -336,10 +347,10 @@ $(document).ready( function() {
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
 			                                <div id="plan_${plan.id}" class="parentform" >
 			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
-			                                <p>
+			                                
 			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
-			                                </p>
-			                                <div>  
+			                                
+			                                <div style="padding-top:0.6em;">  
 			                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#"> Set As Plan </a> &nbsp;
 			                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#">Save Plan</a></div>
 			                                </div>
@@ -501,6 +512,9 @@ $(document).ready( function() {
                 </div>
                 <div id="dialog-delete-scenario-confirm" title="Delete Service Scenario">
                     <p>Are you sure you want to delete this Scenario?</p>
+                </div>
+                <div id="dialog-delete-service-plan-confirm" title="Delete Service Plan">
+                    <p>Are you sure you want to delete this Service Plan?</p>
                 </div>
                 
     </div>
