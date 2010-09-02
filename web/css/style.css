@@ -36,10 +36,10 @@ div.childform {
     -webkit-border-radius: 0.2em;
 }
 div.parentform, div.parentformselected, div.centerform {
-	padding: 0.8em;
+	padding: 0.8em 0.6em;
 	border: thin solid #bdbdbd;
-	-moz-border-radius: 0.4em;
-	-webkit-border-radius: 0.4em;
+	-moz-border-radius: 0.2em;
+	-webkit-border-radius: 0.2em;
 }
 div.parentform, div.childform {
 	border: thin solid #bdbdbd;

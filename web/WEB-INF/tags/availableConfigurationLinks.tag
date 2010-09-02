@@ -11,6 +11,7 @@
 <%
 IMockeyStorage store = StorageRegistry.MockeyStorage;
 List<ServicePlan> servicePlans = store.getServicePlans();
+servicePlans = Util.orderAlphabeticallyByServicePlanName(servicePlans);
 request.setAttribute("servicePlans",servicePlans);
 URL serverURLObj = new URL(request.getScheme(), // http
 		request.getServerName(), // host

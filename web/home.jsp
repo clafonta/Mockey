@@ -19,9 +19,7 @@ $(document).ready( function() {
     }); 
     
 	$('.createPlanLink').each( function() {
-        $(this).click( function() {
-            // Clear input
-             
+        $(this).click( function() {             
             $('#dialog-create-plan').dialog('open');
                 $('#dialog-create-plan').dialog({
                     buttons: {
@@ -30,9 +28,8 @@ $(document).ready( function() {
                            if (bValid) {
                         	   var servicePlanName = $('input[name=service_plan_name]').val();  
                         	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName } ,function(data){
-                                   //console.log(data);
                                    if(data.result.success && data.result.planid){
-                                       $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+                                       //$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
                                        // We redirect here. Because appending HTML would require we append this 
                                        // click function, (which appends to itself, not good). Looping here.
                                        // We redirect for now. 
@@ -82,6 +79,7 @@ $(document).ready( function() {
 		});
 	});
 
+
 	$('.save-plan').each( function() {
         $(this).click( function() {
             var planId = this.id.split("_")[1];
@@ -97,13 +95,7 @@ $(document).ready( function() {
         });
     });
 
-	$("#dialog-create-plan").dialog({
-        resizable: true,
-        height:200,
-        width:400,
-        modal: false,
-        autoOpen: false
-    });
+	
 
     $("#dialog-delete-service-confirm").dialog({
         resizable: false,
@@ -130,12 +122,7 @@ $(document).ready( function() {
             });
         });
 
-    $("#dialog-delete-scenario-confirm").dialog({
-        resizable: false,
-        height:120,
-        modal: false,
-        autoOpen: false
-    });
+    
     
     $('.deleteScenarioLink').each( function() {
         $(this).click( function() {
@@ -175,9 +162,9 @@ $(document).ready( function() {
 					    }
 				}, 'json' );
         });
-        
-        
      });
+
+   
     
     $('.gt').each( function() {
         $(this).click(function(){   
@@ -257,8 +244,8 @@ $(document).ready( function() {
 	});
 
     $('#dialog').dialog({ autoOpen: false, minHeight: 300, width:700, height:500 });
-    
-    
+    $('#dialog-delete-scenario-confirm').dialog({autoOpen: false, minHeight: 120, width: 300, height: 120, modal: false, resizable: false });
+    $("#dialog-create-plan").dialog({minHeight: 200, height:200, width: 400,  modal: false, autoOpen: false, resizable: true });
 
     $('.hideServiceScenarioLink').each( function() {
         $(this).click( function() {
@@ -347,13 +334,14 @@ $(document).ready( function() {
 									    </c:if>
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
-			                                <div id="plan_${plan.id}" class="childform" >
+			                                <div id="plan_${plan.id}" class="parentform" >
 			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
-			                                
+			                                <p>
 			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
+			                                </p>
 			                                <div>  
-			                                  <a href="#" id="set-plan_${plan.id}" class="set-plan tiny">Set As Plan</a> |
-			                                  <a href="#" id="save-plan_${plan.id}" class="save-plan tiny">Save/Update</a></div>
+			                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#"> Set As Plan </a> &nbsp;
+			                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#">Save Plan</a></div>
 			                                </div>
 									    </c:forEach>
 									    <div class="tiny" style="padding-top:1em;" id="no-plans-msg"><a href="<c:url value="help#plan"/>">What's a plan?</a></div>

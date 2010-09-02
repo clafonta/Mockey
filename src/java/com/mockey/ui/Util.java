@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 
 public class Util {
 
@@ -111,6 +112,30 @@ public class Util {
 		Collections.sort(services, new ServiceNameComparator());
 		
 		return services;
+	}
+	
+	/**
+	 * Returns the services list ordered alphabetically.
+	 * @param services
+	 * @return
+	 */
+	public static List<ServicePlan> orderAlphabeticallyByServicePlanName(
+			List<ServicePlan> servicePlans) {
+
+		// Custom comparator
+		class ServicePlanNameComparator implements Comparator<ServicePlan> {
+
+			public int compare(ServicePlan s1, ServicePlan s2) {
+				return s1.getName().compareToIgnoreCase(
+						s2.getName());
+
+			}
+
+		}
+		// Sort me. 
+		Collections.sort(servicePlans, new ServicePlanNameComparator());
+		
+		return servicePlans;
 	}
 	
 	/**
