@@ -105,6 +105,30 @@
         <servlet-name>ApiDocumentationServlet</servlet-name>
         <servlet-class>com.mockey.ui.ApiDocumentationServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TwistInfoSetupServlet</servlet-name>
+        <servlet-class>com.mockey.ui.TwistInfoSetupServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TwistInfoToggleServlet</servlet-name>
+        <servlet-class>com.mockey.ui.TwistInfoToggleServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TwistInfoDeleteServlet</servlet-name>
+        <servlet-class>com.mockey.ui.TwistInfoDeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TwistInfoDeleteServlet</servlet-name>
+        <url-pattern>/twisting/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TwistInfoToggleServlet</servlet-name>
+        <url-pattern>/twisting/toggle</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TwistInfoSetupServlet</servlet-name>
+        <url-pattern>/twisting/setup</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ApiDocumentationServlet</servlet-name>
         <url-pattern>/service_api</url-pattern>

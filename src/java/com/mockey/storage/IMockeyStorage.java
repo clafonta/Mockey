@@ -35,6 +35,7 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.TwistInfo;
 
 /**
  * How Mockey stores itself.
@@ -45,6 +46,12 @@ public interface IMockeyStorage {
 
 	public void deleteEverything();
 
+	public List<TwistInfo> getTwistInfoList();
+	public TwistInfo getTwistInfoById(Long id);
+	public TwistInfo getTwistInfoByName(String name);
+	public TwistInfo saveOrUpdateTwistInfo(TwistInfo twistInfo);
+	public void deleteTwistInfo(TwistInfo twistInfo);
+	
 	public Service getServiceById(Long serviceId);
 	public Service getServiceByUrl(String urlPath);
 	public List<Long> getServiceIds();
@@ -60,6 +67,8 @@ public interface IMockeyStorage {
 	public void deleteServicePlan(ServicePlan servicePlan);
 	
 	public Scenario getUniversalErrorScenario();
+	public Long getUniversalTwistInfoId();
+	public void setUniversalTwistInfoId(Long twistInfoId);
 	public void setUniversalErrorServiceId(Long serviceId);
 	public void setUniversalErrorScenarioId(Long scenarioId);
 

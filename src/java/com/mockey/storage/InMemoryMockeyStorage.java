@@ -46,6 +46,7 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 import com.mockey.storage.xml.MockeyXmlFactory;
 import com.mockey.ui.StartUpServlet;
@@ -60,11 +61,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
 	private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
 	private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
-
+	private OrderedMap<TwistInfo> twistInfoStore = new OrderedMap<TwistInfo>();
+	
 	private static Logger logger = Logger
 			.getLogger(InMemoryMockeyStorage.class);
 	private ProxyServerModel proxyInfoBean = new ProxyServerModel();
 
+	private Long univeralTwistInfoId = null;
 	private Long univeralErrorServiceId = null;
 	private Long univeralErrorScenarioId = null;
 	private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
@@ -262,6 +265,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		historyStore = new OrderedMap<FulfilledClientRequest>();
 		mockServiceStore = new OrderedMap<Service>();
 		servicePlanStore = new OrderedMap<ServicePlan>();
+		twistInfoStore = new OrderedMap<TwistInfo>();
+		this.univeralErrorServiceId = null;
+		this.univeralErrorScenarioId = null;
 		this.writeMemoryToFile();
 	}
 
@@ -482,5 +488,50 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 	}
 
-	
+	@Override
+	public List<TwistInfo> getTwistInfoList() {
+		return this.twistInfoStore.getOrderedList();
+	}
+
+	@Override
+	public TwistInfo getTwistInfoById(Long id) {
+		return (TwistInfo)this.twistInfoStore.get(id);
+	}
+
+	@Override
+	public TwistInfo getTwistInfoByName(String name) {
+		TwistInfo item = null;
+		for(TwistInfo i : getTwistInfoList()){
+			if(i.getName()!=null && i.getName().equals(name)){
+				item = i;
+				break;
+			}
+		}
+		return item;
+	}
+
+	@Override
+	public TwistInfo saveOrUpdateTwistInfo(TwistInfo twistInfo) {
+		PersistableItem item = twistInfoStore.save(twistInfo);
+		this.writeMemoryToFile();
+		return (TwistInfo) item;
+	}
+
+	@Override
+	public void deleteTwistInfo(TwistInfo twistInfo) {
+		if (twistInfo != null) {
+			this.twistInfoStore.remove(twistInfo.getId());
+			this.writeMemoryToFile();
+		}
+	}
+
+	@Override
+	public Long getUniversalTwistInfoId() {
+		return this.univeralTwistInfoId;
+	}
+
+	@Override
+	public void setUniversalTwistInfoId(Long twistInfoId) {
+		this.univeralTwistInfoId = twistInfoId;
+	}
 }

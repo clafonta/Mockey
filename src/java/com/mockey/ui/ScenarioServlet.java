@@ -29,7 +29,6 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -51,8 +50,7 @@ public class ScenarioServlet extends HttpServlet {
 	private static final long serialVersionUID = -5920793024759540668L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
-	public void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		// A Service is needed to associate the
 		// scenario to.
@@ -70,8 +68,7 @@ public class ScenarioServlet extends HttpServlet {
 		Service service = store.getServiceById(serviceId);
 
 		// DELETE scenario logic
-		if (req.getParameter("deleteScenario") != null && serviceId != null
-				&& scenarioId != null) {
+		if (req.getParameter("deleteScenario") != null && serviceId != null && scenarioId != null) {
 			try {
 
 				service.deleteScenario(scenarioId);
@@ -81,9 +78,16 @@ public class ScenarioServlet extends HttpServlet {
 				// or scenario ID were past in.
 			}
 			PrintWriter out = resp.getWriter();
-			Map<String, String> successMap = new HashMap<String, String>();
-			String resultingJSON = Util.getJSON(successMap);
-			out.println(resultingJSON);
+			JSONObject result = new JSONObject();
+			JSONObject message = new JSONObject();
+			try {
+				result.put("result", message);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			out.println(result.toString());
 			out.flush();
 			out.close();
 			return;
@@ -91,8 +95,7 @@ public class ScenarioServlet extends HttpServlet {
 
 		Scenario scenario = null;
 		try {
-			scenario = service.getScenario(new Long(req
-					.getParameter("scenarioId")));
+			scenario = service.getScenario(new Long(req.getParameter("scenarioId")));
 		} catch (Exception e) {
 			//
 		}
@@ -107,8 +110,7 @@ public class ScenarioServlet extends HttpServlet {
 		String scenarioName = req.getParameter("scenarioName");
 		if (scenarioName == null || scenarioName.trim().length() == 0) {
 			// Let's be nice and make up a name.
-			scenarioName = "Scenario for " + service.getServiceName()
-					+ "(name auto-generated)";
+			scenarioName = "Scenario for " + service.getServiceName() + "(name auto-generated)";
 		}
 		scenario.setScenarioName(scenarioName);
 
@@ -144,19 +146,18 @@ public class ScenarioServlet extends HttpServlet {
 				store.setUniversalErrorServiceId(serviceId);
 
 			} else if (store.getUniversalErrorScenario() != null
-					&& store.getUniversalErrorScenario().getId() == scenario
-							.getId()) {
+					&& store.getUniversalErrorScenario().getId() == scenario.getId()) {
 				store.setUniversalErrorScenarioId(null);
 				store.setUniversalErrorServiceId(null);
 			}
 
 			store.saveOrUpdateService(service);
 			PrintWriter out = resp.getWriter();
-			
+
 			JSONObject object = new JSONObject();
 			JSONObject resultObject = new JSONObject();
 			try {
-				
+
 				object.put("success", "Scenario updated");
 				object.put("scenarioId", scenario.getId().toString());
 				object.put("serviceId", service.getId().toString());

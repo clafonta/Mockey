@@ -37,6 +37,7 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.TwistInfo;
 
 public class TestMockeyServiceStore implements IMockeyStorage {
 
@@ -273,6 +274,49 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 	public ServicePlan getServicePlanByName(String servicePlanName) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<TwistInfo> getTwistInfoList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TwistInfo getTwistInfoById(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TwistInfo getTwistInfoByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TwistInfo saveOrUpdateTwistInfo(TwistInfo twistInfo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteTwistInfo(TwistInfo twistInfo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Long getUniversalTwistInfoId() {
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public void setUniversalTwistInfoId(Long twistInfoId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

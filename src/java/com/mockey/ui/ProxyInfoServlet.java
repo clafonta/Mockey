@@ -29,8 +29,6 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -38,18 +36,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.mockey.model.ProxyServerModel;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 public class ProxyInfoServlet extends HttpServlet {
 
-	
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-	
+
 	/**
-	 *
+	 * 
 	 * 
 	 * @param req
 	 *            basic request
@@ -61,7 +61,7 @@ public class ProxyInfoServlet extends HttpServlet {
 	 *             basic
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+
 		ProxyServerModel proxyInfo = store.getProxy();
 		req.setAttribute("proxyInfo", proxyInfo);
 
@@ -86,21 +86,28 @@ public class ProxyInfoServlet extends HttpServlet {
 
 		proxyInfo.setProxyPassword(req.getParameter("proxyPassword"));
 		proxyInfo.setProxyUsername(req.getParameter("proxyUsername"));
-		proxyInfo.setProxyUrl(req.getParameter("proxyUrl"));		
+		proxyInfo.setProxyUrl(req.getParameter("proxyUrl"));
 		String enabled = req.getParameter("proxyEnabled");
 		boolean proxyEnabled = false;
-		try{			
+		try {
 			proxyEnabled = Boolean.parseBoolean(enabled);
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		proxyInfo.setProxyEnabled(proxyEnabled);
 		store.setProxy(proxyInfo);
-		Map<String, String> successMessage = new HashMap<String, String>();
-		successMessage.put("success", "Proxy settings updated.");
-		String resultingJSON = Util.getJSON(successMessage);
+		JSONObject responseObject = new JSONObject();
+		JSONObject successMessage = new JSONObject();
+
+		try {
+			successMessage.put("success", "Proxy settings updated.");
+			responseObject.put("result", successMessage);
+
+		} catch (JSONException e) {
+
+		}
 		PrintWriter out = resp.getWriter();
-		out.println(resultingJSON);
+		out.println(responseObject.toString());
 		out.flush();
 		out.close();
 		return;

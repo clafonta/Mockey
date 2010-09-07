@@ -40,6 +40,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
@@ -107,7 +110,7 @@ public class InjectRealUrlPerServiceServlet extends HttpServlet {
 
 		String matchPattern = req.getParameter("match");
 		String[] replacementArray = req.getParameterValues("replacement[]");
-
+		JSONObject successOrFail = new JSONObject();
 		Map<String, String> statusMessage = new HashMap<String, String>();
 		if (matchPattern != null && replacementArray != null) {
 
@@ -142,15 +145,32 @@ public class InjectRealUrlPerServiceServlet extends HttpServlet {
 				store.saveOrUpdateService(service);
 			}
 
-			statusMessage.put("success", "URL injecting complete.");
+			try {
+				successOrFail.put("success", "URL injecting complete.");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else {
-			statusMessage.put("fail",
-					"You didn't pass any match or inject URL arguments.  ");
+			try {
+				successOrFail.put("fail",
+						"You didn't pass any match or inject URL arguments.  ");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
-		String resultingJSON = Util.getJSON(statusMessage);
+		JSONObject responseObject = new JSONObject();
+		
+		try {
+			responseObject.put("result", successOrFail);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		PrintWriter out = resp.getWriter();
-		out.println(resultingJSON);
+		out.println(responseObject.toString());
 		out.flush();
 		out.close();
 		return;

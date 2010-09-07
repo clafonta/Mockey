@@ -29,7 +29,9 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,45 +40,71 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mockey.model.ProxyServerModel;
+import com.mockey.model.TwistInfo;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
-public class ProxyInfoAJAXServlet extends HttpServlet {
-
-	private static final long serialVersionUID = 5503460488900643184L;
-	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+public class TwistInfoDeleteServlet extends HttpServlet implements TwistInfoConfigurationAPI{
 
 	/**
 	 * 
+	 */
+	private static final long serialVersionUID = -1116768564448626948L;
+	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+
+	
+	/**
+	 * Handles the following activities for <code>TwistInfo</code>
 	 * 
-	 * @param req
-	 *            basic request
-	 * @param resp
-	 *            basic resp
-	 * @throws ServletException
-	 *             basic
-	 * @throws IOException
-	 *             basic
 	 */
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		ProxyServerModel proxyInfo = store.getProxy();
-		PrintWriter out = resp.getWriter();
-		try {
-			JSONObject responseObject = new JSONObject();
-			JSONObject messageObject = new JSONObject();
-			messageObject.put("proxy_enabled", Boolean.toString(proxyInfo.isProxyEnabled()));
-			resp.setContentType("application/json;");
-			responseObject.put("result", messageObject);
+		String responseType = req.getParameter("response-type");
+		// If type is JSON, then respond with JSON
+		// Otherwise, direct to JSP
 
-			out.println(responseObject.toString());
-		} catch (JSONException e) {
-			throw new ServletException(e);
+		Long twistInfoId = null;
+		TwistInfo twistInfo = null;
+		try {
+			twistInfoId = new Long(req.getParameter(PARAMETER_KEY_TWIST_ID));
+			twistInfo = store.getTwistInfoById(twistInfoId);
+			store.deleteTwistInfo(twistInfo);
+		} catch (Exception e) {
+			// Do nothing. If the value doesn't exist, oh well. 
 		}
-		out.flush();
-		out.close();
-		return;
+
+		if (PARAMETER_KEY_RESPONSE_TYPE_VALUE_JSON.equalsIgnoreCase(responseType)) {
+			// ***********************
+			// BEGIN - JSON response
+			// ***********************
+			PrintWriter out = resp.getWriter();
+			try {
+				JSONObject jsonResponseObject = new JSONObject();
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("success", "Deleted");
+				jsonResponseObject.put("result", jsonObject);
+				out.println(jsonResponseObject.toString());
+
+			} catch (JSONException jsonException) {
+				throw new ServletException(jsonException);
+			}
+
+			out.flush();
+			out.close();
+			return;
+			// ***********************
+			// END - JSON response
+			// ***********************
+
+		} else {
+			List<TwistInfo> twistInfoList = store.getTwistInfoList();
+			Util.saveSuccessMessage("Deleted", req);
+			req.setAttribute("twistInfoList", twistInfoList);
+			RequestDispatcher dispatch = req.getRequestDispatcher("/twistinfo_setup.jsp");
+			dispatch.forward(req, resp);
+			return;
+		}
+
 	}
 
 }
