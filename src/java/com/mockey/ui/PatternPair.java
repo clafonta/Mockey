@@ -9,7 +9,7 @@ public class PatternPair {
 
 	private String origination;
 	private String destination;
-
+	public PatternPair(){}
 	public PatternPair(String origination, String destination) {
 		this.origination = origination;
 		this.destination = destination;

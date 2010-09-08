@@ -100,6 +100,8 @@ public class TwistInfoDeleteServlet extends HttpServlet implements TwistInfoConf
 			List<TwistInfo> twistInfoList = store.getTwistInfoList();
 			Util.saveSuccessMessage("Deleted", req);
 			req.setAttribute("twistInfoList", twistInfoList);
+			req.setAttribute("twistInfoIdEnabled", store.getUniversalTwistInfoId());
+
 			RequestDispatcher dispatch = req.getRequestDispatcher("/twistinfo_setup.jsp");
 			dispatch.forward(req, resp);
 			return;

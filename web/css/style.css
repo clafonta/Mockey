@@ -237,6 +237,20 @@ padding: 8px;
     color:yellow;
     padding: 0.2em;
 }
+.configuration-info {
+    text-align: right;
+    padding: 0.2em; 
+    margin-left: 0.8em;
+     border: thin solid #EEEEEE;
+    -moz-border-radius: 0.2em;
+    -webkit-border-radius: 0.2em;
+    
+}
+.configuration-info {background-color:#FFFFE7;}
+.configuration-info a:link {text-decoration: none;}
+.configuration-info a:visited {text-decoration: none;}
+.configuration-info a:active {text-decoration: none;}
+.configuration-info a:hover {text-decoration: underline;}
 
 .power-link a:link {color:#FF0084;}
 .power-link a:visited {text-decoration: none;color:#FF0084;}

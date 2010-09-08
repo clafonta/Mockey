@@ -82,16 +82,12 @@
 		<servlet-class>com.mockey.server.RedoRequestServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>ProxyInfoAJAXServlet</servlet-name>
-		<servlet-class>com.mockey.ui.ProxyInfoAJAXServlet</servlet-class>
+		<servlet-name>ConfigurationInfoAJAXServlet</servlet-name>
+		<servlet-class>com.mockey.ui.ConfigurationInfoAJAXServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>ServiceMergeServlet</servlet-name>
 		<servlet-class>com.mockey.ui.ServiceMergeServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>InjectRealUrlPerServiceServlet</servlet-name>
-		<servlet-class>com.mockey.ui.InjectRealUrlPerServiceServlet</servlet-class>
 	</servlet>
 	<servlet>
         <servlet-name>ScenarioViewAjaxServlet</servlet-name>
@@ -142,16 +138,12 @@
         <url-pattern>/view/scenario</url-pattern>
     </servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>InjectRealUrlPerServiceServlet</servlet-name>
-		<url-pattern>/inject</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
 		<servlet-name>ServiceMergeServlet</servlet-name>
 		<url-pattern>/merge</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>ProxyInfoAJAXServlet</servlet-name>
-		<url-pattern>/proxystatus</url-pattern>
+		<servlet-name>ConfigurationInfoAJAXServlet</servlet-name>
+		<url-pattern>/configuration/info</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>RedoRequestServlet</servlet-name>

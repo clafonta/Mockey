@@ -27,11 +27,19 @@
  */
 package com.mockey.storage.xml;
 
-import com.mockey.model.*;
-import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.InMemoryMockeyStorage;
 import org.apache.commons.digester.Digester;
 import org.xml.sax.InputSource;
+
+import com.mockey.model.PlanItem;
+import com.mockey.model.ProxyServerModel;
+import com.mockey.model.Scenario;
+import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
+import com.mockey.model.TwistInfo;
+import com.mockey.model.Url;
+import com.mockey.storage.IMockeyStorage;
+import com.mockey.storage.InMemoryMockeyStorage;
+import com.mockey.ui.PatternPair;
 
 /**
  * This class consumes the mock service definitions file and saves it to the
@@ -49,6 +57,9 @@ public class MockeyXmlFileConfigurationParser {
     private final static String SCENARIO = SERVICE + "/scenario";
     private final static String PLAN = ROOT + "/service_plan";
     private final static String PLAN_ITEM = PLAN + "/plan_item";
+    private final static String TWIST_CONFIG = ROOT + "/twist_config";
+    private final static String TWIST_CONFIG_ITEM = TWIST_CONFIG + "/twist_pattern";
+
     private final static String SCENARIO_MATCH = SCENARIO + "/scenario_match";
     private final static String SCENARIO_REQUEST = SCENARIO + "/scenario_request";
     private final static String SCENARIO_RESPONSE = SCENARIO + "/scenario_response";
@@ -62,6 +73,7 @@ public class MockeyXmlFileConfigurationParser {
 
         digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");   
         digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");   
+        digester.addSetProperties(ROOT, "universal_twist_info_id", "universalTwistInfoId");   
 
         digester.addObjectCreate(PROXYSERVER, ProxyServerModel.class);
         digester.addSetProperties(PROXYSERVER, "proxy_url", "proxyUrl");
@@ -85,7 +97,6 @@ public class MockeyXmlFileConfigurationParser {
         digester.addSetNext(SERVICE, "saveOrUpdateService");
 
         digester.addObjectCreate(SERVICE_REAL_URL, Url.class);
-        //digester.addBeanPropertySetter(SERVICE_REAL_URL, "url");
         digester.addSetProperties(SERVICE_REAL_URL, "url", "url");
         digester.addSetNext(SERVICE_REAL_URL, "saveOrUpdateRealServiceUrl");
         
@@ -109,6 +120,21 @@ public class MockeyXmlFileConfigurationParser {
         digester.addSetProperties(PLAN_ITEM, "scenario_id", "scenarioId");
         digester.addSetProperties(PLAN_ITEM, "service_response_type", "serviceResponseType");
         digester.addSetNext(PLAN_ITEM, "addPlanItem");
+        
+        // TWIST CONFIGURATION
+        digester.addObjectCreate(TWIST_CONFIG, TwistInfo.class);
+        digester.addSetProperties(TWIST_CONFIG, "name", "name");//     
+        digester.addSetProperties(TWIST_CONFIG, "id", "id");
+		digester.addSetNext(TWIST_CONFIG, "saveOrUpdateTwistInfo");
+        digester.addObjectCreate(TWIST_CONFIG_ITEM, PatternPair.class);
+        digester.addSetProperties(TWIST_CONFIG_ITEM, "origination", "origination");
+        digester.addSetProperties(TWIST_CONFIG_ITEM, "destination", "destination");
+        digester.addSetNext(TWIST_CONFIG_ITEM, "addPatternPair");
+
+
+
+
+
         
         IMockeyStorage c = (IMockeyStorage) digester.parse(inputSource);
         return c;

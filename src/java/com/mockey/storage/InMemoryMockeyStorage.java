@@ -533,5 +533,6 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	@Override
 	public void setUniversalTwistInfoId(Long twistInfoId) {
 		this.univeralTwistInfoId = twistInfoId;
+		this.writeMemoryToFile();
 	}
 }

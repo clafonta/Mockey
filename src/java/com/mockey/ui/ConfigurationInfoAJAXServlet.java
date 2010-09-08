@@ -39,10 +39,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mockey.model.ProxyServerModel;
+import com.mockey.model.TwistInfo;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
-public class ProxyInfoAJAXServlet extends HttpServlet {
+public class ConfigurationInfoAJAXServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
@@ -67,6 +68,16 @@ public class ProxyInfoAJAXServlet extends HttpServlet {
 			JSONObject responseObject = new JSONObject();
 			JSONObject messageObject = new JSONObject();
 			messageObject.put("proxy_enabled", Boolean.toString(proxyInfo.isProxyEnabled()));
+			Long twistInfoId = store.getUniversalTwistInfoId();
+			TwistInfo twistInfo = store.getTwistInfoById(twistInfoId);
+			if (twistInfo != null) {
+				messageObject.put("twist_enabled", true);
+				messageObject.put("twist-id", twistInfo.getId());
+				messageObject.put("twist-name", twistInfo.getName());
+
+			} else {
+				messageObject.put("twist_enabled", false);
+			}
 			resp.setContentType("application/json;");
 			responseObject.put("result", messageObject);
 
@@ -78,5 +89,4 @@ public class ProxyInfoAJAXServlet extends HttpServlet {
 		out.close();
 		return;
 	}
-
 }

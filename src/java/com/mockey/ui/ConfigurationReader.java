@@ -41,6 +41,7 @@ import org.xml.sax.SAXParseException;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -67,8 +68,7 @@ public class ConfigurationReader {
 	 * @throws SAXException
 	 * @throws SAXParseException
 	 */
-	public void inputFile(File file) throws IOException, SAXParseException,
-			SAXException {
+	public void inputFile(File file) throws IOException, SAXParseException, SAXException {
 		InputStream is = new FileInputStream(file);
 
 		long length = file.length();
@@ -83,15 +83,13 @@ public class ConfigurationReader {
 			// Read in the bytes
 			int offset = 0;
 			int numRead = 0;
-			while (offset < bytes.length
-					&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
 				offset += numRead;
 			}
 
 			// Ensure all the bytes have been read in
 			if (offset < bytes.length) {
-				throw new IOException("Could not completely read file "
-						+ file.getName());
+				throw new IOException("Could not completely read file " + file.getName());
 			}
 
 			// Close the input stream and return bytes
@@ -110,31 +108,24 @@ public class ConfigurationReader {
 	 * @throws SAXException
 	 * @throws SAXParseException
 	 */
-	public ServiceMergeResults loadConfiguration(byte[] data)
-			throws IOException, SAXParseException, SAXException {
+	public ServiceMergeResults loadConfiguration(byte[] data) throws IOException, SAXParseException, SAXException {
 		ServiceMergeResults mergeResults = new ServiceMergeResults();
 
 		String strXMLDefintion = new String(data);
 		MockeyXmlFileConfigurationReader msfr = new MockeyXmlFileConfigurationReader();
-		IMockeyStorage mockServiceStoreTemporary = msfr
-				.readDefinition(strXMLDefintion);
+		IMockeyStorage mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
 		// PROXY SETTINGs
 		store.setProxy(mockServiceStoreTemporary.getProxy());
 
 		// UNIVERSAL RESPONSE SETTINGS
-		if (store.getUniversalErrorScenario() != null
-				&& mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
-			mergeResults
-					.addConflictMsg("Universal error message already defined with name '"
-							+ store.getUniversalErrorScenario()
-									.getScenarioName() + "'");
+		if (store.getUniversalErrorScenario() != null && mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
+			mergeResults.addConflictMsg("Universal error message already defined with name '"
+					+ store.getUniversalErrorScenario().getScenarioName() + "'");
 		} else if (store.getUniversalErrorScenario() == null
 				&& mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
 
-			store.setUniversalErrorScenarioId(mockServiceStoreTemporary
-					.getUniversalErrorScenario().getId());
-			store.setUniversalErrorServiceId(mockServiceStoreTemporary
-					.getUniversalErrorScenario().getServiceId());
+			store.setUniversalErrorScenarioId(mockServiceStoreTemporary.getUniversalErrorScenario().getId());
+			store.setUniversalErrorServiceId(mockServiceStoreTemporary.getUniversalErrorScenario().getServiceId());
 			mergeResults.addAdditionMsg("Universal error response defined.");
 
 		}
@@ -151,27 +142,19 @@ public class ConfigurationReader {
 		// 2) NO MATCHING MOCK URL
 		// If there is no matching service URL, then create a new
 		// service and associated scenarios.
-		List<Service> uploadedServices = mockServiceStoreTemporary
-				.getServices();
-		Iterator<Service> iter2 = uploadedServices.iterator();
-		while (iter2.hasNext()) {
-			Service uploadedServiceBean = (Service) iter2.next();
+		for (Service uploadedServiceBean : mockServiceStoreTemporary.getServices()) {
 			List<Service> serviceBeansInMemory = store.getServices();
 			Iterator<Service> iter3 = serviceBeansInMemory.iterator();
 			boolean existingServiceWithMatchingMockUrl = false;
 			Service inMemoryServiceBean = null;
 			while (iter3.hasNext()) {
 				inMemoryServiceBean = (Service) iter3.next();
-				Url firstMatchingUrl = inMemoryServiceBean
-						.getFirstMatchingRealServiceUrl(uploadedServiceBean);
+				Url firstMatchingUrl = inMemoryServiceBean.getFirstMatchingRealServiceUrl(uploadedServiceBean);
 				if (firstMatchingUrl != null) {
 					existingServiceWithMatchingMockUrl = true;
-					mergeResults
-							.addConflictMsg("Service '"
-									+ uploadedServiceBean.getServiceName()
-									+ "' not created; will try to merge into existing service labeled '"
-									+ inMemoryServiceBean.getServiceName()
-									+ "' ");
+					mergeResults.addConflictMsg("Service '" + uploadedServiceBean.getServiceName()
+							+ "' not created; will try to merge into existing service labeled '"
+							+ inMemoryServiceBean.getServiceName() + "' ");
 					break;
 				}
 			}
@@ -179,23 +162,22 @@ public class ConfigurationReader {
 				// We null it, to not stomp on any services
 				uploadedServiceBean.setId(null);
 				store.saveOrUpdateService(uploadedServiceBean);
-				mergeResults.addAdditionMsg("Service '"
-						+ uploadedServiceBean.getServiceName() + "' created. ");
+				mergeResults.addAdditionMsg("Service '" + uploadedServiceBean.getServiceName() + "' created. ");
 
 			} else {
 				// Just merge scenarios per matching services
-				mergeResults = mergeServices(uploadedServiceBean,
-						inMemoryServiceBean, mergeResults);
+				mergeResults = mergeServices(uploadedServiceBean, inMemoryServiceBean, mergeResults);
 			}
 
 		}
 		// PLANS
-		List<ServicePlan> servicePlans = mockServiceStoreTemporary
-				.getServicePlans();
-		Iterator<ServicePlan> iter3 = servicePlans.iterator();
-		while (iter3.hasNext()) {
-			ServicePlan servicePlan = iter3.next();
+		for (ServicePlan servicePlan : mockServiceStoreTemporary.getServicePlans()) {
 			store.saveOrUpdateServicePlan(servicePlan);
+		}
+		
+		// TWIST CONFIGURATION
+		for(TwistInfo twistInfo:mockServiceStoreTemporary.getTwistInfoList() ){
+			store.saveOrUpdateTwistInfo(twistInfo);
 		}
 
 		return mergeResults;
@@ -208,17 +190,15 @@ public class ConfigurationReader {
 	 * @param readResults
 	 * @return
 	 */
-	public ServiceMergeResults mergeServices(Service uploadedServiceBean,
-			Service inMemoryServiceBean, ServiceMergeResults readResults) {
+	public ServiceMergeResults mergeServices(Service uploadedServiceBean, Service inMemoryServiceBean,
+			ServiceMergeResults readResults) {
 		if (uploadedServiceBean != null && inMemoryServiceBean != null) {
 			// Merge Scenarios
 			if (readResults == null) {
 				readResults = new ServiceMergeResults();
 			}
-			Iterator<Scenario> uIter = uploadedServiceBean.getScenarios()
-					.iterator();
-			Iterator<Scenario> mIter = inMemoryServiceBean.getScenarios()
-					.iterator();
+			Iterator<Scenario> uIter = uploadedServiceBean.getScenarios().iterator();
+			Iterator<Scenario> mIter = inMemoryServiceBean.getScenarios().iterator();
 			while (uIter.hasNext()) {
 				Scenario uploadedScenario = (Scenario) uIter.next();
 				boolean existingScenario = false;
@@ -234,15 +214,13 @@ public class ConfigurationReader {
 					uploadedScenario.setServiceId(inMemoryServiceBean.getId());
 					inMemoryServiceBean.saveOrUpdateScenario(uploadedScenario);
 					store.saveOrUpdateService(inMemoryServiceBean);
-					readResults.addAdditionMsg("Scenario '"
-							+ uploadedScenario.getScenarioName()
-							+ "' added to service '"
-							+ inMemoryServiceBean.getServiceName() + "' ");
+					readResults.addAdditionMsg("Scenario '" + uploadedScenario.getScenarioName()
+							+ "' added to service '" + inMemoryServiceBean.getServiceName() + "' ");
 				} else {
-					readResults.addConflictMsg("Scenario '"
-							+ mBean.getScenarioName()
-							+ "' not added, already defined in service '"
-							+ inMemoryServiceBean.getServiceName() + "' ");
+					readResults
+							.addConflictMsg("Scenario '" + mBean.getScenarioName()
+									+ "' not added, already defined in service '"
+									+ inMemoryServiceBean.getServiceName() + "' ");
 				}
 
 			}

@@ -102,6 +102,7 @@ public class TwistInfoSetupServlet extends HttpServlet implements TwistInfoConfi
 
 		} else {
 			req.setAttribute("twistInfoList", twistInfoList);
+			req.setAttribute("twistInfoIdEnabled", store.getUniversalTwistInfoId());
 			RequestDispatcher dispatch = req.getRequestDispatcher("/twistinfo_setup.jsp");
 			dispatch.forward(req, resp);
 			return;
@@ -187,6 +188,8 @@ public class TwistInfoSetupServlet extends HttpServlet implements TwistInfoConfi
 		} else {
 			List<TwistInfo> twistInfoList = store.getTwistInfoList();
 			req.setAttribute("twistInfoList", twistInfoList);
+			req.setAttribute("twistInfoIdEnabled", store.getUniversalTwistInfoId());
+
 			RequestDispatcher dispatch = req.getRequestDispatcher("/twistinfo_setup.jsp");
 			dispatch.forward(req, resp);
 			return;

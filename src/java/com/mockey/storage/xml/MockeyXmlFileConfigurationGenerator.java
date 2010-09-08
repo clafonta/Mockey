@@ -39,20 +39,24 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
+import com.mockey.ui.PatternPair;
 
 /**
- * Builds DOM representing Mockey Service configurations. 
+ * Builds DOM representing Mockey Service configurations.
+ * 
  * @author chad.lafontaine
- *
+ * 
  */
 public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 	/** Basic logger */
-	//private static Logger logger = Logger.getLogger(MockeyXmlFileConfigurationGenerator.class);
+	// private static Logger logger =
+	// Logger.getLogger(MockeyXmlFileConfigurationGenerator.class);
 
 	/**
-	 * Returns an element representing a mock service definitions file in XML. 
+	 * Returns an element representing a mock service definitions file in XML.
 	 * 
 	 * @param document
 	 *            parent DOM object of this element.
@@ -62,39 +66,39 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 	 *         <code>null</code>, then empty element is returned e.g.
 	 *         &lt;cXML/&gt;
 	 */
-	@SuppressWarnings("unchecked")
 	public Element getElement(Document document, IMockeyStorage store) {
-		
+
 		Element rootElement = document.createElement("mockservice");
-		Scenario mssb = store.getUniversalErrorScenario();		
+		Scenario mssb = store.getUniversalErrorScenario();
 		this.setAttribute(rootElement, "xml:lang", "en-US");
 		this.setAttribute(rootElement, "version", "1.0");
 		// Universal Service settings
-		if(mssb!=null){
-            this.setAttribute(rootElement,"universal_error_service_id", ""+mssb.getServiceId());
-            this.setAttribute(rootElement,"universal_error_scenario_id", ""+mssb.getId());
-        }
+		if (mssb != null) {
+			this.setAttribute(rootElement, "universal_error_service_id", "" + mssb.getServiceId());
+			this.setAttribute(rootElement, "universal_error_scenario_id", "" + mssb.getId());
+		}
+		this.setAttribute(rootElement, "universal_twist_info_id", "" + store.getUniversalTwistInfoId());
+
 		// Proxy settings
 		ProxyServerModel psm = store.getProxy();
-		if(psm!=null){
-		    Element proxyElement = document.createElement("proxy_settings");
-		    proxyElement.setAttribute("proxy_url", psm.getProxyUrl());
-		    proxyElement.setAttribute("proxy_enabled", ""+psm.isProxyEnabled());
-		    rootElement.appendChild(proxyElement);
+		if (psm != null) {
+			Element proxyElement = document.createElement("proxy_settings");
+			proxyElement.setAttribute("proxy_url", psm.getProxyUrl());
+			proxyElement.setAttribute("proxy_enabled", "" + psm.isProxyEnabled());
+			rootElement.appendChild(proxyElement);
 		}
-
-		Iterator iterator = store.getServices().iterator();
-		//logger.debug("building DOM:");
-		while (iterator.hasNext()) {
-			Service mockServiceBean = (Service) iterator.next();
+		
+		for(Service mockServiceBean : store.getServices()) {
 			Element serviceElement = document.createElement("service");
 			rootElement.appendChild(serviceElement);
 
 			if (mockServiceBean != null) {
-				//logger.debug("building XML representation for MockServiceBean:\n" + mockServiceBean.toString());
+				// logger.debug("building XML representation for MockServiceBean:\n"
+				// + mockServiceBean.toString());
 				// *************************************
 				// We do NOT want to write out ID.
-				// If we did, then someone uploading this xml definition may overwrite services
+				// If we did, then someone uploading this xml definition may
+				// overwrite services
 				// defined with the same ID.
 				// serviceElement.setAttribute("id", mockServiceBean.getId());
 				// *************************************
@@ -102,80 +106,93 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				serviceElement.setAttribute("description", getSafeForXmlOutputString(mockServiceBean.getDescription()));
 				serviceElement.setAttribute("hang_time", getSafeForXmlOutputString("" + mockServiceBean.getHangTime()));
 				serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
-				serviceElement.setAttribute("http_content_type", getSafeForXmlOutputString("" + mockServiceBean.getHttpContentType()));
-				serviceElement.setAttribute("default_scenario_id", getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId()))); 
-				serviceElement.setAttribute("service_response_type", getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
-				serviceElement.setAttribute("default_real_url_index", getSafeForXmlOutputString(""+mockServiceBean.getDefaultRealUrlIndex()));
+				serviceElement.setAttribute("http_content_type",
+						getSafeForXmlOutputString("" + mockServiceBean.getHttpContentType()));
+				serviceElement.setAttribute("default_scenario_id",
+						getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId())));
+				serviceElement.setAttribute("service_response_type",
+						getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
+				serviceElement.setAttribute("default_real_url_index",
+						getSafeForXmlOutputString("" + mockServiceBean.getDefaultRealUrlIndex()));
 
 				// New real service URLs
-				for(Url realUrl: mockServiceBean.getRealServiceUrls()){
+				for (Url realUrl : mockServiceBean.getRealServiceUrls()) {
 					Element urlElement = document.createElement("real_url");
 					urlElement.setAttribute("url", getSafeForXmlOutputString(realUrl.getFullUrl()));
-					//urlElement.appendChild(cdataResponseElement);
+					// urlElement.appendChild(cdataResponseElement);
 					serviceElement.appendChild(urlElement);
 				}
-				
-				// Scenarios
-				List scenarios = mockServiceBean.getScenarios();
-				Iterator iter = scenarios.iterator();
 
-				while (iter.hasNext()) {
-					Scenario scenario = (Scenario) iter.next();
-					//logger.debug("building XML representation for MockServiceScenarioBean:\n" + scenario.toString());
+				// Scenarios
+				for(Scenario scenario :  mockServiceBean.getScenarios() ) {
+					// logger.debug("building XML representation for MockServiceScenarioBean:\n"
+					// + scenario.toString());
 					Element scenarioElement = document.createElement("scenario");
 					scenarioElement.setAttribute("id", scenario.getId().toString());
 					scenarioElement.setAttribute("name", getSafeForXmlOutputString(scenario.getScenarioName()));
 
 					Element scenarioMatchStringElement = document.createElement("scenario_match");
-					CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario.getMatchStringArg()));
+					CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
+							.getMatchStringArg()));
 					scenarioMatchStringElement.appendChild(cdataMatchElement);
 					scenarioElement.appendChild(scenarioMatchStringElement);
-					
+
 					Element scenarioResponseElement = document.createElement("scenario_response");
-					CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario.getResponseMessage()));
+					CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario
+							.getResponseMessage()));
 					scenarioResponseElement.appendChild(cdataResponseElement);
 					scenarioElement.appendChild(scenarioResponseElement);
 					serviceElement.appendChild(scenarioElement);
 				}
 			}
 		}
-		
+
 		// SERVICE PLANS
-		
-		List servicePlans = store.getServicePlans();
-		if(servicePlans!=null){
-			Iterator iter = servicePlans.iterator();
-			while(iter.hasNext()){
-				ServicePlan servicePlan = (ServicePlan)iter.next();
+		if (store.getServicePlans() != null) {
+			for (ServicePlan servicePlan : store.getServicePlans()) {
 				Element servicePlanElement = document.createElement("service_plan");
 				servicePlanElement.setAttribute("name", servicePlan.getName());
 				servicePlanElement.setAttribute("description", servicePlan.getDescription());
-				servicePlanElement.setAttribute("id", ""+servicePlan.getId());
-				
-				Iterator planItemIter = servicePlan.getPlanItemList().iterator();
-				while(planItemIter.hasNext()){
-					PlanItem  pi = (PlanItem)planItemIter.next();
+				servicePlanElement.setAttribute("id", "" + servicePlan.getId());
+				for (PlanItem pi : servicePlan.getPlanItemList()) {
 					Element planItemElement = document.createElement("plan_item");
-					planItemElement.setAttribute("hang_time", ""+pi.getHangTime());
-					planItemElement.setAttribute("service_id", ""+pi.getServiceId());
-					planItemElement.setAttribute("scenario_id", ""+pi.getScenarioId());
-					planItemElement.setAttribute("service_response_type", ""+pi.getServiceResponseType());
-					
+					planItemElement.setAttribute("hang_time", "" + pi.getHangTime());
+					planItemElement.setAttribute("service_id", "" + pi.getServiceId());
+					planItemElement.setAttribute("scenario_id", "" + pi.getScenarioId());
+					planItemElement.setAttribute("service_response_type", "" + pi.getServiceResponseType());
+
 					servicePlanElement.appendChild(planItemElement);
 				}
-				
+
 				rootElement.appendChild(servicePlanElement);
-				
+
 			}
+		}
+
+		// TWIST CONFIGURATION
+		if (store.getTwistInfoList() != null) {
+			for (TwistInfo twistInfo : store.getTwistInfoList()) {
+				Element twistConfigElement = document.createElement("twist_config");
+				twistConfigElement.setAttribute("name", twistInfo.getName());
+				twistConfigElement.setAttribute("id", "" + twistInfo.getId());
+				for (PatternPair patternPair : twistInfo.getPatternPairList()) {
+					Element patternPairElement = document.createElement("twist_pattern");
+					patternPairElement.setAttribute("origination", "" + patternPair.getOrigination());
+					patternPairElement.setAttribute("destination", "" + patternPair.getDestination());
+					twistConfigElement.appendChild(patternPairElement);
+				}
+				rootElement.appendChild(twistConfigElement);
+			}
+
 		}
 
 		return rootElement;
 	}
-	
-	private String getSafeForXmlOutputString(String arg){
-		if(arg!=null){
+
+	private String getSafeForXmlOutputString(String arg) {
+		if (arg != null) {
 			return arg.trim();
-		}else {
+		} else {
 			return "";
 		}
 	}

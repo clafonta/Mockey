@@ -6,7 +6,7 @@
 <%@include file="/WEB-INF/common/header.jsp" %>
 <script type="text/javascript">
 $(document).ready( function() {
-	
+
 
    $("#dialog-create-twist").dialog({minHeight: 450, height:250, width: 500,  modal: true, autoOpen: false, resizable: true });
    $('.createTwistLink').each( function() {
@@ -26,7 +26,7 @@ $(document).ready( function() {
                           var bValid = true;  
                           // 'valid' check here for those who want input validation.
                           if (bValid) {
-                              var twistConfigName = $('input[name=twist_config_name]').val();  
+                              var twistConfigName = $('input[id=twist_config_name_new]').val();  
                               $.post('<c:url value="/twisting/setup"/>', { 'response-type': 'json', 'twist-name': twistConfigName, 'twist-origination-values[]':  originationValues,'twist-destination-values[]':  destinationValues } ,function(data){
                                   if(data.result.success && data.result.id){
                                       $(this).dialog('close');              
@@ -68,7 +68,7 @@ $(document).ready( function() {
                           var bValid = true;  
                           // 'valid' check here for those who want input validation.
                           if (bValid) {
-                              var twistConfigName = $('input[name=twist_config_name_'+twistId+']').val();  
+                              var twistConfigName = $('input[id=twist_config_name_'+twistId+']').val();  
                               $.post('<c:url value="/twisting/setup"/>', { 'twist-id': twistId, 'response-type': 'json', 'twist-name': twistConfigName, 'twist-origination-values[]':  originationValues,'twist-destination-values[]':  destinationValues } ,function(data){
                                   if(data.result.success && data.result.id){
                                       $(this).dialog('close');              
@@ -85,7 +85,7 @@ $(document).ready( function() {
                    }
              }); 
              // Reset the size.
-             $('#dialog-create-twist').dialog({height: 450 });
+             $('#dialog-edit-twist_' + twistId).dialog({height: 450, width:400 });
                
              return false;
            });
@@ -145,16 +145,25 @@ $(document).ready( function() {
    $('#dialog-delete-twist-config-confirm').dialog({autoOpen: false, minHeight: 300, width: 300, height: 300, modal: false, resizable: false });
 
    <c:forEach var="twistInfo" items="${twistInfoList}"  varStatus="status">
-     $('#dialog-edit-twist_${twistInfo.id}').dialog({autoOpen: false, minHeight: 300, width: 300, height: 400, modal: false, resizable: true });
+     $('#dialog-edit-twist_${twistInfo.id}').dialog({autoOpen: false, minHeight: 300, width: 450, height: 400, modal: false, resizable: true });
    </c:forEach>
    $('.toggletwist').each( function() {
        $(this).click(function(){   
          var twistId = this.id.split("_")[1];    
-         //console.log("response type: "+response_type);
-         $.post('<c:url value="/twisting/toggle"/>', { 'response-type': 'json', 'twist-id': twistId } ,function(data){
+         var enable = this.id.split("_")[2];    
+         
+         //console.log("response type: "+response_type); response_set
+         $.post('<c:url value="/twisting/toggle"/>', { 'response-type': 'json', 'twist-id': twistId, 'twist-enable': enable } ,function(data){
                       //console.log(data);
                       if(data.result.success){
-                          $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+                          // R
+                          $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast', 
+                                  function() {document.location="<c:url value="/twisting/setup" />"; });
+                          return false;
+                          
+                       }else {
+                    	   $("#tmp-error").remove();
+                    	   $("#foo").append("<span id=\"tmp-error\">Unable to toggle</span>").fadeIn(1000).fadeTo(3000, 1).fadeOut(1000);
                        }
                }, 'json' );
        });
@@ -166,9 +175,9 @@ $(document).ready( function() {
     <h1>Twisting</h1> 
     <div>
 		<p><strong>Twisting</strong> refers to re-mapping incoming URL requests to other URLs. This is useful if 
-		your code is pointing to DOMAIN-X and/or URL-PATH-X, and you need to point to DOMAIN-Y and/or URL-PATH-Y. 
+		your code is pointing to DOMAIN-X and/or URL-PATH-X, and you need to point to DOMAIN-Y and/or URL-PATH-Y. <a id="more-help" class="more-help" href="#">More help.</a>
 		</p>
-		<p class="info_message"><span style="color:red;">What? When would I need this?</span> When your client application doesn't
+		<p id="dialog-more-help" class="info_message" style=""><span style="color:red;">What? When would I need this?</span> When your client application doesn't
 		easily allow you to point to different environments or when some requests should be answered by the real
 		service but other requests need to be answered by your sandbox. 
 	    </p>
@@ -185,8 +194,8 @@ $(document).ready( function() {
                <span style="float:right;"> <a href="#" id="delete-twist-link_${twistInfo.id}" class="delete-twist-link remove_grey">x</a> </span>
                <h3>${twistInfo.name}</h3>
                  <p> 
-                     <a id="toggle-twist_${twistInfo.id}" class="toggletwist response_not" style="text-decoration:none;" href="#"> On </a>
-                     <a id="toggle-twist_OFF" class="toggletwist response_not" style="text-decoration:none; margin-left:2px;margin-right:2px;" href="#"> Off </a>
+                     <a id="toggle-twist-on_${twistInfo.id}_true" class="toggletwist toggle-twist-on <c:if test="${twistInfoIdEnabled eq twistInfo.id}">response_set</c:if> <c:if test="${twistInfoIdEnabled ne twistInfo.id}">response_not</c:if>" style="text-decoration:none;" href="#"> On </a>
+                     <a id="toggle-twist-off_${twistInfo.id}_false" class="toggletwist toggle-twist-off <c:if test="${twistInfoIdEnabled eq twistInfo.id}">response_not</c:if> <c:if test="${twistInfoIdEnabled ne twistInfo.id}">response_set</c:if>" style="text-decoration:none; margin-left:2px;margin-right:2px;" href="#"> Off </a>
                  </p>
                  <table class="api">
                    <tr><th>Find this pattern...</th><th>Replace with this...</th></tr>
@@ -225,7 +234,7 @@ $(document).ready( function() {
         <div id="dialog-create-twist" title="Create Twist Configuration">
             <p>
                 <label for="twist-name">Twist Configuration name</label>
-                <input type="text" name="twist_config_name" id="twist_config_name" class="text ui-widget-content ui-corner-all" />
+                <input type="text" name="twist_config_name" id="twist_config_name_new" class="text ui-widget-content ui-corner-all" />
                 <div style="text-align:right;"><a title="Add row" id="add-row" href="#" style="color:red;text-decoration:none;font-size:1em;">Add pattern twist</a></div>
                 <div id="create-twist-pattern-list">
                     <!-- JQUERY Append content here -->

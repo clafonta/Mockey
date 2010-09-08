@@ -35,7 +35,7 @@ $(document).ready(function() {
 		dropShadows: true                            // disable drop shadows
 	});
 	// 
-	$.getJSON('<c:url value="/proxystatus" />', function(data) {
+	$.getJSON('<c:url value="/configuration/info" />', function(data) {
 		if(data.result.proxy_enabled=='true'){
 			$("#proxy_unknown").hide();
 	       	$("#proxy_on").show();
@@ -45,6 +45,15 @@ $(document).ready(function() {
 	    	 $("#proxy_on").hide();
 	    	 $("#proxy_off").show(); 
 	     }
+		if(data.result.twist_enabled==true){
+            $("#twisting_unknown").hide();
+            $("#twisting_on").show();
+            $("#twisting_off").hide();
+         }else {
+             $("#twisting_unknown").hide();
+             $("#twisting_on").hide();
+             $("#twisting_off").show(); 
+         }
 	});
         $("#dialog-flush-confirm").dialog({
             resizable: false,
@@ -104,9 +113,6 @@ $(document).ready(function() {
 				<li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
 				<a title="Merge - combine services" href="<c:url value="/merge" />"
 					style="">Merge Services</a></li>
-				<li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
-				<a title="Real URL injecting" href="<c:url value="/inject" />"
-					style="">URL injecting</a></li>
 				<li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
                 <a title="Twisting" href="<c:url value="/twisting/setup" />"
                     style="">Twisting</a></li>
@@ -120,8 +126,7 @@ $(document).ready(function() {
 			<a href="<c:url value="/history" />">History</a></li>
 		<li <c:if test="${currentTab == 'proxy'}">class="current"</c:if>>
 			<a href="<c:url value="/proxy/settings" />">
-			Proxy (<span id="proxy_unknown" class="tiny" >___</span><span id="proxy_on" class="tiny" 
-			style="display: none;">ON</span><span id="proxy_off" class="tiny" style="display: none;">OFF</span>)</a></li>
+			Proxy</a></li>
 		<li><a id="flush" href="#">Flush</a></li>
         <li class="<c:if test="${currentTab == 'help'}">current</c:if>"><a
             href="<c:url value="/help" />">Help  <span class="sf-sub-indicator"> &#187;</span></a>
@@ -131,8 +136,22 @@ $(document).ready(function() {
             </ul>
         </li>
 	</ul>
+	<div id="configuration-info" >
+		<span class="configuration-info" >
+	        <a href="<c:url value="/proxy/settings"/>" id="proxy_unknown" class="tiny" >___</a>
+	        <a href="<c:url value="/proxy/settings"/>" id="proxy_on" class="tiny" style="color: green; ">Proxy setting is ON</a>
+	        <a href="<c:url value="/proxy/settings"/>" id="proxy_off" class="tiny"  style="color: red; ">Proxy setting is OFF</a>
+	    </span>
+	    <span class="configuration-info" >
+	        <a href="<c:url value="/twisting/setup"/>" id="twisting_unknown" class="tiny" >___</a>
+	        <a href="<c:url value="/twisting/setup"/>" id="twisting_on" class="tiny"  style="color: green; ">Twisting is on</a>
+	        <a href="<c:url value="/twisting/setup"/>" id="twisting_off" class="tiny" style="color: red; ">Twisting is OFF</a> 
+        </span>
+    </div>
 	</div>
+	
 	<div style="border-bottom:1px solid #CCCCCC;"></div>
 	
 </div>
+
 
