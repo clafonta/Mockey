@@ -113,6 +113,9 @@ $(document).ready(function() {
 				<li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
 				<a title="Merge - combine services" href="<c:url value="/merge" />"
 					style="">Merge Services</a></li>
+				<li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
+                <a title="Real URL injecting" href="<c:url value="/inject" />"
+                    style="">URL injecting</a></li>
 				<li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
                 <a title="Twisting" href="<c:url value="/twisting/setup" />"
                     style="">Twisting</a></li>

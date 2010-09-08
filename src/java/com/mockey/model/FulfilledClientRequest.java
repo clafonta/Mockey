@@ -48,6 +48,7 @@ public class FulfilledClientRequest implements PersistableItem {
 	private String requestorIP;
 	private String rawRequest;
 	private String comment;
+	private String originalUrlBeforeTwisting = null;
 	private int serviceResponseType = -1;
 	private ResponseFromService responseMessage;
 	private Date time = new Date();
@@ -170,4 +171,13 @@ public class FulfilledClientRequest implements PersistableItem {
 		return serviceName;
 	}
 
+	public void setOriginalUrlBeforeTwisting(String originalUrlBeforeTwisting) {
+		this.originalUrlBeforeTwisting = originalUrlBeforeTwisting;
+	}
+
+	public String getOriginalUrlBeforeTwisting() {
+		return originalUrlBeforeTwisting;
+	}
+
+	
 }

@@ -46,6 +46,49 @@
 	  You only need to define a match argument per service scenario for dynamic scenarios.
     </p>
     <p><img src="<c:url value="/images/dynamic_response.png" />" /></p>
+    <a href="#twisting" name="twisting"></a>
+    <h2>Twisting</h2>
+    <p>
+    Twisting refers to taking incoming requests from URL/Domcain X and mapping them to URL/Domain Y. 
+    <ul>
+      <li>Twisting is <b>only</b> used for services set to <strong>Proxy</strong> requests</li>
+      <li>Twisting is <b>not</b> used for services set to <strong>Static</strong> or <strong>Dynamic</strong></li>
+    
+    </ul>
+       
+    When your client application doesn't
+        easily allow you to point to different environments or when some requests should be answered by the real
+        service but other requests need to be answered by your sandbox. 
+        <div class="info_message">
+            <h4>How Twisting Works</h4>
+            <p>
+            Let's say Mockey receives an incoming request: 
+            <div class="code">http://127.0.0.1:8080/service/http://<b>uat1</b>.mystartup.com/catalog/list</div>
+            </p>
+            <p>
+            And let's say Twisting is on with the following twist configuration:
+            <div class="code"><strong>"Make sure everything hits the QA Environment, not UAT"</strong>
+	            <ul style="list-style: none;">
+		            <li>Here are the find and replace patterns:</li>
+		            <li>  
+						<table class="api">
+			            <tr><th>Find...</th><th>Replace with...</th></tr>
+			            <tr><td>uat1.mystartup.com</td><td>qa1.mystartup.com</td></tr>
+			            <tr><td>uat2.mystartup.com</td><td>qa1.mystartup.com</td></tr>
+			            <tr><td>qa3.mystartup.com</td><td>qa1.mystartup.com</td></tr>
+			            </table>
+			       </li>
+	            </ul>
+            </div>
+            <p>
+            Based on the Twisting configuration above, Mockey will take the incoming request and <i>twist</i> the 
+            request to the following <b>new</b> URL:
+            <div class="code">http://127.0.0.1:8080/service/http://<b>qa1</b>.mystartup.com/catalog/list</div>
+            ..and then proxy that request. 
+            </p>
+            
+        </div>
+    </p>
     <a href="#record" name="record"></a> 
     <h2>Get Started - Record Stuff</h2>
     <p>

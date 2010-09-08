@@ -78,6 +78,10 @@
 		<servlet-class>com.mockey.ui.InspectFulfilledRequestServlet</servlet-class>
 	</servlet>
 	<servlet>
+        <servlet-name>InjectRealUrlPerServiceServlet</servlet-name>
+        <servlet-class>com.mockey.ui.InjectRealUrlPerServiceServlet</servlet-class>
+    </servlet>
+	<servlet>
 		<servlet-name>RedoRequestServlet</servlet-name>
 		<servlet-class>com.mockey.server.RedoRequestServlet</servlet-class>
 	</servlet>
@@ -153,6 +157,10 @@
 		<servlet-name>InspectFulfilledRequestServlet</servlet-name>
 		<url-pattern>/inspect</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>InjectRealUrlPerServiceServlet</servlet-name>
+        <url-pattern>/inject</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>HelpServlet</servlet-name>
 		<url-pattern>/help</url-pattern>

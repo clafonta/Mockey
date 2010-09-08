@@ -49,6 +49,7 @@ import org.apache.http.protocol.HTTP;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.RequestFromClient;
 import com.mockey.model.ResponseFromService;
+import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 
 /**
@@ -89,7 +90,7 @@ public class ClientExecuteProxy {
 	//
 	// }
 
-	public ResponseFromService execute(ProxyServerModel proxyServer, Url realServiceUrl, String httpMethod,
+	public ResponseFromService execute(TwistInfo twistInfo, ProxyServerModel proxyServer, Url realServiceUrl, String httpMethod,
 			RequestFromClient request) throws Exception {
 		log.info("Request: " + String.valueOf(realServiceUrl));
 
@@ -116,13 +117,24 @@ public class ClientExecuteProxy {
 			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyServer.getHttpHost());
 		}
 
+		// TWISTING
+		Url originalRequestUrlBeforeTwisting = null;
+		if(twistInfo!=null){
+			String fullurl = realServiceUrl.getFullUrl();
+			String twistedUrl = twistInfo.getTwistedValue(fullurl);
+			if(twistedUrl!=null){
+				originalRequestUrlBeforeTwisting = realServiceUrl;
+				realServiceUrl = new Url(twistedUrl);
+			}
+		}
 		HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(),
 				realServiceUrl.getScheme());
 
 		HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl, httpMethod));
 
 		ResponseFromService responseMessage = new ResponseFromService(response);
-
+		responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
+		responseMessage.setRequestUrl(realServiceUrl);
 		// When HttpClient instance is no longer needed,
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources

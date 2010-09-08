@@ -126,11 +126,16 @@ $(document).ready( function() {
                      // Post the DELETE call.  
                      $.post('<c:url value="/twisting/delete"/>', { 'response-type': 'json', 'twist-id': twistId } ,function(data){
                               if(data.result.success){
-                                  $('#deleted').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
-                                  $('#twist-config_'+twistId).hide();
+                            	  $(this).dialog('close');   
+                                  $('#deleted').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast', 
+                                          function() {document.location="<c:url value="/twisting/setup" />"; }); 
+                                  
+                                        
+                                  
                                }
                        }, 'json' );
                      $(this).dialog('close');                      
+                     
                  }, 
                  Cancel: function(){
                      $(this).dialog('close');
@@ -175,12 +180,9 @@ $(document).ready( function() {
     <h1>Twisting</h1> 
     <div>
 		<p><strong>Twisting</strong> refers to re-mapping incoming URL requests to other URLs. This is useful if 
-		your code is pointing to DOMAIN-X and/or URL-PATH-X, and you need to point to DOMAIN-Y and/or URL-PATH-Y. <a id="more-help" class="more-help" href="#">More help.</a>
+		your code is pointing to DOMAIN-X and/or URL-PATH-X, and you need to point to DOMAIN-Y and/or URL-PATH-Y. <a id="more-help" class="more-help" href="<c:url value="/help#twisting" />">More help.</a>
 		</p>
-		<p id="dialog-more-help" class="info_message" style=""><span style="color:red;">What? When would I need this?</span> When your client application doesn't
-		easily allow you to point to different environments or when some requests should be answered by the real
-		service but other requests need to be answered by your sandbox. 
-	    </p>
+		
 	    <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createTwistLink" id="createTwistLink">Create Twist Configuration</a></span></div>
 	    <c:choose>
            <c:when test="${empty twistInfoList}">

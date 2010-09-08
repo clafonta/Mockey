@@ -77,4 +77,52 @@ public class TwistInfo implements PersistableItem {
 		this.patternPairList.add(patternPair);
 	}
 	
+	
+	/**
+	 * If no matching origination value (from the pattern list) found in the incoming argument, 
+	 * then returns null. 
+	 *  
+	 * @param incoming - value to be twisted
+	 * @return may be null
+	 */
+	public String getTwistedValue(String incoming){
+		String outgoing = null;
+		for(PatternPair patternPair: getPatternPairList()){
+			if(incoming!=null && incoming.indexOf(patternPair.getOrigination()) > -1){
+				if(patternPair.getOrigination()!=null && patternPair.getDestination()!=null ){
+					outgoing = incoming.replaceAll(patternPair.getOrigination(), patternPair.getDestination());
+				}
+				break;
+			}
+		}
+		return outgoing;
+	}
+	public static void main(String[] args){
+		TwistInfo twistInfo = new TwistInfo();
+		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
+		twistInfo.addPatternPair(new PatternPair("uat.google.com", "qa.google.com"));
+		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
+
+		
+		twistInfo = new TwistInfo();
+		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
+		twistInfo.addPatternPair(new PatternPair("uat.google.com", null));
+		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
+		
+		twistInfo = new TwistInfo();
+		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
+		twistInfo.addPatternPair(new PatternPair("qa3.google.com", "qa4.google.com"));
+		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
+		
+		twistInfo = new TwistInfo();
+		twistInfo.addPatternPair(new PatternPair("qa3.google.com", "qa4.google.com"));
+		twistInfo.addPatternPair(new PatternPair("uat.google.com", "qa4.google.com"));
+		twistInfo.addPatternPair(new PatternPair(null, "qa4.google.com"));
+
+
+		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
+
+		
+	}
+	
 }

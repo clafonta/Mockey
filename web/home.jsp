@@ -201,24 +201,6 @@ $(document).ready( function() {
 			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 		});
 	});
-
-    $('.setRealUrlLink').each( function() {
-		$(this).click( function() {
-			var row = this.id.split("_")[1];
-			var serviceId = this.id.split("_")[2];
-			$.ajax({
-				type: "POST",
-				url: "<c:url value="service_scenario"/>",
-				data:"defaultUrlIndex="+row+"&serviceId="+serviceId
-			});
-			$(".realUrl-on_"+serviceId).hide();
-			$(".realUrl-off_"+serviceId).show();
-			$("#realUrlOFF_"+row+"_"+serviceId).hide();
-			$("#realUrlON_"+row+"_"+serviceId).show();
-			$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
-		});
-	});
-
     
     $('.serviceResponseTypeLink').each( function() {
 		$(this).click( function() {
@@ -399,32 +381,10 @@ $(document).ready( function() {
                                    <div class="service-def-spacer"></div>
                                    
                                    <div class="service-label not-top border-top">Real URL(s): <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
-                                   <table class="simple">
                                    <c:forEach var="realUrl" items="${mockservice.realServiceUrls}" varStatus="status" >
-								     
-								       <tr>
-								       <td width="70"> 
-								       		 <c:choose>
-		                                        <c:when test='${mockservice.defaultRealUrlIndex+1 == status.count}'>
-		                                          <c:set var="off_class" value="hide" />
-		                                          <c:set var="on_class" value="" />
-		                                        </c:when>
-		                                        <c:otherwise>
-		                                          <c:set var="off_class" value="" />
-		                                          <c:set var="on_class" value="hide" />
-		                                        </c:otherwise>
-		                                      </c:choose>
-		                                     
-		                                      <a href="#" id="realUrlON_${status.count}_${mockservice.id}" class="realUrl-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
-		                                      <a href="#" id="realUrlOFF_${status.count}_${mockservice.id}" class="setRealUrlLink realUrl-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
-								       
-								       </td>
-								       <td style="text-align:left;">
-								       <a class="tiny" href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></td>
-								       </tr>
-								     
-								     </c:forEach>
-								   </table>
+								       <p><a class="tiny" href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></p>
+								   </c:forEach>
+								   
                                    <c:if test="${empty mockservice.realServiceUrls}">
                                    <div class="info_message">No real URLS defined.</div>
                                    </c:if>

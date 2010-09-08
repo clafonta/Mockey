@@ -43,6 +43,7 @@ import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.RequestFromClient;
 import com.mockey.model.ResponseFromService;
 import com.mockey.model.Service;
+import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -75,22 +76,24 @@ public class ResponseServlet extends HttpServlet {
         logger.info(request.getParameterInfo());
         
 
-        String requestedUrl = originalHttpReqFromClient.getRequestURI();
+        String originalHttpReqURI = originalHttpReqFromClient.getRequestURI();
+        
         String contextRoot = originalHttpReqFromClient.getContextPath();
-        if (requestedUrl.startsWith(contextRoot)) {
-            requestedUrl = requestedUrl.substring(contextRoot.length(), requestedUrl.length());
+        if (originalHttpReqURI.startsWith(contextRoot)) {
+            originalHttpReqURI = originalHttpReqURI.substring(contextRoot.length(), originalHttpReqURI.length());
         }
-        Url serviceUrl = new Url(requestedUrl);
+       
+        Url serviceUrl = new Url(originalHttpReqURI);
         Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
-        Url urlToExecute = urlToExecute = service.getDefaultRealUrl();
+        Url urlToExecute = service.getDefaultRealUrl();
        
         service.setHttpMethod(originalHttpReqFromClient.getMethod());       
         
         ResponseFromService response = service.execute(request, urlToExecute,originalHttpReqFromClient.getMethod() );
-        logRequestAsFulfilled(service, serviceUrl, request, response, originalHttpReqFromClient.getRemoteAddr());
+        logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr());
 
         try {
-            // Wait for a minute.
+            // Wait for a X hang time seconds.
             logger.debug("Waiting..." + service.getHangTime() + " miliseconds ");
             Thread.currentThread().sleep(service.getHangTime());
             logger.debug("Done Waiting");
@@ -111,9 +114,9 @@ public class ResponseServlet extends HttpServlet {
         }
     }
     
-    private void logRequestAsFulfilled(Service service, Url url, RequestFromClient request, ResponseFromService response, String ip) throws UnsupportedEncodingException {
+    private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response, String ip) throws UnsupportedEncodingException {
         FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-        fulfilledClientRequest.setRawRequest(request.getRawRequestAsString(url));
+        fulfilledClientRequest.setRawRequest(request.getRawRequestAsString(response.getRequestUrl()));
         fulfilledClientRequest.setRequestorIP(ip);
         fulfilledClientRequest.setServiceId(service.getId());
         fulfilledClientRequest.setServiceName(service.getServiceName());       
@@ -122,6 +125,9 @@ public class ResponseServlet extends HttpServlet {
         fulfilledClientRequest.setClientRequestParameters(request.getParameterInfo());
         fulfilledClientRequest.setResponseMessage(response);
         fulfilledClientRequest.setServiceResponseType(service.getServiceResponseType());
+        if(response.getOriginalRequestUrlBeforeTwisting()!=null) {
+        	fulfilledClientRequest.setOriginalUrlBeforeTwisting(response.getOriginalRequestUrlBeforeTwisting().toString());
+        }
         store.saveOrUpdateFulfilledClientRequest(fulfilledClientRequest);
     }
 }

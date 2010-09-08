@@ -283,9 +283,9 @@ public class Service implements PersistableItem, ExecutableService  {
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
 			response = proxyTheRequest(request, realServiceUrl, methodType);
 		} else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
-			response = executeDynamicScenario(request);
+			response = executeDynamicScenario(request, realServiceUrl);
 		} else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
-			response = executeStaticScenario();
+			response = executeStaticScenario(realServiceUrl);
 		}
 		return response;
 	}
@@ -310,9 +310,13 @@ public class Service implements PersistableItem, ExecutableService  {
 		ProxyServerModel proxyServer = store.getProxy();
 		ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
 		ResponseFromService response = null;
+		
+		// If Twisting is on, then
+		// 1) 
 		try {
 			logger.debug("Initiating request through proxy");
-			response = clientExecuteProxy.execute(proxyServer, realServiceUrl,
+			TwistInfo twistInfo = store.getTwistInfoById(store.getUniversalTwistInfoId());
+			response = clientExecuteProxy.execute(twistInfo,proxyServer, realServiceUrl,
 					methodType, request);
 		} catch (Exception e) {
 			// We're here for various reasons.
@@ -346,7 +350,7 @@ public class Service implements PersistableItem, ExecutableService  {
 		return response;
 	}
 
-	private ResponseFromService executeStaticScenario() {
+	private ResponseFromService executeStaticScenario(Url realServiceUrl) {
 
 		logger.debug("mockeying a static scenario");
 
@@ -364,10 +368,11 @@ public class Service implements PersistableItem, ExecutableService  {
 		} else {
 			response.setBody("NO SCENARIO SELECTED");
 		}
+		response.setRequestUrl(realServiceUrl);
 		return response;
 	}
 
-	private ResponseFromService executeDynamicScenario(RequestFromClient request) {
+	private ResponseFromService executeDynamicScenario(RequestFromClient request, Url realServiceUrl) {
 
 		logger.debug("mockeying a dynamic scenario.");
 		String rawRequestData = "";
@@ -432,6 +437,7 @@ public class Service implements PersistableItem, ExecutableService  {
 			}
 
 		}
+		response.setRequestUrl(realServiceUrl);
 		response.setBody(messageMatchFound);
 		return response;
 	}

@@ -58,6 +58,8 @@ public class ResponseFromService {
     private String errorMsg;
     private Header[] headers;
     private StatusLine statusLine;
+    private Url originalRequestUrlBeforeTwisting;
+    private Url requestUrl;
 
     /**
      * Empty constructor
@@ -212,5 +214,21 @@ public class ResponseFromService {
         }
         return false;
     }
+
+	public void setOriginalRequestUrlBeforeTwisting(Url originalRequestUrlBeforeTwisting) {
+		this.originalRequestUrlBeforeTwisting = originalRequestUrlBeforeTwisting;
+	}
+
+	public Url getOriginalRequestUrlBeforeTwisting() {
+		return originalRequestUrlBeforeTwisting;
+	}
+
+	public void setRequestUrl(Url requestUrl) {
+		this.requestUrl = requestUrl;
+	}
+
+	public Url getRequestUrl() {
+		return requestUrl;
+	}
 
 }
