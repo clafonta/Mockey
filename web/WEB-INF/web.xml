@@ -116,7 +116,15 @@
     <servlet>
         <servlet-name>TwistInfoDeleteServlet</servlet-name>
         <servlet-class>com.mockey.ui.TwistInfoDeleteServlet</servlet-class>
+    </servlet> 
+    <servlet>
+        <servlet-name>StickyCookieSessionAjaxServlet</servlet-name>
+        <servlet-class>com.mockey.ui.StickyCookieSessionAjaxServlet</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>StickyCookieSessionAjaxServlet</servlet-name>
+        <url-pattern>/configuration/reset_sticky_cookie_session</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TwistInfoDeleteServlet</servlet-name>
         <url-pattern>/twisting/delete</url-pattern>

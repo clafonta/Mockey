@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -39,6 +40,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
@@ -58,7 +60,100 @@ import com.mockey.model.Url;
  * @since 4.0
  */
 public class ClientExecuteProxy {
+	
+	// Static cookie store for sessions
+	private static CookieStore cookieStore = null;
 	private Log log = LogFactory.getLog(ClientExecuteProxy.class);
+	
+	
+	/**
+	 * 
+	 * @return a new Client 
+	 */
+	public static ClientExecuteProxy getClientExecuteProxyInstance() {
+		
+		return new ClientExecuteProxy();
+	}
+	
+	/**
+	 * Cookie store can be null, otherwise it is needed to support sticky session over multiple 
+	 * client proxy executions. 
+	 */
+	public static void resetStickySession(){
+		ClientExecuteProxy.cookieStore = null;
+	}
+	
+
+
+	private ClientExecuteProxy(){
+	}
+	public ResponseFromService execute(TwistInfo twistInfo, ProxyServerModel proxyServer, Url realServiceUrl, String httpMethod,
+			RequestFromClient request) throws Exception {
+		log.info("Request: " + String.valueOf(realServiceUrl));
+
+		// general setup
+		SchemeRegistry supportedSchemes = new SchemeRegistry();
+
+		// Register the "http" and "https" protocol schemes, they are
+		// required by the default operator to look up socket factories.
+		supportedSchemes.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		supportedSchemes.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+
+		// prepare parameters
+		HttpParams params = new BasicHttpParams();
+		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+		HttpProtocolParams.setContentCharset(params, HTTP.ISO_8859_1);
+		HttpProtocolParams.setUseExpectContinue(params, false);
+		ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
+		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
+		
+		
+		if(ClientExecuteProxy.cookieStore == null) {
+			cookieStore = httpclient.getCookieStore();
+		}else {
+			httpclient.setCookieStore(cookieStore);
+		}
+		
+		// Show what cookies are in the store. 
+		for(Cookie cookie: ClientExecuteProxy.cookieStore.getCookies()){
+			log.info("Cookie in the cookie STORE: " + cookie.toString());
+		}
+		
+		if (proxyServer.isProxyEnabled()) {
+			// make sure to use a proxy that supports CONNECT
+			httpclient.getCredentialsProvider()
+					.setCredentials(proxyServer.getAuthScope(), proxyServer.getCredentials());
+			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyServer.getHttpHost());
+		}
+
+		// TWISTING
+		Url originalRequestUrlBeforeTwisting = null;
+		if(twistInfo!=null){
+			String fullurl = realServiceUrl.getFullUrl();
+			String twistedUrl = twistInfo.getTwistedValue(fullurl);
+			if(twistedUrl!=null){
+				originalRequestUrlBeforeTwisting = realServiceUrl;
+				realServiceUrl = new Url(twistedUrl);
+			}
+		}
+		HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(),
+				realServiceUrl.getScheme());
+
+		HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl, httpMethod));
+
+		ResponseFromService responseMessage = new ResponseFromService(response);
+		
+		responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
+		responseMessage.setRequestUrl(realServiceUrl);
+		// When HttpClient instance is no longer needed,
+		// shut down the connection manager to ensure
+		// immediate deallocation of all system resources
+		httpclient.getConnectionManager().shutdown();
+
+		// Parse out the response information we're looking for
+
+		return responseMessage;
+	}
 
 	// public static void main(String[] args) throws Exception {
 	// ProxyServer proxyInfoBean = new ProxyServer();
@@ -89,60 +184,4 @@ public class ClientExecuteProxy {
 	// System.out.println(rm.getBody());
 	//
 	// }
-
-	public ResponseFromService execute(TwistInfo twistInfo, ProxyServerModel proxyServer, Url realServiceUrl, String httpMethod,
-			RequestFromClient request) throws Exception {
-		log.info("Request: " + String.valueOf(realServiceUrl));
-
-		// general setup
-		SchemeRegistry supportedSchemes = new SchemeRegistry();
-
-		// Register the "http" and "https" protocol schemes, they are
-		// required by the default operator to look up socket factories.
-		supportedSchemes.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		supportedSchemes.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
-
-		// prepare parameters
-		HttpParams params = new BasicHttpParams();
-		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-		HttpProtocolParams.setContentCharset(params, HTTP.ISO_8859_1);
-		HttpProtocolParams.setUseExpectContinue(params, false);
-		ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
-		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
-
-		if (proxyServer.isProxyEnabled()) {
-			// make sure to use a proxy that supports CONNECT
-			httpclient.getCredentialsProvider()
-					.setCredentials(proxyServer.getAuthScope(), proxyServer.getCredentials());
-			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyServer.getHttpHost());
-		}
-
-		// TWISTING
-		Url originalRequestUrlBeforeTwisting = null;
-		if(twistInfo!=null){
-			String fullurl = realServiceUrl.getFullUrl();
-			String twistedUrl = twistInfo.getTwistedValue(fullurl);
-			if(twistedUrl!=null){
-				originalRequestUrlBeforeTwisting = realServiceUrl;
-				realServiceUrl = new Url(twistedUrl);
-			}
-		}
-		HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(),
-				realServiceUrl.getScheme());
-
-		HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl, httpMethod));
-
-		ResponseFromService responseMessage = new ResponseFromService(response);
-		responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
-		responseMessage.setRequestUrl(realServiceUrl);
-		// When HttpClient instance is no longer needed,
-		// shut down the connection manager to ensure
-		// immediate deallocation of all system resources
-		httpclient.getConnectionManager().shutdown();
-
-		// Parse out the response information we're looking for
-
-		return responseMessage;
-	}
-
 }

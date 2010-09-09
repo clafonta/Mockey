@@ -308,7 +308,8 @@ public class Service implements PersistableItem, ExecutableService  {
 		// For the proxy server between Mockey and the real service,
 		// we do the following:
 		ProxyServerModel proxyServer = store.getProxy();
-		ClientExecuteProxy clientExecuteProxy = new ClientExecuteProxy();
+		
+		ClientExecuteProxy clientExecuteProxy = ClientExecuteProxy.getClientExecuteProxyInstance();
 		ResponseFromService response = null;
 		
 		// If Twisting is on, then
@@ -318,6 +319,7 @@ public class Service implements PersistableItem, ExecutableService  {
 			TwistInfo twistInfo = store.getTwistInfoById(store.getUniversalTwistInfoId());
 			response = clientExecuteProxy.execute(twistInfo,proxyServer, realServiceUrl,
 					methodType, request);
+			
 		} catch (Exception e) {
 			// We're here for various reasons.
 			// 1) timeout from calling real service.

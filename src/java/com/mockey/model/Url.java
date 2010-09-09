@@ -109,12 +109,21 @@ public class Url {
      */
     public void parse(String url)  {
     	
-        // extract the scheme
+    	
+        
         int beginIndex = url.indexOf(MOCK_SERVICE_PATH);
         if (beginIndex > -1) {
             url = url.substring(MOCK_SERVICE_PATH.length());
 
         }
+        
+        // Get rid of the garbage prior to the http.
+        int indexStartOfHttp = url.indexOf("http");
+        if(indexStartOfHttp>-1) {
+        	url = url.substring(indexStartOfHttp);
+        }
+        
+        // extract the scheme 
         if (url.matches("(?i)^https?://.*")) {
             this.scheme = url.substring(0, url.indexOf(":"));
             url = url.substring(url.indexOf("://") + 3, url.length());
@@ -234,5 +243,20 @@ public class Url {
         return relativePath;
     }
     
+    public static void main(String[] args){
+    	String url = "/ouiadhttps://gwsol-qa2.chase.com/gws/online/secure/account/activity/list.action";
+    	int indexStartOfHttp = url.indexOf("http");
+    	url = url.substring(indexStartOfHttp);
+    	String scheme = null;
+    	if (url.matches("(?i)^https?://.*")) {
+            scheme = url.substring(0, url.indexOf(":"));
+            url = url.substring(url.indexOf("://") + 3, url.length());
+        } else {
+            scheme = "http";
+        }
+    	System.out.println("Scheme: " + scheme);
+
+    	
+    }
     
 }

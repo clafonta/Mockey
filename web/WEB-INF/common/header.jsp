@@ -34,6 +34,7 @@ $(document).ready(function() {
 		autoArrows:  false,                           // disable generation of arrow mark-up
 		dropShadows: true                            // disable drop shadows
 	});
+	
 	// 
 	$.getJSON('<c:url value="/configuration/info" />', function(data) {
 		if(data.result.proxy_enabled=='true'){
@@ -45,16 +46,34 @@ $(document).ready(function() {
 	    	 $("#proxy_on").hide();
 	    	 $("#proxy_off").show(); 
 	     }
+	    
+
 		if(data.result.twist_enabled==true){
             $("#twisting_unknown").hide();
             $("#twisting_on").show();
             $("#twisting_off").hide();
+            
          }else {
              $("#twisting_unknown").hide();
              $("#twisting_on").hide();
              $("#twisting_off").show(); 
          }
+        $('#twist-config').show(); 
+        
 	});
+
+	$('#reset-sticky-session').click( function() {
+            var planId = this.id.split("_")[1];
+            $.post('<c:url value="/configuration/reset_sticky_cookie_session"/>' ,function(data){
+                if(data.reset){
+             	   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+                 }
+            }, 'json' );
+            
+        });
+  
+	
+	
         $("#dialog-flush-confirm").dialog({
             resizable: false,
             height:120,
@@ -91,7 +110,7 @@ $(document).ready(function() {
 
 <div id="logo">
     <a href="<c:url value="/home" />" class="nav"><span style="vertical-align:middle;font-size:20px; text-shadow: 0px 0px 1px #FF0084;" class="nav">Mockey</span></a>
-    <span style="float:right;"><img style="height:60px; " src="<c:url value="/images/silhouette.png" />" /></span>
+    <!--  <span style="float:right;"><img style="height:60px; " src="<c:url value="/images/silhouette.png" />" /></span> -->
 	<%@ include file="/WEB-INF/common/message.jsp"%>
 	<%
 	String ua = request.getHeader( "User-Agent" );
@@ -141,15 +160,24 @@ $(document).ready(function() {
 	</ul>
 	<div id="configuration-info" >
 		<span class="configuration-info" >
-	        <a href="<c:url value="/proxy/settings"/>" id="proxy_unknown" class="tiny" >___</a>
-	        <a href="<c:url value="/proxy/settings"/>" id="proxy_on" class="tiny" style="color: green; ">Proxy setting is ON</a>
-	        <a href="<c:url value="/proxy/settings"/>" id="proxy_off" class="tiny"  style="color: red; ">Proxy setting is OFF</a>
+	        <a href="<c:url value="/proxy/settings"/>" id="proxy_unknown" class="tiny" style="display: none;">___</a>
+	        <a href="<c:url value="/proxy/settings"/>" id="proxy_on" class="tiny" style="display: none;color: green; ">Internet Proxy is ON</a>
+	        <a href="<c:url value="/proxy/settings"/>" id="proxy_off" class="tiny"  style="display: none;color: red; ">Internet Proxy is OFF</a>
 	    </span>
-	    <span class="configuration-info" >
-	        <a href="<c:url value="/twisting/setup"/>" id="twisting_unknown" class="tiny" >___</a>
-	        <a href="<c:url value="/twisting/setup"/>" id="twisting_on" class="tiny"  style="color: green; ">Twisting is on</a>
-	        <a href="<c:url value="/twisting/setup"/>" id="twisting_off" class="tiny" style="color: red; ">Twisting is OFF</a> 
+	    
+	    <span id="twist-config" class="configuration-info" style="display:none;">
+	        <a href="<c:url value="/twisting/setup"/>" id="twisting_unknown" class="tiny" style="display: none;">___</a>
+	        <a href="<c:url value="/twisting/setup"/>" id="twisting_on" class="tiny"  style="display: none; color: green; ">Twisting is ON</a>
+	        <a href="<c:url value="/twisting/setup"/>" id="twisting_off" class="tiny" style="display: none;color: red; ">Twisting is OFF</a> 
         </span>
+        
+        <span id="reset-sticky-cookie-config" class="configuration-info">
+            <a href="#" id="reset-sticky-session" class="tiny" 
+            title="Reset the sticky cookie session that Mockey may be keeping.">Reset Session</a>
+            
+        </span>
+       
+       
     </div>
 	</div>
 	

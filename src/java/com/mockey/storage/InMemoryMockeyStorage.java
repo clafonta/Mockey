@@ -62,11 +62,11 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
 	private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
 	private OrderedMap<TwistInfo> twistInfoStore = new OrderedMap<TwistInfo>();
-	
-	private static Logger logger = Logger
-			.getLogger(InMemoryMockeyStorage.class);
+
+	private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
 	private ProxyServerModel proxyInfoBean = new ProxyServerModel();
 
+	private static boolean stickyCookieSession = false;
 	private Long univeralTwistInfoId = null;
 	private Long univeralErrorServiceId = null;
 	private Long univeralErrorScenarioId = null;
@@ -112,31 +112,31 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 		try {
 			for (Service service : getServices()) {
-				//1. Check for matching name.
-				
+				// 1. Check for matching name.
+
 				Url serviceMockUrl = new Url(service.getUrl());
-				if(url.matches(serviceMockUrl.getFullUrl())){
+				//logger.debug("Comparing: " + url.trim()+ " == "+serviceMockUrl.getFullUrl().trim() );
+				if (url.trim().equalsIgnoreCase( serviceMockUrl.getFullUrl().trim())) {
+					
 					return service;
 				}
-				//2. If no Mock url match, then check real URLs.
-				Iterator<Url> altUrlIter = service.getRealServiceUrls()
-						.iterator();
+				// 2. If no Mock url match, then check real URLs.
+				Iterator<Url> altUrlIter = service.getRealServiceUrls().iterator();
 				while (altUrlIter.hasNext()) {
 					Url altUrl = altUrlIter.next();
-					if (url.equalsIgnoreCase(altUrl.getFullUrl().trim())) {
+					//logger.debug("Comparing: " + url.trim()+ " == "+serviceMockUrl.getFullUrl().trim() );
+
+					if (url.trim().equalsIgnoreCase(altUrl.getFullUrl().trim())) {
 						return service;
 					}
 				}
 
 			}
 		} catch (Exception e) {
-			logger
-					.error("Unable to retrieve service w/ url pattern: " + url,
-							e);
+			logger.error("Unable to retrieve service w/ url pattern: " + url, e);
 		}
 
-		logger.debug("Didn't find service with Service path: " + url
-				+ ".  Creating a new one.");
+		logger.debug("Didn't find service with Service path: " + url + ".  Creating a new one.");
 		Service service = new Service();
 		Url newUrl = new Url(url);
 		service.setUrl(newUrl.getFullUrl());
@@ -158,14 +158,14 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 	}
 
-	public List<Long> getServiceIds(){
+	public List<Long> getServiceIds() {
 		List<Long> ids = new ArrayList<Long>();
-		for(Service service: this.getServices()){
+		for (Service service : this.getServices()) {
 			ids.add(service.getId());
 		}
 		return ids;
 	}
-	
+
 	public List<Service> getServices() {
 		return this.mockServiceStore.getOrderedList();
 	}
@@ -185,8 +185,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		historyStore.remove(scenarioId);
 	}
 
-	public void saveOrUpdateFulfilledClientRequest(
-			FulfilledClientRequest request) {
+	public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest request) {
 		logger.debug("saving a request.");
 		historyStore.save(request);
 	}
@@ -218,16 +217,16 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public ServicePlan getServicePlanById(Long servicePlanId) {
 		return servicePlanStore.get(servicePlanId);
 	}
-	
+
 	@Override
 	public ServicePlan getServicePlanByName(String servicePlanName) {
-		 ServicePlan sp = null;
-		 for(ServicePlan servicePlan: this.getServicePlans()){
-			 if(servicePlan.getName()!=null && servicePlan.getName().equalsIgnoreCase(servicePlanName)){
-				 sp = servicePlan;
-				 break;
-			 }
-		 }
+		ServicePlan sp = null;
+		for (ServicePlan servicePlan : this.getServicePlans()) {
+			if (servicePlan.getName() != null && servicePlan.getName().equalsIgnoreCase(servicePlanName)) {
+				sp = servicePlan;
+				break;
+			}
+		}
 		return sp;
 	}
 
@@ -238,8 +237,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan) {
 		PersistableItem item = this.servicePlanStore.save(servicePlan);
 		this.writeMemoryToFile();
-		return (ServicePlan)item;
-		
+		return (ServicePlan) item;
+
 	}
 
 	public Scenario getUniversalErrorScenario() {
@@ -284,8 +283,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public List<String> uniqueClientIPsForService(Long serviceId) {
 
-		logger.debug("getting IPs for serviceId: " + serviceId
-				+ ". there are a total of " + this.historyStore.size()
+		logger.debug("getting IPs for serviceId: " + serviceId + ". there are a total of " + this.historyStore.size()
 				+ " requests currently stored.");
 
 		List<String> uniqueIPs = new ArrayList<String>();
@@ -298,18 +296,15 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return uniqueIPs;
 	}
 
-	public FulfilledClientRequest getFulfilledClientRequestsById(
-			Long fulfilledClientRequestId) {
+	public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId) {
 
 		return this.historyStore.get(fulfilledClientRequestId);
 
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(
-			Long serviceId) {
-		logger.debug("getting requests for serviceId: " + serviceId
-				+ ". there are a total of " + this.historyStore.size()
-				+ " requests currently stored.");
+	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
+		logger.debug("getting requests for serviceId: " + serviceId + ". there are a total of "
+				+ this.historyStore.size() + " requests currently stored.");
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
 		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 			if (req.getServiceId().equals(serviceId)) {
@@ -319,8 +314,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return rv;
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(
-			String ip) {
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
 		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 			if (req.getRequestorIP().equals(ip)) {
@@ -330,12 +324,10 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return rv;
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(
-			String ip, Long serviceId) {
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
 		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-			if (req.getServiceId().equals(serviceId)
-					&& req.getRequestorIP().equals(ip)) {
+			if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
 				rv.add(req);
 			}
 		}
@@ -347,11 +339,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	}
 
-	public void deleteFulfilledClientRequestsFromIPForService(String ip,
-			Long serviceId) {
+	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
 		for (FulfilledClientRequest req : historyStore.getOrderedList()) {
-			if (req.getServiceId().equals(serviceId)
-					&& req.getRequestorIP().equals(ip)) {
+			if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
 				this.historyStore.remove(req.getId());
 			}
 		}
@@ -371,16 +361,14 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 * Filters list with AND not OR. If string starts with "!", we consider it
 	 * NOT.
 	 */
-	public List<FulfilledClientRequest> getFulfilledClientRequest(
-			Collection<String> filterArguments) {
+	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments) {
 
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
 		if (filterArguments.size() == 0) {
 			rv = this.getFulfilledClientRequests();
 		} else {
 
-			for (FulfilledClientRequest req : this.historyStore
-					.getOrderedList()) {
+			for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 				boolean allFilterTokensPresentInReq = true;
 				for (String filterArg : filterArguments) {
 					boolean notValue = filterArg.startsWith("!");
@@ -495,14 +483,14 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	@Override
 	public TwistInfo getTwistInfoById(Long id) {
-		return (TwistInfo)this.twistInfoStore.get(id);
+		return (TwistInfo) this.twistInfoStore.get(id);
 	}
 
 	@Override
 	public TwistInfo getTwistInfoByName(String name) {
 		TwistInfo item = null;
-		for(TwistInfo i : getTwistInfoList()){
-			if(i.getName()!=null && i.getName().equals(name)){
+		for (TwistInfo i : getTwistInfoList()) {
+			if (i.getName() != null && i.getName().equals(name)) {
 				item = i;
 				break;
 			}
@@ -535,4 +523,5 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		this.univeralTwistInfoId = twistInfoId;
 		this.writeMemoryToFile();
 	}
+
 }

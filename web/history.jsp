@@ -163,7 +163,7 @@ $(document).ready(function() {
 <div id="main">
     <jsp:include page="/WEB-INF/common/inc_scenario_create_dialog.jsp" />
 
-    <h1>Service History: <span class="highlight"><c:out value="${mockservice.serviceName}"/></span></h1>
+    <h1>Service History</h1>
     <div id="dialog-clear-history-confirm" title="Delete history">Are you sure? This will delete all fulfilled requests for all requesting IPs.</div>
     <form action="<c:url value="/history"/>" method="get">
     <p>
@@ -215,9 +215,9 @@ $(document).ready(function() {
 	                 <b><a href="<c:out value="${serviceUrl}"/>" title="<c:out value="${request.serviceName}"/>"><mockey:slug text="${request.serviceName}" maxLength="20"/></a></b>
 	                 <div style="padding-top:0.2em;">
 	                 <c:if test="${!empty request.originalUrlBeforeTwisting }">
-                     <b style="color:red;">TWISTED:</b> ${request.originalUrlBeforeTwisting}
+                     <a href="<c:url value="/twisting/setup"/>"><b style="color:red;">TWISTED!</b></a> <b>Original request:</b> <i>${request.originalUrlBeforeTwisting} </i> 
                      </c:if>
-	                 <b>URL:</b> <mockey:slug text="${request.rawRequest}" maxLength="180"/> </div>                    
+	                 <b>Raw Request:</b> <mockey:slug text="${request.rawRequest}" maxLength="180"/> </div>                    
 	                 <div id="letmesee_orig${request.id}">
 	                 
                      </div>
@@ -234,7 +234,7 @@ $(document).ready(function() {
 	                                    <div id="tabs-2_${request.id}">
 	                                    <textarea class="noborder_textarea" id="requestParameters_${request.id}" name="requestParameters" rows="5" cols="50"></textarea>
 	                                    </div>
-	                                     <div id="tabs-3_${request.id}">
+	                                    <div id="tabs-3_${request.id}">
 	                                    <textarea class="noborder_textarea" id="requestHeaders_${request.id}"  name="requestHeaders" rows="5" cols="50"></textarea>
 	                                    </div>
 	                                    <div id="tabs-4_${request.id}">
@@ -253,12 +253,13 @@ $(document).ready(function() {
                                         <div id="resp-tabs-2_${request.id}">
                                            <textarea class="noborder_textarea" id="responseHeader_${request.id}"  name="requestHeader" rows="5" cols="50"></textarea>
                                         </div>
-                                         <div id="resp-tabs-3_${request.id}">
+                                        <div id="resp-tabs-3_${request.id}">
                                            <textarea class="noborder_textarea" id="responseBody_${request.id}" name="responseBody" rows="5" cols="50"></textarea>
                                         </div>
                                         <div id="resp-tabs-1_${request.id}">
                                            <textarea class="noborder_textarea" id="responseStatus_${request.id}" name="responseStatus" rows="5" cols="50"></textarea>
                                         </div>
+                                        
                                         
                             </div>
                             <div>

@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -56,269 +57,285 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-
 /**
  * Wraps httpServletRequest and parses out the information we're looking for.
  */
 public class RequestFromClient {
-    private static final String[] HEADERS_TO_IGNORE = { "content-length", "host", "accept-encoding" };
+	private static final String[] HEADERS_TO_IGNORE = { "content-length", "host", "accept-encoding" };
 
-    // we will ignore the accept-encoding for now to avoid dealing with GZIP
-    // responses
-    // if we decide to accept GZIP'ed data later, here is an example of how to
-    // un-gzip
-    // it
-    // http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/httpclient/src/examples/org/apache/http/examples/client/ClientGZipContentCompression.java
+	// we will ignore the accept-encoding for now to avoid dealing with GZIP
+	// responses
+	// if we decide to accept GZIP'ed data later, here is an example of how to
+	// un-gzip
+	// it
+	// http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/httpclient/src/examples/org/apache/http/examples/client/ClientGZipContentCompression.java
 
-    private Log log = LogFactory.getLog(RequestFromClient.class);
-    private HttpServletRequest rawRequest;
-    private Map<String, String[]> parameters = new HashMap<String, String[]>();
-    private Map<String, List<String>> headers = new HashMap<String, List<String>>();
-    private String requestBody;
+	private Log log = LogFactory.getLog(RequestFromClient.class);
+	private HttpServletRequest rawRequest;
+	private Map<String, String[]> parameters = new HashMap<String, String[]>();
+	private Map<String, List<String>> headers = new HashMap<String, List<String>>();
+	private String requestBody;
 
-    public RequestFromClient(HttpServletRequest rawRequest) {
-        this.rawRequest = rawRequest;
-        try {
-            this.rawRequest.setCharacterEncoding(HTTP.ISO_8859_1); //"UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        parseRequestHeaders();
-        parseRequestBody();
-        parseParameters();
-    }
+	public RequestFromClient(HttpServletRequest rawRequest) {
+		this.rawRequest = rawRequest;
+		try {
+			this.rawRequest.setCharacterEncoding(HTTP.ISO_8859_1); // "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		parseRequestHeaders();
+		parseRequestBody();
+		parseParameters();
+	}
 
-    public String getRawRequestAsString(Url url){
-        
-        try {
-            URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(), 
-                    this.buildParameterRequest(), null);
-            return uri.toString();
-        } catch (Exception e) {
-            
-            e.printStackTrace();
-        } 
-        return "??";
-        
-        
-    }
-    /**
-     * Copy all necessary data from the request into a POST to the new server
-     * 
-     * @param serviceBean
-     *            the path on the server to POST to
-     * @return A fully populated HttpRequest object
-     * @throws URISyntaxException 
-     * @throws UnsupportedEncodingException 
-     */
-    public HttpRequest postToRealServer(Url url, String httpMethod) throws URISyntaxException, UnsupportedEncodingException {
-        // TODO: Cleanup the logic to handle creating a GET vs POST
-        HttpRequest request;
-        URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(), 
-                this.buildParameterRequest(), null);
-        if (("GET").equalsIgnoreCase(httpMethod)) {
-            request = new HttpGet(uri);
-        } else {
-            HttpPost post = new HttpPost(uri);
+	public String getRawRequestAsString(Url url) {
 
-            // copy the request body we recieved into the POST
-            post.setEntity(constructHttpPostBody());
-            request = post;
-        }
+		try {
+			URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(),
+					this.buildParameterRequest(), null);
+			return uri.toString();
+		} catch (Exception e) {
 
-        // copy the headers into the request to the real server
-        for (Map.Entry<String, List<String>> stringListEntry : headers.entrySet()) {
-            String name = stringListEntry.getKey();
+			e.printStackTrace();
+		}
+		return "??";
 
-            // ignore certain headers that httpclient will generate for us
-            if (includeHeader(name)) {
-                for (String value : stringListEntry.getValue()) {
-                    request.addHeader(name, value);
-                    log.info("  Header: " + name + " value: " + value);
-                }
-            }
-        }
-        return request;
-    }
+	}
 
-    private boolean includeHeader(String name) {
-        for (String header : HEADERS_TO_IGNORE) {
-            if (header.equalsIgnoreCase(name)) {
-                return false;
-            }
-        }
-        return true;
-    }
+	/**
+	 * Copy all necessary data from the request into a POST to the new server
+	 * 
+	 * @param serviceBean
+	 *            the path on the server to POST to
+	 * @return A fully populated HttpRequest object
+	 * @throws URISyntaxException
+	 * @throws UnsupportedEncodingException
+	 */
+	public HttpRequest postToRealServer(Url url, String httpMethod) throws URISyntaxException,
+			UnsupportedEncodingException {
+		// TODO: Cleanup the logic to handle creating a GET vs POST
+		HttpRequest request;
+		URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(), this.buildParameterRequest(),
+				null);
+		if (("GET").equalsIgnoreCase(httpMethod)) {
+			request = new HttpGet(uri);
+		} else {
+			HttpPost post = new HttpPost(uri);
 
-    /**
-     * Parameter key and value(s).
-     * 
-     * @return
-     */
-    public Map<String, String[]> getParameters() {
-        return this.parameters;
-    }
+			// copy the request body we recieved into the POST
+			post.setEntity(constructHttpPostBody());
+			request = post;
+		}
 
-    /**
-     * 
-     * @return All the parameters as a URL encoded string
-     * @throws UnsupportedEncodingException 
-     */
-    public String buildParameterRequest() throws UnsupportedEncodingException {
-        StringBuffer requestMsg = new StringBuffer();
-        //Checking for this case: /someurl?wsdl
-        boolean first = true;
-        for (String key : parameters.keySet()) {
-            String[] values = parameters.get(key);
-      
-            if(!first){
-                requestMsg.append("&");  
-            }
-            if (values != null && values.length > 0) {
-                for (String value : values) {
-                    if(value.trim().length() > 0){
-                        requestMsg.append(URLEncoder.encode(key,HTTP.UTF_8)).append("=").append(URLEncoder.encode(value,HTTP.UTF_8));
-                    }else {
-                        requestMsg.append(URLEncoder.encode(key,HTTP.UTF_8));
-                    }
-                }
-            } 
-            if(first){
-                first = false;
-            }
+		// copy the headers into the request to the real server
+		for (Map.Entry<String, List<String>> stringListEntry : headers.entrySet()) {
+			String name = stringListEntry.getKey();
 
-        }
-        return requestMsg.toString();
-    }
+			// ignore certain headers that httpclient will generate for us
+			if (includeHeader(name)) {
+				for (String value : stringListEntry.getValue()) {
+					request.addHeader(name, value);
+					log.info("  Header: " + name + " value: " + value);
+				}
+			}
+		}
+		return request;
+	}
 
-    private void parseRequestHeaders() {
-        Enumeration e = rawRequest.getHeaderNames();
-        while (e.hasMoreElements()) {
-            String name = (String) e.nextElement();
-            List<String> values = new ArrayList<String>();
-            Enumeration eValues = rawRequest.getHeaders(name);
+	private boolean includeHeader(String name) {
+		for (String header : HEADERS_TO_IGNORE) {
+			if (header.equalsIgnoreCase(name)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-            while (eValues.hasMoreElements()) {
-                String value = (String) eValues.nextElement();
-                values.add(value);
-            }
-            headers.put(name, values);
+	/**
+	 * Parameter key and value(s).
+	 * 
+	 * @return
+	 */
+	public Map<String, String[]> getParameters() {
+		return this.parameters;
+	}
 
-        }
-    }
+	/**
+	 * 
+	 * @return All the parameters as a URL encoded string
+	 * @throws UnsupportedEncodingException
+	 */
+	public String buildParameterRequest() throws UnsupportedEncodingException {
+		StringBuffer requestMsg = new StringBuffer();
+		// Checking for this case: /someurl?wsdl
+		boolean first = true;
+		for (String key : parameters.keySet()) {
+			String[] values = parameters.get(key);
 
-    private void parseRequestBody() {
+			if (!first) {
+				requestMsg.append("&");
+			}
+			if (values != null && values.length > 0) {
+				for (String value : values) {
+					if (value.trim().length() > 0) {
+						requestMsg.append(URLEncoder.encode(key, HTTP.UTF_8)).append("=")
+								.append(URLEncoder.encode(value, HTTP.UTF_8));
+					} else {
+						requestMsg.append(URLEncoder.encode(key, HTTP.UTF_8));
+					}
+				}
+			}
+			if (first) {
+				first = false;
+			}
 
-        try {
-            InputStream is = rawRequest.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
+		}
+		return requestMsg.toString();
+	}
 
-            String line = null;
-            try {
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            requestBody = sb.toString();
+	private void parseRequestHeaders() {
+		Enumeration e = rawRequest.getHeaderNames();
+		while (e.hasMoreElements()) {
+			String name = (String) e.nextElement();
+			List<String> values = new ArrayList<String>();
+			Enumeration eValues = rawRequest.getHeaders(name);
 
-        } catch (IOException e) {
-            log.error("Unable to parse body from incoming request", e);
-        }
+			while (eValues.hasMoreElements()) {
+				String value = (String) eValues.nextElement();
+				values.add(value);
+			}
+			headers.put(name, values);
 
-    }
+		}
+	}
 
-    @SuppressWarnings("unchecked")
-    private void parseParameters() {
-        parameters = rawRequest.getParameterMap();
-    }
+	private void parseRequestBody() {
 
-    @SuppressWarnings("unchecked")
-    public String getHeaderInfo() {
-        StringBuffer buf = new StringBuffer();
-        
-        Enumeration headerNames = rawRequest.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String name = (String) headerNames.nextElement();
-            buf.append(name).append("=").append(rawRequest.getHeader(name)).append("|");
-        }
-        return buf.toString();
-    }
+		try {
+			InputStream is = rawRequest.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			StringBuilder sb = new StringBuilder();
 
-    private HttpEntity constructHttpPostBody() {
+			String line = null;
+			try {
+				while ((line = reader.readLine()) != null) {
+					sb.append(line + "\n");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			requestBody = sb.toString();
 
-        HttpEntity body;
-        try {
-            if (requestBody != null) {
-                body = new StringEntity(requestBody);
-            } else {
-                List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-                for (Map.Entry<String, String[]> entry : this.parameters.entrySet()) {
-                    for (String value : entry.getValue()) {
-                        parameters.add(new BasicNameValuePair(entry.getKey(), value));
-                    }
-                }
-                body = new UrlEncodedFormEntity(parameters, HTTP.ISO_8859_1); //.UTF_8);
-            }
+		} catch (IOException e) {
+			log.error("Unable to parse body from incoming request", e);
+		}
 
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("Unable to generate a POST from the incoming request", e);
-        }
+	}
 
-        return body;
+	@SuppressWarnings("unchecked")
+	private void parseParameters() {
+		parameters = rawRequest.getParameterMap();
+	}
 
-    }
+	@SuppressWarnings("unchecked")
+	public String getHeaderInfo() {
+		StringBuffer buf = new StringBuffer();
 
-    /**
-     * 
-     * @return - true if incoming request is posting a body
-     */
-    public boolean hasPostBody() {
-        return requestBody != null && requestBody.trim().length() > 0;
-    }
+		Enumeration<String> headerNames = rawRequest.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String name = headerNames.nextElement();
+			buf.append(name).append("=").append(rawRequest.getHeader(name)).append("|");
+		}
+		return buf.toString();
+	}
 
-    /**
-     * 
-     * @return the body content of this request.
-     */
-    public String getBodyInfo() {
-        return requestBody;
-    }
+	public String getCookieInfo() {
+		StringBuffer buf = new StringBuffer();
 
-    /**
-     * 
-     * @return the parameters of this request
-     */
-    public String getParameterInfo() {
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
-            builder.append(entry.getKey()).append("=");
-            for (String value : entry.getValue()) {
-                builder.append(value);
-            }
-            builder.append("|");
-        }
-        return builder.toString();
-    }
+		if(rawRequest.getCookies()!=null) {
+			for (Cookie cookie : rawRequest.getCookies()) {
+	
+				buf.append(String.format("Cookie: name=%s, domain=%s, value=%s", cookie.getName(), cookie.getDomain(),
+						cookie.getValue()));
+			}
+		}
+		return buf.toString();
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("---------- Headers ---------\n");
-        builder.append(getHeaderInfo());
-        builder.append("--------- Parameters ------------ \n");
-        builder.append(getParameterInfo());
-        builder.append("-------- Post BODY --------------\n");
-        builder.append(getBodyInfo());
-        return builder.toString();
-    }
+	private HttpEntity constructHttpPostBody() {
+
+		HttpEntity body;
+		try {
+			if (requestBody != null) {
+				body = new StringEntity(requestBody);
+			} else {
+				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+				for (Map.Entry<String, String[]> entry : this.parameters.entrySet()) {
+					for (String value : entry.getValue()) {
+						parameters.add(new BasicNameValuePair(entry.getKey(), value));
+					}
+				}
+				body = new UrlEncodedFormEntity(parameters, HTTP.ISO_8859_1); // .UTF_8);
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException("Unable to generate a POST from the incoming request", e);
+		}
+
+		return body;
+
+	}
+
+	/**
+	 * 
+	 * @return - true if incoming request is posting a body
+	 */
+	public boolean hasPostBody() {
+		return requestBody != null && requestBody.trim().length() > 0;
+	}
+
+	/**
+	 * 
+	 * @return the body content of this request.
+	 */
+	public String getBodyInfo() {
+		return requestBody;
+	}
+
+	/**
+	 * 
+	 * @return the parameters of this request
+	 */
+	public String getParameterInfo() {
+		StringBuilder builder = new StringBuilder();
+		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
+			builder.append(entry.getKey()).append("=");
+			for (String value : entry.getValue()) {
+				builder.append(value);
+			}
+			builder.append("|");
+		}
+		return builder.toString();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("---------- Headers ---------\n");
+		builder.append(getHeaderInfo());
+		builder.append("---------- Cookies ---------\n");
+		builder.append(getCookieInfo());
+		builder.append("--------- Parameters ------------ \n");
+		builder.append(getParameterInfo());
+		builder.append("-------- Post BODY --------------\n");
+		builder.append(getBodyInfo());
+		return builder.toString();
+	}
 }

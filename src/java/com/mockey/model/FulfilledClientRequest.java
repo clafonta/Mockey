@@ -45,6 +45,7 @@ public class FulfilledClientRequest implements PersistableItem {
 	private String clientRequestBody;
 	private String clientRequestHeaders;
 	private String clientRequestParameters;
+	private String clientRequestCookies;
 	private String requestorIP;
 	private String rawRequest;
 	private String comment;
@@ -177,6 +178,14 @@ public class FulfilledClientRequest implements PersistableItem {
 
 	public String getOriginalUrlBeforeTwisting() {
 		return originalUrlBeforeTwisting;
+	}
+
+	public void setClientRequestCookies(String clientRequestCookies) {
+		this.clientRequestCookies = clientRequestCookies;
+	}
+
+	public String getClientRequestCookies() {
+		return clientRequestCookies;
 	}
 
 	

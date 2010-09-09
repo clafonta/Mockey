@@ -88,8 +88,8 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("<p><textarea class=\"resizable\" name=\"requestHeader\" rows=\"5\" cols=\"100%\">"
                     + fCRequest.getClientRequestHeaders() + "</textarea></p>");
             returnHTML.append("<p>Parameters (pipe delimited)</p>");
-            returnHTML.append("<textarea class=\"resizable\" name=\"requestParameters\" rows=\"5\" cols=\"100%\">"
-                    + fCRequest.getClientRequestParameters() + "</textarea>");
+            returnHTML.append("<p><textarea class=\"resizable\" name=\"requestParameters\" rows=\"5\" cols=\"100%\">"
+                    + fCRequest.getClientRequestParameters() + "</textarea></p>");
             returnHTML.append("<p>Body</p>");
             returnHTML.append("<p><textarea class=\"resizable\" name=\"requestBody\" rows=\"10\" >"
                     + fCRequest.getClientRequestBody() + "</textarea></p>");

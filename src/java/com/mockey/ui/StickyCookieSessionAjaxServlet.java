@@ -39,51 +39,36 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mockey.model.FulfilledClientRequest;
-import com.mockey.storage.IMockeyStorage;
-import com.mockey.storage.StorageRegistry;
+import com.mockey.ClientExecuteProxy;
 
 /**
- * Returns JSON of the fulfilled request, designed to be consumed by an
- * AJAX call.
+ * Returns a JSON to validate that sticky cookie session has been reset/flushed.
  * 
  */
-public class HistoryAjaxServlet extends HttpServlet {
+public class StickyCookieSessionAjaxServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 4178219038104708097L;
-	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-	private static Logger logger = Logger.getLogger(HistoryAjaxServlet.class);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1361928261096258669L;
+	private static Logger logger = Logger.getLogger(StickyCookieSessionAjaxServlet.class);
 
     /**
      * 
      */
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Long fulfilledRequestId = null;
         JSONObject jsonObject = new JSONObject();
         try {
-
-            fulfilledRequestId = new Long(req.getParameter("conversationRecordId"));
-            FulfilledClientRequest fCRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
+        	ClientExecuteProxy.resetStickySession();
             
-            jsonObject.put("conversationRecordId", ""+fulfilledRequestId);
-            jsonObject.put("serviceId", ""+fCRequest.getServiceId());
-            jsonObject.put("serviceName", fCRequest.getServiceName());
-            jsonObject.put("requestUrl", ""+fCRequest.getRawRequest());
-            jsonObject.put("requestHeaders", ""+fCRequest.getClientRequestHeaders());
-            jsonObject.put("requestParameters", ""+fCRequest.getClientRequestParameters());
-            jsonObject.put("requestBody", ""+fCRequest.getClientRequestBody());
-            jsonObject.put("requestCookies", ""+fCRequest.getClientRequestCookies());
-
-            jsonObject.put("responseStatus", ""+fCRequest.getResponseMessage().getStatusLine());
-            jsonObject.put("responseHeader", ""+fCRequest.getResponseMessage().getHeaderInfo());
-            jsonObject.put("responseBody", ""+fCRequest.getResponseMessage().getBody());
+            jsonObject.put("reset",true);
+           
 
 
         } catch (Exception e) {
         	 try {
-				jsonObject.put("error", ""+"Sorry, history for this conversation (fulfilledRequestId="+fulfilledRequestId
-						 +") is not available.");
+				jsonObject.put("error", "Unable to reset sticky session");
 			} catch (JSONException e1) {
 				logger.error("Unable to create JSON", e1);
 			}
