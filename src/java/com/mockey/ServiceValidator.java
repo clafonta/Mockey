@@ -27,8 +27,11 @@
  */
 package com.mockey;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -66,6 +69,33 @@ public class ServiceValidator {
 							"Service name must not be empty or greater than 250 chars.");
 		}
 
+		// If given, validate URL
+		if(ms.getUrl() !=null && ms.getUrl().trim().length() > 0){
+			URL aURL;
+			try {
+				aURL = new URL(ms.getUrl());
+				// Let's make sure user doesn't have any REF or QUERY arguments
+				// Why? Because Mockey tries to find match incoming request
+				// to service Real and Mock URLs, and when people append 
+				// random parameters on the end of similar URL, it gets 
+				// hard to map URL X to URL X. 
+				if(aURL.getQuery()!=null || aURL.getRef()!=null){
+					errorMap
+					.put("urlMsg",
+							"It looks like you have a well form URL but you can't have any QUERY or REFERENCE arguments.");
+					return errorMap;
+				}
+				
+			} catch (MalformedURLException e) {
+				errorMap
+				.put("urlMsg",
+						"It looks like you have a malformed URL: " + e.getMessage());
+				return errorMap;
+			}
+			
+			
+			
+		}
 		// Make sure there doesn't exist a service
 		// w/ the same non-empty real URL.
 		try {

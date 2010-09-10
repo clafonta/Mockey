@@ -63,43 +63,57 @@ $(document).ready(function() {
 	});
 
 	$('#reset-sticky-session').click( function() {
-            var planId = this.id.split("_")[1];
-            $.post('<c:url value="/configuration/reset_sticky_cookie_session"/>' ,function(data){
-                if(data.reset){
-             	   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
-                 }
-            }, 'json' );
-            
-        });
-  
+		$('#reset-session-confirm').dialog({width: 400, height:200, resizable:true});
+		$('#reset-session-confirm').dialog('open');
+		$('#reset-session-confirm').dialog({
+            buttons: {
+              "Reset Sticky Sessions": function() {
+					$.post('<c:url value="/configuration/reset_sticky_cookie_session"/>' ,function(data){
+			            if(data.reset){
+			               $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+			             }
+			        }, 'json' );      
+					$('#reset-session-confirm').dialog('close');                    
+              }, 
+              Cancel: function(){
+                  $('#reset-session-confirm').dialog('close');
+                  
+              }
+            }
+      }); 
+      return false;
+    });
+	$("#reset-session-confirm").dialog({
+        autoOpen: false
+    });
 	
 	
-        $("#dialog-flush-confirm").dialog({
-            resizable: false,
-            height:120,
-            modal: false,
-            autoOpen: false
-        });
-            
-        $('#flush').each( function() {
-            $(this).click( function() {
-            	$('#dialog-flush-confirm').show();
-                $('#dialog-flush-confirm').dialog('open');
-                    $('#dialog-flush-confirm').dialog({
-                        resizable: false,
-                        buttons: {
-                          "Delete everything": function() {
-                              document.location="<c:url value="/home?action=deleteAllServices" />";                          
-                          }, 
-                          Cancel: function(){
-                              $(this).dialog('close');
-                          }
-                        }
-                  }); 
-                  return false;
-                });
-               $('#dialog-flush-confirm').dialog("destroy");
-            });
+    $("#dialog-flush-confirm").dialog({
+        resizable: false,
+        height:120,
+        modal: false,
+        autoOpen: false
+    });
+        
+    $('#flush').each( function() {
+        $(this).click( function() {
+        	$('#dialog-flush-confirm').show();
+            $('#dialog-flush-confirm').dialog('open');
+            $('#dialog-flush-confirm').dialog({
+                resizable: false,
+                buttons: {
+                  "Delete everything": function() {
+                      document.location="<c:url value="/home?action=deleteAllServices" />";                          
+                  }, 
+                  Cancel: function(){
+                      $(this).dialog('close');
+                  }
+                }
+          }); 
+          return false;
+       });
+       $('#dialog-flush-confirm').dialog("destroy");
+     });
 });
 
 
@@ -122,6 +136,10 @@ $(document).ready(function() {
 	  <span class="alert_message" style="position:absolute; top:0; right:200; width:500px;">This isn't designed for <b>Internet Explorer 6.0</b>. You should use another browser.</span>
 	<% } %>
 	<div id="dialog-flush-confirm" class="hide" title="Flush history">Are you sure? This will delete everything. You may want to <a href="<c:url value="/export" />">export your stuff</a> first.</div>
+	<div id="reset-session-confirm" class="hide" title="Reset Session">Are you sure? This will flush out any sticky cookies that Mockey may have kept due to serving up active-session-based proxy requests.
+	<p> <i>Does your brain hurt now?</i></p>
+	</div>
+	
 	<div id="topnav" style="margin-bottom:3em;width:100%;">
 	<ul class="sf-menu" >
 		<li class="<c:if test="${currentTab == 'home'}">current</c:if>"><a
@@ -134,7 +152,7 @@ $(document).ready(function() {
 					style="">Merge Services</a></li>
 				<li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
                 <a title="Real URL injecting" href="<c:url value="/inject" />"
-                    style="">URL injecting</a></li>
+                    style="">URL Injection</a></li>
 				<li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
                 <a title="Twisting" href="<c:url value="/twisting/setup" />"
                     style="">Twisting</a></li>
@@ -174,7 +192,6 @@ $(document).ready(function() {
         <span id="reset-sticky-cookie-config" class="configuration-info">
             <a href="#" id="reset-sticky-session" class="tiny" 
             title="Reset the sticky cookie session that Mockey may be keeping.">Reset Session</a>
-            
         </span>
        
        

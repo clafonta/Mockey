@@ -107,7 +107,7 @@ $(document).ready( function() {
         <h1>Merge Services</h1>
         <p>Merging services means putting all scenarios and multiple <i>real urls</i> together, under one service definition. If you're not sure about this, 
 you should <a href="">Export</a> your service definitions first. If things go bad, try 
-<strong>Flush</strong> and re-import your last saved definitions file.</p>
+<strong>Flush</strong> and re-import your last saved definitions file. <a href="<c:url value="/help#merge_services"/>">More help</a></p>
         <c:choose>
 	        <c:when test="${!empty services}">
 	        <div class="parentform">

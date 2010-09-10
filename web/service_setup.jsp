@@ -63,6 +63,8 @@
 							$("#service_url").addClass('ui-state-error');
 							message = message + '<div>' + data.result.urlMsg+'</div>';
 						}
+
+						
 						if(data.result.serviceUrlMsg){
 							$('input[name=realServiceUrl]').each( function(){$(this).addClass('ui-state-error')});
 							message = message + '<div>' + data.result.serviceUrlMsg+'</div>' 
