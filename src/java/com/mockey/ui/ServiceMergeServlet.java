@@ -114,6 +114,8 @@ public class ServiceMergeServlet extends HttpServlet {
 		} catch (Exception e) {
 			// Do nothing
 			log.error("Something wrong with merging services.", e);
+			responseMap.put("conflicts", "Unable to merge services. The services selected may be missing or contain bad data. Sorry about this.");
+
 		}
 		
 		// IF NO CONFLICTS, THEN DELETE OLD SOURCE SERVICES

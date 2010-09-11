@@ -29,6 +29,7 @@ package com.mockey.storage;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -66,7 +67,6 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
 	private ProxyServerModel proxyInfoBean = new ProxyServerModel();
 
-	private static boolean stickyCookieSession = false;
 	private Long univeralTwistInfoId = null;
 	private Long univeralErrorServiceId = null;
 	private Long univeralErrorScenarioId = null;
@@ -115,16 +115,18 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 				// 1. Check for matching name.
 
 				Url serviceMockUrl = new Url(service.getUrl());
-				//logger.debug("Comparing: " + url.trim()+ " == "+serviceMockUrl.getFullUrl().trim() );
-				if (url.trim().equalsIgnoreCase( serviceMockUrl.getFullUrl().trim())) {
-					
+				// logger.debug("Comparing: " + url.trim()+
+				// " == "+serviceMockUrl.getFullUrl().trim() );
+				if (url.trim().equalsIgnoreCase(serviceMockUrl.getFullUrl().trim())) {
+
 					return service;
 				}
 				// 2. If no Mock url match, then check real URLs.
 				Iterator<Url> altUrlIter = service.getRealServiceUrls().iterator();
 				while (altUrlIter.hasNext()) {
 					Url altUrl = altUrlIter.next();
-					//logger.debug("Comparing: " + url.trim()+ " == "+serviceMockUrl.getFullUrl().trim() );
+					// logger.debug("Comparing: " + url.trim()+
+					// " == "+serviceMockUrl.getFullUrl().trim() );
 
 					if (url.trim().equalsIgnoreCase(altUrl.getFullUrl().trim())) {
 						return service;
@@ -137,11 +139,21 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 
 		logger.debug("Didn't find service with Service path: " + url + ".  Creating a new one.");
+
 		Service service = new Service();
-		Url newUrl = new Url(url);
-		service.setUrl(newUrl.getFullUrl());
-		service.saveOrUpdateRealServiceUrl(newUrl);
-		store.saveOrUpdateService(service);
+
+		Url newUrl = null;
+
+		try {
+			newUrl = new Url(Url.getSchemeHostPortPathFromURL(url));
+			service.setUrl(newUrl.getFullUrl());
+			service.saveOrUpdateRealServiceUrl(newUrl);
+			store.saveOrUpdateService(service);
+
+		} catch (MalformedURLException e) {
+			logger.error("Unable to build a Service with URL '"+url+"'", e);
+		}
+
 		return service;
 	}
 

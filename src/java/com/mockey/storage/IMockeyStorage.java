@@ -30,8 +30,6 @@ package com.mockey.storage;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.http.client.CookieStore;
-
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;

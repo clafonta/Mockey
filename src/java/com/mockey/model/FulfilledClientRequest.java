@@ -46,6 +46,7 @@ public class FulfilledClientRequest implements PersistableItem {
 	private String clientRequestHeaders;
 	private String clientRequestParameters;
 	private String clientRequestCookies;
+	private String clientResponseCookies;
 	private String requestorIP;
 	private String rawRequest;
 	private String comment;
@@ -187,6 +188,16 @@ public class FulfilledClientRequest implements PersistableItem {
 	public String getClientRequestCookies() {
 		return clientRequestCookies;
 	}
+
+	public void setClientResponseCookies(String clientResponseCookies) {
+		this.clientResponseCookies = clientResponseCookies;
+	}
+
+	public String getClientResponseCookies() {
+		return clientResponseCookies;
+	}
+
+	
 
 	
 }

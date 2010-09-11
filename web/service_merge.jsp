@@ -35,8 +35,8 @@ $(document).ready( function() {
 			    });	
 			    if(sourceIdValues.length == 0) { 
 			    	$.prompt('<div style=\"color:red;\">No source services selected.</div> ');
-			    }else if(!destinationServiceId) { 
-			    	$.prompt('<div style=\"color:red;\">No destination services selected.</div> ');
+			    }else if(destinationServiceId.length == 0) { 
+			    	$.prompt('<div style=\"color:red;\">No destination service selected.</div> ');
 			    }else {
 				    
 				    //alert("Hey! " + sourceValues + " " + destinationServiceId.val());

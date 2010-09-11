@@ -60,35 +60,43 @@ import com.mockey.model.Url;
  * @since 4.0
  */
 public class ClientExecuteProxy {
-	
+
 	// Static cookie store for sessions
 	private static CookieStore cookieStore = null;
 	private Log log = LogFactory.getLog(ClientExecuteProxy.class);
-	
-	
+
 	/**
 	 * 
-	 * @return a new Client 
+	 * @return a new Client
 	 */
 	public static ClientExecuteProxy getClientExecuteProxyInstance() {
-		
+
 		return new ClientExecuteProxy();
 	}
-	
+
 	/**
-	 * Cookie store can be null, otherwise it is needed to support sticky session over multiple 
-	 * client proxy executions. 
+	 * Cookie store can be null, otherwise it is needed to support sticky
+	 * session over multiple client proxy executions.
 	 */
-	public static void resetStickySession(){
+	public static void resetStickySession() {
 		ClientExecuteProxy.cookieStore = null;
 	}
-	
 
-
-	private ClientExecuteProxy(){
+	private ClientExecuteProxy() {
 	}
-	public ResponseFromService execute(TwistInfo twistInfo, ProxyServerModel proxyServer, Url realServiceUrl, String httpMethod,
-			RequestFromClient request) throws Exception {
+
+	/**
+	 * 
+	 * @param twistInfo
+	 * @param proxyServer
+	 * @param realServiceUrl
+	 * @param httpMethod
+	 * @param request
+	 * @return
+	 * @throws ClientExecuteProxyException
+	 */
+	public ResponseFromService execute(TwistInfo twistInfo, ProxyServerModel proxyServer, Url realServiceUrl,
+			String httpMethod, RequestFromClient request) throws ClientExecuteProxyException {
 		log.info("Request: " + String.valueOf(realServiceUrl));
 
 		// general setup
@@ -106,19 +114,21 @@ public class ClientExecuteProxy {
 		HttpProtocolParams.setUseExpectContinue(params, false);
 		ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
-		
-		
-		if(ClientExecuteProxy.cookieStore == null) {
+
+		if (ClientExecuteProxy.cookieStore == null) {
 			cookieStore = httpclient.getCookieStore();
-		}else {
+		} else {
 			httpclient.setCookieStore(cookieStore);
 		}
-		
-		// Show what cookies are in the store. 
-		for(Cookie cookie: ClientExecuteProxy.cookieStore.getCookies()){
+
+		StringBuffer requestCookieInfo = new StringBuffer();
+		// Show what cookies are in the store .
+		for (Cookie cookie : ClientExecuteProxy.cookieStore.getCookies()) {
 			log.info("Cookie in the cookie STORE: " + cookie.toString());
+			requestCookieInfo.append(cookie.toString() + "\n\n\n");
+			
 		}
-		
+
 		if (proxyServer.isProxyEnabled()) {
 			// make sure to use a proxy that supports CONNECT
 			httpclient.getCredentialsProvider()
@@ -128,10 +138,10 @@ public class ClientExecuteProxy {
 
 		// TWISTING
 		Url originalRequestUrlBeforeTwisting = null;
-		if(twistInfo!=null){
+		if (twistInfo != null) {
 			String fullurl = realServiceUrl.getFullUrl();
 			String twistedUrl = twistInfo.getTwistedValue(fullurl);
-			if(twistedUrl!=null){
+			if (twistedUrl != null) {
 				originalRequestUrlBeforeTwisting = realServiceUrl;
 				realServiceUrl = new Url(twistedUrl);
 			}
@@ -139,19 +149,33 @@ public class ClientExecuteProxy {
 		HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(),
 				realServiceUrl.getScheme());
 
-		HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl, httpMethod));
+		ResponseFromService responseMessage = null;
+		try {
+			HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl, httpMethod));
+			responseMessage = new ResponseFromService(response);
 
-		ResponseFromService responseMessage = new ResponseFromService(response);
+			responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
+			responseMessage.setRequestUrl(realServiceUrl);
+		} catch (Exception e) {
+			throw new ClientExecuteProxyException("Unable to retrieve a response. ", realServiceUrl, e);
+		} finally {
+			// When HttpClient instance is no longer needed,
+			// shut down the connection manager to ensure
+			// immediate deallocation of all system resources
+			httpclient.getConnectionManager().shutdown();
+		}
 		
-		responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
-		responseMessage.setRequestUrl(realServiceUrl);
-		// When HttpClient instance is no longer needed,
-		// shut down the connection manager to ensure
-		// immediate deallocation of all system resources
-		httpclient.getConnectionManager().shutdown();
-
+		
 		// Parse out the response information we're looking for
-
+		StringBuffer responseCookieInfo = new StringBuffer();
+		// Show what cookies are in the store .
+		for (Cookie cookie : ClientExecuteProxy.cookieStore.getCookies()) {
+			log.info("Cookie in the cookie STORE: " + cookie.toString());
+			responseCookieInfo.append(cookie.toString() + "\n\n\n");
+			
+		}
+		responseMessage.setRequestCookies(requestCookieInfo.toString());
+		responseMessage.setResponseCookies(responseCookieInfo.toString());
 		return responseMessage;
 	}
 

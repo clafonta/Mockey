@@ -58,8 +58,10 @@ public class ResponseFromService {
     private String errorMsg;
     private Header[] headers;
     private StatusLine statusLine;
+    private String requestCookies = null;
     private Url originalRequestUrlBeforeTwisting;
     private Url requestUrl;
+	private String responseCookies;
 
     /**
      * Empty constructor
@@ -229,6 +231,20 @@ public class ResponseFromService {
 
 	public Url getRequestUrl() {
 		return requestUrl;
+	}
+
+	public void setRequestCookies(String arg) {
+		requestCookies = arg;
+	}
+	
+	public String getRequestCookies(){
+		return this.requestCookies;
+	}
+	public String getResponseCookies(){
+		return this.responseCookies;
+	}
+	public void setResponseCookies(String arg){
+		this.responseCookies = arg;
 	}
 
 }

@@ -27,21 +27,29 @@
  */
 package com.mockey;
 
-public class ServiceException extends Throwable {
+import com.mockey.model.Url;
 
-    private static final long serialVersionUID = 7710032914651271573L;
-    private String errorMsg = null;
+public class ClientExecuteProxyException extends Throwable {
 
-	public ServiceException(String msg) {
-		this.errorMsg = msg;
-	}
-	
-	public ServiceException(String msg, Exception e) {
-		super(msg,e);
-		this.errorMsg = msg;
-	}
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1858670956465614515L;
+	private String errorMsg = null;
+	 private Url requestUrl = null;
 
-	public String getMessage() {
-		return errorMsg;
-	}
+		
+		public ClientExecuteProxyException(String msg, Url requestUrl, Exception e) {
+			super(msg,e);
+			this.errorMsg = msg;
+			this.requestUrl = requestUrl;
+		}
+
+		public String getMessage() {
+			return errorMsg;
+		}
+		
+		public Url getRequestUrl(){
+			return requestUrl;
+		}
 }

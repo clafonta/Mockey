@@ -29,8 +29,6 @@ package com.mockey.model;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -248,17 +246,29 @@ public class Url {
 		return relativePath;
 	}
 
-	public static boolean isValidUrlPattern(String url) {
-		Pattern p = Pattern.compile("^http[s]?://[-a-zA-Z0-9_.:]+[-a-zA-Z0-9_:@&?=+,.!/~*'%$]*$");
-		Matcher m = p.matcher(url);
-		return m.find();
-
+	/**
+	 * Given a valid URL with query and reference arguments, this method will extract remove those values
+	 * and return a value with SCHEME://HOST[:PORT]//PATH
+	 * 
+	 * @param validUrl
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	public static String getSchemeHostPortPathFromURL(String validUrl) throws MalformedURLException {
+		URL aURL = new URL(validUrl);
+		String port = "";
+		if(aURL.getPort() > -1){
+			port = ";"+aURL.getPort();
+		}
+		String schemeHostPortPath = aURL.getProtocol() + "://" + aURL.getHost() + port + aURL.getPath();
+		return schemeHostPortPath;
 	}
-
+	
+	
 	public static void main(String[] args) {
 		URL aURL;
 		try {
-			aURL = new URL("http://java.sun.com:80/docs/books/tutorial/index.html");
+			aURL = new URL("http://java.sun.com:80/docs/books/tutorial/index.html////?");
 
 			System.out.println("protocol = " + aURL.getProtocol());
 			System.out.println("authority = " + aURL.getAuthority());

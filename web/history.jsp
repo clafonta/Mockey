@@ -109,10 +109,13 @@ $(document).ready(function() {
                   $('#requestUrl_'+requestId).val(data.requestUrl);
                   $('#requestParameters_'+requestId).val(data.requestParameters);
                   $('#requestHeaders_'+requestId).val(data.requestHeaders);
+                  $('#requestCookies_'+requestId).val(data.requestCookies);
+                  
                   $('#requestBody_'+requestId).val(data.requestBody);
                   $('#responseStatus_'+requestId).val(data.responseStatus);
                   $('#responseHeader_'+requestId).val(data.responseHeader);
                   $('#responseBody_'+requestId).val(data.responseBody);
+                  $('#responseCookies_'+requestId).val(data.responseCookies);
                   $('#letmesee_'+requestId).show(); 
                   
                 }
@@ -229,16 +232,20 @@ $(document).ready(function() {
 	                                    <ul>
 	                                        <li><a href="#tabs-2_${request.id}">Parameters</a></li>
 	                                        <li><a href="#tabs-3_${request.id}">Headers</a></li>
+	                                        <li><a href="#tabs-5_${request.id}">Cookies</a></li>
 	                                        <li><a href="#tabs-4_${request.id}">Body</a></li>
 	                                    </ul>
 	                                    <div id="tabs-2_${request.id}">
-	                                    <textarea class="noborder_textarea" id="requestParameters_${request.id}" name="requestParameters" rows="5" cols="50"></textarea>
+	                                    <textarea class="noborder_textarea resizable" id="requestParameters_${request.id}" name="requestParameters" rows="5" cols="50"></textarea>
 	                                    </div>
 	                                    <div id="tabs-3_${request.id}">
-	                                    <textarea class="noborder_textarea" id="requestHeaders_${request.id}"  name="requestHeaders" rows="5" cols="50"></textarea>
+	                                    <textarea class="noborder_textarea resizable" id="requestHeaders_${request.id}"  name="requestHeaders" rows="5" cols="50"></textarea>
 	                                    </div>
+	                                    <div id="tabs-5_${request.id}">
+                                        <textarea class="noborder_textarea resizable" id="requestCookies_${request.id}"  name="requestCookies" rows="5" cols="50"></textarea>
+                                        </div>
 	                                    <div id="tabs-4_${request.id}">
-	                                    <textarea class="noborder_textarea" id="requestBody_${request.id}" name="requestBody" rows="5" cols="50"></textarea>
+	                                    <textarea class="noborder_textarea resizable" id="requestBody_${request.id}" name="requestBody" rows="5" cols="50"></textarea>
 	                                    </div>
 	                        </div>
                         </div>
@@ -247,17 +254,21 @@ $(document).ready(function() {
                             <div class="tabs">
                                         <ul>
                                             <li><a href="#resp-tabs-2_${request.id}">Headers</a></li>
+                                            <li><a href="#resp-tabs-5_${request.id}">Cookies</a></li>
                                             <li><a href="#resp-tabs-3_${request.id}">Body</a></li>
                                             <li><a href="#resp-tabs-1_${request.id}">Status</a></li>
                                         </ul>
                                         <div id="resp-tabs-2_${request.id}">
-                                           <textarea class="noborder_textarea" id="responseHeader_${request.id}"  name="requestHeader" rows="5" cols="50"></textarea>
+                                           <textarea class="noborder_textarea resizable" id="responseHeader_${request.id}"  name="requestHeader" rows="5" cols="50"></textarea>
+                                        </div>
+                                        <div id="resp-tabs-5_${request.id}">
+                                           <textarea class="noborder_textarea resizable" id="responseCookies_${request.id}" name="responseCookies" rows="5" cols="50"></textarea>
                                         </div>
                                         <div id="resp-tabs-3_${request.id}">
-                                           <textarea class="noborder_textarea" id="responseBody_${request.id}" name="responseBody" rows="5" cols="50"></textarea>
+                                           <textarea class="noborder_textarea resizable" id="responseBody_${request.id}" name="responseBody" rows="5" cols="50"></textarea>
                                         </div>
                                         <div id="resp-tabs-1_${request.id}">
-                                           <textarea class="noborder_textarea" id="responseStatus_${request.id}" name="responseStatus" rows="5" cols="50"></textarea>
+                                           <textarea class="noborder_textarea resizable" id="responseStatus_${request.id}" name="responseStatus" rows="5" cols="50"></textarea>
                                         </div>
                                         
                                         

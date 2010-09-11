@@ -251,7 +251,7 @@ public class RequestFromClient {
 		Enumeration<String> headerNames = rawRequest.getHeaderNames();
 		while (headerNames.hasMoreElements()) {
 			String name = headerNames.nextElement();
-			buf.append(name).append("=").append(rawRequest.getHeader(name)).append("|");
+			buf.append(name).append("=").append(rawRequest.getHeader(name)).append(" \n");
 		}
 		return buf.toString();
 	}

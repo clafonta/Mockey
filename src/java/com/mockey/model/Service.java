@@ -37,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mockey.ClientExecuteProxy;
+import com.mockey.ClientExecuteProxyException;
 import com.mockey.OrderedMap;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -320,7 +321,7 @@ public class Service implements PersistableItem, ExecutableService  {
 			response = clientExecuteProxy.execute(twistInfo,proxyServer, realServiceUrl,
 					methodType, request);
 			
-		} catch (Exception e) {
+		} catch (ClientExecuteProxyException e) {
 			// We're here for various reasons.
 			// 1) timeout from calling real service.
 			// 2) unable to parse real response.
@@ -331,7 +332,7 @@ public class Service implements PersistableItem, ExecutableService  {
 			// (B) see if Mockey has a universal error response
 			// If neither, then throw the exception.
 			response = new ResponseFromService();
-
+			response.setRequestUrl(e.getRequestUrl());
 			Scenario error = this.getErrorScenario();
 			if (error != null) {
 				response.setBody(error.getResponseMessage());
@@ -339,8 +340,12 @@ public class Service implements PersistableItem, ExecutableService  {
 				StringBuffer msg = new StringBuffer();
 				msg.append("Yikes! We encountered an error. ");
 				if (proxyServer != null && proxyServer.isProxyEnabled()) {
-					msg.append("Proxy settings are ENABLED pointing to '"
-							+ proxyServer.getProxyHost() + "'. ");
+					if(proxyServer.getProxyHost()!=null && proxyServer.getProxyHost().trim().length()>0){
+						msg.append("Internet proxy settings are ENABLED pointing to -->"
+							+ proxyServer.getProxyHost() + "<-- ");
+					}else {
+						msg.append("Internet proxy settings are ENABLED but Internet Proxy Server value is EMPTY.");
+					}
 				} else {
 					msg.append("Proxy settings are NOT ENABLED. ");
 				}
