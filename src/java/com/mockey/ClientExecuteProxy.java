@@ -114,11 +114,17 @@ public class ClientExecuteProxy {
 		HttpProtocolParams.setUseExpectContinue(params, false);
 		ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
+		CookieStore cookieStore = httpclient.getCookieStore();
+		for (Cookie httpClientCookie : request.getHttpClientCookies()) {
+			cookieStore.addCookie(httpClientCookie);
+		}
+		//httpclient.setCookieStore(cookieStore);
 
 		if (ClientExecuteProxy.cookieStore == null) {
-			cookieStore = httpclient.getCookieStore();
+			ClientExecuteProxy.cookieStore = httpclient.getCookieStore();
+
 		} else {
-			httpclient.setCookieStore(cookieStore);
+			httpclient.setCookieStore(ClientExecuteProxy.cookieStore);
 		}
 
 		StringBuffer requestCookieInfo = new StringBuffer();
@@ -126,7 +132,7 @@ public class ClientExecuteProxy {
 		for (Cookie cookie : ClientExecuteProxy.cookieStore.getCookies()) {
 			log.info("Cookie in the cookie STORE: " + cookie.toString());
 			requestCookieInfo.append(cookie.toString() + "\n\n\n");
-			
+
 		}
 
 		if (proxyServer.isProxyEnabled()) {
@@ -151,9 +157,8 @@ public class ClientExecuteProxy {
 
 		ResponseFromService responseMessage = null;
 		try {
-			HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl, httpMethod));
+			HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl));
 			responseMessage = new ResponseFromService(response);
-
 			responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
 			responseMessage.setRequestUrl(realServiceUrl);
 		} catch (Exception e) {
@@ -164,18 +169,17 @@ public class ClientExecuteProxy {
 			// immediate deallocation of all system resources
 			httpclient.getConnectionManager().shutdown();
 		}
-		
-		
+
 		// Parse out the response information we're looking for
-		StringBuffer responseCookieInfo = new StringBuffer();
-		// Show what cookies are in the store .
-		for (Cookie cookie : ClientExecuteProxy.cookieStore.getCookies()) {
-			log.info("Cookie in the cookie STORE: " + cookie.toString());
-			responseCookieInfo.append(cookie.toString() + "\n\n\n");
-			
-		}
-		responseMessage.setRequestCookies(requestCookieInfo.toString());
-		responseMessage.setResponseCookies(responseCookieInfo.toString());
+		//StringBuffer responseCookieInfo = new StringBuffer();
+//		// Show what cookies are in the store .
+//		for (Cookie cookie : ClientExecuteProxy.cookieStore.getCookies()) {
+//			log.info("Cookie in the cookie STORE: " + cookie.toString());
+//			responseCookieInfo.append(cookie.toString() + "\n\n\n");
+//
+//		}
+		//responseMessage.setRequestCookies(requestCookieInfo.toString());
+		//responseMessage.setResponseCookies(responseCookieInfo.toString());
 		return responseMessage;
 	}
 

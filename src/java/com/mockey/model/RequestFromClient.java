@@ -36,12 +36,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -53,7 +53,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
@@ -61,46 +63,48 @@ import org.apache.http.protocol.HTTP;
  * Wraps httpServletRequest and parses out the information we're looking for.
  */
 public class RequestFromClient {
-	private static final String[] HEADERS_TO_IGNORE = { "content-length", "host", "accept-encoding" };
 
-	// we will ignore the accept-encoding for now to avoid dealing with GZIP
-	// responses
-	// if we decide to accept GZIP'ed data later, here is an example of how to
-	// un-gzip
-	// it
-	// http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/httpclient/src/examples/org/apache/http/examples/client/ClientGZipContentCompression.java
+	/**
+	 * We will ignore the accept-encoding for now to avoid dealing with GZIP
+	 * responses if we decide to accept GZIP'ed data later, here is an example
+	 * of how to un-gzip it:
+	 * 
+	 * <pre>
+	 * http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/httpclient/src/examples/org/apache/http/examples/client/ClientGZipContentCompression.java
+	 * </pre>
+	 * 
+	 */
+	public static final String[] HEADERS_TO_IGNORE = { "content-length", "host", "accept-encoding" };
 
 	private Log log = LogFactory.getLog(RequestFromClient.class);
-	private HttpServletRequest rawRequest;
+	private List<Cookie> httpClientCookies = new ArrayList<Cookie>();
 	private Map<String, String[]> parameters = new HashMap<String, String[]>();
 	private Map<String, List<String>> headers = new HashMap<String, List<String>>();
 	private String requestBody;
+	private String method;
 
+	/**
+	 * Initialization will extract Headers, Body, Parameters, and Cookies from
+	 * the raw HTTP request. Note: This class will <i>_ignore_</i> some header
+	 * information. See <code>HEADERS_TO_IGNORE</code>
+	 * 
+	 * @param rawRequest
+	 */
 	public RequestFromClient(HttpServletRequest rawRequest) {
-		this.rawRequest = rawRequest;
 		try {
-			this.rawRequest.setCharacterEncoding(HTTP.ISO_8859_1); // "UTF-8");
+			rawRequest.setCharacterEncoding(HTTP.ISO_8859_1); // "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		parseRequestHeaders();
-		parseRequestBody();
-		parseParameters();
+		this.method = rawRequest.getMethod();
+		parseRequestHeaders(rawRequest);
+		parseRequestBody(rawRequest);
+		parseParameters(rawRequest);
+		parseCookies(rawRequest);
 	}
 
-	public String getRawRequestAsString(Url url) {
-
-		try {
-			URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(),
-					this.buildParameterRequest(), null);
-			return uri.toString();
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-		return "??";
-
+	public List<Cookie> getHttpClientCookies() {
+		return this.httpClientCookies;
 	}
 
 	/**
@@ -112,18 +116,18 @@ public class RequestFromClient {
 	 * @throws URISyntaxException
 	 * @throws UnsupportedEncodingException
 	 */
-	public HttpRequest postToRealServer(Url url, String httpMethod) throws URISyntaxException,
-			UnsupportedEncodingException {
+	public HttpRequest postToRealServer(Url url) throws URISyntaxException, UnsupportedEncodingException {
 		// TODO: Cleanup the logic to handle creating a GET vs POST
 		HttpRequest request;
 		URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(), this.buildParameterRequest(),
 				null);
-		if (("GET").equalsIgnoreCase(httpMethod)) {
+
+		if (("GET").equalsIgnoreCase(this.method)) {
 			request = new HttpGet(uri);
 		} else {
 			HttpPost post = new HttpPost(uri);
 
-			// copy the request body we recieved into the POST
+			// copy the request body we received into the POST
 			post.setEntity(constructHttpPostBody());
 			request = post;
 		}
@@ -133,17 +137,17 @@ public class RequestFromClient {
 			String name = stringListEntry.getKey();
 
 			// ignore certain headers that httpclient will generate for us
-			if (includeHeader(name)) {
+			if (shouldIncludeHeader(name)) {
 				for (String value : stringListEntry.getValue()) {
 					request.addHeader(name, value);
-					log.info("  Header: " + name + " value: " + value);
 				}
 			}
 		}
+
 		return request;
 	}
 
-	private boolean includeHeader(String name) {
+	private boolean shouldIncludeHeader(String name) {
 		for (String header : HEADERS_TO_IGNORE) {
 			if (header.equalsIgnoreCase(name)) {
 				return false;
@@ -194,23 +198,64 @@ public class RequestFromClient {
 		return requestMsg.toString();
 	}
 
-	private void parseRequestHeaders() {
+	private void parseRequestHeaders(HttpServletRequest rawRequest) {
 		Enumeration e = rawRequest.getHeaderNames();
 		while (e.hasMoreElements()) {
 			String name = (String) e.nextElement();
-			List<String> values = new ArrayList<String>();
-			Enumeration eValues = rawRequest.getHeaders(name);
+			// Let's ignore some headers
+			if (this.shouldIncludeHeader(name)) {
+				List<String> values = new ArrayList<String>();
+				Enumeration eValues = rawRequest.getHeaders(name);
 
-			while (eValues.hasMoreElements()) {
-				String value = (String) eValues.nextElement();
-				values.add(value);
+				while (eValues.hasMoreElements()) {
+					String value = (String) eValues.nextElement();
+					values.add(value);
+				}
+				headers.put(name, values);
 			}
-			headers.put(name, values);
 
 		}
 	}
 
-	private void parseRequestBody() {
+	/**
+	 * an org.apache.commons.httpclient.Cookie is NOT a
+	 * javax.servlet.http.Cookie - and it looks like the two don't map onto each
+	 * other without data loss...
+	 * */
+
+	private void parseCookies(HttpServletRequest rawRequest) {
+		javax.servlet.http.Cookie[] cookies = rawRequest.getCookies();
+		if (cookies != null) {
+			// ******************
+			// This doesn't seem right.
+			// We have to map javax Cookies to httpclient Cookies?!?!
+			// 
+			// ******************
+			for (int i = 0; i < cookies.length; i++) {
+				javax.servlet.http.Cookie c = cookies[i];
+				String domain = c.getDomain();
+				if (domain == null) {
+					domain = rawRequest.getServerName();
+				}
+				String cpath = c.getPath();
+				if (cpath == null) {
+					cpath = rawRequest.getContextPath();
+				}
+				BasicClientCookie basicClientCookie = new BasicClientCookie(c.getName(), c.getValue());
+				basicClientCookie.setDomain(domain);
+				if (c.getMaxAge() > -1) {
+					int seconds = c.getMaxAge();
+					long currentTime = System.currentTimeMillis();
+					Date expiryDate = new Date(currentTime + (seconds * 1000));
+					basicClientCookie.setExpiryDate(expiryDate);
+				}
+				this.httpClientCookies.add(basicClientCookie);
+			}
+		}
+
+	}
+
+	private void parseRequestBody(HttpServletRequest rawRequest) {
 
 		try {
 			InputStream is = rawRequest.getInputStream();
@@ -240,32 +285,38 @@ public class RequestFromClient {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void parseParameters() {
+	private void parseParameters(HttpServletRequest rawRequest) {
 		parameters = rawRequest.getParameterMap();
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * 
+	 * @return readeable string output of header
+	 */
 	public String getHeaderInfo() {
 		StringBuffer buf = new StringBuffer();
 
-		Enumeration<String> headerNames = rawRequest.getHeaderNames();
-		while (headerNames.hasMoreElements()) {
-			String name = headerNames.nextElement();
-			buf.append(name).append("=").append(rawRequest.getHeader(name)).append(" \n");
+		for (String headerName : headers.keySet()) {
+			buf.append(headerName + "\n");
+			for (String headerValue : headers.get(headerName)) {
+				buf.append("    " + headerValue + "\n");
+			}
 		}
 		return buf.toString();
 	}
 
-	public String getCookieInfo() {
+	public String getMethod() {
+		return this.method;
+	}
+
+	public String getCookieInfoAsString() {
 		StringBuffer buf = new StringBuffer();
 
-		if(rawRequest.getCookies()!=null) {
-			for (Cookie cookie : rawRequest.getCookies()) {
-	
-				buf.append(String.format("Cookie: name=%s, domain=%s, value=%s", cookie.getName(), cookie.getDomain(),
-						cookie.getValue()));
-			}
+		for (Cookie cookie : this.httpClientCookies) {
+
+			buf.append(cookie.toString() + "\n\n");
 		}
+
 		return buf.toString();
 	}
 
@@ -331,7 +382,7 @@ public class RequestFromClient {
 		builder.append("---------- Headers ---------\n");
 		builder.append(getHeaderInfo());
 		builder.append("---------- Cookies ---------\n");
-		builder.append(getCookieInfo());
+		builder.append(getCookieInfoAsString());
 		builder.append("--------- Parameters ------------ \n");
 		builder.append(getParameterInfo());
 		builder.append("-------- Post BODY --------------\n");

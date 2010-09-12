@@ -29,6 +29,9 @@ package com.mockey.model;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -50,172 +53,217 @@ import org.apache.http.util.EntityUtils;
  */
 public class ResponseFromService {
 
-    private static final String[] IGNORE_HEADERS = { "Transfer-Encoding" };
+	private static final String[] IGNORE_HEADERS = { "Transfer-Encoding" };
 
-    private Log log = LogFactory.getLog(ResponseFromService.class);
-    private String body;
-    private boolean valid;
-    private String errorMsg;
-    private Header[] headers;
-    private StatusLine statusLine;
-    private String requestCookies = null;
-    private Url originalRequestUrlBeforeTwisting;
-    private Url requestUrl;
-	private String responseCookies;
+	private Log log = LogFactory.getLog(ResponseFromService.class);
+	private String body;
+	private boolean valid;
+	private String errorMsg;
+	private Header[] headers;
+	private List<Cookie> cookieList = new ArrayList<Cookie>();
+	private StatusLine statusLine;
+	private Url originalRequestUrlBeforeTwisting;
+	private Url requestUrl;
 
-    /**
-     * Empty constructor
-     */
-    public ResponseFromService() {
-    }
+	/**
+	 * Empty constructor
+	 */
+	public ResponseFromService() {
+	}
 
-    /**
-     * 
-     * @param rsp
-     *            - parses the response
-     */
-    public ResponseFromService(HttpResponse rsp) {
-        HttpEntity entity = rsp.getEntity();
+	/**
+	 * 
+	 * @param rsp
+	 *            - parses the response
+	 */
+	public ResponseFromService(HttpResponse rsp) {
+		HttpEntity entity = rsp.getEntity();
 
-        setStatusLine(rsp.getStatusLine());
-        headers = rsp.getAllHeaders();
-        setHeaders(headers);
+		setStatusLine(rsp.getStatusLine());
+		headers = rsp.getAllHeaders();
+		setHeaders(headers);
 
-        if (entity != null) {
-            // System.out.println(EntityUtils.toString(entity));
-            try {
-                setBody(EntityUtils.toString(entity));
-            } catch (IOException e) {
-                throw new IllegalStateException("Unable to parse resonse", e);
-            }
-            setValid(true);
-        }
+		setCookiesFromHeader(headers);
+		if (entity != null) {
+			try {
+				setBody(EntityUtils.toString(entity));
+			} catch (IOException e) {
+				throw new IllegalStateException("Unable to parse resonse", e);
+			}
+			setValid(true);
+		}
 
-    }
+	}
 
-    /**
-     * @return the responseMsg
-     */
-    public String getBody() {
-        return body;
-    }
+	/**
+	 * @return the responseMsg
+	 */
+	public String getBody() {
+		return body;
+	}
 
-    /**
-     * @param body
-     *            the responseMsg to set
-     */
-    public void setBody(String body) {
-        this.body = body;
-    }
+	/**
+	 * @param body
+	 *            the responseMsg to set
+	 */
+	public void setBody(String body) {
+		this.body = body;
+	}
 
-    /**
-     * @return the valid
-     */
-    public boolean isValid() {
-        return valid;
-    }
+	/**
+	 * @return the valid
+	 */
+	public boolean isValid() {
+		return valid;
+	}
 
-    /**
-     * @param valid
-     *            the valid to set
-     */
-    public void setValid(boolean valid) {
-        this.valid = valid;
-    }
+	/**
+	 * @param valid
+	 *            the valid to set
+	 */
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
 
-    /**
-     * @return the errorMsg
-     */
-    public String getErrorMsg() {
-        return errorMsg;
-    }
+	/**
+	 * @return the errorMsg
+	 */
+	public String getErrorMsg() {
+		return errorMsg;
+	}
 
-    /**
-     * @param errorMsg
-     *            the errorMsg to set
-     */
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-    }
+	/**
+	 * @param errorMsg
+	 *            the errorMsg to set
+	 */
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
 
-    public void setHeaders(Header[] headers) {
-        this.headers = headers;
-    }
+	public void setHeaders(Header[] headers) {
+		this.headers = headers;
+	}
 
-    public Header[] getHeaders() {
-        return headers;
-    }
+	public Header[] getHeaders() {
+		return headers;
+	}
 
-    /**
-     * 
-     * @return - pretty print header information.
-     */
-    public String getHeaderInfo() {
-        StringBuffer sb = new StringBuffer();
-        if (headers != null) {
-            for (int i = 0; i < headers.length; i++) {
-                Header header = headers[i];
-                sb.append(header.getName() + "=" + header.getValue() + "\n");
-            }
-        }
-        return sb.toString();
-    }
+	/**
+	 * 
+	 * @return - pretty print header information.
+	 */
+	public String getHeaderInfo() {
+		StringBuffer sb = new StringBuffer();
+		if (headers != null) {
+			for (int i = 0; i < headers.length; i++) {
+				Header header = headers[i];
+				sb.append(header.getName() + "=" + header.getValue() + "\n");
+			}
+		}
+		return sb.toString();
+	}
 
-    public void setStatusLine(StatusLine statusLine) {
-        this.statusLine = statusLine;
-    }
+	public void setStatusLine(StatusLine statusLine) {
+		this.statusLine = statusLine;
+	}
 
-    public StatusLine getStatusLine() {
-        return statusLine;
-    }
+	public StatusLine getStatusLine() {
+		return statusLine;
+	}
+	
+	private void setCookiesFromHeader(Header[] headers){
+		for (Header header : headers) {
+			
+			if (header.getName().equals("Set-Cookie")) {
+				String headerValue = header.getValue();
+	            // Parse cookie
+	            String[] fields = headerValue.split(";\\s*");
 
-    public void writeToOutput(HttpServletResponse resp) throws IOException {
-        // copy the headers out
-        if (headers != null) {
-            for (Header header : headers) {
+	            String cookieValue = fields[0];
+	            String expires = null;
+	            String path = null;
+	            String domain = null;
+	            boolean secure = false;
 
-                // copy the cookies
-                if (ignoreHeader(header.getName())) {
-                    log.debug("Ignoring header: " + header.getName());
-                } else if (header.getName().equals("Set-Cookie")) {
+	            // Parse each field
+	            for (int j=1; j<fields.length; j++) {
+	                if ("secure".equalsIgnoreCase(fields[j])) {
+	                    secure = true;
+	                } else if (fields[j].indexOf('=') > 0) {
+	                    String[] f = fields[j].split("=");
+	                    if ("expires".equalsIgnoreCase(f[0])) {
+	                        expires = f[1];
+	                    } else if ("domain".equalsIgnoreCase(f[0])) {
+	                        domain = f[1];
+	                    } else if ("path".equalsIgnoreCase(f[0])) {
+	                        path = f[1];
+	                    }
+	                }
+	            }
+	            String[] cookieParts = headerValue.split("=", 2);
+				String cookieBody = cookieParts[1];
+				String[] cookieBodyParts = cookieBody.split("; ");
+				Cookie cookie = new Cookie(cookieParts[0], cookieBodyParts[0]);
+				cookie.setDomain(domain);
+				cookie.setPath(path);
+				cookie.setSecure(secure);
+				Date expiresTime = null;
+				try {
+					expiresTime = HttpCookieDateUtil.parseDate(expires);
+					Date nowTime = new Date();
+					long maxAge = nowTime.getTime() - expiresTime.getTime();
+					cookie.setMaxAge((int) maxAge/1000);
+				}catch(Exception e){
+					log.error("Unable to calculate maxAge with expiration date "+expiresTime, e);
+				}
+				this.cookieList.add(cookie);
+	        }
+		
+		}
+	}
 
-                    String[] cookieParts = header.getValue().split("=", 2);
-                    String cookieBody = cookieParts[1];
 
-                    String[] cookieBodyParts = cookieBody.split("; ");
+	public void writeToOutput(HttpServletResponse resp) throws IOException {
+		// copy the headers out
+		if (headers != null) {
+			for (Header header : headers) {
 
-                    Cookie cookie = new Cookie(cookieParts[0], cookieBodyParts[0]);
-                    resp.addCookie(cookie);
+				// copy the cookies
+				if (ignoreHeader(header.getName())) {
+					log.debug("Ignoring header: " + header.getName());
+				} else if (header.getName().equalsIgnoreCase("Set-Cookie")) {
+					// Ignore...
+				} else if (header.getName().equals("Content-Type")) {
+					// copy the content type
+					resp.setContentType(header.getValue());
+				} else
+					resp.setHeader(header.getName(), header.getValue());
+			}
+		}
+		
+		// For cookie information we already extracted from initialization.
+		for(Cookie cookie: this.cookieList){
+			resp.addCookie(cookie);
+		}
+		if (body != null) {
+			byte[] myISO88591asBytes = body.getBytes(HTTP.ISO_8859_1);
+			new PrintStream(resp.getOutputStream()).write(myISO88591asBytes);
+			resp.getOutputStream().flush();
+		} else {
+			PrintStream out = new PrintStream(resp.getOutputStream());
+			out.println(body);
+		}
 
-                    log.info("Adding header: " + cookieParts[0] + " value: " + cookieBodyParts[0]);
-                    log.info("cookie ---> " + cookie.toString());
-                } else if (header.getName().equals("Content-Type")) {
-                    // copy the content type
-                    resp.setContentType(header.getValue());
-                } else
-                    resp.setHeader(header.getName(), header.getValue());
-            }
-        }
-        if(body!=null){
-            byte[] myISO88591asBytes = body.getBytes(HTTP.ISO_8859_1);            
-            new PrintStream(resp.getOutputStream()).write(myISO88591asBytes); 
-            resp.getOutputStream().flush();    
-        }else {
-            PrintStream out = new PrintStream(resp.getOutputStream());
-            out.println(body);
-        }
-       
+	}
 
-    }
-
-    private boolean ignoreHeader(String name) {
-        for (String header : IGNORE_HEADERS) {
-            if (header.equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private boolean ignoreHeader(String name) {
+		for (String header : IGNORE_HEADERS) {
+			if (header.equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public void setOriginalRequestUrlBeforeTwisting(Url originalRequestUrlBeforeTwisting) {
 		this.originalRequestUrlBeforeTwisting = originalRequestUrlBeforeTwisting;
@@ -233,18 +281,12 @@ public class ResponseFromService {
 		return requestUrl;
 	}
 
-	public void setRequestCookies(String arg) {
-		requestCookies = arg;
-	}
-	
-	public String getRequestCookies(){
-		return this.requestCookies;
-	}
-	public String getResponseCookies(){
-		return this.responseCookies;
-	}
-	public void setResponseCookies(String arg){
-		this.responseCookies = arg;
+	public String getResponseCookiesAsString() {
+		StringBuffer responseCookies = new StringBuffer();
+		for(Cookie cookie: this.cookieList){
+			responseCookies.append(String.format("Cookie--->\n\n %s = %s ", cookie.getName(), cookie.getValue()));
+		}
+		return responseCookies.toString();
 	}
 
 }

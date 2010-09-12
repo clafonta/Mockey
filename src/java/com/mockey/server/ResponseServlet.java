@@ -74,7 +74,8 @@ public class ResponseServlet extends HttpServlet {
 
 		logger.info(request.getHeaderInfo());
 		logger.info(request.getParameterInfo());
-		logger.info(request.getCookieInfo());
+		logger.info(request.getCookieInfoAsString());
+		
 		String originalHttpReqURI = originalHttpReqFromClient.getRequestURI();
 
 		String contextRoot = originalHttpReqFromClient.getContextPath();
@@ -124,8 +125,8 @@ public class ResponseServlet extends HttpServlet {
 		fulfilledClientRequest.setClientRequestHeaders(request.getHeaderInfo());
 		fulfilledClientRequest.setClientRequestParameters(request.getParameterInfo());
 		fulfilledClientRequest.setResponseMessage(response);
-		fulfilledClientRequest.setClientRequestCookies(response.getRequestCookies());
-		fulfilledClientRequest.setClientResponseCookies(response.getResponseCookies());
+		fulfilledClientRequest.setClientRequestCookies(request.getCookieInfoAsString() ) ;//response.getRequestCookies());
+		fulfilledClientRequest.setClientResponseCookies(response.getResponseCookiesAsString());
 
 		fulfilledClientRequest.setServiceResponseType(service.getServiceResponseType());
 		if (response.getOriginalRequestUrlBeforeTwisting() != null) {
