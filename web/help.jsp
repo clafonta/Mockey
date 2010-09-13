@@ -78,7 +78,7 @@
 	    <a href="#twisting" name="twisting"></a>
 	    <h2>Twisting</h2>
 	    <p>
-	    Twisting refers to taking incoming requests from URL/Domcain X and mapping them to URL/Domain Y. 
+	    Twisting refers to taking incoming requests from URL/Domain X and mapping them to URL/Domain Y. 
 	    <ul>
 	      <li>Twisting is <b>only</b> used for services set to <strong>Proxy</strong> requests</li>
 	      <li>Twisting is <b>not</b> used for services set to <strong>Static</strong> or <strong>Dynamic</strong></li>
