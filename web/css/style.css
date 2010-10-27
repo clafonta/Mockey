@@ -9,14 +9,17 @@ a.gt:hover {color: black;}
 .gt_active, .gt_highlight{	color: #06F; font-weight: bold; font-size:120%;}
 h1, h2, h3, .h1{margin: 1em 0em 0.5em 0em; padding:1px;}
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
-h1, .h1{ font-size:160%; color: #0077CC;}
-h2 { font-size:140%; color: #0077CC;}
+h1, .h1{ font-size:160%; color: #666666;}
+h2 { font-size:140%; color: #666666;}
 h3 { font-size:120%; color: #4E2F30;}
 h4 {font-size: 100%; color: black;font-weight: bold;margin: 1em 0em 0.5em 0em; padding:1px;}
 img {border:0;}
 .highlight{color: #ff0073;}
 .highlight_pos{color: #06F;}
-.logo_link {   color: #666666;    text-decoration: none;  font-weight:bold; font-size: 30px;
+.logo_link {   color: #666666;    text-decoration: none;  font-weight:bold; font-size: 2em; 
+font-family: georgia,Helvetica,Arial, sans-serif;
+
+}
 text-shadow: 1px 1px 1px #AAAAAA;
 
 }
@@ -108,7 +111,7 @@ a{color: #00F;text-decoration:underline}
    border-right : 2px solid #A9A9A9;
 }
 .response_not  { background-color: #FFFFFF;color:#A6B2CC; text-decoration:none; }
-.response_set  { background-color: #CFDEFF; color:#0077CC;}
+.response_set  { background-color: #A0CAE8; color:#666666;}
 a.response_set:hover, a.response_not:hover {background: #B1D1E8;}
 a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
@@ -125,7 +128,7 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .alert_message{background-color: #FC829F;}
 .conflict_message {background-color: rgb(255, 215, 215);}
 .addition_message {background-color: #8AFFAB;}
-.info_message {background-color: #CFDEFF; color:#0077CC;}
+.info_message {background-color: #A0CAE8; color:#6666666;}
 .info_message a {text-decoration: underline;}
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;};
@@ -212,7 +215,7 @@ div.jqi .jqibuttons{
 div.jqi button{
       padding: 3px 10px;
       margin: 0 10px;
-      background-color: #CFDEFF;
+      background-color: #A0CAE8;
       border: solid 1px #f4f4f4;
       -moz-border-radius: 4px;
       -webkit-border-radius: 4px;
@@ -221,7 +224,7 @@ div.jqi button:hover{
       background-color: #B1D1E8;
 }
 div.jqi button.jqidefaultbutton{
-      background-color: #CFDEFF;
+      background-color: #A0CAE8;
 }
 .jqiwarning .jqi .jqibuttons{
       background-color: #FF0084;
@@ -322,7 +325,7 @@ padding: 8px;
 }
 .configuration-info {
     text-align: center;
-    padding: 0.2em; 
+    padding: 0.4em; 
     margin: 0.8em;
      border: thin solid #BDBDBD;
     -moz-border-radius: 0.2em;
@@ -350,7 +353,7 @@ padding: 8px;
     } 
 .service { list-style: none; word-break:break-all;	}
 .service div {	margin:0.5em 0 0.5em 0; }
-div.service-value {color:#0077CC; font-weight:bold;}
+div.service-value {color:#666666; font-weight:bold;}
 div.service-label {color:#555555; padding-top:0.8em;}
 div.border-top{border-top:1px solid #BDBDBD;}
 div.not-top {margin-top:2em;}

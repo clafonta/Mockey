@@ -37,15 +37,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.mockey.model.Scenario;
 import com.mockey.model.SearchResult;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
-import com.mockey.storage.IApiStorage;
-import com.mockey.storage.IApiStorageInMemory;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -57,10 +52,12 @@ import com.mockey.storage.StorageRegistry;
  */
 public class SearchServlet extends HttpServlet implements ServicePlanConfigurationAPI {
 
-	private Log log = LogFactory.getLog(SearchServlet.class);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4357189038127507482L;
 
 	private IMockeyStorage store = StorageRegistry.MockeyStorage;
-	private IApiStorage apiStore = IApiStorageInMemory.getInstance();
 
 	/**
 	 * 
@@ -84,28 +81,28 @@ public class SearchServlet extends HttpServlet implements ServicePlanConfigurati
 			for (Service service : store.getServices()) {
 
 				SearchResult sr = buildSearchResult(term, service.getServiceName());
-				if(sr!=null){
+				if (sr != null) {
 					sr.setType("service");
-					sr.setServiceId(""+service.getId());
+					sr.setServiceId("" + service.getId());
 					searchResultList.add(sr);
-					
+
 				}
-				
+
 				for (Url url : service.getRealServiceUrls()) {
 					SearchResult subresult = buildSearchResult(term, url.toString());
-					if(subresult!=null){
+					if (subresult != null) {
 						subresult.setType("service");
-						subresult.setServiceId(""+service.getId());
+						subresult.setServiceId("" + service.getId());
 						searchResultList.add(subresult);
 					}
 				}
 
 				for (Scenario scenario : service.getScenarios()) {
 					SearchResult subresult = buildSearchResult(term, scenario.getResponseMessage());
-					if(subresult!=null){
+					if (subresult != null) {
 						subresult.setType("scenario");
-						subresult.setServiceId(""+service.getId());
-						subresult.setScenarioId(""+scenario.getId());
+						subresult.setServiceId("" + service.getId());
+						subresult.setScenarioId("" + scenario.getId());
 						subresult.setScenarioName(scenario.getScenarioName());
 						searchResultList.add(subresult);
 					}

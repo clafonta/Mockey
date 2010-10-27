@@ -8,7 +8,9 @@
 
 <script>
 $(document).ready( function() {
-	$("#tabs").tabs();
+	$('#tabs').tabs().hide();
+	$('#tabs:not(:first)').hide();
+    $('#tabs:first').fadeIn('fast');
 	
     $('.invisible-focusable').addClass("invisiblefield");  
 	$('.invisible-focusable').focus(function() {  
@@ -278,7 +280,7 @@ $(document).ready( function() {
 	            <tbody>
 		              <tr>                                                                                 
 							<td valign="top" width="40%">
-							<div id="tabs">
+							<div id="tabs" style="display:none;">
 								<ul>
 									<li><a href="#tabs-1">Services</a></li>
 									<li><a href="#tabs-2">Plans</a></li>
