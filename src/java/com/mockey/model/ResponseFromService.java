@@ -207,15 +207,17 @@ public class ResponseFromService {
 				cookie.setDomain(domain);
 				cookie.setPath(path);
 				cookie.setSecure(secure);
-				Date expiresTime = null;
-				try {
-					expiresTime = HttpCookieDateUtil.parseDate(expires);
-					Date nowTime = new Date();
-					long maxAge = nowTime.getTime() - expiresTime.getTime();
-					cookie.setMaxAge((int) maxAge/1000);
-				}catch(Exception e){
-					log.error("Unable to calculate maxAge with expiration date "+expiresTime, e);
-				}
+//				if(expires!=null){
+//				Date expiresTime = null;
+//				try {
+//					expiresTime = HttpCookieDateUtil.parseDate(expires);
+//					Date nowTime = new Date();
+//					long maxAge = nowTime.getTime() - expiresTime.getTime();
+//					cookie.setMaxAge((int) maxAge/1000);
+//				}catch(Exception e){
+//					log.error("Unable to calculate maxAge with expiration date "+expiresTime, e);
+//				}
+//				}
 				this.cookieList.add(cookie);
 	        }
 		

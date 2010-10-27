@@ -16,6 +16,10 @@ h4 {font-size: 100%; color: black;font-weight: bold;margin: 1em 0em 0.5em 0em; p
 img {border:0;}
 .highlight{color: #ff0073;}
 .highlight_pos{color: #06F;}
+.logo_link {   color: #666666;    text-decoration: none;  font-weight:bold; font-size: 30px;
+text-shadow: 1px 1px 1px #AAAAAA;
+
+}
 .nav{	color: #06F;	text-decoration: none;	font-weight:bold;}
 .group {	border: thin dashed #bdbdbd;	margin: 0.8em;	padding: 0.8em;}
 form {
@@ -250,6 +254,50 @@ margin: 0.8em 0 0.8em 0;
 padding:0.4em;
 width:95%;
 }
+input.blur {
+color:#999999;
+}
+
+#header_tool_wrapper {
+ position:relative;
+ clear:both;
+ padding: 0 0.2em 0.8em 0;
+ border: thin solid #BDBDBD;
+     background: #EEEEEE;
+    -moz-border-radius: 0.2em;
+    -webkit-border-radius: 0.2em;
+ height:35px;
+}
+#header_tool_wrapper_right {
+ position:absolute;
+ top:0;
+ right:0;
+ width:400px;
+ padding-top:1em;
+ 
+}
+#header_tool_wrapper_left {
+ position:absolute;
+ top:0;
+ left:0;
+ width:400px;
+ text-align:left;
+ margin-left: 1em;
+}
+#search-term-wrapper {
+ margin: auto;
+ width: 300px;
+ display:table-cell;
+ text-align:left;
+ height: 40px;
+}
+#search_term {
+display:inline;
+width:280px;
+ background-color:#FFFFE7;
+
+}
+
 fieldset { padding:0; border:0; margin-top:25px; }
 div#users-contain { width: 350px; margin: 20px 0; }
 div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
@@ -273,10 +321,10 @@ padding: 8px;
     padding: 0.2em;
 }
 .configuration-info {
-    text-align: right;
+    text-align: center;
     padding: 0.2em; 
-    margin-left: 0.8em;
-     border: thin solid #EEEEEE;
+    margin: 0.8em;
+     border: thin solid #BDBDBD;
     -moz-border-radius: 0.2em;
     -webkit-border-radius: 0.2em;
     

@@ -9,7 +9,10 @@
 <div id="main">
     <%@ include file="/WEB-INF/common/message.jsp"%>     
     <p><h1>Search Results</h1></p> 
-    <div class="parentform">
+    
+        <c:choose>
+        <c:when test="${not empty results}"> 
+        <div class="parentform">       
         <ul>
        		<c:forEach var="resultItem" items="${results}"  varStatus="status">     
        		  <li> 
@@ -31,6 +34,12 @@
        		   </li>
        		</c:forEach>
          </ul>
-    </div>    
+         </div>
+         </c:when>
+        <c:otherwise>
+        <div class="info_message">Sorry, but no results for search.</div>
+        </c:otherwise>
+        </c:choose>
+        
 </div>
 <jsp:include page="/WEB-INF/common/footer.jsp" />

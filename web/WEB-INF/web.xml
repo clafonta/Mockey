@@ -121,6 +121,14 @@
         <servlet-name>StickyCookieSessionAjaxServlet</servlet-name>
         <servlet-class>com.mockey.ui.StickyCookieSessionAjaxServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SearchServlet</servlet-name>
+        <servlet-class>com.mockey.ui.SearchServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SearchServlet</servlet-name>
+        <url-pattern>/search</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>StickyCookieSessionAjaxServlet</servlet-name>
         <url-pattern>/configuration/reset_sticky_cookie_session</url-pattern>
