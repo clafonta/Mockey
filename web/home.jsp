@@ -279,7 +279,7 @@ $(document).ready( function() {
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
-							<td valign="top" width="40%">
+							<td valign="top" width="220px;" style="padding-left:0;">
 							<div id="tabs" style="display:none;">
 								<ul>
 									<li><a href="#tabs-1">Services</a></li>
@@ -356,7 +356,7 @@ $(document).ready( function() {
 							    </div>
 							</div>
 							</td>
-							<td valign="top">
+							<td valign="top" width="380px;">
 							<div id='service_list_container'>
 							<div class="service_div display" style="<c:if test="${! empty serviceIdToShowByDefault}">display:none;</c:if><c:if test="${serviceIdToShowByDefault==null}">display:block;</c:if>text-align:center;">
 							
@@ -373,10 +373,10 @@ $(document).ready( function() {
                                 <input type="hidden" name="serviceId" id="serviceId_<c:out value="${mockservice.id}"/>" value="${mockservice.id}" />
                                 <input type="hidden" name="serviceName" id="serviceName_${mockservice.id}" value="${mockservice.serviceName}" />
                                 
-                                 <div class="service">
+                                 <div class="service" width="350px;">
                                     
                                    <div class="service-label">Service name: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
-                                   <div class="service-value big">${mockservice.serviceName}</div>
+                                   <div class="service-value big"><mockey:slug text="${mockservice.serviceName}" maxLength="30"/></div>
                                    <div class="service-def-spacer"></div>
                                    <div class="service-label border-top">Mock URL: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>

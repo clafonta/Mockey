@@ -58,6 +58,7 @@ div.parentformselected {
 	background-color: #EEEEEE;
 }
 .parentformselected {border: thin solid #F1A8A8;}
+
 .centerform {padding: 0.8em;margin-left: 20%; margin-right: 20%;}
 
 div.table_of_contents {
@@ -89,17 +90,17 @@ div.table_of_contents ul {
    
 
 }
-div.table_of_contents ul li {
+div.tableofcontents ul li {
     margin-top:0.8em;
 }
-div.table_of_contents ul li:before {
+div.tableofcontents ul li:before {
     content: "\00BB \0020";
 
 }
 ul.simple { list-style: none;	}
 ul.simple li {	margin:0.5em; }
-ul.upload_result { list-style: disc;   }
-ul.upload_result li {  margin:0.5em; }
+ul.upload-result { list-style: disc;   }
+ul.upload-result li {  margin:0.5em; }
 
 .edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
@@ -125,7 +126,7 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .api_message {  margin: 0.8em;  padding: 0.8em; text-align: left;   color: black;}
 .hint_message, .alert_message, .conflict_message, .addition_message, .info_message {	margin: 0.8em;	padding: 0.8em;	text-align: left;	color: black;	border: thin solid #d3d3d3;}
 .hint_message{background-color: #3782B6;}
-.alert_message{background-color: #FC829F;}
+.alert_message{border: thin solid #E80C24; background-color: #FFB4B2;}
 .conflict_message {background-color: rgb(255, 215, 215);}
 .addition_message {background-color: #8AFFAB;}
 .info_message {background-color: #A0CAE8; color:#6666666;}

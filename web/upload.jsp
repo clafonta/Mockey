@@ -25,7 +25,7 @@ you should <a href="">Export</a> your service definitions first. If things go ba
 </div>
 <c:if test="${not empty conflicts}">
 	<h2 class="highlight">Conflicts</h2>
-	<ul class="conflict_message upload_result">
+	<ul class="conflict_message upload-result">
 		<c:forEach var="conflict" begin="0" items="${conflicts}">
 			<li><c:out value="${conflict}" escapeXml="false" /></li>
 		</c:forEach>
@@ -33,7 +33,7 @@ you should <a href="">Export</a> your service definitions first. If things go ba
 </c:if> 
 <c:if test="${not empty additions}">
 	<h2>Additions</h2>
-	<ul class="addition_message upload_result">
+	<ul class="addition_message upload-result">
 		<c:forEach var="addition" begin="0" items="${additions}">
 			<li><c:out value="${addition}" escapeXml="false" /></li>
 		</c:forEach>

@@ -46,12 +46,12 @@
 	 </div>
 	 
       <div class="centerform" style="padding-top:1em;margin-top:1em;">       
-        <label for="match">Match real URL pattern</label> 
+        <label for="match">Match this String pattern in the URL</label> 
         <input type="text" class="text ui-corner-all ui-widget-content" id="match" name="match" size="80"  value="">
-        <div class="tinyfieldset">For example: qa1.domain.com</div>
-        <label for="replacement">Replace real URL pattern</label> 
+        <div class="tinyfieldset">For example: string pattern 'qa1' in urls appqa1.domain.com, qa1test.domain.com, authqa1.domain.com</div>
+        <label for="replacement">Replace and Inject with this String pattern</label> 
         <input type="text" class="text ui-corner-all ui-widget-content" id="replacement" name="replacement" size="80"  value="">
-        <div class="tinyfieldset">For example: qa2.another-domain.com</div>
+        <div class="tinyfieldset">For example: string pattern 'qa2' will add (inject) appqa2.domain.com, qa2test.domain.com, authqa2.domain.com to appropriate services.</div>
         <p align="right"><button id="inject-button">Inject real URLs</button></p>
       </div> 		    
 </div>

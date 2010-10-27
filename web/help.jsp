@@ -5,7 +5,7 @@
 <jsp:include page="/WEB-INF/common/header.jsp" />
 
 <div id="main">
-    <div class="table_of_contents" style="">
+    <div class="tableofcontents" style="">
         
 	    <h3>Table of Contents</h3>
 	    <ul>
