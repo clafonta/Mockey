@@ -284,12 +284,15 @@
        Pass the <span class="code_text">init</span> and <span class="code_text">file</span> arguments to the Home service. <i>File</i> refers
        to a file relative to where the Mockey.jar is located (and Mockey is allowed to read it). 
        <div class="code code_text">
-       &gt; http://localhost:8080/Mockey/home&amp;action=init&file=some_file.xml <br />
-       or <br />
-       &gt; http://localhost:8080/Mockey/home?action=init&file=/Users/someuser/Work/some_file.xml
+       &gt; http://localhost:8080/Mockey/home&amp;action=init&file=some_file.xml <br /><br />
+       or <br /><br />
+       &gt; http://localhost:8080/Mockey/home?action=init&file=/Users/someuser/Work/some_file.xml <br /><br />
+       or (to get a JSON response back instead of HTML)<br /><br />
+       &gt; http://localhost:8080/Mockey/home?action=init<b>&type=json</b>&file=/Users/someuser/Work/some_file.xml
        </div>
        If <span class="code_text">some_file.xml</span> does exist, then Mockey will <a href="#flush_feature">Flush</a>
-        it's configurations and initialize itself with <span class="code_text">some_file.xml</span>.
+        it's configurations and initialize itself with <span class="code_text">some_file.xml</span>. For more 
+        information, see <a href="<c:url value="/service_api" />">Configuration API</a>.
         </div>
       </p>
     </div>

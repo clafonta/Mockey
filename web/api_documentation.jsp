@@ -7,8 +7,20 @@
 
 <div id="main">
     <h1>Configuration API</h1>
-    
-    <div>
+    <div id="top_config_api" style="position:relative;">
+	    <div style="clear:both;"></div>
+	    <div class="table_of_contents">
+	        <h3 style="float:right;padding-right:1em;">Table of Contents</h3>
+	        <div style="clear:both;"></div>
+		    <ul>
+		    <c:forEach var="apiservice" items="${apiServices}"  varStatus="status">
+			    <li>&#187; <a href="#${apiservice.name}">${apiservice.name}</a></li>
+			</c:forEach>
+			</ul>
+	    </div>
+	    <div style="clear:both;"></div>
+	    <div style="width:520px;">
+	        
             <p>This is a list of HTTP request definitions that allows for alternative methods to tweak Mockey's settings.</p>
             <strong>For example:</strong>
             <p>
@@ -16,9 +28,12 @@
              <i>Service Plan</i>. Get your build scripts (e.g. Ant, Rake) to call Mockey over HTTP and
              set the appropriate settings. 
             </p>
+        </div>
+	    
     </div>
     <c:forEach var="apiservice" items="${apiServices}"  varStatus="status">
-    <div class="parentform">
+    <div class="parentform" style="margin-bottom:2em;">
+    <a href="#${apiservice.name}" name="${apiservice.name}"></a>
     <h2>${apiservice.name}</h2>
     
     <div>${apiservice.description}</div>
@@ -58,7 +73,8 @@
         <h3>Available API Calls</h3>
         <mockey-tag:availableConfigurationLinks servicePath="${apiservice.servicePath}" serviceName="${apiservice.name}"/>        
      </div>
-    </c:forEach> 
+    </c:forEach>
+    
     
     
 </div>	

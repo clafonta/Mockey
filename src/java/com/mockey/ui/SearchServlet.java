@@ -50,7 +50,7 @@ import com.mockey.storage.StorageRegistry;
  * @author chadlafontaine
  * 
  */
-public class SearchServlet extends HttpServlet implements ServicePlanConfigurationAPI {
+public class SearchServlet extends HttpServlet {
 
 	/**
 	 * 

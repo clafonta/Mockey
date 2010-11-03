@@ -19,6 +19,7 @@
 	<servlet>
 		<servlet-name>MockHomeServlet</servlet-name>
 		<servlet-class>com.mockey.ui.HomeServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>MobiServlet</servlet-name>
@@ -200,6 +201,7 @@
 	<servlet-mapping>
 		<servlet-name>MockHomeServlet</servlet-name>
 		<url-pattern>/home</url-pattern>
+		<load-on-startup>1</load-on-startup>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>MockHomeServlet</servlet-name>
