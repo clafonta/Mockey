@@ -22,6 +22,7 @@ request.setAttribute("api_setplan_service_name",ServicePlanConfigurationAPI.API_
 
 %>
 <c:if test="${serviceName eq api_setplan_service_name}">
+<h3>Available API Calls</h3>
 <c:choose>
   <c:when test="${empty servicePlans}">
   <div class="info_message">

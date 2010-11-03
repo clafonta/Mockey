@@ -69,8 +69,6 @@
         </table>
         <h4>Example Response</h4>
         <div class="code">${apiservice.apiResponse.example}</div> 
-        
-        <h3>Available API Calls</h3>
         <mockey-tag:availableConfigurationLinks servicePath="${apiservice.servicePath}" serviceName="${apiservice.name}"/>        
      </div>
     </c:forEach>

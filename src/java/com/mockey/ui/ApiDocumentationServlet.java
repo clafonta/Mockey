@@ -28,7 +28,6 @@
 package com.mockey.ui;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -36,7 +35,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mockey.model.ApiDocService;
 import com.mockey.storage.IApiStorage;
 import com.mockey.storage.IApiStorageInMemory;
 
@@ -44,20 +42,18 @@ import com.mockey.storage.IApiStorageInMemory;
  * API Documentation Servlet
  * 
  * @author chad.lafontaine
- *
+ * 
  */
 public class ApiDocumentationServlet extends HttpServlet {
 
-   
 	private static final long serialVersionUID = 861059339190214183L;
 	private IApiStorage apiStore = IApiStorageInMemory.getInstance();
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        List<ApiDocService> apiServices = apiStore.getApiDocServices();
-        req.setAttribute("apiServices", apiServices);
-        RequestDispatcher dispatch = req.getRequestDispatcher("api_documentation.jsp");
-        dispatch.forward(req, resp);
-    }
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		req.setAttribute("apiServices", Util.orderAlphabeticallyByApiName(apiStore.getApiDocServices()));
+		RequestDispatcher dispatch = req.getRequestDispatcher("api_documentation.jsp");
+		dispatch.forward(req, resp);
+	}
 
 }
-

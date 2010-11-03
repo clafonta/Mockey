@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mockey.model.ApiDocService;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
@@ -144,6 +145,29 @@ public class Util {
 		Collections.sort(servicePlans, new ServicePlanNameComparator());
 
 		return servicePlans;
+	}
+	
+	/**
+	 * Returns the services list ordered alphabetically.
+	 * 
+	 * @param services
+	 * @return
+	 */
+	public static List<ApiDocService> orderAlphabeticallyByApiName(List<ApiDocService> apiDocServices) {
+
+		// Custom comparator
+		class ApiDocServiceComparator implements Comparator<ApiDocService> {
+
+			public int compare(ApiDocService s1, ApiDocService s2) {
+				return s1.getName().compareToIgnoreCase(s2.getName());
+
+			}
+
+		}
+		// Sort me.
+		Collections.sort(apiDocServices, new ApiDocServiceComparator());
+
+		return apiDocServices;
 	}
 
 	/**
