@@ -31,6 +31,8 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.SimpleJSAP;
+import com.mockey.ui.StartUpServlet;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -38,52 +40,67 @@ import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.Properties;
 
 public class JettyRunner {
-    public static void main(String[] args) throws Exception {
-        if (args == null) args = new String[0];
+	public static void main(String[] args) throws Exception {
+		if (args == null)
+			args = new String[0];
 
-        // Initialize the argument parser
-        SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar", "Starts a Jetty server running Mockey");
-        jsap.registerParameter(new FlaggedOption("port", JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p', "port", "port to run Jetty on"));
+		// Initialize the argument parser
+		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar", "Starts a Jetty server running Mockey");
+		jsap.registerParameter(new FlaggedOption("port", JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p', "port",
+				"port to run Jetty on"));
+		jsap.registerParameter(new FlaggedOption("file", JSAP.STRING_PARSER, StartUpServlet.MOCK_SERVICE_DEFINITION,
+				JSAP.NOT_REQUIRED, 'f', "file", "relative path to file to initialize with"));
 
+		// parse the command line options
+		JSAPResult config = jsap.parse(args);
 
-        // parse the command line options
-        JSAPResult config = jsap.parse(args);
+		// Bail out if they asked for the --help
+		if (jsap.messagePrinted())
+			System.exit(1);
 
-        // Bail out if they asked for the --help
-        if (jsap.messagePrinted()) System.exit(1);
+		// Construct the new arguments for jetty-runner
+		int port = config.getInt("port");
 
+		InputStream log4jInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+				"WEB-INF/log4j.properties");
+		Properties log4JProperties = new Properties();
+		log4JProperties.load(log4jInputStream);
+		PropertyConfigurator.configure(log4JProperties);
 
-        // Construct the new arguments for jetty-runner
-        int port = config.getInt("port");
+		Server server = new Server(port);
 
-        InputStream log4jInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("WEB-INF/log4j.properties");
-        Properties log4JProperties = new Properties();
-        log4JProperties.load(log4jInputStream);
-        PropertyConfigurator.configure(log4JProperties);
+		WebAppContext webapp = new WebAppContext();
+		webapp.setContextPath("/");
+		webapp.setConfigurations(new Configuration[] { new PreCompiledJspConfiguration() });
 
-        Server server = new Server(port);
+		ClassPathResourceHandler resourceHandler = new ClassPathResourceHandler();
+		resourceHandler.setContextPath("/");
 
-        WebAppContext webapp = new WebAppContext();
-        webapp.setContextPath("/");
-        webapp.setConfigurations(new Configuration[]{new PreCompiledJspConfiguration()});
+		ContextHandlerCollection contexts = new ContextHandlerCollection();
+		contexts.addHandler(resourceHandler);
 
-        ClassPathResourceHandler resourceHandler = new ClassPathResourceHandler();
-        resourceHandler.setContextPath("/");
+		contexts.addHandler(webapp);
 
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.addHandler(resourceHandler);
+		server.setHandler(contexts);
 
-        contexts.addHandler(webapp);
+		server.start();
+		// Construct the arguments for Mockey
+		String file = String.valueOf(config.getString("file"));
+		// Startup displays a big message and URL redirects after x seconds. Snazzy.
+		String initUrl = "/startup.html";
+		// BUT...if a file is defined, let's initialize with it instead.
+		if (file != null && file.trim().length() > 0) {
+			file = URLEncoder.encode(file, "UTF-8");
+			initUrl = "/home?action=init&file=" + file;
+		}
 
-        server.setHandler(contexts);
+		new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();
 
-        server.start();
-        new Thread(new BrowserThread("http://localhost", String.valueOf(port), "/startup.html", 0)).start();
-
-        server.join();
-    }
+		server.join();
+	}
 
 }

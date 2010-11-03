@@ -1,2 +1,0 @@
-One-Jar-Main-Class: com.mockey.runner.Main
-One-Jar-Expand: Mockey.war

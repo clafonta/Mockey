@@ -5,33 +5,32 @@
 <jsp:include page="/WEB-INF/common/header.jsp" />
 
 <div id="main">
-    <div class="tableofcontents" style="">
-        
-	    <h3>Table of Contents</h3>
-	    <ul>
-	        <li><a href="#bigpicture">Big Picture</a></li>
-	        <li><a href="#mockservice" name="mockservice">Mock Service</a></li>
-	        <li><a href="#plan">Service Plan</a></li>
-	        <li><a href="#scenario">Mock Service Scenario</a></li>
-	        <li><a href="#twisting">Twisting</a></li>
-	        <li><a href="#record">Get Started - Record Stuff</a></li>
-	        <li><a href="#flush">Flush</a></li>
-	        <li><a href="#export_upload">Export/Upload</a></li>
-	        <li><a href="#url_injection">URL Injection</a></li>
-	        <li><a href="#merge_services">Merge Services</a></li>
-	        
-	        <li><a href="#good_things_to_test">Good Things to Test</a></li>
-	    </ul>
-    </div>
-	
-	<a href="#bigpicture" name="bigpicture"></a> 
-	
-	<h2>The Big Picture</h2>
-	
-	   <strong>Mockey</strong> is a tool for testing application interactions over http.</p>
-	   <p><img src="<c:url value="/images/bigpicture.png" />" /></p>
-	
-	
+    <div id="helpTop" style="position:relative;">
+	    <div class="table_of_contents" >  
+		    <h3 style="float:right;padding-right:1em;">Table of Contents</h3>
+		    <div style="clear:both;"></div>
+		    <ul>
+		        <li>&#187; <a href="#bigpicture">Big Picture</a></li>
+		        <li>&#187; <a href="#mockservice" name="mockservice">Mock Service</a></li>
+		        <li>&#187; <a href="#plan">Service Plan</a></li>
+		        <li>&#187; <a href="#scenario">Mock Service Scenario</a></li>
+		        <li>&#187; <a href="#twisting">Twisting</a></li>
+		        <li>&#187; <a href="#record">Get Started - Record Stuff</a></li>
+		        <li>&#187; <a href="#flush">Flush</a></li>
+		        <li>&#187; <a href="#export_upload">Export/Upload</a></li>
+		        <li>&#187; <a href="#url_injection">URL Injection</a></li>
+		        <li>&#187; <a href="#merge_services">Merge Services</a></li>
+		        <li>&#187; <a href="#initialization">Initialization</a></li>
+		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
+		    </ul>
+	    </div>
+	    <div style="">
+		<a href="#bigpicture" name="bigpicture"></a> 
+		<h2>The Big Picture</h2>
+		   <strong>Mockey</strong> is a tool for testing application interactions over http.</p>
+		   <p><img src="<c:url value="/images/bigpicture.png" />" /></p>
+		</div>
+	</div>
 	<div class="help_section_zebra">
 		<a href="#mockservice" name="mockservice"></a>
 		<h2>Mock Service</h2>
@@ -248,6 +247,45 @@
     </p>
     -->
     <div class="help_section">
+      <a href="#initialization" name="initialization"></a>
+      <h2>Initialization</h2>
+      <p>
+      There are few ways to initialize Mockey. Here they are:
+      <ul>
+        <li>Use the <a href="<c:url value="/upload" />">Import</a> feature.</li>
+        <li>If you know the path to the file and Mockey has access to it, then it will load it. 
+        either upon start-up or relative path post startup.</li>
+      </ul>
+       <div class="info_message">
+       <h3>At Startup</h3>
+       Let's say this is what you have:
+       <div class="code code_text">
+       &gt; ls <br />
+       &gt; Mockey.jar some_file.xml <b>mock_service_definitions.xml</b><br />
+       &gt; java -jar Mockey.jar<br />
+       </div>
+       By default, Mockey will initialize itself with <b>mock_service_definitions.xml</b>. If the 
+       file isn't there, it will create a new one and write it out. Alternatively, you could pass
+       it an argument:
+       <div class="code code_text">
+       &gt; ls <br />
+       &gt; Mockey.jar <b>some_file.xml</b> mock_service_definitions.xml<br />
+       &gt; java -jar Mockey.jar -f some_file.xml<br />
+       </div>
+       Now, Mockey will initialize itself with <b>some_file.xml</b> upon startup <b>but</b> it will
+       continue to write itself out to <b>mock_service_definitions.xml</b> after initialization. 
+       <h3>Post Startup</h3>
+       Pass the <strong>init</strong> and <strong>file</strong> arguments to the Home service. <i>File</i> refers
+       to a file relative to where the Mockey.jar is located. 
+       <div class="code code_text">
+       http://localhost:8080/Mockey/home&amp;action=init&file=some_file.xml
+       </div>
+      
+               
+        </div>
+      </p>
+    </div>
+    <div class="help_section_zebra">
 	    <a href="#good_things_to_test" name="good_things_to_test"></a>
 	    <h2>Good Things to Test</h2>
 	    <p>
@@ -259,8 +297,8 @@
 		    </ul>      
 	    </p>
     </div>
-    
-    <div class="help_section_zebra">
+    <div class="help_section">
+        <a href="#url_recommendations" name="url_recommendations"></a>
 	    <h2>URL Mapping Config Recommendations</h2>
 		<p>
 		    If your application points to 1 or more services like this:
@@ -283,7 +321,7 @@
 		    just define DEV_BASE_URL as an empty string. 
 	    </p>
 	</div>
-	<div class="help_section">
+	<div class="help_section_zebra">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

@@ -64,7 +64,7 @@ public class StartUpServlet extends HttpServlet {
         }
 
         try {
-            logger.info("default.properties: "+getServletContext().getResource("/web.xml"));
+            //logger.info("default.properties: "+getServletContext().getResource("/web.xml"));
             InputStream appInputStream = getServletContext().getResourceAsStream(contextPath + appPropFile);
             if(appInputStream == null) {
                 // try classpath
@@ -72,10 +72,10 @@ public class StartUpServlet extends HttpServlet {
             }
             appProps.load(appInputStream);
 
+            // Duplication here.
+            // Doesn't the HOME servlet do this? Yes and 
+            // 
             File f = new File(MOCK_SERVICE_DEFINITION);
-           //String aa = f.getAbsolutePath();
-           // FileOutputStream fop = new FileOutputStream(f);
-
             if (f.exists()) {
                 // Slurp it up and initialize definitions.
                 FileInputStream fstream = new FileInputStream(f);
@@ -89,11 +89,8 @@ public class StartUpServlet extends HttpServlet {
                 }
                 ConfigurationReader reader = new ConfigurationReader();
                 reader.loadConfiguration(inputString.toString().getBytes(HTTP.UTF_8));
-           
+                logger.info("");
             }
-
-           
-
         } 
        
         

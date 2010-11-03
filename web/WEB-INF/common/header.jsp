@@ -28,6 +28,9 @@ if(confirm(message)) location.href = url;
 
 
 $(document).ready(function() {
+
+    $('#poorStartMessage').hide();
+    $('#container').show();
     $('input[title!=""]').hint();
 
 	$('textarea.resizable:not(.processed)').TextAreaResizer();
@@ -140,7 +143,7 @@ $(document).ready(function() {
 </script>
 </head>
 <body>
-<div id="container">
+<div id="container" style="display:none;">
 
 <div id="logo">
     <!-- <a href="<c:url value="/home" />" class="nav"><span style="vertical-align:middle;font-size:20px; text-shadow: 0px 0px 1px #FF0084;" class="nav">Mockey</span></a> -->

@@ -62,14 +62,14 @@ div.parentformselected {
 .centerform {padding: 0.8em;margin-left: 20%; margin-right: 20%;}
 
 div.table_of_contents {
+    position:absolute; top:0; right:0;width:250px;
     padding: 0.2em 0.6em;
-    font-size: 90%;
-    -moz-border-radius: 0.4em;
-    -webkit-border-radius: 0.4em;
-    background-color: #F5F4EE;
+    -moz-border-radius: 0.2em;
+    -webkit-border-radius: 0.2em;
     float:right;
     height:300px;
-    border: thin solid #bdbdbd;
+    border: thin solid #EEEEEE;
+    background:#EEEEEE;
 }
 
 .help_section_zebra {
@@ -86,8 +86,7 @@ div.table_of_contents ul {
     list-style: none;
     margin-left: 0;
     padding-left: 1em;
-    text-indent: -1em;
-   
+    line-height: 1.3em;      
 
 }
 div.tableofcontents ul li {
@@ -132,8 +131,10 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .info_message {background-color: #A0CAE8; color:#6666666;}
 .info_message a {text-decoration: underline;}
 .info_message strong {color:#FF0084;}
-.info_message ul {list-style-position: inside;};
-.code, .code_text {font-family:"Courier New", monospace;font-weight:100; font-stretch: ultra-condensed;}
+.info_message ul {list-style-position: inside;}
+.code, .code_text {
+font-family:'Courier',serif;
+font-weight:100; font-stretch: ultra-condensed;color:#666666;}
 .code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em;}
 .code a{text-align:center;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
