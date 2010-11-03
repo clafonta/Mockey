@@ -159,7 +159,7 @@
 		<a href="#flush_feature" name="flush_feature"></a>
 	    <h2>Flush</h2>
 	    <p>
-	    Clicking on the <strong>flush</strong> link will clear out everything, allowing you to start with a clean slate. 
+	    Clicking on the <strong>Flush</strong> menu button will clear out everything, allowing you to start with a clean slate. 
 	    </p>
 	</div>
 	<div class="help_section_zebra">
