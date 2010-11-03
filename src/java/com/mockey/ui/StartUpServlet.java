@@ -72,9 +72,11 @@ public class StartUpServlet extends HttpServlet {
             }
             appProps.load(appInputStream);
 
-            // Duplication here.
-            // Doesn't the HOME servlet do this? Yes and 
-            // 
+            // Doesn't the HomeServlet do this? Yes but 
+            // this is one duplicate activity that allows for 
+            // sandbox development (i.e. within Eclipse)
+            // since we're not using JettyRunner, which contains 
+            // logic to pass/tell HomeServlet _how_ to initialize.
             File f = new File(MOCK_SERVICE_DEFINITION);
             if (f.exists()) {
                 // Slurp it up and initialize definitions.
@@ -89,7 +91,7 @@ public class StartUpServlet extends HttpServlet {
                 }
                 ConfigurationReader reader = new ConfigurationReader();
                 reader.loadConfiguration(inputString.toString().getBytes(HTTP.UTF_8));
-                logger.info("");
+                logger.info("first initialization with "+ MOCK_SERVICE_DEFINITION);
             }
         } 
        

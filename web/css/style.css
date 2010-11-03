@@ -135,7 +135,8 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .code, .code_text {
 font-family:'Courier',serif;
 font-weight:100; font-stretch: ultra-condensed;color:#666666;}
-.code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em;}
+.code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em;
+-moz-box-shadow: 3px 3px 4px #666666; -webkit-box-shadow: 3px 3px 4px #666666; box-shadow: 3px 3px 4px #666666;}
 .code a{text-align:center;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
 pre{	background-color: White;	border: 1px solid #666;	color: Black;	margin: 1.5em;	overflow: auto;	font-size: 115%;	padding: 1.2em;	font: 120% "Courier New"; }

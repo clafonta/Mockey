@@ -16,7 +16,7 @@
 		        <li>&#187; <a href="#scenario">Mock Service Scenario</a></li>
 		        <li>&#187; <a href="#twisting">Twisting</a></li>
 		        <li>&#187; <a href="#record">Get Started - Record Stuff</a></li>
-		        <li>&#187; <a href="#flush">Flush</a></li>
+		        <li>&#187; <a href="#flush_feature">Flush</a></li>
 		        <li>&#187; <a href="#export_upload">Export/Upload</a></li>
 		        <li>&#187; <a href="#url_injection">URL Injection</a></li>
 		        <li>&#187; <a href="#merge_services">Merge Services</a></li>
@@ -156,7 +156,7 @@
 		</p>
 	</div>
 	<div class="help_section">
-		<a href="#flush" name="flush"></a>
+		<a href="#flush_feature" name="flush_feature"></a>
 	    <h2>Flush</h2>
 	    <p>
 	    Clicking on the <strong>flush</strong> link will clear out everything, allowing you to start with a clean slate. 
@@ -252,10 +252,12 @@
       <p>
       There are few ways to initialize Mockey. Here they are:
       <ul>
-        <li>Use the <a href="<c:url value="/upload" />">Import</a> feature.</li>
-        <li>If you know the path to the file and Mockey has access to it, then it will load it. 
-        either upon start-up or relative path post startup.</li>
-      </ul>
+        <li><b>File upload:</b> use the <a href="<c:url value="/upload" />">Import</a> feature.</li>
+        <li><b>File location:</b> file is located on the same server where Mockey is running.</li>
+        </ul>
+        If you know the path to the file and Mockey has access to it, then you can tell Mockey
+        to initialize itself, either pre or post start-up. Here's how:
+      
        <div class="info_message">
        <h3>At Startup</h3>
        Let's say this is what you have:
@@ -273,15 +275,21 @@
        &gt; java -jar Mockey.jar -f some_file.xml<br />
        </div>
        Now, Mockey will initialize itself with <b>some_file.xml</b> upon startup <b>but</b> it will
-       continue to write itself out to <b>mock_service_definitions.xml</b> after initialization. 
-       <h3>Post Startup</h3>
-       Pass the <strong>init</strong> and <strong>file</strong> arguments to the Home service. <i>File</i> refers
-       to a file relative to where the Mockey.jar is located. 
+       continue to write itself out to <b>mock_service_definitions.xml</b> after initialization. For more options,
+       try the <span class="code_text">--help</span> argument.
        <div class="code code_text">
-       http://localhost:8080/Mockey/home&amp;action=init&file=some_file.xml
+       &gt; java -jar Mockey.jar --help
        </div>
-      
-               
+       <h3>Post Startup</h3>
+       Pass the <span class="code_text">init</span> and <span class="code_text">file</span> arguments to the Home service. <i>File</i> refers
+       to a file relative to where the Mockey.jar is located (and Mockey is allowed to read it). 
+       <div class="code code_text">
+       &gt; http://localhost:8080/Mockey/home&amp;action=init&file=some_file.xml <br />
+       or <br />
+       &gt; http://localhost:8080/Mockey/home?action=init&file=/Users/someuser/Work/some_file.xml
+       </div>
+       If <span class="code_text">some_file.xml</span> does exist, then Mockey will <a href="#flush_feature">Flush</a>
+        it's configurations and initialize itself with <span class="code_text">some_file.xml</span>.
         </div>
       </p>
     </div>

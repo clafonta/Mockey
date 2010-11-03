@@ -53,7 +53,7 @@ public class JettyRunner {
 		jsap.registerParameter(new FlaggedOption("port", JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p', "port",
 				"port to run Jetty on"));
 		jsap.registerParameter(new FlaggedOption("file", JSAP.STRING_PARSER, StartUpServlet.MOCK_SERVICE_DEFINITION,
-				JSAP.NOT_REQUIRED, 'f', "file", "relative path to file to initialize with"));
+				JSAP.NOT_REQUIRED, 'f', "file", "relative path to file to initialize Mockey"));
 
 		// parse the command line options
 		JSAPResult config = jsap.parse(args);
@@ -92,7 +92,8 @@ public class JettyRunner {
 		String file = String.valueOf(config.getString("file"));
 		// Startup displays a big message and URL redirects after x seconds. Snazzy.
 		String initUrl = "/startup.html";
-		// BUT...if a file is defined, let's initialize with it instead.
+		// BUT...if a file is defined, (which it *should*),
+		// then let's initialize with it instead.
 		if (file != null && file.trim().length() > 0) {
 			file = URLEncoder.encode(file, "UTF-8");
 			initUrl = "/home?action=init&file=" + file;

@@ -98,7 +98,7 @@ $(document).ready(function() {
     $("#dialog-flush-confirm").dialog({
         resizable: false,
         height:120,
-        modal: false,
+        modal: true,
         autoOpen: false
     });
         
@@ -107,6 +107,7 @@ $(document).ready(function() {
         	$('#dialog-flush-confirm').show();
             $('#dialog-flush-confirm').dialog('open');
             $('#dialog-flush-confirm').dialog({
+                modal: true,
                 resizable: false,
                 buttons: {
                   "Delete everything": function() {
@@ -158,7 +159,7 @@ $(document).ready(function() {
 	<% if( isMSIE ){ %>
 	  <span class="alert_message" style="position:absolute; bottom:0; left:0; width:60px; font-size:0.8em;z-index:100;"><strong>Warning:</strong>This app' isn't designed for <b>Internet Explorer 6.0</b>. You should use another browser.</span>
 	<% } %>
-	<div id="dialog-flush-confirm" class="hide" title="Flush history">Are you sure? This will delete everything. You may want to <a href="<c:url value="/export" />">export your stuff</a> first.</div>
+	<div id="dialog-flush-confirm" class="hide" title="Flush"><div style="text-align: center;"><img src="<c:url value="/images/flush.png" />"/></div> <br />Are you sure? This will delete everything. You may want to <a href="<c:url value="/export" />">export your stuff</a> first.</div>
 	<div id="reset-session-confirm" class="hide" title="Reset Session">Are you sure? This will flush out any sticky cookies that Mockey may have kept due to serving up active-session-based proxy requests.
 	<p> <i>Does your brain hurt now?</i></p>
 	</div>

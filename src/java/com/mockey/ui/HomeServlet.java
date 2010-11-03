@@ -67,14 +67,14 @@ public class HomeServlet extends HttpServlet {
 
 			// Flush - clean slate.
 			IMockeyStorage store = StorageRegistry.MockeyStorage;
-			store.deleteEverything();
-
+			
 			// Load with local file.
 			String fileName = req.getParameter("file");
 			try {
 				File f = new File(fileName);
 				if (f.exists()) {
-					
+					store.deleteEverything();
+					logger.info("deleted all configurations; getting ready to load new file.");
 					// Slurp it up and initialize definitions.
 					FileInputStream fstream = new FileInputStream(f);
 					BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
@@ -88,6 +88,9 @@ public class HomeServlet extends HttpServlet {
 					ConfigurationReader reader = new ConfigurationReader();
 					reader.loadConfiguration(inputString.toString().getBytes(HTTP.UTF_8));
 					logger.info("Loaded definitions from " + fileName);
+				}
+				else {
+					logger.info(fileName + " does not exist. doing nothing.");
 				}
 			} catch (Exception e) {
 				logger.debug("Unable to load service definitions with name: '" + fileName + "'", e);
