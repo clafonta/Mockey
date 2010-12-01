@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.mockey.model.Scenario;
@@ -52,6 +53,7 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6258997861605811341L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+	private Logger logger = Logger.getLogger(ScenarioViewAjaxServlet.class);
 
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -63,13 +65,38 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 		try {
 			scenario = service.getScenario(new Long(scenarioIdAsString));
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("serviceId", ""+serviceId);
-			jsonObject.put("serviceName", ""+service.getServiceName());
-			jsonObject.put("scenarioId", ""+ scenario.getId());
+			jsonObject.put("serviceId", "" + serviceId);
+			jsonObject.put("serviceName", "" + service.getServiceName());
+			jsonObject.put("scenarioId", "" + scenario.getId());
 			jsonObject.put("name", scenario.getScenarioName());
 			jsonObject.put("match", scenario.getMatchStringArg());
 			jsonObject.put("response", scenario.getResponseMessage());
 
+			// Error handling flags
+			String scenarioErrorId = (service.getErrorScenario() != null) ? "" + service.getErrorScenario().getId()
+					: "-1";
+			if (scenarioErrorId.equals(scenarioIdAsString)) {
+				jsonObject.put("scenarioErrorFlag", true);
+			} else {
+				jsonObject.put("scenarioErrorFlag", false);
+			}
+
+			// For universal, both SERVICE ID and SCENARIO ID have to match.
+			Scenario universalError = store.getUniversalErrorScenario();
+			boolean universalErrorFlag = false;
+			if (universalError != null) {
+				try {
+					if (serviceId.equals(universalError.getServiceId())
+							&& universalError.getServiceId().equals(new Long(scenarioIdAsString))) {
+						universalErrorFlag = true;
+					}
+				} catch (Exception ae) {
+					// Ignore
+					logger.debug("Unable to set universal error.", ae);
+				}
+
+			}
+			jsonObject.put("universalScenarioErrorFlag", universalErrorFlag);
 			out.println(jsonObject.toString());
 		} catch (Exception e) {
 			out.println("{ \"error\": \"Unable to find scenario \"}");

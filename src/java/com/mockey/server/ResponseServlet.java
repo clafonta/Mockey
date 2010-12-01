@@ -117,7 +117,7 @@ public class ResponseServlet extends HttpServlet {
 	private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response,
 			String ip) throws UnsupportedEncodingException {
 		FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-		fulfilledClientRequest.setRawRequest(response.getRequestUrl().toString()); 
+		fulfilledClientRequest.setRawRequest( (response.getRequestUrl()!=null) ? response.getRequestUrl().toString() : ""); 
 		fulfilledClientRequest.setRequestorIP(ip);
 		fulfilledClientRequest.setServiceId(service.getId());
 		fulfilledClientRequest.setServiceName(service.getServiceName());

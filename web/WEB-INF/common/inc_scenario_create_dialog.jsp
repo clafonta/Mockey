@@ -13,7 +13,9 @@ $(document).ready( function() {
     var name = $("#scenario_name"),
         match = $("#scenario_match"),
         responsemsg = $("#scenario_response"),
-        allFields = $([]).add(name).add(match).add(responsemsg),
+        universal_error_scenario = $('#universal_error_scenario'),
+        error_scenario = $('#error_scenario'),
+        allFields = $([]).add(name).add(match).add(universal_error_scenario).add(error_scenario).add(responsemsg),
         tips = $(".validateTips");  
     
     function updateTips(t) {
@@ -54,10 +56,11 @@ $(document).ready( function() {
             // Clear input
             var serviceName = $('#serviceName_'+serviceId).val();
             $('#service-name-for-scenario').text(serviceName);
-            
             $('#scenario_name').val('');
             $('#scenario_match').val('');
             $('#scenario_response').val(''); 
+            $('#universal_error_scenario').attr('checked', false);
+            $('#error_scenario').attr('checked', false);
             $('#dialog-create-scenario').dialog('open');
                 $('#dialog-create-scenario').dialog({
                     buttons: {
@@ -67,7 +70,9 @@ $(document).ready( function() {
                            bValid = bValid && checkLength(name,"scenario name",3,250);
                            if (bValid) {
                                $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
-                                    responseMessage: responsemsg.val() } ,function(data){
+                                    responseMessage: responsemsg.val(), 
+                                    universalErrorScenario: universal_error_scenario.is(':checked'), 
+                                    errorScenario: error_scenario.is(':checked')  } ,function(data){
                                         
                                     }, 'json' );  
                                $(this).dialog('close');              
@@ -98,6 +103,8 @@ $(document).ready( function() {
                     $('#scenario_name').val(data.name);
                     $('#scenario_match').val(data.match);
                     $('#scenario_response').val(data.response); 
+                    $('#error_scenario').attr('checked', data.scenarioErrorFlag);
+                    $('#universal_error_scenario').attr('checked', data.universalScenarioErrorFlag);
                     $('#dialog-create-scenario').dialog('open');
                     $('#dialog-create-scenario').dialog({
                         buttons: {
@@ -107,7 +114,8 @@ $(document).ready( function() {
                                bValid = bValid && checkLength(name,"scenario name",3,250);
                                if (bValid) {
                                    $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId, matchStringArg: match.val(),
-                                        responseMessage: responsemsg.val() } ,function(data){
+                                        responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.is(':checked'), 
+                                        errorScenario: error_scenario.is(':checked')  } ,function(data){
                                                console.log(data);
                                               
                                         }, 'json' );  
@@ -159,7 +167,8 @@ $(document).ready( function() {
                        bValid = bValid && checkLength(name,"scenario name",3,250);
                        if (bValid) {
                            $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
-                                responseMessage: responsemsg.val() } ,function(data){
+                                responseMessage: responsemsg.val(), universalErrorScenario: universalerrorscenario.val(), 
+                                    errorScenario: errorscenario.val()  } ,function(data){
                                     
                                 }, 'json' );  
                            $(this).dialog('close');              
@@ -178,17 +187,24 @@ $(document).ready( function() {
 </script>
 
 <div id="dialog-create-scenario" title="Service Scenario">
-    
-    <p class="validateTips">Scenario name is required.</p>
+    <p class="validateTips"></p>
+    <div class="info_message">This scenario belongs to the service called: <strong id="service-name-for-scenario"></strong></div>
     <p>
     <fieldset>
-        <label for="scenario_name">Service name</label>
-        <h2 id="service-name-for-scenario"></h2>
-        <label for="scenario_name">Scenario name</label>
+        
+        <label for="scenario_name">Scenario name (required)</label>
         <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
         <label for="scenario_match">Match argument</label>
         <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
-        <div class="tinyfieldset">Used for Dynamic response type. Case sensitive.</div>
+        <div class="tinyfieldset childform" style="margin-bottom: 1em;">
+                <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="on">Universal Error Response</input>
+                <br />
+                <input type="checkbox" name="error_scenario" id="error_scenario" value="on">Service Scenario Error Response</input>
+                <div id="" style="" class="tinyfieldset info_message">
+                If these checkboxes are checked, then it tells Mockey how to handle errors. For more information, see  
+                <a style="color:blue;" href="<c:url value="/help#error_handling"/>">here</a>
+                </div>
+        </div>
         <label for="scenario_response">Response content</label>
         <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
     </fieldset> 

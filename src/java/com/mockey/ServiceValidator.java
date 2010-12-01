@@ -27,8 +27,6 @@
  */
 package com.mockey;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,41 +58,39 @@ public class ServiceValidator {
 	public static Map<String, String> validate(Service ms) {
 		Map<String, String> errorMap = new HashMap<String, String>();
 
-		if ((ms.getServiceName() == null)
-				|| (ms.getServiceName().trim().length() < 1)
+		if ((ms.getServiceName() == null) || (ms.getServiceName().trim().length() < 1)
 				|| (ms.getServiceName().trim().length() > 250)) {
-			errorMap
-					.put("serviceName",
-							"Service name must not be empty or greater than 250 chars.");
+			errorMap.put("serviceName", "Service name must not be empty or greater than 250 chars.");
 		}
 
-		// If given, validate URL
-		if(ms.getUrl() !=null && ms.getUrl().trim().length() > 0){
-			URL aURL;
-			try {
-				aURL = new URL(ms.getUrl());
-				// Let's make sure user doesn't have any REF or QUERY arguments
-				// Why? Because Mockey tries to find match incoming request
-				// to service Real and Mock URLs, and when people append 
-				// random parameters on the end of similar URL, it gets 
-				// hard to map URL X to URL X. 
-				if(aURL.getQuery()!=null || aURL.getRef()!=null){
-					errorMap
-					.put("urlMsg",
-							"It looks like you have a well form URL but you can't have any QUERY or REFERENCE arguments.");
-					return errorMap;
-				}
-				
-			} catch (MalformedURLException e) {
-				errorMap
-				.put("urlMsg",
-						"It looks like you have a malformed URL: " + e.getMessage());
-				return errorMap;
-			}
-			
-			
-			
-		}
+		// This validation is important
+		// for bad URL checking, but
+		// prevents people from creating
+		// a simple Mockey mock up.
+		// E.g. http://localhost:8080/Mockey/service/dummy
+//		if (ms.getUrl() != null && ms.getUrl().trim().length() > 0) {
+//			URL aURL;
+//			try {
+//				aURL = new URL(ms.getUrl());
+//				// Let's make sure user doesn't have any REF or QUERY arguments
+//				// Why? Because Mockey tries to find match incoming request
+//				// to service Real and Mock URLs, and when people append
+//				// random parameters on the end of similar URL, it gets
+//				// hard to map URL X to URL X.
+//				if (aURL.getQuery() != null || aURL.getRef() != null) {
+//					errorMap
+//							.put("urlMsg",
+//									"It looks like you have a well form URL but you can't have any QUERY or REFERENCE arguments.");
+//					return errorMap;
+//				}
+//
+//			} catch (MalformedURLException e) {
+//
+//				errorMap.put("urlMsg", "It looks like you have a malformed URL: " + e.getMessage());
+//
+//				return errorMap;
+//			}
+//		}
 		// Make sure there doesn't exist a service
 		// w/ the same non-empty real URL.
 		try {
@@ -102,27 +98,18 @@ public class ServiceValidator {
 			for (Service testService : store.getServices()) {
 
 				Url firstMatch = testService.getFirstMatchingRealServiceUrl(ms);
-				if (firstMatch != null
-						&& !testService.getId().equals(ms.getId())) {
+				if (firstMatch != null && !testService.getId().equals(ms.getId())) {
 
-					errorMap
-							.put(
-									"serviceUrlMsg",
-									"One of your Real service URL entries is already managed by the '"
-											+ testService.getServiceName()
-											+ "' service. Please choose another real URL pattern. ");
+					errorMap.put("serviceUrlMsg", "One of your Real service URL entries is already managed by the '"
+							+ testService.getServiceName() + "' service. Please choose another real URL pattern. ");
 					errorMap.put("serviceUrl", firstMatch.getFullUrl());
 					break;
 				} else if (testService.getUrl() != null && ms.getUrl() != null) {
-					if (testService.getUrl().trim().equalsIgnoreCase(
-							ms.getUrl().trim()) && !testService.getId().equals(ms.getId())) {
+					if (testService.getUrl().trim().equalsIgnoreCase(ms.getUrl().trim())
+							&& !testService.getId().equals(ms.getId())) {
 
-						errorMap
-								.put(
-										"urlMsg",
-										"Your Mock service URL entry is already used by the '"
-												+ testService.getServiceName()
-												+ "' service. Please choose another mock URL pattern. ");
+						errorMap.put("urlMsg", "Your Mock service URL entry is already used by the '"
+								+ testService.getServiceName() + "' service. Please choose another mock URL pattern. ");
 						errorMap.put("url", ms.getUrl().trim());
 						break;
 					}
@@ -130,8 +117,7 @@ public class ServiceValidator {
 			}
 
 		} catch (Exception e) {
-			logger.error(
-					"Unable to verify if there are duplicate service URLs", e);
+			logger.error("Unable to verify if there are duplicate service URLs", e);
 		}
 
 		return errorMap;

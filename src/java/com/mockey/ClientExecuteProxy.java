@@ -116,9 +116,11 @@ public class ClientExecuteProxy {
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
 		CookieStore cookieStore = httpclient.getCookieStore();
 		for (Cookie httpClientCookie : request.getHttpClientCookies()) {
+			// HACK: 
+			//httpClientCookie.getValue();
 			cookieStore.addCookie(httpClientCookie);
 		}
-		//httpclient.setCookieStore(cookieStore);
+		// httpclient.setCookieStore(cookieStore);
 
 		if (ClientExecuteProxy.cookieStore == null) {
 			ClientExecuteProxy.cookieStore = httpclient.getCookieStore();
@@ -152,11 +154,11 @@ public class ClientExecuteProxy {
 				realServiceUrl = new Url(twistedUrl);
 			}
 		}
-		HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(),
-				realServiceUrl.getScheme());
 
 		ResponseFromService responseMessage = null;
 		try {
+			HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(), realServiceUrl
+					.getScheme());
 			HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl));
 			responseMessage = new ResponseFromService(response);
 			responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
@@ -171,15 +173,15 @@ public class ClientExecuteProxy {
 		}
 
 		// Parse out the response information we're looking for
-		//StringBuffer responseCookieInfo = new StringBuffer();
-//		// Show what cookies are in the store .
-//		for (Cookie cookie : ClientExecuteProxy.cookieStore.getCookies()) {
-//			log.info("Cookie in the cookie STORE: " + cookie.toString());
-//			responseCookieInfo.append(cookie.toString() + "\n\n\n");
-//
-//		}
-		//responseMessage.setRequestCookies(requestCookieInfo.toString());
-		//responseMessage.setResponseCookies(responseCookieInfo.toString());
+		// StringBuffer responseCookieInfo = new StringBuffer();
+		// // Show what cookies are in the store .
+		// for (Cookie cookie : ClientExecuteProxy.cookieStore.getCookies()) {
+		// log.info("Cookie in the cookie STORE: " + cookie.toString());
+		// responseCookieInfo.append(cookie.toString() + "\n\n\n");
+		//
+		// }
+		// responseMessage.setRequestCookies(requestCookieInfo.toString());
+		// responseMessage.setResponseCookies(responseCookieInfo.toString());
 		return responseMessage;
 	}
 

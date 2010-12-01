@@ -13,18 +13,17 @@
 			$('#real_service_url_list').append('<input type=\"text\" id=\"service_real_url\" class=\"text ui-corner-all ui-widget-content\" name=\"realServiceUrl\" maxlength=\"100\" size=\"90%\" value=\"\" />');
 			
 		});
-
+		
 		$(function() {
 
 			  var inputTxt = $('#mock-url').val();  
-
-			  $('#service_url').bind('keyup keypress', function() { 
-				  
+			  $('#service_url').bind('keyup keypress', function() { 			  
 			      $('#mock-url')[0].value = inputTxt + $(this)[0].value;
 			      $('#mock-url-init').hide();
 			      $('#mock-url').show();
-			      
+
 			  });
+			  
 			});
 							
 		$('#update-service')
@@ -133,6 +132,7 @@
 	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />">
 	               </div>
 	            </div>
+	            <div id="invalidUrl" style="display:none;color:red;"><span>Note:</span> </div>
 	            <label for="service_url" id="real_service_url_label">Real service URLs</label>
 	            <div id="real_service_url_list">
 					<c:forEach var="realServiceUrl" items="${mockservice.realServiceUrls}">

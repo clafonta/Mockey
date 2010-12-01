@@ -27,9 +27,6 @@
  */
 package com.mockey.storage.xml;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

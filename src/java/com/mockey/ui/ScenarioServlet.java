@@ -133,7 +133,8 @@ public class ScenarioServlet extends HttpServlet {
 
 			// Make this the default 'error response' scenario
 			// for the service
-			if (req.getParameter("errorScenario") != null) {
+			String v = req.getParameter("errorScenario");
+			if ( v != null && "true".equalsIgnoreCase(v.trim())) {
 				service.setErrorScenarioId(scenario.getId());
 			} else if (service.getErrorScenarioId() == scenario.getId()) {
 				service.setErrorScenarioId(null);
@@ -141,12 +142,13 @@ public class ScenarioServlet extends HttpServlet {
 
 			// Make this the default universal 'error response',
 			// for all services defined in Mockey.
-			if (req.getParameter("universalErrorScenario") != null) {
+			v = req.getParameter("universalErrorScenario");
+			if (v != null && "true".equalsIgnoreCase(v.trim())) {
 				store.setUniversalErrorScenarioId(scenario.getId());
 				store.setUniversalErrorServiceId(serviceId);
 
-			} else if (store.getUniversalErrorScenario() != null
-					&& store.getUniversalErrorScenario().getId() == scenario.getId()) {
+			} else if (store.getUniversalErrorScenarioId() != null
+					&& store.getUniversalErrorScenarioId() == scenario.getId()) {
 				store.setUniversalErrorScenarioId(null);
 				store.setUniversalErrorServiceId(null);
 			}

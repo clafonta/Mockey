@@ -59,6 +59,7 @@ public class ScenarioUpdateServlet extends HttpServlet {
 		String httpContentType = req.getParameter("httpContentType");
 		String serviceResponseType = req.getParameter("serviceResponseType");
 		String defaultUrlIndex = req.getParameter("defaultUrlIndex");
+		
 		Service service = store.getServiceById(new Long(serviceId));
 
 		try {

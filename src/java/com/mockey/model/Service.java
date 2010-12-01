@@ -35,6 +35,7 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 
 import com.mockey.ClientExecuteProxy;
 import com.mockey.ClientExecuteProxyException;
@@ -49,7 +50,7 @@ import com.mockey.ui.Util;
  * @author chad.lafontaine
  * 
  */
-public class Service implements PersistableItem, ExecutableService  {
+public class Service implements PersistableItem, ExecutableService {
 
 	public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
 	public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
@@ -132,8 +133,6 @@ public class Service implements PersistableItem, ExecutableService  {
 	public List<Scenario> getScenarios() {
 		return Util.orderAlphabeticallyByScenarioName(scenarios.getOrderedList());
 	}
-	
-	
 
 	public Scenario getScenario(Long scenarioId) {
 		return (Scenario) scenarios.get(scenarioId);
@@ -182,10 +181,8 @@ public class Service implements PersistableItem, ExecutableService  {
 			sb.append("(no real urls defined for this service)\n");
 		}
 
-		sb.append("Default scenario ID:").append(this.getDefaultScenarioId())
-				.append("\n");
-		sb.append("HTTP Content:").append(this.getHttpContentType()).append(
-				"\n");
+		sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
+		sb.append("HTTP Content:").append(this.getHttpContentType()).append("\n");
 		sb.append("Hang time:");
 		sb.append(this.getHangTime());
 		sb.append("\n");
@@ -224,8 +221,7 @@ public class Service implements PersistableItem, ExecutableService  {
 	 *            default to PROXY.
 	 */
 	public void setServiceResponseType(int serviceResponseType) {
-		if (serviceResponseType == 1 || serviceResponseType == 0
-				|| serviceResponseType == 2) {
+		if (serviceResponseType == 1 || serviceResponseType == 0 || serviceResponseType == 2) {
 			this.serviceResponseType = serviceResponseType;
 		} else {
 			this.serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
@@ -278,8 +274,7 @@ public class Service implements PersistableItem, ExecutableService  {
 	 * The core method to execute the request as either a Proxy, Dynamic, or
 	 * Static Scenario.
 	 */
-	public ResponseFromService execute(RequestFromClient request,
-			Url realServiceUrl, String methodType) {
+	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl, String methodType) {
 		ResponseFromService response = null;
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
 			response = proxyTheRequest(request, realServiceUrl, methodType);
@@ -291,8 +286,7 @@ public class Service implements PersistableItem, ExecutableService  {
 		return response;
 	}
 
-	private ResponseFromService proxyTheRequest(RequestFromClient request,
-			Url realServiceUrl, String methodType) {
+	private ResponseFromService proxyTheRequest(RequestFromClient request, Url realServiceUrl, String methodType) {
 
 		logger.debug("proxying a moxie.");
 		// If proxy on, then
@@ -309,18 +303,17 @@ public class Service implements PersistableItem, ExecutableService  {
 		// For the proxy server between Mockey and the real service,
 		// we do the following:
 		ProxyServerModel proxyServer = store.getProxy();
-		
+
 		ClientExecuteProxy clientExecuteProxy = ClientExecuteProxy.getClientExecuteProxyInstance();
 		ResponseFromService response = null;
-		
+
 		// If Twisting is on, then
-		// 1) 
+		// 1)
 		try {
 			logger.debug("Initiating request through proxy");
 			TwistInfo twistInfo = store.getTwistInfoById(store.getUniversalTwistInfoId());
-			response = clientExecuteProxy.execute(twistInfo,proxyServer, realServiceUrl,
-					methodType, request);
-			
+			response = clientExecuteProxy.execute(twistInfo, proxyServer, realServiceUrl, methodType, request);
+
 		} catch (ClientExecuteProxyException e) {
 			// We're here for various reasons.
 			// 1) timeout from calling real service.
@@ -338,19 +331,27 @@ public class Service implements PersistableItem, ExecutableService  {
 				response.setBody(error.getResponseMessage());
 			} else {
 				StringBuffer msg = new StringBuffer();
-				msg.append("Yikes! We encountered an error. ");
-				if (proxyServer != null && proxyServer.isProxyEnabled()) {
-					if(proxyServer.getProxyHost()!=null && proxyServer.getProxyHost().trim().length()>0){
-						msg.append("Internet proxy settings are ENABLED pointing to -->"
-							+ proxyServer.getProxyHost() + "<-- ");
-					}else {
-						msg.append("Internet proxy settings are ENABLED but Internet Proxy Server value is EMPTY.");
+				JSONObject jsonResponseObject = new JSONObject();
+				try {
+					jsonResponseObject
+							.put("fail",
+									"We encountered an error. Here's some information to help point out what may have gone wrong.");
+					if (proxyServer != null && proxyServer.isProxyEnabled()) {
+						if (proxyServer.getProxyHost() != null && proxyServer.getProxyHost().trim().length() > 0) {
+							jsonResponseObject.put("proxyInfo", "Internet proxy settings are ENABLED pointing to -->"
+									+ proxyServer.getProxyHost() + "<-- ");
+						} else {
+							jsonResponseObject.put("proxyInfo",
+									"Internet proxy settings are ENABLED but Internet Proxy Server value is EMPTY.");
+						}
+					} else {
+						jsonResponseObject.put("proxyInfo","Proxy settings are NOT ENABLED. ");
 					}
-				} else {
-					msg.append("Proxy settings are NOT ENABLED. ");
+					msg.append(jsonResponseObject.toString());
+				} catch (Exception ae) {
+					logger.error("Nothing is going right here.", ae);
+					msg.append("Experiencing some difficulties. ");
 				}
-				msg.append("ERROR: ");
-				msg.append("[" + e.getClass() + "] " + e.getMessage());
 				response.setBody(msg.toString());
 			}
 		}
@@ -388,8 +389,7 @@ public class Service implements PersistableItem, ExecutableService  {
 			if (!request.hasPostBody()) {
 				// OK..let's build the request message from Params.
 				// Is this a HACK? I dunno yet.
-				logger
-						.debug("Request message is EMPTY; building request message out of Parameters. ");
+				logger.debug("Request message is EMPTY; building request message out of Parameters. ");
 				rawRequestData = request.buildParameterRequest();
 			} else {
 				rawRequestData = request.getBodyInfo();
@@ -404,21 +404,17 @@ public class Service implements PersistableItem, ExecutableService  {
 		String messageMatchFound = null;
 		while (iter.hasNext()) {
 			Scenario scenario = iter.next();
-			logger.debug("Checking: '" + scenario.getMatchStringArg()
-					+ "' in Scenario message: \n" + rawRequestData);
+			logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + rawRequestData);
 			int indexValue = -1;
 			if (scenario.hasMatchArgument()) {
 				if (request.hasPostBody()) {
-					indexValue = request.getBodyInfo().indexOf(
-							scenario.getMatchStringArg());
+					indexValue = request.getBodyInfo().indexOf(scenario.getMatchStringArg());
 				} else {
-					indexValue = rawRequestData.indexOf(scenario
-							.getMatchStringArg());
+					indexValue = rawRequestData.indexOf(scenario.getMatchStringArg());
 				}
 			}
 			if ((indexValue > -1)) {
-				logger.debug("FOUND - matching '"
-						+ scenario.getMatchStringArg() + "' ");
+				logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
 				messageMatchFound = scenario.getResponseMessage();
 				break;
 			}
@@ -487,9 +483,9 @@ public class Service implements PersistableItem, ExecutableService  {
 			for (int i = 0; i < this.realServiceUrls.size(); i++) {
 				Url tmpUrl = this.realServiceUrls.get(i);
 				if (tmpUrl.getFullUrl().equalsIgnoreCase(url.getFullUrl())) {
-					
+
 					this.realServiceUrls.set(i, url);
-					
+
 					found = true;
 					break;
 				}
@@ -502,8 +498,7 @@ public class Service implements PersistableItem, ExecutableService  {
 			// If this service name is undefined, then we try to determine
 			// an informative name based on the url
 			if (this.serviceName != null && this.serviceName.trim().isEmpty()) {
-				this.setServiceName(this
-						.getNiceNameForService(url.getFullUrl()));
+				this.setServiceName(this.getNiceNameForService(url.getFullUrl()));
 			}
 
 		}
@@ -519,8 +514,7 @@ public class Service implements PersistableItem, ExecutableService  {
 	public Url getFirstMatchingRealServiceUrl(Service otherService) {
 
 		Url matchUrl = null;
-		if (this.realServiceUrls != null && otherService != null
-				&& !otherService.getRealServiceUrls().isEmpty()) {
+		if (this.realServiceUrls != null && otherService != null && !otherService.getRealServiceUrls().isEmpty()) {
 
 			for (Url otherUrl : otherService.getRealServiceUrls()) {
 				if (this.hasRealServiceUrl(otherUrl)) {

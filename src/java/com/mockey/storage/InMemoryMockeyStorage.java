@@ -536,4 +536,16 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		this.writeMemoryToFile();
 	}
 
+	@Override
+	public Long getUniversalErrorScenarioId() {
+		// TODO Auto-generated method stub
+		return this.univeralErrorScenarioId;
+	}
+
+	@Override
+	public Long getUniversalErrorServiceId() {
+		// TODO Auto-generated method stub
+		return this.univeralErrorServiceId;
+	}
+
 }

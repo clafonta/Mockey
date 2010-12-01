@@ -180,7 +180,7 @@ public class HomeServlet extends HttpServlet {
 			try {
 				File f = new File(fileName);
 				if (f.exists()) {
-					store.deleteEverything();
+					
 					logger.info("deleted all configurations; getting ready to load new file.");
 					// Slurp it up and initialize definitions.
 					FileInputStream fstream = new FileInputStream(f);
@@ -188,11 +188,15 @@ public class HomeServlet extends HttpServlet {
 					StringBuffer inputString = new StringBuffer();
 					// Read File Line By Line
 					String strLine = null;
+					// READ FIRST
 					while ((strLine = br.readLine()) != null) {
 						// Print the content on the console
 						inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
 					}
+					// DELETE SECOND
+					store.deleteEverything();
 					ConfigurationReader reader = new ConfigurationReader();
+					
 					reader.loadConfiguration(inputString.toString().getBytes(HTTP.UTF_8));
 					logger.info("Loaded definitions from " + fileName);
 					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);

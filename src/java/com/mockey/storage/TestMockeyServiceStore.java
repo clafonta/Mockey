@@ -309,4 +309,16 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
 	}
 
+	@Override
+	public Long getUniversalErrorScenarioId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getUniversalErrorServiceId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

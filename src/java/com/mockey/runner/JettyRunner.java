@@ -91,12 +91,15 @@ public class JettyRunner {
 		// Construct the arguments for Mockey
 		String file = String.valueOf(config.getString("file"));
 		// Startup displays a big message and URL redirects after x seconds. Snazzy.
-		String initUrl = "/startup.html";
+		String initUrl = "/home";
 		// BUT...if a file is defined, (which it *should*),
 		// then let's initialize with it instead.
 		if (file != null && file.trim().length() > 0) {
-			file = URLEncoder.encode(file, "UTF-8");
-			initUrl = "/home?action=init&file=" + file;
+			URLEncoder.encode(initUrl, "UTF-8");
+			initUrl = "/home?action=init&file=" + URLEncoder.encode(file, "UTF-8");
+		}else {
+			initUrl = "/home?action=init&file=" + URLEncoder.encode(StartUpServlet.MOCK_SERVICE_DEFINITION, "UTF-8");
+			
 		}
 
 		new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();

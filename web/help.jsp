@@ -21,6 +21,7 @@
 		        <li>&#187; <a href="#url_injection">URL Injection</a></li>
 		        <li>&#187; <a href="#merge_services">Merge Services</a></li>
 		        <li>&#187; <a href="#initialization">Initialization</a></li>
+		        <li>&#187; <a href="#error_handling">Error Handling</a></li>		        
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		    </ul>
 	    </div>
@@ -155,9 +156,10 @@
 			</div>
 		</p>
 	</div>
-	<div class="help_section">
+	<div class="help_section" style="position:relative;">
 		<a href="#flush_feature" name="flush_feature"></a>
 	    <h2>Flush</h2>
+	    <div style="position:absolute; top: 5px; right: 5px;"><img src="<c:url value="/images/flush.png"/>"></div>
 	    <p>
 	    Clicking on the <strong>Flush</strong> menu button will clear out everything, allowing you to start with a clean slate. 
 	    </p>
@@ -230,22 +232,6 @@
          
          </p>
     </div>
-    <!--  
-    <h2>Service Error Response</h2>
-    <p>
-    <b>You define this.</b> It is a service scenario flagged as a 'Service Error Response', it will be returned by Mockey if an error occurs 
-    when calling the service. An error can be caused by a timeout, from calling a real service, or inability 
-    to parse data. 
-    </p>
-    
-    <h2>Universal Error Response</h2>
-    <p>
-    <b>You define this.</b> A service scenario flagged as a 'Universal Error Response' will be returned by Mockey if an error occurs 
-    when calling a service <i>and</i> a scenario is not defined as a Service Error Response. The purpose of this 
-    feature is to provide one place to define a universal error message, without the need to create an error
-    scenario for each service. 
-    </p>
-    -->
     <div class="help_section">
       <a href="#initialization" name="initialization"></a>
       <h2>Initialization</h2>
@@ -297,6 +283,31 @@
       </p>
     </div>
     <div class="help_section_zebra">
+        <a href="#error_handling" name="error_handling"></a>
+        <h2>Error Handling</h2>
+        When you create a <strong>Scenario</strong>, you'll see two checkboxes. Here's what they do:
+        <h4>&#187; Service Scenario Error Response</h4>
+        <p>
+        If a service scenario is flagged as a 'Service Error Response', it will be returned by Mockey if an error occurs 
+        when calling the service. An error can be caused by a timeout from calling a real service or inability 
+        to parse data. 
+        </p>
+        
+        <h4>&#187; Universal Error Response</h4>
+        <p>
+        If a service scenario is flagged as a 'Universal Error Response', it will be returned by Mockey if an error occurs 
+        when calling a service <i>and</i> a scenario is not defined as a <i>Service Scenario Error Response</i>. The purpose of this 
+        feature is to provide one place to define a universal error message, without the need to create an error
+        scenario for each service. <b>Note:</b> Only one scenario out of all services can be flagged as universal. 
+        </p>
+        <p class="alert_message" style="position:relative;">
+          <img style="float:right;" height="30px" src="<c:url value="/images/skull_and_crossbones.png"/>" />
+          <b>Warning:</b> use with caution. If you flag a valid looking Scenario as your universal error or 
+          service error, you'll see valid data, unknowing of the mysteries and real errors 
+        that are working against you. This can lead to trouble. 
+        </p>
+    </div>
+    <div class="help_section">
 	    <a href="#good_things_to_test" name="good_things_to_test"></a>
 	    <h2>Good Things to Test</h2>
 	    <p>
@@ -308,7 +319,7 @@
 		    </ul>      
 	    </p>
     </div>
-    <div class="help_section">
+    <div class="help_section_zebra">
         <a href="#url_recommendations" name="url_recommendations"></a>
 	    <h2>URL Mapping Config Recommendations</h2>
 		<p>
@@ -332,7 +343,7 @@
 		    just define DEV_BASE_URL as an empty string. 
 	    </p>
 	</div>
-	<div class="help_section_zebra">
+	<div class="help_section">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

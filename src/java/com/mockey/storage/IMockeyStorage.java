@@ -72,7 +72,8 @@ public interface IMockeyStorage {
 	public void setUniversalTwistInfoId(Long twistInfoId);
 	public void setUniversalErrorServiceId(Long serviceId);
 	public void setUniversalErrorScenarioId(Long scenarioId);
-
+	public Long getUniversalErrorServiceId();
+	public Long getUniversalErrorScenarioId();
 	public ProxyServerModel getProxy();
 	public void setProxy(ProxyServerModel proxy);
 	
