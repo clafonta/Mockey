@@ -22,6 +22,7 @@
 		        <li>&#187; <a href="#merge_services">Merge Services</a></li>
 		        <li>&#187; <a href="#initialization">Initialization</a></li>
 		        <li>&#187; <a href="#error_handling">Error Handling</a></li>		        
+		        <li>&#187; <a href="#robots">Robots</a></li>                
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		    </ul>
 	    </div>
@@ -344,6 +345,14 @@
 	    </p>
 	</div>
 	<div class="help_section">
+	    <a href="#robots" name="robots"></a>
+	
+        <h2>Robots</h2>
+        <p>
+        Mockey is not only for Humans. Robots can use it too. See <a href="service_api">here</a>.
+        </p>
+    </div>
+	<div class="help_section_zebra">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

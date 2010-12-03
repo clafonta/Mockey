@@ -77,6 +77,7 @@ public class TwistInfoDeleteServlet extends HttpServlet implements TwistInfoConf
 			// ***********************
 			// BEGIN - JSON response
 			// ***********************
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			try {
 				JSONObject jsonResponseObject = new JSONObject();

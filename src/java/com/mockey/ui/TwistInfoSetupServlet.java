@@ -70,6 +70,7 @@ public class TwistInfoSetupServlet extends HttpServlet implements TwistInfoConfi
 			// ***********************
 			// BEGIN - JSON response
 			// ***********************
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			try {
 				JSONObject jsonResponseObject = new JSONObject();
@@ -167,6 +168,7 @@ public class TwistInfoSetupServlet extends HttpServlet implements TwistInfoConfi
 		String responseType = req.getParameter(PARAMETER_KEY_RESPONSE_TYPE);
 		if (PARAMETER_KEY_RESPONSE_TYPE_VALUE_JSON.equalsIgnoreCase(responseType)) {
 			// BUILD JSON response
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			try {
 				JSONObject jsonResponseObject = new JSONObject();

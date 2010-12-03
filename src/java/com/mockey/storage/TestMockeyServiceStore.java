@@ -321,4 +321,10 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		return null;
 	}
 
+	@Override
+	public Service getServiceByName(String serviceName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

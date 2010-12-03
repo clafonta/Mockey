@@ -63,8 +63,9 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet>
-		<servlet-name>ScenarioUpdateServlet</servlet-name>
-		<servlet-class>com.mockey.ui.ScenarioUpdateServlet</servlet-class>
+		<servlet-name>ServiceConfigurationServlet</servlet-name>
+		<servlet-class>com.mockey.ui.ServiceConfigurationServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>HelpServlet</servlet-name>
@@ -126,6 +127,15 @@
         <servlet-name>SearchServlet</servlet-name>
         <servlet-class>com.mockey.ui.SearchServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServiceDefinitionInfoServlet</servlet-name>
+        <servlet-class>com.mockey.ui.ServiceDefinitionInfoServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServiceDefinitionInfoServlet</servlet-name>
+        <url-pattern>/definitions</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SearchServlet</servlet-name>
         <url-pattern>/search</url-pattern>
@@ -183,9 +193,13 @@
 		<url-pattern>/help</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>ScenarioUpdateServlet</servlet-name>
+		<servlet-name>ServiceConfigurationServlet</servlet-name>
 		<url-pattern>/service_scenario</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>ServiceConfigurationServlet</servlet-name>
+        <url-pattern>/config/service</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ServicePlanSetupServlet</servlet-name>
 		<url-pattern>/plan/setup</url-pattern>

@@ -63,6 +63,7 @@ public class ConfigurationInfoAJAXServlet extends HttpServlet {
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		ProxyServerModel proxyInfo = store.getProxy();
+		resp.setContentType("application/json");
 		PrintWriter out = resp.getWriter();
 		try {
 			JSONObject responseObject = new JSONObject();

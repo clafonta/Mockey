@@ -88,6 +88,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 		if (apiStore.getApiDocServiceByName(API_SERVICE_PLAN_CONFIGURATION_NAME) == null) {
 			ApiDocService apiDocService = new ApiDocService();
 			apiDocService.setName(API_SERVICE_PLAN_CONFIGURATION_NAME);
+			apiDocService.setDescription("If you need Mockey to load a specific Service Plan, then this API may meet your needs. When to use: your automated test scripts need Mockey in a certain state of mind.");
 			// TODO: We need to use a pattern matching replace e.g. ${0} ${1}
 			// with array ["a", "b"] for VALUES
 			apiDocService.setServicePath("/plan/setup");
@@ -247,6 +248,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 					jsonObject.put("fail", "Service plan not deleted. Please check your logs for insight.");
 
 				}
+		        resp.setContentType("application/json");
 				PrintWriter out = resp.getWriter();
 				jsonResultObject.put("result", jsonObject);
 				out.println(jsonResultObject.toString());
@@ -267,6 +269,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 				} catch (Exception e) {
 					jsonObject.put("fail", "Service plan not set. Please check your logs for insight.");
 				}
+		        resp.setContentType("application/json");
 				PrintWriter out = resp.getWriter();
 				jsonResultObject.put("result", jsonObject);
 				out.println(jsonResultObject.toString());
@@ -301,6 +304,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 				// ***************************
 				// SAVE/UPDATE THE PLAN
 				// ***************************
+		        resp.setContentType("application/json");
 				PrintWriter out = resp.getWriter();
 				String msg = "Service plan " + servicePlan.getName() + " saved";
 
@@ -333,6 +337,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 	private ServicePlan createOrUpdatePlan(ServicePlan servicePlan) {
 		List<PlanItem> planItemList = new ArrayList<PlanItem>();
 		for (Service service : store.getServices()) {
+			
 			PlanItem planItem = new PlanItem();
 			planItem.setHangTime(service.getHangTime());
 			planItem.setServiceId(service.getId());
@@ -352,6 +357,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 		}
 		for (PlanItem planItem : servicePlan.getPlanItemList()) {
 			Service service = store.getServiceById(planItem.getServiceId());
+			
 			if (service != null) {
 				service.setHangTime(planItem.getHangTime());
 				service.setDefaultScenarioId(planItem.getScenarioId());

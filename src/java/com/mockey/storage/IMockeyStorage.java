@@ -92,4 +92,7 @@ public interface IMockeyStorage {
 	public void deleteFulfilledClientRequestsFromIP(Long ip);	
 	public void deleteFulfilledClientRequestsForService(Long serviceId);
 	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
+
+
+	public Service getServiceByName(String serviceName);
 }

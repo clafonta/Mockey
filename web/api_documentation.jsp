@@ -10,7 +10,7 @@
     <div id="top_config_api" style="position:relative;">
 	    <div style="clear:both;"></div>
 	    <div class="table_of_contents">
-	        <h3 style="float:right;padding-right:1em;">Table of Contents</h3>
+	        <h3>Table of Contents</h3>
 	        <div style="clear:both;"></div>
 		    <ul>
 		    <c:forEach var="apiservice" items="${apiServices}"  varStatus="status">
@@ -31,13 +31,13 @@
         </div>
 	    
     </div>
+    <div style="clear:both; margin-top:2em;"></div>
     <c:forEach var="apiservice" items="${apiServices}"  varStatus="status">
-    <div class="parentform" style="margin-bottom:2em;">
+    <div class="parentform" style="margin-bottom:2em;margin-top:3em;">
     <a href="#${apiservice.name}" name="${apiservice.name}"></a>
     <h2>${apiservice.name}</h2>
-    
-    <div>${apiservice.description}</div>
-        <h3>Request</h3>
+    <p>${apiservice.description}</p>        
+    <h3>Request</h3>
         <p class="code">${apiservice.servicePath}</p>
         <h4>Parameters</h4>
         

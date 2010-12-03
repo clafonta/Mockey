@@ -106,6 +106,7 @@ public class ProxyInfoServlet extends HttpServlet {
 		} catch (JSONException e) {
 
 		}
+		resp.setContentType("application/json");
 		PrintWriter out = resp.getWriter();
 		out.println(responseObject.toString());
 		out.flush();

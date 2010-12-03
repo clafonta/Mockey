@@ -63,8 +63,8 @@ public class HomeServlet extends HttpServlet {
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static Logger logger = Logger.getLogger(HomeServlet.class);
 	private IApiStorage apiStore = IApiStorageInMemory.getInstance();
-	
-	private static final String API_CONFIGURATION_NAME = "Service Definitions Configuration";
+
+	private static final String API_CONFIGURATION_NAME = "Initialization";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION = "action";
 	private static final String API_CONFIGURATION_PARAMETER_TYPE = "type";
 	private static final String API_CONFIGURATION_PARAMETER_FILE = "file";
@@ -83,15 +83,13 @@ public class HomeServlet extends HttpServlet {
 		// THIS SERVICE API DESCRIPTION CONTRACT
 		// *****************************
 		// This information is used in the API JSP document, used to describe
-		// how to make setting changes from a head-less client. 
-		
+		// how to make setting changes from a head-less client.
+
 		if (apiStore.getApiDocServiceByName(API_CONFIGURATION_NAME) == null) {
 			ApiDocService apiDocService = new ApiDocService();
 			apiDocService.setName(API_CONFIGURATION_NAME);
-			// TODO: We need to use a pattern matching replace e.g. ${0} ${1}
-			// with array ["a", "b"] for VALUES
 			apiDocService.setServicePath("/home");
-
+			apiDocService.setDescription("If you need to initialize Mockey with a definitions file, then this API may serve your needs. ");
 			// *****************************
 			// REQUEST DEFINITION
 			// *****************************
@@ -110,15 +108,17 @@ public class HomeServlet extends HttpServlet {
 			// Parameter - 'file'
 			ApiDocAttribute reqAttributeFile = new ApiDocAttribute();
 			reqAttributeFile.setFieldName(API_CONFIGURATION_PARAMETER_FILE);
-			reqAttributeFile.addFieldValues(new ApiDocFieldValue("[string]", "Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
+			reqAttributeFile.addFieldValues(new ApiDocFieldValue("[string]",
+					"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
 			reqAttributeFile.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
 			apiDocRequest.addAttribute(reqAttributeFile);
 
 			// Parameter - 'type'
 			ApiDocAttribute reqAttributeType = new ApiDocAttribute();
 			reqAttributeType.setFieldName(API_CONFIGURATION_PARAMETER_TYPE);
-			reqAttributeType.addFieldValues(new ApiDocFieldValue("json",
-					"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
+			reqAttributeType
+					.addFieldValues(new ApiDocFieldValue("json",
+							"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
 			apiDocRequest.addAttribute(reqAttributeType);
 			apiDocService.setApiRequest(apiDocRequest);
 
@@ -180,7 +180,7 @@ public class HomeServlet extends HttpServlet {
 			try {
 				File f = new File(fileName);
 				if (f.exists()) {
-					
+
 					logger.info("deleted all configurations; getting ready to load new file.");
 					// Slurp it up and initialize definitions.
 					FileInputStream fstream = new FileInputStream(f);
@@ -196,7 +196,7 @@ public class HomeServlet extends HttpServlet {
 					// DELETE SECOND
 					store.deleteEverything();
 					ConfigurationReader reader = new ConfigurationReader();
-					
+
 					reader.loadConfiguration(inputString.toString().getBytes(HTTP.UTF_8));
 					logger.info("Loaded definitions from " + fileName);
 					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
@@ -208,20 +208,19 @@ public class HomeServlet extends HttpServlet {
 			} catch (Exception e) {
 				logger.debug("Unable to load service definitions with name: '" + fileName + "'", e);
 				try {
-					jsonResultObject.put(FAIL, "Unable to load service definitions with name: '" + fileName
-							+ "'");
+					jsonResultObject.put(FAIL, "Unable to load service definitions with name: '" + fileName + "'");
 				} catch (Exception ef) {
 					logger.error("Unable to produce a JSON response.", e);
 				}
 			}
 
 			// OK, return JSON or HTML?
-			
+
 			if (type != null && type.trim().equalsIgnoreCase("json")) {
 				resp.setContentType("application/json;");
 				PrintWriter out = resp.getWriter();
 				JSONObject jsonResponseObject = new JSONObject();
-				
+
 				try {
 					jsonResponseObject.put("result", jsonResultObject);
 				} catch (JSONException e) {
@@ -259,11 +258,10 @@ public class HomeServlet extends HttpServlet {
 
 				return;
 			}
-		} 
+		}
 
-			req.setAttribute("services", Util.orderAlphabeticallyByServiceName(store.getServices()));
-			req.setAttribute("plans", Util.orderAlphabeticallyByServicePlanName(store.getServicePlans()));
-		
+		req.setAttribute("services", Util.orderAlphabeticallyByServiceName(store.getServices()));
+		req.setAttribute("plans", Util.orderAlphabeticallyByServicePlanName(store.getServicePlans()));
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 		dispatch.forward(req, resp);

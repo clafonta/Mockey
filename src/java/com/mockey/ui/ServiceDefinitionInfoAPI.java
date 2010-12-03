@@ -6,9 +6,6 @@
  * Copyright (C) 2009-2010  Authors:
  * 
  * chad.lafontaine (chad.lafontaine AT gmail DOT com)
- * neil.cronin (neil AT rackle DOT com) 
- * lorin.kobashigawa (lkb AT kgawa DOT com)
- * rob.meyer (rob AT bigdis DOT com)
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,40 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-package com.mockey.model;
+package com.mockey.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface ServiceDefinitionInfoAPI {
 
-public class ApiDocRequest {
+	public static final String API_SERVICE_INFO_NAME = "Service Definitions";
 
-	private List<ApiDocAttribute> attributes = new ArrayList<ApiDocAttribute>();
-	private String example = null;
-	private String description = null;
-	
-	public void setAttributes(ArrayList<ApiDocAttribute> attributes) {
-		this.attributes = attributes;
-	}
-	public void addAttribute(ApiDocAttribute attribute) {
-		this.attributes.add(attribute);
-	}
 
-	public List<ApiDocAttribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setExample(String example) {
-		this.example = example;
-	}
-
-	public String getExample() {
-		return example;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getDescription() {
-		return description;
-	}
-	
 }

@@ -61,6 +61,7 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 		String scenarioIdAsString = req.getParameter("scenarioId");
 		Service service = store.getServiceById(serviceId);
 		Scenario scenario = null;
+		resp.setContentType("application/json");
 		PrintWriter out = resp.getWriter();
 		try {
 			scenario = service.getScenario(new Long(scenarioIdAsString));

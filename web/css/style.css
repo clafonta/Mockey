@@ -70,10 +70,12 @@ div.table_of_contents {
     float:right;
     border: thin solid #EEEEEE;
     background:#EEEEEE;
+    border: thin solid #bdbdbd;
+    
 }
 
 .help_section_zebra {
-    background-color: #F5F4EE;
+    background-color: #C8DECD;
 }
 .help_section {
     background-color: #EEEEEE;

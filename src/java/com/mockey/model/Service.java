@@ -97,11 +97,45 @@ public class Service implements PersistableItem, ExecutableService {
 	}
 
 	public Long getDefaultScenarioId() {
-		return defaultScenarioId;
+		
+		return this.defaultScenarioId;
+	}
+	
+	/**
+	 *
+	 * @return null if no default scenario defined, otherwise, returns name
+	 */
+	public String getDefaultScenarioName(){
+		Scenario s = this.getScenario(this.defaultScenarioId);
+		if(s!=null){
+			return s.getScenarioName();
+		}else {
+			return null;
+		}
 	}
 
-	public void setDefaultScenarioId(Long defaultScenarioId) {
-		this.defaultScenarioId = defaultScenarioId;
+	public void setDefaultScenarioId(Long did) {
+
+		this.defaultScenarioId = did;
+	}
+
+	/**
+	 * Finds a service scenario with matching name. If a match is found, then
+	 * its ID is set as the default scenario id. If no match is found, then no
+	 * change. Name matching is case insensitive, and leading and ending
+	 * whitespace is trimmed.
+	 * 
+	 * @param scenarioName
+	 */
+	public void setDefaultScenarioByName(String scenarioName) {
+		if (scenarioName != null) {
+			for (Scenario scenario : this.scenarios.getOrderedList()) {
+				if (scenarioName.trim().equalsIgnoreCase((scenario.getScenarioName().trim()))) {
+					this.setDefaultScenarioId(scenario.getId());
+					break;
+				}
+			}
+		}
 	}
 
 	public String getDescription() {
@@ -226,6 +260,51 @@ public class Service implements PersistableItem, ExecutableService {
 		} else {
 			this.serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 		}
+		validateDefaultScenarioId();
+
+	}
+
+	// HELPER method - let's validate the 'defaultScenarioId'. If
+	// defaultScenarioId doesn't equal any of the scenario IDs, then
+	// auto-set the defaultID to the 'first' scenario
+	private void validateDefaultScenarioId() {
+		boolean valid = false;
+		List<Scenario> orderedList = this.scenarios.getOrderedList();
+		
+		for(Scenario s: orderedList){
+	
+			if(s.getId().equals(this.getDefaultScenarioId()) ) {
+				valid = true;
+				break;
+			}
+		}
+		if(!valid){
+			if(this.scenarios.getOrderedList().size() > 0){
+				this.setDefaultScenarioId(orderedList.get(0).getId());
+			}else {
+				// Reset
+				this.setDefaultScenarioId(null);
+			}
+		}
+	}
+
+	/**
+	 * Takes 'proxy', 'static', or 'dynamic' arguments and translates them to
+	 * appropriate 'int' values and then calls
+	 * <code>setServiceResponseType</code>
+	 * 
+	 * @see #setServiceResponseType(int)
+	 */
+	public void setServiceResponseTypeByString(String arg) {
+		if (arg != null) {
+			if ("proxy".trim().equalsIgnoreCase(arg.trim()) || "0".equalsIgnoreCase(arg.trim())) {
+				setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
+			} else if ("static".trim().equalsIgnoreCase(arg.trim()) || "1".equalsIgnoreCase(arg.trim())) {
+				setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO);
+			} else if ("dynamic".trim().equalsIgnoreCase(arg.trim()) || "2".equalsIgnoreCase(arg.trim())) {
+				setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO);
+			}
+		}
 	}
 
 	public int getServiceResponseType() {
@@ -235,6 +314,20 @@ public class Service implements PersistableItem, ExecutableService {
 		} else {
 			return serviceResponseType;
 		}
+	}
+	
+	public String getServiceResponseTypeAsString(){
+		int x = getServiceResponseType();
+		if(x == Service.SERVICE_RESPONSE_TYPE_PROXY){
+			return "proxy";
+		}else if(x == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO){
+			return "static";
+		}else if(x == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO){
+			return "dynamic";			
+		}else {
+			return "";
+		}
+		
 	}
 
 	public void setErrorScenarioId(Long errorScenarioId) {
@@ -345,7 +438,7 @@ public class Service implements PersistableItem, ExecutableService {
 									"Internet proxy settings are ENABLED but Internet Proxy Server value is EMPTY.");
 						}
 					} else {
-						jsonResponseObject.put("proxyInfo","Proxy settings are NOT ENABLED. ");
+						jsonResponseObject.put("proxyInfo", "Proxy settings are NOT ENABLED. ");
 					}
 					msg.append(jsonResponseObject.toString());
 				} catch (Exception ae) {

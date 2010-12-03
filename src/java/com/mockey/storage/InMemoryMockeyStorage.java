@@ -108,6 +108,17 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return mockServiceStore.get(id);
 	}
 
+	public Service getServiceByName(String name) {
+		if (name != null) {
+			for (Service service : getServices()) {
+				if (service.getServiceName() != null && service.getServiceName().trim().equalsIgnoreCase(name.trim())) {
+					return service;
+				}
+			}
+		}
+		return null;
+	}
+
 	public Service getServiceByUrl(String url) {
 
 		try {
@@ -151,7 +162,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			store.saveOrUpdateService(service);
 
 		} catch (MalformedURLException e) {
-			logger.error("Unable to build a Service with URL '"+url+"'", e);
+			logger.error("Unable to build a Service with URL '" + url + "'", e);
 		}
 
 		return service;

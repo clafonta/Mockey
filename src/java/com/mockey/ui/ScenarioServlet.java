@@ -77,6 +77,7 @@ public class ScenarioServlet extends HttpServlet {
 				// Just in case an invalid service ID
 				// or scenario ID were past in.
 			}
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			JSONObject result = new JSONObject();
 			JSONObject message = new JSONObject();
@@ -154,6 +155,7 @@ public class ScenarioServlet extends HttpServlet {
 			}
 
 			store.saveOrUpdateService(service);
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 
 			JSONObject object = new JSONObject();
@@ -178,6 +180,7 @@ public class ScenarioServlet extends HttpServlet {
 			// Scenario is not created or updated.
 			// Coaching messages are available in the
 			// error dictionary/map.
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			String resultingJSON = Util.getJSON(errorMap);
 			out.println(resultingJSON);

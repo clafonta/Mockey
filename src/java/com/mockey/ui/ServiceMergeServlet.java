@@ -127,7 +127,7 @@ public class ServiceMergeServlet extends HttpServlet {
 			}
 			
 		}
-
+		resp.setContentType("application/json");
 		PrintWriter out = resp.getWriter();
 
 		String resultingJSON = Util.getJSON(responseMap);

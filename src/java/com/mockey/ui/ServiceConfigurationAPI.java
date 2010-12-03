@@ -6,9 +6,6 @@
  * Copyright (C) 2009-2010  Authors:
  * 
  * chad.lafontaine (chad.lafontaine AT gmail DOT com)
- * neil.cronin (neil AT rackle DOT com) 
- * lorin.kobashigawa (lkb AT kgawa DOT com)
- * rob.meyer (rob AT bigdis DOT com)
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,40 +22,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-package com.mockey.model;
+package com.mockey.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ApiDocRequest {
-
-	private List<ApiDocAttribute> attributes = new ArrayList<ApiDocAttribute>();
-	private String example = null;
-	private String description = null;
+public interface ServiceConfigurationAPI {
 	
-	public void setAttributes(ArrayList<ApiDocAttribute> attributes) {
-		this.attributes = attributes;
-	}
-	public void addAttribute(ApiDocAttribute attribute) {
-		this.attributes.add(attribute);
-	}
+	public static final String API_SERVICE_CONFIGURATION_NAME = "Service Configuration";
+	public static final String API_SERVICE_NAME = "serviceName";
+	public static final String API_SERVICE_ID = "serviceId";
+	public static final String API_DEFAULT_SCENARIO_ID = "defaultScenarioId";
+	public static final String API_DEFAULT_SCENARIO_NAME = "defaultScenarioName";
 
-	public List<ApiDocAttribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setExample(String example) {
-		this.example = example;
-	}
-
-	public String getExample() {
-		return example;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getDescription() {
-		return description;
-	}
+	public static final String API_SERVICE_SCENARIO_NAME = "scenarioName";
+	public static final String API_SERVICE_SCENARIO_ID = "scenarioId";
+	public static final String API_SERVICE_RESPONSE_TYPE = "serviceResponseType";
+	public static final String API_SERVICE_RESPONSE_TYPE_VALUE_PROXY = "proxy";
+	public static final String API_SERVICE_RESPONSE_TYPE_VALUE_STATIC = "static";
+	public static final String API_SERVICE_RESPONSE_TYPE_VALUE_DYNAMIC = "dynamic";
+	public static final String API_SERVICE_HANGTIME = "hangTime";
+	public static final String API_SERVICE_CONTENT_TYPE = "httpContentType";
 	
+
+
+
+
 }

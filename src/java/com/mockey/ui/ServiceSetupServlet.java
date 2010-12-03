@@ -75,6 +75,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			} catch (Exception e) {
 				log.error("Unable to update service(s", e);
 			}
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			Map<String, String> successMessage = new HashMap<String, String>();
 			successMessage.put("success", "updated");
@@ -237,6 +238,7 @@ public class ServiceSetupServlet extends HttpServlet {
 
 			String redirectUrl = Url.getContextAwarePath("/setup?serviceId="
 					+ updatedService.getId(), req.getContextPath());
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			String resultingJSON = "{ \"result\": { \"redirect\": \""
 					+ redirectUrl + "\"}}";
@@ -246,7 +248,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			return;
 
 		} else {
-
+			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			String resultingJSON = Util.getJSON(errorMap);
 			out.println(resultingJSON);
