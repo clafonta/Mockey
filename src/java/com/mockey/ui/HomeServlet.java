@@ -56,6 +56,7 @@ import com.mockey.storage.IApiStorage;
 import com.mockey.storage.IApiStorageInMemory;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
+import com.mockey.storage.xml.MockeyXmlFileManager;
 
 public class HomeServlet extends HttpServlet {
 
@@ -195,9 +196,9 @@ public class HomeServlet extends HttpServlet {
 					}
 					// DELETE SECOND
 					store.deleteEverything();
-					ConfigurationReader reader = new ConfigurationReader();
+					MockeyXmlFileManager reader = new MockeyXmlFileManager();
 
-					reader.loadConfiguration(inputString.toString().getBytes(HTTP.UTF_8));
+					reader.loadConfigurationWithXmlDef(inputString.toString());
 					logger.info("Loaded definitions from " + fileName);
 					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
 					jsonResultObject.put(API_CONFIGURATION_PARAMETER_FILE, fileName);

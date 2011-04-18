@@ -40,6 +40,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 
+import com.mockey.storage.xml.MockeyXmlFileManager;
+
 /**
  * 
  * @author Chad.Lafontaine
@@ -99,8 +101,8 @@ public class UploadConfigurationServlet extends HttpServlet {
                 if (!item.isFormField()) {
 
                     byte[] data = item.get();
-                    ConfigurationReader configurationReader = new ConfigurationReader();
-                    ServiceMergeResults results = configurationReader.loadConfiguration(data);
+                    MockeyXmlFileManager configurationReader = new MockeyXmlFileManager();
+                    ServiceMergeResults results = configurationReader.loadConfigurationWithXmlDef(new String(data));
 
                     Util.saveSuccessMessage("Service definitions uploaded.", req);
                     req.setAttribute("conflicts", results.getConflictMsgs());

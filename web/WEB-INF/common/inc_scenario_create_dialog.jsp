@@ -67,7 +67,7 @@ $(document).ready( function() {
                       "Create scenario": function() {
                            var bValid = true;  
                            allFields.removeClass('ui-state-error');
-                           bValid = bValid && checkLength(name,"scenario name",3,250);
+                           bValid = bValid && checkLength(name,"scenario name",3,1000);
                            if (bValid) {
                                $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
                                     responseMessage: responsemsg.val(), 
@@ -111,7 +111,7 @@ $(document).ready( function() {
                           "Update scenario": function() {
                                var bValid = true;  
                                allFields.removeClass('ui-state-error');
-                               bValid = bValid && checkLength(name,"scenario name",3,250);
+                               bValid = bValid && checkLength(name,"scenario name",3,1000);
                                if (bValid) {
                                    $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId, matchStringArg: match.val(),
                                         responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.is(':checked'), 
@@ -164,7 +164,7 @@ $(document).ready( function() {
                        var bValid = true;  
                        
                        allFields.removeClass('ui-state-error');
-                       bValid = bValid && checkLength(name,"scenario name",3,250);
+                       bValid = bValid && checkLength(name,"scenario name",3,1000);
                        if (bValid) {
                            $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
                                 responseMessage: responsemsg.val(), universalErrorScenario: universalerrorscenario.val(), 

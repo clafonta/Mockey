@@ -27,6 +27,8 @@
  */
 package com.mockey.storage.xml;
 
+import java.util.List;
+
 import org.apache.commons.digester.Digester;
 import org.xml.sax.InputSource;
 
@@ -35,6 +37,7 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
@@ -50,94 +53,128 @@ import com.mockey.ui.PatternPair;
  */
 public class MockeyXmlFileConfigurationParser {
 
-    private final static String ROOT = "mockservice";
-    private final static String PROXYSERVER = ROOT + "/proxy_settings";
-    private final static String SERVICE = ROOT + "/service";
-    private final static String SERVICE_REAL_URL = SERVICE + "/real_url";
-    private final static String SCENARIO = SERVICE + "/scenario";
-    private final static String PLAN = ROOT + "/service_plan";
-    private final static String PLAN_ITEM = PLAN + "/plan_item";
-    private final static String TWIST_CONFIG = ROOT + "/twist_config";
-    private final static String TWIST_CONFIG_ITEM = TWIST_CONFIG + "/twist_pattern";
+	private final static String ROOT = "mockservice";
+	private final static String ROOT_PROXYSERVER = ROOT + "/proxy_settings";
+	private final static String ROOT_SERVICE = ROOT + "/service";
+	private final static String ROOT_SERVICEREF = ROOT + "/serviceref";
 
-    private final static String SCENARIO_MATCH = SCENARIO + "/scenario_match";
-    private final static String SCENARIO_REQUEST = SCENARIO + "/scenario_request";
-    private final static String SCENARIO_RESPONSE = SCENARIO + "/scenario_response";
+	private final static String ROOT_SERVICE_REAL_URL = ROOT_SERVICE + "/real_url";
+	private final static String ROOT_SERVICE_SCENARIO = ROOT_SERVICE + "/scenario";
+	private final static String ROOT_PLAN = ROOT + "/service_plan";
+	private final static String ROOT_PLAN_ITEM = ROOT_PLAN + "/plan_item";
+	private final static String ROOT_TWIST_CONFIG = ROOT + "/twist_config";
+	private final static String ROOT_TWIST_CONFIG_ITEM = ROOT_TWIST_CONFIG + "/twist_pattern";
 
-    public IMockeyStorage getMockServices(InputSource inputSource) throws org.xml.sax.SAXParseException,
-            java.io.IOException, org.xml.sax.SAXException {
+	private final static String SCENARIO_MATCH = ROOT_SERVICE_SCENARIO + "/scenario_match";
+	private final static String SCENARIO_REQUEST = ROOT_SERVICE_SCENARIO + "/scenario_request";
+	private final static String SCENARIO_RESPONSE = ROOT_SERVICE_SCENARIO + "/scenario_response";
+	private static Digester fullSetDigester = null;
+	static {
+		MockeyXmlFileConfigurationParser.fullSetDigester = new Digester();
 
-        Digester digester = new Digester();
-        digester.setValidating(false);
-        digester.addObjectCreate(ROOT, InMemoryMockeyStorage.class);
+		fullSetDigester.setValidating(false);
+		fullSetDigester.addObjectCreate(ROOT, InMemoryMockeyStorage.class);
 
-        digester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");   
-        digester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");   
-        digester.addSetProperties(ROOT, "universal_twist_info_id", "universalTwistInfoId");   
+		fullSetDigester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");
+		fullSetDigester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");
+		fullSetDigester.addSetProperties(ROOT, "universal_twist_info_id", "universalTwistInfoId");
 
-        digester.addObjectCreate(PROXYSERVER, ProxyServerModel.class);
-        digester.addSetProperties(PROXYSERVER, "proxy_url", "proxyUrl");
-        digester.addSetProperties(PROXYSERVER, "proxy_enabled", "proxyEnabled");
-        digester.addSetNext(PROXYSERVER, "setProxy");
+		fullSetDigester.addObjectCreate(ROOT_PROXYSERVER, ProxyServerModel.class);
+		fullSetDigester.addSetProperties(ROOT_PROXYSERVER, "proxy_url", "proxyUrl");
+		fullSetDigester.addSetProperties(ROOT_PROXYSERVER, "proxy_enabled", "proxyEnabled");
+		fullSetDigester.addSetNext(ROOT_PROXYSERVER, "setProxy");
 
-        digester.addObjectCreate(SERVICE, Service.class);
-
-        digester.addSetProperties(SERVICE, "name", "serviceName");           
-        digester.addSetProperties(SERVICE, "description", "description");
-        digester.addSetProperties(SERVICE, "http_content_type", "httpContentType");
-        digester.addSetProperties(SERVICE, "hang_time", "hangTime"); 
-        digester.addSetProperties(SERVICE, "url", "url"); 
-        
-        
-        digester.addSetProperties(SERVICE, "proxyurl", "realServiceUrlByString");
-        digester.addSetProperties(SERVICE, "default_real_url_index", "defaultRealUrlIndex");
-        
-        digester.addSetProperties(SERVICE, "service_response_type", "serviceResponseType");
-        digester.addSetProperties(SERVICE, "default_scenario_id", "defaultScenarioId");
-        digester.addSetNext(SERVICE, "saveOrUpdateService");
-
-        digester.addObjectCreate(SERVICE_REAL_URL, Url.class);
-        digester.addSetProperties(SERVICE_REAL_URL, "url", "url");
-        digester.addSetNext(SERVICE_REAL_URL, "saveOrUpdateRealServiceUrl");
-        
-        digester.addObjectCreate(SCENARIO, Scenario.class);
-        digester.addSetProperties(SCENARIO, "id", "id");
-        digester.addSetProperties(SCENARIO, "name", "scenarioName");
-        digester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
-        digester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
-        digester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
-        digester.addSetNext(SCENARIO, "saveOrUpdateScenario");
-
-        // PLAN
-        digester.addObjectCreate(PLAN, ServicePlan.class);
-        digester.addSetProperties(PLAN, "name", "name");//     
-        digester.addSetProperties(PLAN, "description", "description");//
-        digester.addSetProperties(PLAN, "id", "id");
-        digester.addSetNext(PLAN, "saveOrUpdateServicePlan");
-        digester.addObjectCreate(PLAN_ITEM, PlanItem.class);
-        digester.addSetProperties(PLAN_ITEM, "hang_time", "hangTime");
-        digester.addSetProperties(PLAN_ITEM, "service_id", "serviceId");
-        digester.addSetProperties(PLAN_ITEM, "scenario_id", "scenarioId");
-        digester.addSetProperties(PLAN_ITEM, "service_response_type", "serviceResponseType");
-        digester.addSetNext(PLAN_ITEM, "addPlanItem");
-        
-        // TWIST CONFIGURATION
-        digester.addObjectCreate(TWIST_CONFIG, TwistInfo.class);
-        digester.addSetProperties(TWIST_CONFIG, "name", "name");//     
-        digester.addSetProperties(TWIST_CONFIG, "id", "id");
-		digester.addSetNext(TWIST_CONFIG, "saveOrUpdateTwistInfo");
-        digester.addObjectCreate(TWIST_CONFIG_ITEM, PatternPair.class);
-        digester.addSetProperties(TWIST_CONFIG_ITEM, "origination", "origination");
-        digester.addSetProperties(TWIST_CONFIG_ITEM, "destination", "destination");
-        digester.addSetNext(TWIST_CONFIG_ITEM, "addPatternPair");
+		
+		fullSetDigester.addObjectCreate(ROOT_SERVICEREF, ServiceRef.class);
+		fullSetDigester.addSetProperties(ROOT_SERVICEREF, "file", "fileName");
+		fullSetDigester.addSetNext(ROOT_SERVICEREF, "saveOrUpdateServiceRef");
 
 
+		fullSetDigester.addObjectCreate(ROOT_SERVICE, Service.class);
+		fullSetDigester.addSetNext(ROOT_SERVICE, "saveOrUpdateService");
 
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "name", "serviceName");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "description", "description");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "http_content_type", "httpContentType");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "hang_time", "hangTime");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "url", "url");
 
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "proxyurl", "realServiceUrlByString");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "default_real_url_index", "defaultRealUrlIndex");
 
-        
-        IMockeyStorage c = (IMockeyStorage) digester.parse(inputSource);
-        return c;
-    }
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "service_response_type", "serviceResponseType");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "default_scenario_id", "defaultScenarioId");
+
+		fullSetDigester.addObjectCreate(ROOT_SERVICE_REAL_URL, Url.class);
+		fullSetDigester.addSetProperties(ROOT_SERVICE_REAL_URL, "url", "url");
+		fullSetDigester.addSetNext(ROOT_SERVICE_REAL_URL, "saveOrUpdateRealServiceUrl");
+
+		fullSetDigester.addObjectCreate(ROOT_SERVICE_SCENARIO, Scenario.class);
+		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "id", "id");
+		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "name", "scenarioName");
+		fullSetDigester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
+		fullSetDigester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
+		fullSetDigester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
+		fullSetDigester.addSetNext(ROOT_SERVICE_SCENARIO, "saveOrUpdateScenario");
+
+		// PLAN
+		fullSetDigester.addObjectCreate(ROOT_PLAN, ServicePlan.class);
+		fullSetDigester.addSetProperties(ROOT_PLAN, "name", "name");//     
+		fullSetDigester.addSetProperties(ROOT_PLAN, "description", "description");//
+		fullSetDigester.addSetProperties(ROOT_PLAN, "id", "id");
+		fullSetDigester.addSetNext(ROOT_PLAN, "saveOrUpdateServicePlan");
+		fullSetDigester.addObjectCreate(ROOT_PLAN_ITEM, PlanItem.class);
+		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "hang_time", "hangTime");
+		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "service_id", "serviceId");
+		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "scenario_id", "scenarioId");
+		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "service_response_type", "serviceResponseType");
+		fullSetDigester.addSetNext(ROOT_PLAN_ITEM, "addPlanItem");
+
+		// TWIST CONFIGURATION
+		fullSetDigester.addObjectCreate(ROOT_TWIST_CONFIG, TwistInfo.class);
+		fullSetDigester.addSetProperties(ROOT_TWIST_CONFIG, "name", "name");//     
+		fullSetDigester.addSetProperties(ROOT_TWIST_CONFIG, "id", "id");
+		fullSetDigester.addSetNext(ROOT_TWIST_CONFIG, "saveOrUpdateTwistInfo");
+		fullSetDigester.addObjectCreate(ROOT_TWIST_CONFIG_ITEM, PatternPair.class);
+		fullSetDigester.addSetProperties(ROOT_TWIST_CONFIG_ITEM, "origination", "origination");
+		fullSetDigester.addSetProperties(ROOT_TWIST_CONFIG_ITEM, "destination", "destination");
+		fullSetDigester.addSetNext(ROOT_TWIST_CONFIG_ITEM, "addPatternPair");
+	}
+
+	/**
+	 * 
+	 * @param inputSource
+	 *            - Mockey XML definition file, which is tightly tied to this
+	 *            class <code>Digester</code> configuration.
+	 * @return
+	 * @throws org.xml.sax.SAXParseException
+	 * @throws java.io.IOException
+	 * @throws org.xml.sax.SAXException
+	 */
+	public IMockeyStorage getMockeyStore(InputSource inputSource) throws org.xml.sax.SAXParseException,
+			java.io.IOException, org.xml.sax.SAXException {
+
+		IMockeyStorage c = (IMockeyStorage) MockeyXmlFileConfigurationParser.fullSetDigester.parse(inputSource);
+		return c;
+	}
+
+	/**
+	 * 
+	 * @param inputSource
+	 *            - XML fragment
+	 * @return
+	 * @throws org.xml.sax.SAXParseException
+	 * @throws java.io.IOException
+	 * @throws org.xml.sax.SAXException
+	 */
+	public List<Service> getMockService(InputSource inputSource) throws org.xml.sax.SAXParseException,
+			java.io.IOException, org.xml.sax.SAXException {
+
+		InMemoryMockeyStorage c = (InMemoryMockeyStorage) MockeyXmlFileConfigurationParser.fullSetDigester
+				.parse(inputSource);
+		List<Service> list = c.getServices();
+		return list;
+
+	}
 
 }

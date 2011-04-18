@@ -25,15 +25,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-package com.mockey.ui;
+package com.mockey.storage.xml;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -41,11 +45,12 @@ import org.xml.sax.SAXParseException;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
-import com.mockey.storage.xml.MockeyXmlFileConfigurationReader;
+import com.mockey.ui.ServiceMergeResults;
 
 /**
  * Consumes an XML file and configures Mockey services.
@@ -53,13 +58,28 @@ import com.mockey.storage.xml.MockeyXmlFileConfigurationReader;
  * @author Chad.Lafontaine
  * 
  */
-public class ConfigurationReader {
+public class MockeyXmlFileManager {
 
 	private static final long serialVersionUID = 2874257060865115637L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+    public static final String MOCK_SERVICE_DEFINITION = "mock_service_definitions.xml";
+    protected static final String MOCK_SERVICE_FOLDER = "mockey_def_depot";
+	private static Logger logger = Logger.getLogger(MockeyXmlFileManager.class);
+	private static final String FILESEPERATOR = System.getProperty("file.separator");
 
-	private static Logger logger = Logger.getLogger(ConfigurationReader.class);
-
+	/**
+	 *  
+	 * 
+	 */
+	public MockeyXmlFileManager() {
+		File fileDepot = new File(MOCK_SERVICE_FOLDER);
+		if(!fileDepot.exists()){
+			boolean success = fileDepot.mkdir();
+			if(!success){
+				logger.fatal("Unable to create a folder called " + MOCK_SERVICE_FOLDER);
+			}
+		}
+	}
 	/**
 	 * 
 	 * @param file
@@ -68,38 +88,27 @@ public class ConfigurationReader {
 	 * @throws SAXException
 	 * @throws SAXParseException
 	 */
-	public void inputFile(File file) throws IOException, SAXParseException, SAXException {
-		InputStream is = new FileInputStream(file);
-
-		long length = file.length();
-
-		if (length > Integer.MAX_VALUE) {
-
-			logger.error("File too large");
-		} else {
-
-			// Create the byte array to hold the data
-			byte[] bytes = new byte[(int) length];
-			// Read in the bytes
-			int offset = 0;
-			int numRead = 0;
-			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
-				offset += numRead;
-			}
-
-			// Ensure all the bytes have been read in
-			if (offset < bytes.length) {
-				throw new IOException("Could not completely read file " + file.getName());
-			}
-
-			// Close the input stream and return bytes
-			is.close();
-
-			loadConfiguration(bytes);
-		}
+	private String getFileContentAsString(File file) throws IOException, SAXParseException, SAXException {
+		
+		FileInputStream fstream = new FileInputStream(file);
+        BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
+        StringBuffer inputString = new StringBuffer();
+        // Read File Line By Line
+        String strLine = null;
+        while ((strLine = br.readLine()) != null) {
+            // Print the content on the console
+            inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
+        }
+        return inputString.toString();
 
 	}
 
+	
+	public ServiceMergeResults loadConfiguration() throws SAXParseException, IOException, SAXException {
+		File n = new File(MOCK_SERVICE_DEFINITION);
+		logger.debug("Loading configuration from " + MOCK_SERVICE_DEFINITION);
+		return loadConfigurationWithXmlDef(getFileContentAsString(n));
+	}
 	/**
 	 * 
 	 * @param data
@@ -108,10 +117,9 @@ public class ConfigurationReader {
 	 * @throws SAXException
 	 * @throws SAXParseException
 	 */
-	public ServiceMergeResults loadConfiguration(byte[] data) throws IOException, SAXParseException, SAXException {
+	public ServiceMergeResults loadConfigurationWithXmlDef(String strXMLDefintion) throws IOException, SAXParseException, SAXException {
 		ServiceMergeResults mergeResults = new ServiceMergeResults();
 
-		String strXMLDefintion = new String(data);
 		MockeyXmlFileConfigurationReader msfr = new MockeyXmlFileConfigurationReader();
 		IMockeyStorage mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
 		// PROXY SETTINGs
@@ -129,8 +137,37 @@ public class ConfigurationReader {
 			mergeResults.addAdditionMsg("Universal error response defined.");
 
 		}
+
+		// Service References
+		List<Service> serviceListFromRefs = new ArrayList<Service>();
+		for (ServiceRef serviceRef : mockServiceStoreTemporary.getServiceRefs()) {
+			String mockServiceDefinition = getFileContentAsString(new File(serviceRef.getFileName()));
+			List<Service> tmpList = msfr.readServiceDefinition(mockServiceDefinition);
+			for(Service tmpService : tmpList){
+				serviceListFromRefs.add(tmpService);
+			}
+			
+		}
+		addServicesToStore(mergeResults, serviceListFromRefs);
+		// Service
+		mergeResults = addServicesToStore(mergeResults, mockServiceStoreTemporary.getServices());
+
+		// PLANS
+		for (ServicePlan servicePlan : mockServiceStoreTemporary.getServicePlans()) {
+			store.saveOrUpdateServicePlan(servicePlan);
+		}
+
+		// TWIST CONFIGURATION
+		for (TwistInfo twistInfo : mockServiceStoreTemporary.getTwistInfoList()) {
+			store.saveOrUpdateTwistInfo(twistInfo);
+		}
+
+		return mergeResults;
+	}
+
+	private ServiceMergeResults addServicesToStore(ServiceMergeResults mergeResults, List<Service> serviceList) {
 		// When loading a definition file, by default, we should
-		// compare uploaded Service’s mock URL to what's currently
+		// compare the uploaded Service list mock URL to what's currently
 		// in memory.
 		//
 		// 1) MATCHING MOCK URL
@@ -142,7 +179,7 @@ public class ConfigurationReader {
 		// 2) NO MATCHING MOCK URL
 		// If there is no matching service URL, then create a new
 		// service and associated scenarios.
-		for (Service uploadedServiceBean : mockServiceStoreTemporary.getServices()) {
+		for (Service uploadedServiceBean : serviceList) {
 			List<Service> serviceBeansInMemory = store.getServices();
 			Iterator<Service> iter3 = serviceBeansInMemory.iterator();
 			boolean existingServiceWithMatchingMockUrl = false;
@@ -170,16 +207,6 @@ public class ConfigurationReader {
 			}
 
 		}
-		// PLANS
-		for (ServicePlan servicePlan : mockServiceStoreTemporary.getServicePlans()) {
-			store.saveOrUpdateServicePlan(servicePlan);
-		}
-		
-		// TWIST CONFIGURATION
-		for(TwistInfo twistInfo:mockServiceStoreTemporary.getTwistInfoList() ){
-			store.saveOrUpdateTwistInfo(twistInfo);
-		}
-
 		return mergeResults;
 	}
 
@@ -240,4 +267,19 @@ public class ConfigurationReader {
 		}
 		return readResults;
 	}
+	
+	protected static String getServiceFileNameOutputString(Service s) {
+		String result = null;
+		String arg = s.getServiceName();
+		if (arg != null) {
+			result = arg.trim();
+		} else {
+			result = "";
+		}
+		if (result.length() == 0) {
+			result = "autogenerated_name";
+		}
+		return MockeyXmlFileManager.MOCK_SERVICE_FOLDER+ FILESEPERATOR+ result+".xml";
+	}
+
 }

@@ -25,28 +25,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-package com.mockey;
+package com.mockey.model;
 
 /**
+ * Used in retrieving and saving reference meta data of a service. 
  * 
  * @author chadlafontaine
  *
  */
-public class ServiceException extends Throwable {
+public class ServiceRef implements PersistableItem{
 
-    private static final long serialVersionUID = 7710032914651271573L;
-    private String errorMsg = null;
+	private String fileName = null;
+	private Long id = null;
+	public Long getId() {
+		return id;
+	}
 
-	public ServiceException(String msg) {
-		this.errorMsg = msg;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
-	public ServiceException(String msg, Exception e) {
-		super(msg,e);
-		this.errorMsg = msg;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public String getMessage() {
-		return errorMsg;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
+
+	public String toString() {
+		return this.fileName;
+	}
+
 }

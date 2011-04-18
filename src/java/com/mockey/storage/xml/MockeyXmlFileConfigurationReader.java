@@ -28,11 +28,15 @@
 package com.mockey.storage.xml;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.StringReader;
+import java.util.List;
 
 import org.xml.sax.InputSource;
 
+import com.mockey.model.Scenario;
+import com.mockey.model.Service;
+import com.mockey.model.ServiceRef;
+import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 
 public class MockeyXmlFileConfigurationReader {
@@ -49,14 +53,64 @@ public class MockeyXmlFileConfigurationReader {
 		BufferedReader br = new BufferedReader(new StringReader(mockServicesDefinition));
 
 		MockeyXmlFileConfigurationParser msp = new MockeyXmlFileConfigurationParser();
+		
+		return msp.getMockeyStore(new InputSource(br));
 
-		return msp.getMockServices(new InputSource(br));
+	}
+	
+	/**
+	 * Returns a
+	 * 
+	 * @param mockServicesDefinition
+	 * @return
+	 */
+	public List<Service> readServiceDefinition(String mockServiceDefinition) throws org.xml.sax.SAXParseException,
+			java.io.IOException, org.xml.sax.SAXException {
 
+		BufferedReader br = new BufferedReader(new StringReader(mockServiceDefinition));
+
+		MockeyXmlFileConfigurationParser msp = new MockeyXmlFileConfigurationParser();
+
+		return msp.getMockService(new InputSource(br));
+
+	}
+	
+	private static String getStorageAsString(IMockeyStorage storage) {
+        StringBuffer sb = new StringBuffer();
+        //sb.append(storage.toString());
+        for (Service service : storage.getServices() ) {
+            sb.append(getServiceString(service));
+        }
+        sb.append("\nService References:\n");
+        for(ServiceRef ref : storage.getServiceRefs()){
+            sb.append(ref.toString());
+
+        }
+        return sb.toString();
+	}
+	
+	private static String getServiceString(Service service){
+		StringBuffer sb = new StringBuffer();
+        
+            sb.append("Service ID: ").append(service.getId()).append("\n");
+            sb.append("Service name: ").append(service.getServiceName()).append("\n");
+            sb.append("Service description: ").append(service.getDescription()).append("\n");
+            for (Url url : service.getRealServiceUrls()) {
+                sb.append("    real URL : ").append(url.getFullUrl()).append("\n");
+            }
+            for (Scenario scenario : service.getScenarios()) {
+                sb.append("    scenario name: ").append(scenario.getScenarioName()).append("\n");
+                sb.append("    scenario request: ").append(scenario.getRequestMessage()).append("\n");
+                sb.append("    scenario response: ").append(scenario.getResponseMessage()).append("\n");
+            }
+        
+        return sb.toString();
 	}
 
 	public static void main(String[] args) throws Exception {
 		
-		String strXMLFilename = "/Users/chadlafontaine/Work/Mockey/mock_service_definitions.xml";
+		// FULL 
+		String strXMLFilename = "/Users/chadlafontaine/Work/test/mock_service_definitions.xml";
 
 		java.io.FileInputStream fis = new java.io.FileInputStream(strXMLFilename);
 
@@ -76,8 +130,38 @@ public class MockeyXmlFileConfigurationReader {
 		String strXMLRequest = new String(baos.toByteArray());
 		MockeyXmlFileConfigurationReader fileReader = new MockeyXmlFileConfigurationReader();
 		IMockeyStorage mockServiceList = fileReader.readDefinition(strXMLRequest);
-		System.out.println(mockServiceList.toString());
+		System.out.println(getStorageAsString(mockServiceList));
+		
+		// FRAGMENT list
+		for(ServiceRef ref : mockServiceList.getServiceRefs()){
+			String fragXMLFilename = "/Users/chadlafontaine/Work/test/" + ref.getFileName();
 
+			java.io.FileInputStream fragmentIs = new java.io.FileInputStream(fragXMLFilename);
+
+			baos = new java.io.ByteArrayOutputStream();
+			n = 0;
+			buf = new byte[2048];
+
+			while (n != -1) {
+				n = fragmentIs.read(buf, 0, buf.length);
+
+				if (n > 0) {
+					baos.write(buf, 0, n);
+				}
+			}
+
+			String fragXMLRequest = new String(baos.toByteArray());
+			
+			List<Service> list = fileReader.readServiceDefinition(fragXMLRequest);
+			for(Service y : list){
+				System.out.println(getServiceString(y));
+			}
+		}
+		
+		
+		
 		System.out.println("Done");
 	}
+	
+	
 }

@@ -27,11 +27,9 @@
  */
 package com.mockey.runner;
 
-import com.martiansoftware.jsap.FlaggedOption;
-import com.martiansoftware.jsap.JSAP;
-import com.martiansoftware.jsap.JSAPResult;
-import com.martiansoftware.jsap.SimpleJSAP;
-import com.mockey.ui.StartUpServlet;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Server;
@@ -39,9 +37,11 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.util.Properties;
+import com.martiansoftware.jsap.FlaggedOption;
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.SimpleJSAP;
+import com.mockey.storage.xml.MockeyXmlFileManager;
 
 public class JettyRunner {
 	public static void main(String[] args) throws Exception {
@@ -52,7 +52,7 @@ public class JettyRunner {
 		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar", "Starts a Jetty server running Mockey");
 		jsap.registerParameter(new FlaggedOption("port", JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p', "port",
 				"port to run Jetty on"));
-		jsap.registerParameter(new FlaggedOption("file", JSAP.STRING_PARSER, StartUpServlet.MOCK_SERVICE_DEFINITION,
+		jsap.registerParameter(new FlaggedOption("file", JSAP.STRING_PARSER, MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
 				JSAP.NOT_REQUIRED, 'f', "file", "relative path to file to initialize Mockey"));
 
 		// parse the command line options
@@ -98,7 +98,7 @@ public class JettyRunner {
 			URLEncoder.encode(initUrl, "UTF-8");
 			initUrl = "/home?action=init&file=" + URLEncoder.encode(file, "UTF-8");
 		}else {
-			initUrl = "/home?action=init&file=" + URLEncoder.encode(StartUpServlet.MOCK_SERVICE_DEFINITION, "UTF-8");
+			initUrl = "/home?action=init&file=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8");
 			
 		}
 

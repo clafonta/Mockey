@@ -37,22 +37,20 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
 
 public class TestMockeyServiceStore implements IMockeyStorage {
 
 	public void deleteService(Service mockServiceBean) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void deleteFulfilledClientRequestsFromIP(Long scenarioId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void deleteServicePlan(ServicePlan servicePlan) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -61,27 +59,26 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 	}
 
 	public void deleteFulfilledClientRequestsForService(Long serviceId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public List<FulfilledClientRequest> getFulfilledClientRequests() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public Service getServiceById(Long serviceId) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public Service getServiceByUrl(String urlPath) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public ServicePlan getServicePlanById(Long servicePlanId) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -158,172 +155,160 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 	}
 
 	public ProxyServerModel getProxy() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public Service saveOrUpdateService(Service mockServiceBean) {
-		// TODO Auto-generated method stub
+
 		return null;
 
 	}
 
 	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan) {
-		// TODO Auto-generated method stub
+
 		return null;
 
 	}
 
 	public void setProxy(ProxyServerModel proxyInfoBean) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public Scenario getUniversalErrorScenario() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public void setUniversalErrorScenarioId(Long scenarioId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void setUniversalErrorServiceId(Long serviceId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest requestResponseX) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void deleteEverything() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public List<String> uniqueClientIPs() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public List<String> uniqueClientIPsForService(Long serviceId) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public void deleteFulfilledClientRequests() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void deleteFulfilledClientRequestById(Long fulfilledRequestID) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public List<FulfilledClientRequest> getFulfilledClientRequest(List<String> filterArguments) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public List<Long> getServiceIds() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public ServicePlan getServicePlanByName(String servicePlanName) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public List<TwistInfo> getTwistInfoList() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public TwistInfo getTwistInfoById(Long id) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public TwistInfo getTwistInfoByName(String name) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public TwistInfo saveOrUpdateTwistInfo(TwistInfo twistInfo) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public void deleteTwistInfo(TwistInfo twistInfo) {
-		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public Long getUniversalTwistInfoId() {
-		// TODO Auto-generated method stub
+
 		return null;
 
 	}
 
-	@Override
 	public void setUniversalTwistInfoId(Long twistInfoId) {
-		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public Long getUniversalErrorScenarioId() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public Long getUniversalErrorServiceId() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public Service getServiceByName(String serviceName) {
-		// TODO Auto-generated method stub
+
+		return null;
+	}
+
+	public List<ServiceRef> getServiceRefs() {
+
+		return null;
+	}
+
+	public ServiceRef saveOrUpdateServiceRef(ServiceRef serviceRef) {
+
 		return null;
 	}
 

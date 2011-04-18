@@ -36,8 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Document;
-
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 import com.mockey.storage.xml.MockeyXmlFactory;
@@ -57,16 +55,15 @@ public class ExportConfigurationServlet extends HttpServlet {
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		MockeyXmlFactory g = new MockeyXmlFactory();
-		Document result = g.getAsDocument(store);
 
         String fileOutput;
         try {
-            fileOutput = MockeyXmlFactory.documentToString(result);
+            fileOutput = g.getStoreAsString(store, true);
         } catch (TransformerException e) {
             throw new ServletException(e);
         }
 
-        resp.setContentType("text/xml");
+        resp.setContentType("application/json");
         resp.setHeader("Content-disposition", "attachment; filename=mockservice.xml");
         resp.setContentLength(fileOutput.getBytes().length);
 

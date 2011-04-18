@@ -35,64 +35,100 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
 
 /**
  * How Mockey stores itself.
+ * 
  * @author chad.lafontaine
- *
+ * 
  */
-public interface IMockeyStorage {	
+public interface IMockeyStorage {
 
 	public void deleteEverything();
 
-
 	public List<TwistInfo> getTwistInfoList();
+
 	public TwistInfo getTwistInfoById(Long id);
+
 	public TwistInfo getTwistInfoByName(String name);
+
 	public TwistInfo saveOrUpdateTwistInfo(TwistInfo twistInfo);
+
 	public void deleteTwistInfo(TwistInfo twistInfo);
-	
+
 	public Service getServiceById(Long serviceId);
+
 	public Service getServiceByUrl(String urlPath);
+
 	public List<Long> getServiceIds();
+
 	public List<Service> getServices();
+
 	public Service saveOrUpdateService(Service service);
+
 	public void deleteService(Service service);
 
+	public ServiceRef saveOrUpdateServiceRef(ServiceRef serviceRef);
+
+	public List<ServiceRef> getServiceRefs();
+
 	public ServicePlan getServicePlanById(Long servicePlanId);
+
 	public ServicePlan getServicePlanByName(String servicePlanName);
 
 	public List<ServicePlan> getServicePlans();
-	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan);
-	public void deleteServicePlan(ServicePlan servicePlan);
-	
-	public Scenario getUniversalErrorScenario();
-	public Long getUniversalTwistInfoId();
-	public void setUniversalTwistInfoId(Long twistInfoId);
-	public void setUniversalErrorServiceId(Long serviceId);
-	public void setUniversalErrorScenarioId(Long scenarioId);
-	public Long getUniversalErrorServiceId();
-	public Long getUniversalErrorScenarioId();
-	public ProxyServerModel getProxy();
-	public void setProxy(ProxyServerModel proxy);
-	
-	public List<String> uniqueClientIPs();
-	public List<String> uniqueClientIPsForService(Long serviceId);
-	
-	public List<FulfilledClientRequest> getFulfilledClientRequests();
-	public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId);
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip);
-	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId);
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
-	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments);
- 	public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest requestResponseX);
-	public void deleteFulfilledClientRequests();
-	public void deleteFulfilledClientRequestById(Long fulfilledRequestID);
-	public void deleteFulfilledClientRequestsFromIP(Long ip);	
-	public void deleteFulfilledClientRequestsForService(Long serviceId);
-	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 
+	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan);
+
+	public void deleteServicePlan(ServicePlan servicePlan);
+
+	public Scenario getUniversalErrorScenario();
+
+	public Long getUniversalTwistInfoId();
+
+	public void setUniversalTwistInfoId(Long twistInfoId);
+
+	public void setUniversalErrorServiceId(Long serviceId);
+
+	public void setUniversalErrorScenarioId(Long scenarioId);
+
+	public Long getUniversalErrorServiceId();
+
+	public Long getUniversalErrorScenarioId();
+
+	public ProxyServerModel getProxy();
+
+	public void setProxy(ProxyServerModel proxy);
+
+	public List<String> uniqueClientIPs();
+
+	public List<String> uniqueClientIPsForService(Long serviceId);
+
+	public List<FulfilledClientRequest> getFulfilledClientRequests();
+
+	public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId);
+
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip);
+
+	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId);
+
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
+
+	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments);
+
+	public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest requestResponseX);
+
+	public void deleteFulfilledClientRequests();
+
+	public void deleteFulfilledClientRequestById(Long fulfilledRequestID);
+
+	public void deleteFulfilledClientRequestsFromIP(Long ip);
+
+	public void deleteFulfilledClientRequestsForService(Long serviceId);
+
+	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 
 	public Service getServiceByName(String serviceName);
 }

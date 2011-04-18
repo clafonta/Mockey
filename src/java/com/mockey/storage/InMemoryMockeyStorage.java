@@ -27,8 +27,6 @@
  */
 package com.mockey.storage;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,9 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.Header;
-import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
 
 import com.mockey.OrderedMap;
 import com.mockey.model.FulfilledClientRequest;
@@ -47,10 +43,11 @@ import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
+import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
+import com.mockey.storage.xml.MockeyXmlFileManager;
 import com.mockey.storage.xml.MockeyXmlFactory;
-import com.mockey.ui.StartUpServlet;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.
@@ -61,7 +58,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
 	private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
+	private OrderedMap<ServiceRef> serviceRefStore = new OrderedMap<ServiceRef>();
 	private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
+
 	private OrderedMap<TwistInfo> twistInfoStore = new OrderedMap<TwistInfo>();
 
 	private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
@@ -241,7 +240,6 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return servicePlanStore.get(servicePlanId);
 	}
 
-	@Override
 	public ServicePlan getServicePlanByName(String servicePlanName) {
 		ServicePlan sp = null;
 		for (ServicePlan servicePlan : this.getServicePlans()) {
@@ -484,32 +482,20 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 * Every time something gets saved, we write to memory.
 	 */
 	private synchronized void writeMemoryToFile() {
-		File f = new File(StartUpServlet.MOCK_SERVICE_DEFINITION);
-		try {
-			FileOutputStream fop = new FileOutputStream(f);
-			MockeyXmlFactory g = new MockeyXmlFactory();
-			Document result = g.getAsDocument(store);
-			String fileOutput = MockeyXmlFactory.documentToString(result);
-			byte[] fileOutputAsBytes = fileOutput.getBytes(HTTP.UTF_8);
-			fop.write(fileOutputAsBytes);
-			fop.flush();
-			fop.close();
-		} catch (Exception e) {
-			logger.debug("Unable to write file", e);
-		}
+
+		MockeyXmlFactory g = new MockeyXmlFactory();
+		g.writeStoreToXML(store, MockeyXmlFileManager.MOCK_SERVICE_DEFINITION);
+
 	}
 
-	@Override
 	public List<TwistInfo> getTwistInfoList() {
 		return this.twistInfoStore.getOrderedList();
 	}
 
-	@Override
 	public TwistInfo getTwistInfoById(Long id) {
 		return (TwistInfo) this.twistInfoStore.get(id);
 	}
 
-	@Override
 	public TwistInfo getTwistInfoByName(String name) {
 		TwistInfo item = null;
 		for (TwistInfo i : getTwistInfoList()) {
@@ -521,14 +507,12 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return item;
 	}
 
-	@Override
 	public TwistInfo saveOrUpdateTwistInfo(TwistInfo twistInfo) {
 		PersistableItem item = twistInfoStore.save(twistInfo);
 		this.writeMemoryToFile();
 		return (TwistInfo) item;
 	}
 
-	@Override
 	public void deleteTwistInfo(TwistInfo twistInfo) {
 		if (twistInfo != null) {
 			this.twistInfoStore.remove(twistInfo.getId());
@@ -536,27 +520,33 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 	}
 
-	@Override
 	public Long getUniversalTwistInfoId() {
 		return this.univeralTwistInfoId;
 	}
 
-	@Override
 	public void setUniversalTwistInfoId(Long twistInfoId) {
 		this.univeralTwistInfoId = twistInfoId;
 		this.writeMemoryToFile();
 	}
 
-	@Override
 	public Long getUniversalErrorScenarioId() {
-		// TODO Auto-generated method stub
+
 		return this.univeralErrorScenarioId;
 	}
 
-	@Override
 	public Long getUniversalErrorServiceId() {
-		// TODO Auto-generated method stub
+
 		return this.univeralErrorServiceId;
+	}
+
+	public List<ServiceRef> getServiceRefs() {
+		return this.serviceRefStore.getOrderedList();
+	}
+
+	public ServiceRef saveOrUpdateServiceRef(ServiceRef serviceRef) {
+		PersistableItem item = this.serviceRefStore.save(serviceRef);
+		this.writeMemoryToFile();
+		return (ServiceRef) item;
 	}
 
 }

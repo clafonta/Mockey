@@ -27,6 +27,11 @@
  */
 package com.mockey.storage.xml;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.log4j.Logger;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,22 +54,118 @@ import com.mockey.ui.PatternPair;
  */
 public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 	/** Basic logger */
-	// private static Logger logger =
-	// Logger.getLogger(MockeyXmlFileConfigurationGenerator.class);
+	private static Logger logger = Logger.getLogger(MockeyXmlFileConfigurationGenerator.class);
+
+	private Document getDocument() {
+
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			DocumentBuilder docBuilder = factory.newDocumentBuilder();
+			Document document = docBuilder.newDocument();
+
+			return document;
+		} catch (ParserConfigurationException pce) {
+			logger.error("Unable to parse the store", pce);
+			return null;
+		}
+
+	}
+
+	public Document getServiceAsDocument(Service mockServiceBean) {
+		Document document = getDocument();
+		Element rootElement = document.createElement("mockservice");
+
+		this.setAttribute(rootElement, "xml:lang", "en-US");
+		this.setAttribute(rootElement, "version", "1.0");
+		Element serviceElement = this.getServiceAsElement(document, mockServiceBean);
+		rootElement.appendChild(serviceElement);
+		document.appendChild(rootElement);
+		return document;
+	}
 
 	/**
-	 * Returns an element representing a mock service definitions file in XML.
 	 * 
 	 * @param document
-	 *            parent DOM object of this element.
-	 * @param cxmlObject
-	 *            value object used to build element.
-	 * @return Returns an element representing a cXML root element; if request
-	 *         <code>null</code>, then empty element is returned e.g.
-	 *         &lt;cXML/&gt;
+	 * @param mockServiceBean
+	 * @return
 	 */
-	public Element getElement(Document document, IMockeyStorage store) {
+	private Element getServiceAsElement(Document document, Service mockServiceBean) {
 
+		Element serviceElement = document.createElement("service");
+
+		if (mockServiceBean != null) {
+			// logger.debug("building XML representation for MockServiceBean:\n"
+			// + mockServiceBean.toString());
+			// *************************************
+			// We do NOT want to write out ID.
+			// If we did, then someone uploading this xml definition may
+			// overwrite services
+			// defined with the same ID.
+			// serviceElement.setAttribute("id", mockServiceBean.getId());
+			// *************************************
+			serviceElement.setAttribute("name", mockServiceBean.getServiceName());
+			serviceElement.setAttribute("description", getSafeForXmlOutputString(mockServiceBean.getDescription()));
+			serviceElement.setAttribute("hang_time", getSafeForXmlOutputString("" + mockServiceBean.getHangTime()));
+			serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
+			serviceElement.setAttribute("http_content_type", getSafeForXmlOutputString(""
+					+ mockServiceBean.getHttpContentType()));
+			serviceElement.setAttribute("default_scenario_id", getSafeForXmlOutputString(""
+					+ (mockServiceBean.getDefaultScenarioId())));
+			serviceElement.setAttribute("service_response_type", getSafeForXmlOutputString(""
+					+ mockServiceBean.getServiceResponseType()));
+			serviceElement.setAttribute("default_real_url_index", getSafeForXmlOutputString(""
+					+ mockServiceBean.getDefaultRealUrlIndex()));
+
+			// New real service URLs
+			for (Url realUrl : mockServiceBean.getRealServiceUrls()) {
+				Element urlElement = document.createElement("real_url");
+				urlElement.setAttribute("url", getSafeForXmlOutputString(realUrl.getFullUrl()));
+				// urlElement.appendChild(cdataResponseElement);
+				serviceElement.appendChild(urlElement);
+			}
+
+			// Scenarios
+			for (Scenario scenario : mockServiceBean.getScenarios()) {
+				// logger.debug("building XML representation for MockServiceScenarioBean:\n"
+				// + scenario.toString());
+				Element scenarioElement = document.createElement("scenario");
+				scenarioElement.setAttribute("id", scenario.getId().toString());
+				scenarioElement.setAttribute("name", getSafeForXmlOutputString(scenario.getScenarioName()));
+
+				Element scenarioMatchStringElement = document.createElement("scenario_match");
+				CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
+						.getMatchStringArg()));
+				scenarioMatchStringElement.appendChild(cdataMatchElement);
+				scenarioElement.appendChild(scenarioMatchStringElement);
+
+				Element scenarioResponseElement = document.createElement("scenario_response");
+				CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario
+						.getResponseMessage()));
+				scenarioResponseElement.appendChild(cdataResponseElement);
+				scenarioElement.appendChild(scenarioResponseElement);
+				serviceElement.appendChild(scenarioElement);
+			}
+		}
+
+		return serviceElement;
+
+	}
+
+	/**
+	 * 
+	 * @param document
+	 *            - Handle to create XML artifacts
+	 * @param store
+	 *            - state of all service definitions
+	 * @param fullDefinition
+	 *            - if true, builds full definition of the DOM, with no Service
+	 *            references, but includes all service definitions
+	 * @return
+	 */
+	public Document getStoreAsDocument(IMockeyStorage store, boolean nonRefFullDefinition) {
+
+		Document document = this.getDocument();
 		Element rootElement = document.createElement("mockservice");
 		Scenario mssb = store.getUniversalErrorScenario();
 		this.setAttribute(rootElement, "xml:lang", "en-US");
@@ -84,67 +185,28 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			proxyElement.setAttribute("proxy_enabled", "" + psm.isProxyEnabled());
 			rootElement.appendChild(proxyElement);
 		}
-		
-		for(Service mockServiceBean : store.getServices()) {
-			Element serviceElement = document.createElement("service");
-			rootElement.appendChild(serviceElement);
 
-			if (mockServiceBean != null) {
-				// logger.debug("building XML representation for MockServiceBean:\n"
-				// + mockServiceBean.toString());
-				// *************************************
-				// We do NOT want to write out ID.
-				// If we did, then someone uploading this xml definition may
-				// overwrite services
-				// defined with the same ID.
-				// serviceElement.setAttribute("id", mockServiceBean.getId());
-				// *************************************
-				serviceElement.setAttribute("name", mockServiceBean.getServiceName());
-				serviceElement.setAttribute("description", getSafeForXmlOutputString(mockServiceBean.getDescription()));
-				serviceElement.setAttribute("hang_time", getSafeForXmlOutputString("" + mockServiceBean.getHangTime()));
-				serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
-				serviceElement.setAttribute("http_content_type",
-						getSafeForXmlOutputString("" + mockServiceBean.getHttpContentType()));
-				serviceElement.setAttribute("default_scenario_id",
-						getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId())));
-				serviceElement.setAttribute("service_response_type",
-						getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
-				serviceElement.setAttribute("default_real_url_index",
-						getSafeForXmlOutputString("" + mockServiceBean.getDefaultRealUrlIndex()));
+		// SERVICE LIST
+		logger.debug("Building non-reference, full definition? " + nonRefFullDefinition);
+		if (nonRefFullDefinition) {
+			// Includes ALL service definitions in the DOM
+			for (Service mockServiceBean : store.getServices()) {
 
-				// New real service URLs
-				for (Url realUrl : mockServiceBean.getRealServiceUrls()) {
-					Element urlElement = document.createElement("real_url");
-					urlElement.setAttribute("url", getSafeForXmlOutputString(realUrl.getFullUrl()));
-					// urlElement.appendChild(cdataResponseElement);
-					serviceElement.appendChild(urlElement);
-				}
+				Element serviceElement = this.getServiceAsElement(document, mockServiceBean);
+				rootElement.appendChild(serviceElement);
+			}
+		} else {
+			// Includes reference pointers to service definitions in the DOM
+			for (Service mockServiceBean : store.getServices()) {
 
-				// Scenarios
-				for(Scenario scenario :  mockServiceBean.getScenarios() ) {
-					// logger.debug("building XML representation for MockServiceScenarioBean:\n"
-					// + scenario.toString());
-					Element scenarioElement = document.createElement("scenario");
-					scenarioElement.setAttribute("id", scenario.getId().toString());
-					scenarioElement.setAttribute("name", getSafeForXmlOutputString(scenario.getScenarioName()));
+				Element serviceElement = document.createElement("serviceref");
+				serviceElement.setAttribute("file", MockeyXmlFileManager.getServiceFileNameOutputString(mockServiceBean));
 
-					Element scenarioMatchStringElement = document.createElement("scenario_match");
-					CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
-							.getMatchStringArg()));
-					scenarioMatchStringElement.appendChild(cdataMatchElement);
-					scenarioElement.appendChild(scenarioMatchStringElement);
-
-					Element scenarioResponseElement = document.createElement("scenario_response");
-					CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario
-							.getResponseMessage()));
-					scenarioResponseElement.appendChild(cdataResponseElement);
-					scenarioElement.appendChild(scenarioResponseElement);
-					serviceElement.appendChild(scenarioElement);
-				}
+				rootElement.appendChild(serviceElement);
 			}
 		}
 
-		// SERVICE PLANS
+		// SERVICE PLAN LIST
 		if (store.getServicePlans() != null) {
 			for (ServicePlan servicePlan : store.getServicePlans()) {
 				Element servicePlanElement = document.createElement("service_plan");
@@ -182,8 +244,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			}
 
 		}
-
-		return rootElement;
+		document.appendChild(rootElement);
+		return document;
 	}
 
 	private String getSafeForXmlOutputString(String arg) {
@@ -193,4 +255,5 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			return "";
 		}
 	}
+
 }

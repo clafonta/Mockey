@@ -45,6 +45,7 @@ import org.apache.commons.logging.LogFactory;
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
+import com.mockey.storage.xml.MockeyXmlFileManager;
 
 public class ServiceMergeServlet extends HttpServlet {
 	private Log log = LogFactory.getLog(ServiceMergeServlet.class);
@@ -101,7 +102,7 @@ public class ServiceMergeServlet extends HttpServlet {
 							.getServiceById(serviceIdMergeSource);
 					Service serviceMergeDestination = store
 							.getServiceById(serviceIdMergeDestination);
-					ConfigurationReader configurationReader = new ConfigurationReader();
+					MockeyXmlFileManager configurationReader = new MockeyXmlFileManager();
 					mergeResults = configurationReader.mergeServices(
 							serviceMergeSource, serviceMergeDestination,
 							mergeResults);

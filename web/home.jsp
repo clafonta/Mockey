@@ -444,7 +444,7 @@ $(document).ready( function() {
                                  </div>
                                  
 								
-                                 <div class="not-top">
+                                 <div class="not-top border-top" style="padding-top:1em;">
 			                       <strong>Hang time (milliseconds):</strong> ${mockservice.hangTime} <mockey-tag:editServiceLink serviceId="${mockservice.id}"/>
 	                             </div>
 	                             <div>
@@ -482,6 +482,8 @@ $(document).ready( function() {
     </div>
 	        </c:when>
 	        <c:otherwise>
+	          <p class="intro_txt">Hello, this is Mockey. It looks like this is the first time you are using Mockey because 
+	          it's in a clean state. To learn more about Mockey, see the <a href="<c:url value="/help"/>">help</a> section. </p> 
 			  <p class="info_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. </p>
 			</c:otherwise>
         </c:choose>

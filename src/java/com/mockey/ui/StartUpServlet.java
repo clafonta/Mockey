@@ -27,77 +27,35 @@
  */
 package com.mockey.ui;
 
-import org.apache.http.protocol.HTTP;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
+import com.mockey.storage.xml.MockeyXmlFileManager;
 
 public class StartUpServlet extends HttpServlet {
 
-    private static final long serialVersionUID = -6466436642921760561L;
-    private static Logger logger = Logger.getLogger(StartUpServlet.class);
-    private static Properties appProps = new Properties();
-    public static final String MOCK_SERVICE_DEFINITION = "mock_service_definitions.xml";
+	private static final long serialVersionUID = -6466436642921760561L;
+	private static Logger logger = Logger.getLogger(StartUpServlet.class);
 
+	public void init() throws ServletException {
 
-    public void init() throws ServletException {
+		try {
 
-        String log4jFile = getInitParameter("log4j.properties");
-        String appPropFile = getInitParameter("default.properties");
-        // base directory of servlet context
-        String contextPath = getServletContext().getRealPath(System.getProperty("file.separator"));
-        contextPath = "/";
+			// Doesn't the HomeServlet do this? Yes but
+			// this is one duplicate activity that allows for
+			// sandbox development (i.e. within Eclipse)
+			// since we're not using JettyRunner, which contains
+			// logic to pass/tell HomeServlet _how_ to initialize.
 
-        try {
-            InputStream log4jInputStream = getServletContext().getResourceAsStream(contextPath + log4jFile);
-            Properties log4JProperties = new Properties();
-            log4JProperties.load(log4jInputStream);
-            PropertyConfigurator.configure(log4JProperties);
+			MockeyXmlFileManager reader = new MockeyXmlFileManager();
+			reader.loadConfiguration();
 
-        }catch(Exception npe) {
-            System.out.println("Unable to find log4j.properties in servlet context");
-        }
+		}
 
-        try {
-            //logger.info("default.properties: "+getServletContext().getResource("/web.xml"));
-            InputStream appInputStream = getServletContext().getResourceAsStream(contextPath + appPropFile);
-            if(appInputStream == null) {
-                // try classpath
-                appInputStream = getClass().getResourceAsStream(contextPath + appPropFile);
-            }
-            appProps.load(appInputStream);
-
-            // Doesn't the HomeServlet do this? Yes but 
-            // this is one duplicate activity that allows for 
-            // sandbox development (i.e. within Eclipse)
-            // since we're not using JettyRunner, which contains 
-            // logic to pass/tell HomeServlet _how_ to initialize.
-            File f = new File(MOCK_SERVICE_DEFINITION);
-            if (f.exists()) {
-                // Slurp it up and initialize definitions.
-                FileInputStream fstream = new FileInputStream(f);
-                BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
-                StringBuffer inputString = new StringBuffer();
-                // Read File Line By Line
-                String strLine = null;
-                while ((strLine = br.readLine()) != null) {
-                    // Print the content on the console
-                    inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
-                }
-                ConfigurationReader reader = new ConfigurationReader();
-                reader.loadConfiguration(inputString.toString().getBytes(HTTP.UTF_8));
-                logger.info("first initialization with "+ MOCK_SERVICE_DEFINITION);
-            }
-        } 
-       
-        
-        catch (Exception e) {
-            logger.error("StartUpServlet:init()", e);
-        }
-    }
+		catch (Exception e) {
+			logger.error("StartUpServlet:init()", e);
+		}
+	}
 }

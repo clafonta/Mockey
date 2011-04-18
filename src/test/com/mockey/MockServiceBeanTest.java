@@ -29,7 +29,6 @@ package com.mockey;
 
 import org.testng.annotations.Test;
 
-import com.mockey.model.Service;
 import com.mockey.model.Url;
 
 
@@ -46,7 +45,6 @@ public class MockServiceBeanTest {
 
     @Test
     public void parsesSchemeFromRealServiceUrl() {
-        Service bean = new Service();
         Url url = new Url("HTtP://www.google.com");
         assert "www.google.com".equals(url.getHost()) : "expected www.google.com got "+url.getHost();
         assert "http".equalsIgnoreCase(url.getScheme());

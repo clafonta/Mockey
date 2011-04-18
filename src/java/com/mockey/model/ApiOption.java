@@ -8,8 +8,8 @@ public class ApiOption {
 		}
 	}
 	
-	public static void main(String[] args){
-		ApiOption a = new ApiOption("name", ApiOptionType.STRING, "A", "B", "C");
-		
-	}
+//	public static void main(String[] args){
+//		ApiOption a = new ApiOption("name", ApiOptionType.STRING, "A", "B", "C");
+//		
+//	}
 }

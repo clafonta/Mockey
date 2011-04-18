@@ -116,7 +116,7 @@
 	    	<c:url value="/home" var="returnToServiceUrl"/>
 	    </c:otherwise>
     </c:choose>
-    <span style="float:right;" class="power-link"><a href="${returnToServiceUrl}">Return to main page</a></span>
+    <span class="hhButtonRed"><a href="${returnToServiceUrl}" style="font-size:1.2em;"> &#60; Go Back - <i>Return to main page</i></a></span>
     <h1>Service Setup</h1>  
     <div class="parentform">
         <c:if test="${!empty mockservice.id}">
@@ -124,10 +124,10 @@
         </c:if>
         <fieldset>
 				<label for="service_name">Service name:</label>
-	            <input type="text" id="service_name" class="text ui-corner-all ui-widget-content" name="service_name" maxlength="100" size="90%" value="<c:out value="${mockservice.serviceName}"/>" />
+	            <input type="text" id="service_name" class="text ui-corner-all ui-widget-content" name="service_name" maxlength="1000" size="90%" value="<c:out value="${mockservice.serviceName}"/>" />
 	            <div class="tinyfieldset">Use a self descriptive name. For example, if you were to use this for 'authentication' testing, then call it 'Authentication'.</div>
 	            <label for="service_url">Mock service URL: </label>
-	            <input type="text" id="service_url" class="text ui-corner-all ui-widget-content" name="service_url" maxlength="100" size="90%" value="<c:out value="${mockservice.url}"/>" />
+	            <input type="text" id="service_url" class="text ui-corner-all ui-widget-content" name="service_url" maxlength="1000" size="90%" value="<c:out value="${mockservice.url}"/>" />
 	            <div class="tinyfieldset">You can make up a new but unique <i>mock</i> URL to map to the real URL(s). Your mock URL will look like this: 
 	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />">
 	               </div>
@@ -136,10 +136,10 @@
 	            <label for="service_url" id="real_service_url_label">Real service URLs</label>
 	            <div id="real_service_url_list">
 					<c:forEach var="realServiceUrl" items="${mockservice.realServiceUrls}">
-						<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="100" size="90%" value="${realServiceUrl}" />
+						<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="1000" size="90%" value="${realServiceUrl}" />
 					</c:forEach>
 				</div>
-				<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="100" size="90%" value="" />
+				<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="1000" size="90%" value="" />
 					<a title="Add row" id="add-row" href="#" style="color:red;text-decoration:none;font-size:1em;">+</a>
                 <div class="tinyfieldset">You'll need a real service URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</div>
                 <label for="service_url">Hang time: </label>
