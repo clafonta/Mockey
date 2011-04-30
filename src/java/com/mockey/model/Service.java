@@ -70,7 +70,7 @@ public class Service implements PersistableItem, ExecutableService {
 	private String url = "";
 	private List<FulfilledClientRequest> fulfilledRequests;
 	private List<Url> realServiceUrls = new ArrayList<Url>();
-
+	private boolean allowRedirectFollow = true;
 	private static Log logger = LogFactory.getLog(Service.class);
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
@@ -367,10 +367,10 @@ public class Service implements PersistableItem, ExecutableService {
 	 * The core method to execute the request as either a Proxy, Dynamic, or
 	 * Static Scenario.
 	 */
-	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl, String methodType) {
+	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl) {
 		ResponseFromService response = null;
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
-			response = proxyTheRequest(request, realServiceUrl, methodType);
+			response = proxyTheRequest(request, realServiceUrl);
 		} else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
 			response = executeDynamicScenario(request, realServiceUrl);
 		} else if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
@@ -379,7 +379,7 @@ public class Service implements PersistableItem, ExecutableService {
 		return response;
 	}
 
-	private ResponseFromService proxyTheRequest(RequestFromClient request, Url realServiceUrl, String methodType) {
+	private ResponseFromService proxyTheRequest(RequestFromClient request, Url realServiceUrl) {
 
 		logger.debug("proxying a moxie.");
 		// If proxy on, then
@@ -405,7 +405,8 @@ public class Service implements PersistableItem, ExecutableService {
 		try {
 			logger.debug("Initiating request through proxy");
 			TwistInfo twistInfo = store.getTwistInfoById(store.getUniversalTwistInfoId());
-			response = clientExecuteProxy.execute(twistInfo, proxyServer, realServiceUrl, methodType, request);
+			
+			response = clientExecuteProxy.execute(twistInfo, proxyServer, realServiceUrl, allowRedirectFollow, request);
 
 		} catch (ClientExecuteProxyException e) {
 			// We're here for various reasons.

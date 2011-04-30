@@ -30,8 +30,10 @@ package com.mockey;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
@@ -42,11 +44,13 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.RequestFromClient;
@@ -57,7 +61,7 @@ import com.mockey.model.Url;
 /**
  * How to send a request via proxy using {@link HttpClient}.
  * 
- * @since 4.0
+ * @since 4.1
  */
 public class ClientExecuteProxy {
 
@@ -96,7 +100,7 @@ public class ClientExecuteProxy {
 	 * @throws ClientExecuteProxyException
 	 */
 	public ResponseFromService execute(TwistInfo twistInfo, ProxyServerModel proxyServer, Url realServiceUrl,
-			String httpMethod, RequestFromClient request) throws ClientExecuteProxyException {
+			boolean allowRedirectFollow, RequestFromClient request) throws ClientExecuteProxyException {
 		log.info("Request: " + String.valueOf(realServiceUrl));
 
 		// general setup
@@ -104,20 +108,56 @@ public class ClientExecuteProxy {
 
 		// Register the "http" and "https" protocol schemes, they are
 		// required by the default operator to look up socket factories.
-		supportedSchemes.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		supportedSchemes.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+		supportedSchemes.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
+		supportedSchemes.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
 
 		// prepare parameters
 		HttpParams params = new BasicHttpParams();
 		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
 		HttpProtocolParams.setContentCharset(params, HTTP.ISO_8859_1);
 		HttpProtocolParams.setUseExpectContinue(params, false);
-		ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, supportedSchemes);
+
+		ClientConnectionManager ccm = new ThreadSafeClientConnManager(supportedSchemes);
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
+
+		if (!allowRedirectFollow) {
+			// Do NOT allow for 302 REDIRECT
+			httpclient.setRedirectStrategy(new DefaultRedirectStrategy() {
+				public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context) {
+					boolean isRedirect = false;
+					try {
+						isRedirect = super.isRedirected(request, response, context);
+					} catch (ProtocolException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (!isRedirect) {
+						int responseCode = response.getStatusLine().getStatusCode();
+						if (responseCode == 301 || responseCode == 302) {
+							return true;
+						}
+					}
+					return isRedirect;
+				}
+			});
+		} else {
+			// Yes, allow for 302 REDIRECT
+			// Nothing needed here.
+		}
+
+		// Prevent CACHE, 304 not modified
+//		httpclient.addRequestInterceptor(new HttpRequestInterceptor() {
+//			public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
+//				
+//				request.setHeader("If-modified-Since", "Fri, 13 May 2006 23:54:18 GMT");
+//
+//			}
+//		});
+
 		CookieStore cookieStore = httpclient.getCookieStore();
 		for (Cookie httpClientCookie : request.getHttpClientCookies()) {
-			// HACK: 
-			//httpClientCookie.getValue();
+			// HACK:
+			// httpClientCookie.getValue();
 			cookieStore.addCookie(httpClientCookie);
 		}
 		// httpclient.setCookieStore(cookieStore);
@@ -132,7 +172,7 @@ public class ClientExecuteProxy {
 		StringBuffer requestCookieInfo = new StringBuffer();
 		// Show what cookies are in the store .
 		for (Cookie cookie : ClientExecuteProxy.cookieStore.getCookies()) {
-			log.info("Cookie in the cookie STORE: " + cookie.toString());
+			log.debug("Cookie in the cookie STORE: " + cookie.toString());
 			requestCookieInfo.append(cookie.toString() + "\n\n\n");
 
 		}
@@ -159,11 +199,16 @@ public class ClientExecuteProxy {
 		try {
 			HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(), realServiceUrl
 					.getScheme());
+
 			HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl));
+			if (response.getStatusLine().getStatusCode() == 302) {
+				log.debug("FYI: 302 redirect occuring from " + realServiceUrl.getFullUrl());
+			}
 			responseMessage = new ResponseFromService(response);
 			responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
 			responseMessage.setRequestUrl(realServiceUrl);
 		} catch (Exception e) {
+			log.error(e);
 			throw new ClientExecuteProxyException("Unable to retrieve a response. ", realServiceUrl, e);
 		} finally {
 			// When HttpClient instance is no longer needed,

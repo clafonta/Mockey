@@ -77,12 +77,13 @@ public class ServiceMergeServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
+	@SuppressWarnings("unchecked")
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		String[] serviceMergeIdList = req
 				.getParameterValues("serviceIdMergeSource[]");
-		Enumeration<String> names = req.getParameterNames();
+		Enumeration<String> names = (Enumeration<String>)req.getParameterNames();
 		while(names.hasMoreElements()){
 			log.debug(names.nextElement());
 		}

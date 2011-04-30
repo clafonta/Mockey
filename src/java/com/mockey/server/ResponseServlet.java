@@ -89,7 +89,9 @@ public class ResponseServlet extends HttpServlet {
 
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
 
-		ResponseFromService response = service.execute(request, urlToExecute, originalHttpReqFromClient.getMethod());
+		
+		
+		ResponseFromService response = service.execute(request, urlToExecute);
 		logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr());
 
 		try {

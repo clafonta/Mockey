@@ -116,7 +116,7 @@
 	    	<c:url value="/home" var="returnToServiceUrl"/>
 	    </c:otherwise>
     </c:choose>
-    <span class="hhButtonRed"><a href="${returnToServiceUrl}" style="font-size:1.2em;"> &#60; Go Back - <i>Return to main page</i></a></span>
+    <span style="" class="hhButtonGreen"><a href="${returnToServiceUrl}">Return to main page</a></span>
     <h1>Service Setup</h1>  
     <div class="parentform">
         <c:if test="${!empty mockservice.id}">

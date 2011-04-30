@@ -187,7 +187,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		}
 
 		// SERVICE LIST
-		logger.debug("Building non-reference, full definition? " + nonRefFullDefinition);
+		//logger.debug("Building non-reference, full definition? " + nonRefFullDefinition);
 		if (nonRefFullDefinition) {
 			// Includes ALL service definitions in the DOM
 			for (Service mockServiceBean : store.getServices()) {

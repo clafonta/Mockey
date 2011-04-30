@@ -27,19 +27,53 @@
  */
 package com.mockey.ui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-
-import org.apache.log4j.Logger;
 
 import com.mockey.storage.xml.MockeyXmlFileManager;
 
 public class StartUpServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -6466436642921760561L;
-	private static Logger logger = Logger.getLogger(StartUpServlet.class);
+	//private static Logger logger = Logger.getLogger(StartUpServlet.class);
+	private static final String SYSTEM_PROPERTY_KEY_DEBUG_FILE = "pathToMockeyDebugFile";
+	public static final String MOCKEY_DEBUG = "mockeyDebugFile.log";
+	private static File debugFile = null;
 
+	/**
+	 * 
+	 * @return Location of debug output from
+	 *         <code>org.apache.log4j.RollingFileAppender</code>
+	 * @see org.apache.log4j.RollingFileAppender
+	 */
+	public static File getDebugFile() {
+		
+		if (debugFile==null || !debugFile.exists()) {
+			// ***************
+			// JETTY & TOMCAT compatible
+			// Not context 
+			// ***************
+			try {
+				debugFile = new File(MOCKEY_DEBUG);
+				debugFile.createNewFile();
+				String abPath =  getDebugFile().getAbsolutePath();
+				System.out.println("Created debug file " + abPath);
+				System.setProperty(SYSTEM_PROPERTY_KEY_DEBUG_FILE, abPath);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return debugFile;
+	}
 	public void init() throws ServletException {
+
+		//Init
+		getDebugFile();
 
 		try {
 
@@ -53,9 +87,13 @@ public class StartUpServlet extends HttpServlet {
 			reader.loadConfiguration();
 
 		}
-
+		catch (FileNotFoundException fnf) {
+			System.out.println("File used to initialize Mockey not found. It's OK; one will be created. ");
+			
+		}
 		catch (Exception e) {
-			logger.error("StartUpServlet:init()", e);
+			//logger.error("StartUpServlet:init()", e);
+			e.printStackTrace();
 		}
 	}
 }

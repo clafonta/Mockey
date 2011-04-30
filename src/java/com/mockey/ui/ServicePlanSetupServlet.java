@@ -64,14 +64,10 @@ import com.mockey.storage.StorageRegistry;
  * 
  */
 public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanConfigurationAPI {
-
 	private static final long serialVersionUID = -2964632050151431391L;
-
 	private Log log = LogFactory.getLog(ServicePlanSetupServlet.class);
-
 	private IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private IApiStorage apiStore = IApiStorageInMemory.getInstance();
-	
 
 	/**
 	 * Loads up the HTTP API Documentation in memory for this service. The HTTP
@@ -83,12 +79,13 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 		// THIS SERVICE API DESCRIPTION CONTRACT
 		// *****************************
 		// This information is used in the API JSP document, used to describe
-		// how to make setting changes from a head-less client. 
-		
+		// how to make setting changes from a head-less client.
+
 		if (apiStore.getApiDocServiceByName(API_SERVICE_PLAN_CONFIGURATION_NAME) == null) {
 			ApiDocService apiDocService = new ApiDocService();
 			apiDocService.setName(API_SERVICE_PLAN_CONFIGURATION_NAME);
-			apiDocService.setDescription("If you need Mockey to load a specific Service Plan, then this API may meet your needs. When to use: your automated test scripts need Mockey in a certain state of mind.");
+			apiDocService
+					.setDescription("If you need Mockey to load a specific Service Plan, then this API may meet your needs. When to use: your automated test scripts need Mockey in a certain state of mind.");
 			// TODO: We need to use a pattern matching replace e.g. ${0} ${1}
 			// with array ["a", "b"] for VALUES
 			apiDocService.setServicePath("/plan/setup");
@@ -120,8 +117,10 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			// Parameter - 'service_plan_name'
 			ApiDocAttribute reqAttributePlanName = new ApiDocAttribute();
 			reqAttributePlanName.setFieldName(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME);
-			reqAttributePlanName.addFieldValues(new ApiDocFieldValue("[string]",
-					"The service plan name needed to create or save/update. If plan_id not provided, then this value is used to locate the service plan for setting or updating."));
+			reqAttributePlanName
+					.addFieldValues(new ApiDocFieldValue(
+							"[string]",
+							"The service plan name needed to create or save/update. If plan_id not provided, then this value is used to locate the service plan for setting or updating."));
 			reqAttributePlanName.setExample("The Gold Service Plan");
 			apiDocRequest.addAttribute(reqAttributePlanName);
 
@@ -199,12 +198,12 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 
 		try {
 			// API BUSINESS LOGIC
-			log.debug("Service Plan setup/delete");
+			// log.debug("Service Plan setup/delete");
 			ServicePlan servicePlan = null;
 			Long servicePlanId = null;
 			List<Service> allServices = store.getServices();
 			// *********************
-			// BEST EFFORT HERE. 
+			// BEST EFFORT HERE.
 			// We try to find the service by ID.
 			// If not found, we try by NAME.
 			// Otherwise, let the rest of the logic do its thing.
@@ -225,9 +224,8 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 					servicePlan = store.getServicePlanByName(servicePlanName.trim());
 				} catch (Exception e) {
 					if (req.getParameter(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME) != null) {
-						log.debug(
-								"No service plan with NAME '"
-										+ req.getParameter(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME) + "' found.", e);
+						log.debug("No service plan with NAME '"
+								+ req.getParameter(API_SET_SAVE_OR_UPDATE_PARAMETER_PLAN_NAME) + "' found.", e);
 					}
 				}
 			}
@@ -248,7 +246,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 					jsonObject.put("fail", "Service plan not deleted. Please check your logs for insight.");
 
 				}
-		        resp.setContentType("application/json");
+				resp.setContentType("application/json");
 				PrintWriter out = resp.getWriter();
 				jsonResultObject.put("result", jsonObject);
 				out.println(jsonResultObject.toString());
@@ -269,7 +267,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 				} catch (Exception e) {
 					jsonObject.put("fail", "Service plan not set. Please check your logs for insight.");
 				}
-		        resp.setContentType("application/json");
+				resp.setContentType("application/json");
 				PrintWriter out = resp.getWriter();
 				jsonResultObject.put("result", jsonObject);
 				out.println(jsonResultObject.toString());
@@ -304,7 +302,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 				// ***************************
 				// SAVE/UPDATE THE PLAN
 				// ***************************
-		        resp.setContentType("application/json");
+				resp.setContentType("application/json");
 				PrintWriter out = resp.getWriter();
 				String msg = "Service plan " + servicePlan.getName() + " saved";
 
@@ -337,7 +335,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 	private ServicePlan createOrUpdatePlan(ServicePlan servicePlan) {
 		List<PlanItem> planItemList = new ArrayList<PlanItem>();
 		for (Service service : store.getServices()) {
-			
+
 			PlanItem planItem = new PlanItem();
 			planItem.setHangTime(service.getHangTime());
 			planItem.setServiceId(service.getId());
@@ -357,7 +355,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 		}
 		for (PlanItem planItem : servicePlan.getPlanItemList()) {
 			Service service = store.getServiceById(planItem.getServiceId());
-			
+
 			if (service != null) {
 				service.setHangTime(planItem.getHangTime());
 				service.setDefaultScenarioId(planItem.getScenarioId());

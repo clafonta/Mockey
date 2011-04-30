@@ -197,6 +197,8 @@ $(document).ready(function() {
 	            <ul>
 	                <li <c:if test="${currentTab == 'api'}">class="current"</c:if>><a title="Configuration API"
 	                    href="<c:url value="/service_api" />">Configuration API</a></li>
+	                <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="Debug Console"
+                        href="<c:url value="/console" />">Debug Console</a></li>
 	            </ul>
 	        </li>
 		</ul>

@@ -42,6 +42,7 @@ import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.SimpleJSAP;
 import com.mockey.storage.xml.MockeyXmlFileManager;
+import com.mockey.ui.StartUpServlet;
 
 public class JettyRunner {
 	public static void main(String[] args) throws Exception {
@@ -59,12 +60,14 @@ public class JettyRunner {
 		JSAPResult config = jsap.parse(args);
 
 		// Bail out if they asked for the --help
-		if (jsap.messagePrinted())
+		if (jsap.messagePrinted()){
 			System.exit(1);
+		}
 
 		// Construct the new arguments for jetty-runner
 		int port = config.getInt("port");
-
+		// Initialize Log4J file roller appender.
+		StartUpServlet.getDebugFile();
 		InputStream log4jInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(
 				"WEB-INF/log4j.properties");
 		Properties log4JProperties = new Properties();

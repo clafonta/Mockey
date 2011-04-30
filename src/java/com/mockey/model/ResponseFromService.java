@@ -30,7 +30,6 @@ package com.mockey.model;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -179,8 +178,8 @@ public class ResponseFromService {
 	            // Parse cookie
 	            String[] fields = headerValue.split(";\\s*");
 
-	            String cookieValue = fields[0];
-	            String expires = null;
+	            //String cookieValue = fields[0];
+	            //String expires = null;
 	            String path = null;
 	            String domain = null;
 	            boolean secure = false;
@@ -192,7 +191,7 @@ public class ResponseFromService {
 	                } else if (fields[j].indexOf('=') > 0) {
 	                    String[] f = fields[j].split("=");
 	                    if ("expires".equalsIgnoreCase(f[0])) {
-	                        expires = f[1];
+	                        //expires = f[1];
 	                    } else if ("domain".equalsIgnoreCase(f[0])) {
 	                        domain = f[1];
 	                    } else if ("path".equalsIgnoreCase(f[0])) {

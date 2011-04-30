@@ -93,10 +93,12 @@ public class RequestFromClient {
 	public RequestFromClient(HttpServletRequest rawRequest) {
 		try {
 			rawRequest.setCharacterEncoding(HTTP.ISO_8859_1); // "UTF-8");
+
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		this.method = rawRequest.getMethod();
+
 		parseRequestHeaders(rawRequest);
 		parseRequestBody(rawRequest);
 		parseParameters(rawRequest);
@@ -130,6 +132,7 @@ public class RequestFromClient {
 			// copy the request body we received into the POST
 			post.setEntity(constructHttpPostBody());
 			request = post;
+
 		}
 
 		// copy the headers into the request to the real server
@@ -183,8 +186,8 @@ public class RequestFromClient {
 			if (values != null && values.length > 0) {
 				for (String value : values) {
 					if (value.trim().length() > 0) {
-						requestMsg.append(URLEncoder.encode(key, HTTP.UTF_8)).append("=")
-								.append(URLEncoder.encode(value, HTTP.UTF_8));
+						requestMsg.append(URLEncoder.encode(key, HTTP.UTF_8)).append("=").append(
+								URLEncoder.encode(value, HTTP.UTF_8));
 					} else {
 						requestMsg.append(URLEncoder.encode(key, HTTP.UTF_8));
 					}
@@ -198,8 +201,12 @@ public class RequestFromClient {
 		return requestMsg.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void parseRequestHeaders(HttpServletRequest rawRequest) {
-		Enumeration e = rawRequest.getHeaderNames();
+
+		// Put header information coming from client.
+		Enumeration<String> e = rawRequest.getHeaderNames();
+
 		while (e.hasMoreElements()) {
 			String name = (String) e.nextElement();
 			// Let's ignore some headers
@@ -211,10 +218,31 @@ public class RequestFromClient {
 					String value = (String) eValues.nextElement();
 					values.add(value);
 				}
+
 				headers.put(name, values);
+			}
+		}
+		// Override header information to prevent CACHING
+		// As of 4/29/2011, updated Apache HttpClient. Result was the
+		// following:
+		// Testing with MAMP (Apache 2.0.63), I was seeing
+		// this parameter being sent by Browsers Firefox 4 and
+		// and Chrome 9, but NOT Safari 5.
+		// To prevent caching, removing this attribute.
+		e = rawRequest.getHeaderNames();
+		List<String> p = new ArrayList<String>();
+		p.add("Fri, 13 May 2006 23:54:18 GMT");
+		while (e.hasMoreElements()) {
+			String name = (String) e.nextElement();
+
+			if ("if-none-match".equalsIgnoreCase(name)) {
+				headers.remove(name);
+			} else if ("If-modified-Since".equalsIgnoreCase(name)) {
+				headers.put(name, p);
 			}
 
 		}
+
 	}
 
 	/**
