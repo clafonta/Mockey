@@ -132,6 +132,16 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			apiDocRequest.addAttribute(reqAttributeType);
 			apiDocService.setApiRequest(apiDocRequest);
 
+			// Parameter - 'type'
+			ApiDocAttribute reqTransientState = new ApiDocAttribute();
+			reqTransientState.setFieldName(API_TRANSIENT_STATE);
+			reqTransientState
+					.addFieldValues(new ApiDocFieldValue(
+							"[boolean]",
+							"If available and set to 'true', then all settings in this call will be in-memory only, not persisted to the file system. Otherwise, state settings will be written to the file system."));
+			apiDocRequest.addAttribute(reqTransientState);
+			apiDocService.setApiRequest(apiDocRequest);
+
 			// *****************************
 			// RESPONSE DEFINITION
 			// *****************************
@@ -233,6 +243,15 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			JSONObject jsonResultObject = new JSONObject();
 
 			String action = req.getParameter(API_SETPLAN_PARAMETER_ACTION);
+			String transientState = req.getParameter(API_TRANSIENT_STATE);
+			try {
+				if (transientState != null) {
+					servicePlan.setTransientState(new Boolean(transientState));
+				}
+			} catch (Exception e) {
+				log.debug("ServicePlan not set to transient state but a value was given as: " + transientState);
+
+			}
 			if (API_SETPLAN_PARAMETER_ACTION_VALUE_DELETE_PLAN.equals(action)) {
 				JSONObject jsonObject = new JSONObject();
 

@@ -29,6 +29,7 @@ public interface ServiceConfigurationAPI {
 	public static final String API_SERVICE_CONFIGURATION_NAME = "Service Configuration";
 	public static final String API_SERVICE_NAME = "serviceName";
 	public static final String API_SERVICE_ID = "serviceId";
+	public static final String API_TRANSIENT_STATE = "transientState";
 	public static final String API_DEFAULT_SCENARIO_ID = "defaultScenarioId";
 	public static final String API_DEFAULT_SCENARIO_NAME = "defaultScenarioName";
 

@@ -47,8 +47,7 @@ import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 /**
- * Management of Service configuration, in addition to HTTP
- * Documentation.
+ * Management of Service configuration, in addition to HTTP Documentation.
  * 
  * @author chadlafontaine
  * 
@@ -80,7 +79,8 @@ public class ServiceConfigurationServlet extends HttpServlet {
 			// TODO: We need to use a pattern matching replace e.g. ${0} ${1}
 			// with array ["a", "b"] for VALUES
 			apiDocService.setServicePath("/config/service");
-			apiDocService.setDescription("If you need to configure Mockey services without a web browser (e.g. bots), then this API may serve your needs. ");
+			apiDocService
+					.setDescription("If you need to configure Mockey services without a web browser (e.g. bots), then this API may serve your needs. ");
 
 			// *****************************
 			// REQUEST DEFINITION
@@ -111,21 +111,30 @@ public class ServiceConfigurationServlet extends HttpServlet {
 			reqScenarioName.addFieldValues(new ApiDocFieldValue("[string]", "A valid service scenario name."));
 			reqScenarioName.setExample("My Service Scenario Name");
 			apiDocRequest.addAttribute(reqScenarioName);
-			
+
 			ApiDocAttribute reqHangtime = new ApiDocAttribute();
 			reqHangtime.setFieldName(ServiceConfigurationAPI.API_SERVICE_HANGTIME);
-			reqHangtime.addFieldValues(new ApiDocFieldValue("[int]", "Hang time in milliseconds"));
+			reqHangtime.addFieldValues(new ApiDocFieldValue("[int]", "Hang time in milliseconds."));
 			reqHangtime.setExample("500");
 			apiDocRequest.addAttribute(reqHangtime);
-			
+
+			ApiDocAttribute transientSet = new ApiDocAttribute();
+			transientSet.setFieldName(ServiceConfigurationAPI.API_TRANSIENT_STATE);
+			transientSet
+					.addFieldValues(new ApiDocFieldValue("[boolean]",
+					"If available and set to 'true', then all settings in this call will be in-memory only, not persisted to the file system. Otherwise, state settings will be written to the file system."));
+			transientSet.setExample("true");
+			apiDocRequest.addAttribute(transientSet);
 
 			ApiDocAttribute reqAttributeAction = new ApiDocAttribute();
 			reqAttributeAction.setFieldName(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_DYNAMIC,
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(
+					ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_DYNAMIC,
 					"Sets service to respond as dynamic."));
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY,
-					"Sets service to act as a proxy."));
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_STATIC,
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(
+					ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY, "Sets service to act as a proxy."));
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(
+					ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_STATIC,
 					"Sets service to respond with a static response"));
 			apiDocRequest.addAttribute(reqAttributeAction);
 
@@ -147,8 +156,10 @@ public class ServiceConfigurationServlet extends HttpServlet {
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_NAME, "Some service name");
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID, "5678");
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME, "Some scenario name");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE, ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY);
+				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE,
+						ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY);
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, "500");
+				jsonResultObject.put(ServiceConfigurationAPI.API_TRANSIENT_STATE, "true");
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE, "application/json");
 				jsonResponseObject.put("result", jsonResultObject);
 				apiResponse.setExample(jsonResponseObject.toString());
@@ -186,6 +197,9 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String serviceId = req.getParameter(ServiceConfigurationAPI.API_SERVICE_ID);
@@ -196,10 +210,10 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		String httpContentType = req.getParameter(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE);
 		String serviceResponseType = req.getParameter(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
 		String defaultUrlIndex = req.getParameter("defaultUrlIndex");
+		String transientState = req.getParameter(ServiceConfigurationAPI.API_TRANSIENT_STATE);
 
 		Service service = null;
 		JSONObject jsonResultObject = new JSONObject();
-
 
 		if (serviceId != null) {
 			service = store.getServiceById(new Long(serviceId));
@@ -209,8 +223,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 
 		try {
 			service.setServiceResponseTypeByString(serviceResponseType);
-			
-			
+
 		} catch (Exception e) {
 			log.debug("Updating service without a 'service response type' value");
 		}
@@ -230,6 +243,15 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		} catch (Exception e) {
 			log.debug("Updating service without a 'hang time' value");
 		}
+		
+		try {
+			if (transientState != null) {
+				service.setTransientState((new Boolean(transientState)));
+			}
+		} catch (Exception e) {
+			log.debug("Updating service without a 'transient state' value");
+		}
+		
 		try {
 			if (httpContentType != null) {
 				service.setHttpContentType(httpContentType);
@@ -248,7 +270,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 			log.debug("Updating service without a 'default scenario ID' value");
 		}
 		store.saveOrUpdateService(service);
-        resp.setContentType("application/json");
+		resp.setContentType("application/json");
 		PrintWriter out = resp.getWriter();
 
 		JSONObject jsonResponseObject = new JSONObject();
@@ -258,7 +280,8 @@ public class ServiceConfigurationServlet extends HttpServlet {
 			jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_ID, service.getId());
 			jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID, service.getDefaultScenarioId());
 			jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME, service.getDefaultScenarioName());
-			jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE, service.getServiceResponseTypeAsString());
+			jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE, service
+					.getServiceResponseTypeAsString());
 			jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, service.getHangTime());
 			jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE, service.getHttpContentType());
 			jsonResponseObject.put("result", jsonResultObject);
@@ -270,10 +293,10 @@ public class ServiceConfigurationServlet extends HttpServlet {
 				jsonResultObject.put("fail", "Unable to configure service.");
 				jsonResponseObject.put("result", jsonResultObject);
 				out.println(jsonResponseObject.toString());
-			}catch(Exception ee){
+			} catch (Exception ee) {
 				log.error("Unable to again build an informative error JSON message response.", e);
 			}
-			
+
 		}
 		out.flush();
 		out.close();

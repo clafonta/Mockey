@@ -59,6 +59,7 @@ public class Service implements PersistableItem, ExecutableService {
 	private Long id;
 	private String serviceName;
 	private String description;
+	private Boolean transientState = new Boolean(false);
 	private Long defaultScenarioId;
 	private int defaultRealUrlIndex = 0;
 	private Long errorScenarioId;
@@ -690,5 +691,13 @@ public class Service implements PersistableItem, ExecutableService {
 			}
 		}
 		return d;
+	}
+
+	public void setTransientState(Boolean transientState) {
+		this.transientState = transientState;
+	}
+
+	public Boolean getTransientState() {
+		return transientState;
 	}
 }

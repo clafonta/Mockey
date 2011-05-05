@@ -484,7 +484,9 @@ $(document).ready( function() {
 	        <c:otherwise>
 	          <p class="intro_txt">Hello, this is Mockey. It looks like this is the first time you are using Mockey because 
 	          it's in a clean state. To learn more about Mockey, see the <a href="<c:url value="/help"/>">help</a> section. </p> 
-			  <p class="info_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. </p>
+			  <p class="info_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. 
+			  If you were expecting to see services, then maybe something went wrong. Checkout the <a href="<c:url value="/console"/>">debug output</a>. 
+			  </p>
 			</c:otherwise>
         </c:choose>
 <c:if test="${mode ne 'edit_plan'}">

@@ -46,6 +46,7 @@ public class ServicePlan implements PersistableItem {
 	private Long id;
 	private String name;
 	private String description;
+	private Boolean transientState = new Boolean(false);
 	private List<PlanItem> planItemList = new ArrayList<PlanItem>();
 	public Long getId() {
 		return id;
@@ -77,5 +78,11 @@ public class ServicePlan implements PersistableItem {
 	
 	public void addPlanItem(PlanItem planItem){
 		this.planItemList.add(planItem);
+	}
+	public void setTransientState(Boolean transientState) {
+		this.transientState = transientState;
+	}
+	public Boolean getTransientState() {
+		return transientState;
 	}	
 }

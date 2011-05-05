@@ -169,14 +169,18 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public Service saveOrUpdateService(Service mockServiceBean) {
 		PersistableItem item = mockServiceStore.save(mockServiceBean);
-		this.writeMemoryToFile();
+		if (!mockServiceBean.getTransientState()) {
+			this.writeMemoryToFile();
+		}
 		return (Service) item;
 	}
 
 	public void deleteService(Service mockServiceBean) {
 		if (mockServiceBean != null) {
 			mockServiceStore.remove(mockServiceBean.getId());
-			this.writeMemoryToFile();
+			if (!mockServiceBean.getTransientState()) {
+				this.writeMemoryToFile();
+			}
 		}
 	}
 
@@ -257,7 +261,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan) {
 		PersistableItem item = this.servicePlanStore.save(servicePlan);
-		this.writeMemoryToFile();
+		if (!servicePlan.getTransientState()) {
+			this.writeMemoryToFile();
+		}
 		return (ServicePlan) item;
 
 	}
