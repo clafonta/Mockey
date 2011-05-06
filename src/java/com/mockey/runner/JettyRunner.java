@@ -55,6 +55,9 @@ public class JettyRunner {
 				"port to run Jetty on"));
 		jsap.registerParameter(new FlaggedOption("file", JSAP.STRING_PARSER, MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
 				JSAP.NOT_REQUIRED, 'f', "file", "relative path to file to initialize Mockey"));
+		
+		jsap.registerParameter(new FlaggedOption("transientState", JSAP.BOOLEAN_PARSER, "false",
+				JSAP.NOT_REQUIRED, 't', "transientState", "Read only mode, no updates to file system"));
 
 		// parse the command line options
 		JSAPResult config = jsap.parse(args);
@@ -66,6 +69,12 @@ public class JettyRunner {
 
 		// Construct the new arguments for jetty-runner
 		int port = config.getInt("port");
+		boolean transientState = false;
+		try {
+			transientState = config.getBoolean("transientState");
+		}catch(Exception e){
+			//
+		}
 		// Initialize Log4J file roller appender.
 		StartUpServlet.getDebugFile();
 		InputStream log4jInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(
@@ -99,9 +108,9 @@ public class JettyRunner {
 		// then let's initialize with it instead.
 		if (file != null && file.trim().length() > 0) {
 			URLEncoder.encode(initUrl, "UTF-8");
-			initUrl = "/home?action=init&file=" + URLEncoder.encode(file, "UTF-8");
+			initUrl = "/home?action=init&transientState="+transientState+"&file=" + URLEncoder.encode(file, "UTF-8");
 		}else {
-			initUrl = "/home?action=init&file=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8");
+			initUrl = "/home?action=init&transientState="+transientState+"&file=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8");
 			
 		}
 

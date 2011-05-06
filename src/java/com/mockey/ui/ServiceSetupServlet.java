@@ -55,14 +55,22 @@ public class ServiceSetupServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-
+	private static final Boolean TRANSIENT_STATE = new Boolean(true);
+	/**
+	 * 
+	 */
 	public void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		if (req.getParameter("all") != null
 				&& req.getParameter("responseType") != null) {
 			List<Service> services = store.getServices();
+			// #1. Get a handle of the original read-only-mode (transient?)
+			Boolean origReadOnlyMode = store.getReadOnlyMode();
 			try {
+				// #2. Put the store in TRANSIENT STATE (memory only)
+				// why? To prevent repeating file writes to the file system
+				store.setReadOnlyMode(TRANSIENT_STATE);
 				int serviceResponseType = Integer.parseInt(req
 						.getParameter("responseType"));
 				for (Iterator<Service> iterator = services.iterator(); iterator
@@ -75,6 +83,8 @@ public class ServiceSetupServlet extends HttpServlet {
 			} catch (Exception e) {
 				log.error("Unable to update service(s", e);
 			}
+			// #3 Return store back to original setting.
+			store.setReadOnlyMode(origReadOnlyMode);
 			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 			Map<String, String> successMessage = new HashMap<String, String>();
@@ -85,7 +95,6 @@ public class ServiceSetupServlet extends HttpServlet {
 			out.close();
 			return;
 		}
-		log.debug("Setting up a new service");
 		Long serviceId = null;
 		try {
 			serviceId = new Long(req.getParameter("serviceId"));

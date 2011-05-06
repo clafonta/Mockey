@@ -70,14 +70,34 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private Long univeralErrorServiceId = null;
 	private Long univeralErrorScenarioId = null;
 	private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
+	// Yes, by default, we need this as TRUE.
+	private Boolean transientState = new Boolean(true);
 
 	/**
 	 * 
 	 * @return
 	 */
 	static InMemoryMockeyStorage getInstance() {
+		
 		return store;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public void setReadOnlyMode(Boolean transientState) {
+		if(transientState!=null) {
+			this.transientState = transientState;
+		}
+		
+		if(!transientState){
+			this.writeMemoryToFile();
+		}
+		
+	}
+	
+	
 
 	/**
 	 * HACK: this class is supposed to be a singleton but making this public for
@@ -169,7 +189,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public Service saveOrUpdateService(Service mockServiceBean) {
 		PersistableItem item = mockServiceStore.save(mockServiceBean);
-		if (!mockServiceBean.getTransientState()) {
+		if (mockServiceBean != null && !mockServiceBean.getTransientState()) {
 			this.writeMemoryToFile();
 		}
 		return (Service) item;
@@ -178,7 +198,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public void deleteService(Service mockServiceBean) {
 		if (mockServiceBean != null) {
 			mockServiceStore.remove(mockServiceBean.getId());
-			if (!mockServiceBean.getTransientState()) {
+			if (mockServiceBean != null && !mockServiceBean.getTransientState()) {
 				this.writeMemoryToFile();
 			}
 		}
@@ -261,7 +281,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public ServicePlan saveOrUpdateServicePlan(ServicePlan servicePlan) {
 		PersistableItem item = this.servicePlanStore.save(servicePlan);
-		if (!servicePlan.getTransientState()) {
+		if (servicePlan != null && !servicePlan.getTransientState()) {
 			this.writeMemoryToFile();
 		}
 		return (ServicePlan) item;
@@ -489,8 +509,10 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 */
 	private synchronized void writeMemoryToFile() {
 
-		MockeyXmlFactory g = new MockeyXmlFactory();
-		g.writeStoreToXML(store, MockeyXmlFileManager.MOCK_SERVICE_DEFINITION);
+		if (!transientState) {
+			MockeyXmlFactory g = new MockeyXmlFactory();
+			g.writeStoreToXML(store, MockeyXmlFileManager.MOCK_SERVICE_DEFINITION);
+		}
 
 	}
 
@@ -553,6 +575,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		PersistableItem item = this.serviceRefStore.save(serviceRef);
 		this.writeMemoryToFile();
 		return (ServiceRef) item;
+	}
+
+	public Boolean getReadOnlyMode() {
+		if(this.transientState == null){
+			this.transientState = new Boolean(true);
+		}
+		return this.transientState;
 	}
 
 }

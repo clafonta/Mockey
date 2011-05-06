@@ -67,6 +67,19 @@ $(document).ready(function() {
          }
         $('#twist-config').show(); 
         
+        if(data.result.transient_state==true){
+            $("#transient_unknown").hide();
+            $("#transient_true").show();
+            $("#transient_false").hide();
+            
+         }else {
+             $("#transient_unknown").hide();
+             $("#transient_true").hide();
+             $("#transient_false").show(); 
+         }
+        $('#memory-only-config').show(); 
+        
+       
 	});
 
 	$('#reset-sticky-session').click( function() {
@@ -93,6 +106,44 @@ $(document).ready(function() {
 	$("#reset-session-confirm").dialog({
         autoOpen: false
     });
+    
+     $('.transient-onclick').each( function() {
+        $(this).click( function() {
+            var tVal = this.id.split("_")[1];
+            var isTrueSet = (tVal !== 'true');
+           
+            $('#transient-confirm').show();
+            $('#transient-confirm').dialog('open');
+            $('#transient-confirm').dialog({
+                modal: true,
+                resizable: false,
+                buttons: {
+                  "Go for it.": function() {
+                    
+                       $.post('<c:url value="/configuration/info?transient_state="/>' + isTrueSet ,function(data){
+                        if(data.result){
+                           $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
+                           if(data.result.transient_state){
+                              $("#transient_true").show();
+                              $("#transient_false").hide();
+                            }else {
+                              $("#transient_true").hide();
+                              $("#transient_false").show();
+                            }
+                         }
+                    }, 'json' ); 
+                    $(this).dialog('close');      
+                                            
+                  }, 
+                  Cancel: function(){
+                      $(this).dialog('close');
+                  }
+                }
+          }); 
+          return false;
+       });
+       $('#dialog-flush-confirm').dialog("destroy");
+     });
 	
 	
     $("#dialog-flush-confirm").dialog({
@@ -160,6 +211,7 @@ $(document).ready(function() {
 	  <span class="alert_message" style="position:absolute; bottom:0; left:0; width:60px; font-size:0.8em;z-index:100;"><strong>Warning:</strong>This app' isn't designed for <b>Internet Explorer 6.0</b>. You should use another browser.</span>
 	<% } %>
 	<div id="dialog-flush-confirm" class="hide" title="Flush"><div style="text-align: center;"><img src="<c:url value="/images/flush.png" />"/></div> <br />Are you sure? This will delete everything. You may want to <a href="<c:url value="/export" />">export your stuff</a> first.</div>
+	<div id="transient-confirm" class="hide" title="Transient Setting">This will toggle your transient setting. For more information on this, look <a href="<c:url value="/help#transient" />">here</a></div>
 	<div id="reset-session-confirm" class="hide" title="Reset Session">Are you sure? This will flush out any sticky cookies that Mockey may have kept due to serving up active-session-based proxy requests.
 	<p> <i>Does your brain hurt now?</i></p>
 	</div>
@@ -210,6 +262,13 @@ $(document).ready(function() {
 	<div id="header_tool_wrapper">
 	   
 		<div id="header_tool_wrapper_right" >
+		
+		    <span id="memory-only-config" class="configuration-info" style="display:none;">
+            <a href="#" id="transient_unknown" class="tiny" style="display: none;">___</a>
+            <a href="#" id="transient_true" class="tiny transient-onclick" val="true" style="display: none; color: green;">Transient is ON</a>
+            <a href="#" id="transient_false" class="tiny transient-onclick" val="false" style="display: none;color: red; ">Transient is OFF</a> 
+            </span>
+            
 			<span class="configuration-info" >
 			<a href="<c:url value="/proxy/settings"/>" id="proxy_unknown" class="tiny" style="display: none;">___</a>
 			<a href="<c:url value="/proxy/settings"/>" id="proxy_on" class="tiny" style="display: none;color: green; ">Internet Proxy is ON</a>
@@ -221,6 +280,7 @@ $(document).ready(function() {
 			<a href="<c:url value="/twisting/setup"/>" id="twisting_on" class="tiny"  style="display: none; color: green; ">Twisting is ON</a>
 			<a href="<c:url value="/twisting/setup"/>" id="twisting_off" class="tiny" style="display: none;color: red; ">Twisting is OFF</a> 
 			</span>
+			
 			
 			<span id="reset-sticky-cookie-config" class="configuration-info">
 			<a href="#" id="reset-sticky-session" class="tiny" 

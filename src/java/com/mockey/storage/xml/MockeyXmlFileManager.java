@@ -105,10 +105,16 @@ public class MockeyXmlFileManager {
 
 	}
 
-	public ServiceMergeResults loadConfiguration() throws SAXParseException, IOException, SAXException {
+	public ServiceMergeResults loadConfiguration() throws SAXParseException, IOException {
 		File n = new File(MOCK_SERVICE_DEFINITION);
 		logger.debug("Loading configuration from " + MOCK_SERVICE_DEFINITION);
-		return loadConfigurationWithXmlDef(getFileContentAsString(n));
+		
+		try {
+			return loadConfigurationWithXmlDef(getFileContentAsString(n));
+		} catch (SAXException e) {
+			logger.error("Ouch, unable to parse" + n.getAbsolutePath(), e);
+		}
+		return new ServiceMergeResults();
 	}
 
 	/**

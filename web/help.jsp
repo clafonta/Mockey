@@ -11,6 +11,7 @@
 		    <div style="clear:both;"></div>
 		    <ul>
 		        <li>&#187; <a href="#bigpicture">Big Picture</a></li>
+		        <li>&#187; <a href="#transient">Transient</a></li> 
 		        <li>&#187; <a href="#mockservice" name="mockservice">Mock Service</a></li>
 		        <li>&#187; <a href="#plan">Service Plan</a></li>
 		        <li>&#187; <a href="#scenario">Mock Service Scenario</a></li>
@@ -22,7 +23,7 @@
 		        <li>&#187; <a href="#merge_services">Merge Services</a></li>
 		        <li>&#187; <a href="#initialization">Initialization</a></li>
 		        <li>&#187; <a href="#error_handling">Error Handling</a></li>		        
-		        <li>&#187; <a href="#robots">Robots</a></li>                
+		        <li>&#187; <a href="#robots">Robots</a></li>  
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		    </ul>
 	    </div>
@@ -33,6 +34,31 @@
 		   <p><img src="<c:url value="/images/bigpicture.png" />" /></p>
 		</div>
 	</div>
+	<div class="help_section">
+        <a href="#transient" name="transient"></a>
+        <h2>Transient</h2>
+        <p>
+        If Mockey is in transient mode (<a href="<c:url value="/configuration/info"/>">transient_state=true</a>), then 
+        configuration changes are in-memory <b>only</b> and not persisted to the file system. This is good for people 
+        or robots who want to play with Mockey settings and not infect any source files that were used to initialized 
+        Mockey. If Mockey is not in transient mode (<a href="<c:url value="/configuration/info"/>">transient_state=false</a>), 
+        then any configuration changes will be written to the file system.  <b>Note:</b> right after the transient 
+        setting is turned off (<i>set to false</i>), everything in-memory is written to the file system. 
+        </p>
+        <p class="alert_message" style="position:relative;">
+          <img style="float:right;" height="30px" src="<c:url value="/images/skull_and_crossbones.png"/>" />
+          <b>Warning:</b> misunderstanding and misuse of <b>Transient</b> can a huge painful thing. If you're creating services and making changes with the transient
+          setting set to ON (true), then all your work will be lost once you restart Mockey.   
+        </p>
+        <p>
+        Why is <i>transient</i> needed, and why is it a good thing? Creation of data within Mockey is a good thing, and it's especially
+        good if you save this data to a source code repository like CVS, Peforce, Git, SVN, etc. But it may not be a great thing to have
+        your source code repo flag Mockey files as dirty when all you did was toggle things on or off or changed a desired 
+        scenario setting. If you are happy with your new data and configuration changes, and you want your source code repot tool to 
+        flag/find your changes, then be sure the transient setting 
+        is OFF (set to false). 
+        </p>
+    </div>
 	<div class="help_section_zebra">
 		<a href="#mockservice" name="mockservice"></a>
 		<h2>Mock Service</h2>
@@ -352,6 +378,7 @@
         Mockey is not only for Humans. Robots can use it too. See <a href="service_api">here</a>.
         </p>
     </div>
+    
 	<div class="help_section_zebra">
 	    <h2>Related Read</h2>
 	    <p>

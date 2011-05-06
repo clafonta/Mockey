@@ -178,11 +178,17 @@ public class HomeServlet extends HttpServlet {
 
 			// Load with local file.
 			String fileName = req.getParameter("file");
+			Boolean transientState = new Boolean(false);
+			try{
+				transientState = new Boolean(req.getParameter("transientState"));
+				store.setReadOnlyMode(transientState);
+				logger.debug("Read only mode? " + transientState);
+			}catch(Exception e){
+				
+			}
 			try {
 				File f = new File(fileName);
 				if (f.exists()) {
-
-					logger.info("deleted all configurations; getting ready to load new file.");
 					// Slurp it up and initialize definitions.
 					FileInputStream fstream = new FileInputStream(f);
 					BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));

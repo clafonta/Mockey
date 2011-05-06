@@ -46,6 +46,10 @@ import com.mockey.model.TwistInfo;
  */
 public interface IMockeyStorage {
 
+	public void setReadOnlyMode(Boolean transientState);
+	
+	public Boolean getReadOnlyMode();
+	
 	public void deleteEverything();
 
 	public List<TwistInfo> getTwistInfoList();

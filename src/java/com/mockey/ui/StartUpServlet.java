@@ -88,7 +88,7 @@ public class StartUpServlet extends HttpServlet {
 
 		}
 		catch (FileNotFoundException fnf) {
-			fnf.printStackTrace();
+			
 			System.out.println("File used to initialize Mockey not found. It's OK; one will be created. ");
 			
 		}

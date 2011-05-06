@@ -311,5 +311,14 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
 		return null;
 	}
+	
+	public void setReadOnlyMode(Boolean transientState) {
+		
+	}
+	
+	public Boolean getReadOnlyMode() {
+
+		return null;
+	}
 
 }

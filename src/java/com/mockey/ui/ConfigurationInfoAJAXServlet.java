@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,6 +48,7 @@ public class ConfigurationInfoAJAXServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+	private static Logger logger = Logger.getLogger(ConfigurationInfoAJAXServlet.class);
 
 	/**
 	 * 
@@ -63,12 +65,23 @@ public class ConfigurationInfoAJAXServlet extends HttpServlet {
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		ProxyServerModel proxyInfo = store.getProxy();
+		String transientState = req.getParameter("transient_state");
+
+		try {
+			if (transientState != null) {
+				store.setReadOnlyMode(new Boolean(transientState));
+			}
+		} catch (Exception e) {
+			logger.error("Unable to set transient state with value: " + transientState, e);
+		}
+
 		resp.setContentType("application/json");
 		PrintWriter out = resp.getWriter();
 		try {
 			JSONObject responseObject = new JSONObject();
 			JSONObject messageObject = new JSONObject();
 			messageObject.put("proxy_enabled", Boolean.toString(proxyInfo.isProxyEnabled()));
+			messageObject.put("transient_state", store.getReadOnlyMode());
 			Long twistInfoId = store.getUniversalTwistInfoId();
 			TwistInfo twistInfo = store.getTwistInfoById(twistInfoId);
 			if (twistInfo != null) {

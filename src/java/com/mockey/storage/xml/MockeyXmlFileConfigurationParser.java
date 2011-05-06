@@ -154,6 +154,8 @@ public class MockeyXmlFileConfigurationParser {
 	public IMockeyStorage getMockeyStore(InputSource inputSource) throws org.xml.sax.SAXParseException,
 			java.io.IOException, org.xml.sax.SAXException {
 
+		// For initialization (by default), the store is in transient mode, which is important to prevent
+		// file writing. Too much, too slow. Yuck. 
 		IMockeyStorage c = (IMockeyStorage) MockeyXmlFileConfigurationParser.fullSetDigester.parse(inputSource);
 		return c;
 	}

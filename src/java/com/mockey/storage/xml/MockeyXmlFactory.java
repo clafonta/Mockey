@@ -105,6 +105,7 @@ public class MockeyXmlFactory {
 				serviceFOP.flush();
 				serviceFOP.close();
 			}
+			logger.debug("Saved to the file system.");
 		} catch (Exception e) {
 			logger.debug("Unable to write file", e);
 		}
