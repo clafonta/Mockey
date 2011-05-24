@@ -69,7 +69,8 @@ public class MockeyXmlFileManager {
 	private static final String FILESEPERATOR = System.getProperty("file.separator");
 
 	/**
-	 *  
+	 * Basic constructor. Will create a folder on the file system to store XML
+	 * definitions.
 	 * 
 	 */
 	public MockeyXmlFileManager() {
@@ -105,10 +106,18 @@ public class MockeyXmlFileManager {
 
 	}
 
+	/**
+	 * Loads from default file definition file.
+	 * 
+	 * @return results of loading configuration, includes additions and possible conflicts.
+	 *  
+	 * @throws SAXParseException
+	 * @throws IOException
+	 */
 	public ServiceMergeResults loadConfiguration() throws SAXParseException, IOException {
 		File n = new File(MOCK_SERVICE_DEFINITION);
 		logger.debug("Loading configuration from " + MOCK_SERVICE_DEFINITION);
-		
+
 		try {
 			return loadConfigurationWithXmlDef(getFileContentAsString(n));
 		} catch (SAXException e) {
@@ -128,6 +137,22 @@ public class MockeyXmlFileManager {
 	public ServiceMergeResults loadConfigurationWithXmlDef(String strXMLDefintion) throws IOException,
 			SAXParseException, SAXException {
 		ServiceMergeResults mergeResults = new ServiceMergeResults();
+
+		// ***** REMEMBER *****
+		// Every time a saveOrUpdateXXXX is made, the entire STORE is written to
+		// the file system.
+		// If the STORE has many definitions, then each SAVE will loop over
+		// every file and write.
+		// 
+		// NOT GOOD FOR PERFORMANCE
+		// 
+		// Solution: put the store in a temporary transient state, then revert
+		// to original
+		// READ ONLY MODE setting
+		//
+		// *********************
+		Boolean originalTransientState = store.getReadOnlyMode();
+		store.setReadOnlyMode(true);
 
 		MockeyXmlFileConfigurationReader msfr = new MockeyXmlFileConfigurationReader();
 		IMockeyStorage mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
@@ -161,8 +186,8 @@ public class MockeyXmlFileManager {
 				logger.error("Unable to parse file of name " + serviceRef.getFileName(), spe);
 				mergeResults.addConflictMsg("File not parseable: " + serviceRef.getFileName());
 
-			} catch (FileNotFoundException fnf ) {
-				logger.error("File not found: " + serviceRef.getFileName() );
+			} catch (FileNotFoundException fnf) {
+				logger.error("File not found: " + serviceRef.getFileName());
 				mergeResults.addConflictMsg("File not found: " + serviceRef.getFileName());
 			}
 
@@ -171,7 +196,6 @@ public class MockeyXmlFileManager {
 		// Service
 		mergeResults = addServicesToStore(mergeResults, mockServiceStoreTemporary.getServices());
 
-		// PLANS
 		for (ServicePlan servicePlan : mockServiceStoreTemporary.getServicePlans()) {
 			store.saveOrUpdateServicePlan(servicePlan);
 		}
@@ -180,6 +204,14 @@ public class MockeyXmlFileManager {
 		for (TwistInfo twistInfo : mockServiceStoreTemporary.getTwistInfoList()) {
 			store.saveOrUpdateTwistInfo(twistInfo);
 		}
+
+		// Don't forget to set state back to original state.
+		// NOTE: if transient state (read only) is false, then this method will
+		// write to STORE to the file system.
+		// Yeah!
+		// *********************
+		store.setReadOnlyMode(originalTransientState);
+		// *********************
 
 		return mergeResults;
 	}
@@ -238,6 +270,11 @@ public class MockeyXmlFileManager {
 	 */
 	public ServiceMergeResults mergeServices(Service uploadedServiceBean, Service inMemoryServiceBean,
 			ServiceMergeResults readResults) {
+		
+		//
+		Boolean originalMode = store.getReadOnlyMode();
+		store.setReadOnlyMode(true);
+		
 		if (uploadedServiceBean != null && inMemoryServiceBean != null) {
 			// Merge Scenarios
 			if (readResults == null) {
@@ -284,6 +321,8 @@ public class MockeyXmlFileManager {
 
 			}
 		}
+		
+		store.setReadOnlyMode(originalMode);
 		return readResults;
 	}
 

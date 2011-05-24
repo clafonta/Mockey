@@ -81,6 +81,9 @@ public class ServiceMergeServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		Boolean originalMode = store.getReadOnlyMode();
+		store.setReadOnlyMode(true);
+		
 		String[] serviceMergeIdList = req
 				.getParameterValues("serviceIdMergeSource[]");
 		Enumeration<String> names = (Enumeration<String>)req.getParameterNames();
@@ -137,7 +140,7 @@ public class ServiceMergeServlet extends HttpServlet {
 
 		out.flush();
 		out.close();
-
+		store.setReadOnlyMode(originalMode);
 		return;
 		// AJAX thing. Return nothing at this time.
 	}

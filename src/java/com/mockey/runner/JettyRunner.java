@@ -56,8 +56,8 @@ public class JettyRunner {
 		jsap.registerParameter(new FlaggedOption("file", JSAP.STRING_PARSER, MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
 				JSAP.NOT_REQUIRED, 'f', "file", "relative path to file to initialize Mockey"));
 		
-		jsap.registerParameter(new FlaggedOption("transientState", JSAP.BOOLEAN_PARSER, "false",
-				JSAP.NOT_REQUIRED, 't', "transientState", "Read only mode, no updates to file system"));
+		jsap.registerParameter(new FlaggedOption("transientState", JSAP.BOOLEAN_PARSER, "true",
+				JSAP.NOT_REQUIRED, 't', "transientState", "Read only mode if set to true, no updates are made to the file system."));
 
 		// parse the command line options
 		JSAPResult config = jsap.parse(args);
@@ -69,7 +69,7 @@ public class JettyRunner {
 
 		// Construct the new arguments for jetty-runner
 		int port = config.getInt("port");
-		boolean transientState = false;
+		boolean transientState = true;
 		try {
 			transientState = config.getBoolean("transientState");
 		}catch(Exception e){

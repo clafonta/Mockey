@@ -71,6 +71,8 @@ public class HomeServlet extends HttpServlet {
 	private static final String API_CONFIGURATION_PARAMETER_FILE = "file";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE = "deleteAllServices";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_INIT = "init";
+	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE = "transientState";
+	
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
 
@@ -121,6 +123,15 @@ public class HomeServlet extends HttpServlet {
 					.addFieldValues(new ApiDocFieldValue("json",
 							"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
 			apiDocRequest.addAttribute(reqAttributeType);
+			apiDocService.setApiRequest(apiDocRequest);
+			
+			// Parameter - 'transientState'
+			ApiDocAttribute reqAttributeState = new ApiDocAttribute();
+			reqAttributeState.setFieldName(API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE);
+			reqAttributeState
+					.addFieldValues(new ApiDocFieldValue("boolean",
+							"Read only mode? Also known as transient."));
+			apiDocRequest.addAttribute(reqAttributeState);
 			apiDocService.setApiRequest(apiDocRequest);
 
 			// *****************************
@@ -178,9 +189,9 @@ public class HomeServlet extends HttpServlet {
 
 			// Load with local file.
 			String fileName = req.getParameter("file");
-			Boolean transientState = new Boolean(false);
+			Boolean transientState = new Boolean(true);
 			try{
-				transientState = new Boolean(req.getParameter("transientState"));
+				transientState = new Boolean(req.getParameter(API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE));
 				store.setReadOnlyMode(transientState);
 				logger.debug("Read only mode? " + transientState);
 			}catch(Exception e){

@@ -104,8 +104,9 @@ public class MockeyXmlFactory {
 				serviceFOP.write(serviceOutputAsBytes);
 				serviceFOP.flush();
 				serviceFOP.close();
+				logger.debug("Written to: " + serviceFile.getAbsolutePath());
 			}
-			logger.debug("Saved to the file system.");
+			
 		} catch (Exception e) {
 			logger.debug("Unable to write file", e);
 		}

@@ -335,8 +335,8 @@ $(document).ready( function() {
 			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
 			                                
 			                                <div style="padding-top:0.6em;">  
-			                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#"> Set As Plan </a> &nbsp;
-			                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#">Save Plan</a></div>
+			                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#"> Set This Plan </a> &nbsp;
+			                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#">Save As Plan</a></div>
 			                                </div>
 									    </c:forEach>
 									    <div class="tiny" style="padding-top:1em;" id="no-plans-msg"><a href="<c:url value="help#plan"/>">What's a plan?</a></div>
