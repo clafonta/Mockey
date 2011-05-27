@@ -478,21 +478,17 @@ public class Service implements PersistableItem, ExecutableService {
 	private ResponseFromService executeDynamicScenario(RequestFromClient request, Url realServiceUrl) {
 
 		logger.debug("mockeying a dynamic scenario.");
-		String rawRequestData = "";
+		StringBuffer rawRequestDataBuffer = new StringBuffer();
 		try {
-			rawRequestData = new String();
-			if (!request.hasPostBody()) {
-				// OK..let's build the request message from Params.
-				// Is this a HACK? I dunno yet.
-				logger.debug("Request message is EMPTY; building request message out of Parameters. ");
-				rawRequestData = request.buildParameterRequest();
-			} else {
-				rawRequestData = request.getBodyInfo();
+			rawRequestDataBuffer.append(request.buildParameterRequest());
+			if (request.hasPostBody()) {
+				rawRequestDataBuffer.append(request.getBodyInfo());
 			}
 		} catch (UnsupportedEncodingException e) {
 			// uhm.
+			logger.debug("Unable to extract content from request", e);
 		}
-
+		String rawRequestData = rawRequestDataBuffer.toString();
 		ResponseFromService response = new ResponseFromService();
 		List<Scenario> scenarios = this.getScenarios();
 		Iterator<Scenario> iter = scenarios.iterator();
@@ -502,11 +498,7 @@ public class Service implements PersistableItem, ExecutableService {
 			logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + rawRequestData);
 			int indexValue = -1;
 			if (scenario.hasMatchArgument()) {
-				if (request.hasPostBody()) {
-					indexValue = request.getBodyInfo().indexOf(scenario.getMatchStringArg());
-				} else {
-					indexValue = rawRequestData.indexOf(scenario.getMatchStringArg());
-				}
+				indexValue = rawRequestData.indexOf(scenario.getMatchStringArg());
 			}
 			if ((indexValue > -1)) {
 				logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
