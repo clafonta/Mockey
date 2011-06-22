@@ -258,7 +258,7 @@ public class Url {
 		URL aURL = new URL(validUrl);
 		String port = "";
 		if(aURL.getPort() > -1){
-			port = ";"+aURL.getPort();
+			port = ":"+aURL.getPort();
 		}
 		String schemeHostPortPath = aURL.getProtocol() + "://" + aURL.getHost() + port + aURL.getPath();
 		return schemeHostPortPath;
@@ -278,6 +278,7 @@ public class Url {
 			System.out.println("query = " + aURL.getQuery());
 			System.out.println("filename = " + aURL.getFile());
 			System.out.println("ref = " + aURL.getRef());
+			System.out.println("As a string = " + aURL.toString());			
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

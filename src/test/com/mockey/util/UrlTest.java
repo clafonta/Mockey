@@ -75,6 +75,10 @@ public class UrlTest {
 		assert "http://abc.google.com/xyz/someargument//".equals(Url.getSchemeHostPortPathFromURL(urlArg)) : "Expected 'http://abc.google.com/xyz/someargument//', but was "
 				+ Url.getSchemeHostPortPathFromURL(urlArg);
 		
+		urlArg = "http://abc.google.com:80/xyz/someargument//";
+		assert "http://abc.google.com:80/xyz/someargument//".equals(Url.getSchemeHostPortPathFromURL(urlArg)) : "Expected 'http://abc.google.com:80/xyz/someargument//', but was "
+				+ Url.getSchemeHostPortPathFromURL(urlArg);
+		
 		urlArg = "http://abc.google.com/xyz/path/a/b/c";
 		assert "http://abc.google.com/xyz/path/a/b/c".equals(Url.getSchemeHostPortPathFromURL(urlArg)) : "Expected 'http://abc.google.com/xyz/path/a/b/c', but was "
 				+ Url.getSchemeHostPortPathFromURL(urlArg);
