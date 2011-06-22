@@ -167,8 +167,8 @@ $(document).ready( function() {
                        bValid = bValid && checkLength(name,"scenario name",3,1000);
                        if (bValid) {
                            $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
-                                responseMessage: responsemsg.val(), universalErrorScenario: universalerrorscenario.val(), 
-                                    errorScenario: errorscenario.val()  } ,function(data){
+                                responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.val(), 
+                                    errorScenario: error_scenario.val()  } ,function(data){
                                     
                                 }, 'json' );  
                            $(this).dialog('close');              
@@ -197,9 +197,9 @@ $(document).ready( function() {
         <label for="scenario_match">Match argument</label>
         <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
         <div class="tinyfieldset childform" style="margin-bottom: 1em;">
-                <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="on">Universal Error Response</input>
+                <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="true">Universal Error Response</input>
                 <br />
-                <input type="checkbox" name="error_scenario" id="error_scenario" value="on">Service Scenario Error Response</input>
+                <input type="checkbox" name="error_scenario" id="error_scenario" value="true">Service Scenario Error Response</input>
                 <div id="" style="" class="tinyfieldset info_message">
                 If these checkboxes are checked, then it tells Mockey how to handle errors. For more information, see  
                 <a style="color:blue;" href="<c:url value="/help#error_handling"/>">here</a>
