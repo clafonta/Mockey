@@ -75,7 +75,7 @@ public class ResponseServlet extends HttpServlet {
 		logger.info(request.getHeaderInfo());
 		logger.info(request.getParameterInfo());
 		logger.info(request.getCookieInfoAsString());
-		
+
 		String originalHttpReqURI = originalHttpReqFromClient.getRequestURI();
 
 		String contextRoot = originalHttpReqFromClient.getContextPath();
@@ -89,8 +89,6 @@ public class ResponseServlet extends HttpServlet {
 
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
 
-		
-		
 		ResponseFromService response = service.execute(request, urlToExecute);
 		logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr());
 
@@ -104,6 +102,9 @@ public class ResponseServlet extends HttpServlet {
 			// Or not.
 		}
 
+		// TODO:
+		// return all headers and cookies to allow setup of
+		// services and/or scenarios copied/created from History.
 		resp.setCharacterEncoding(HTTP.ISO_8859_1); // "UTF-8");
 		resp.setContentType(service.getHttpContentType());
 		if (!(service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY)) {
@@ -112,6 +113,7 @@ public class ResponseServlet extends HttpServlet {
 			new PrintStream(resp.getOutputStream()).write(myISO88591asBytes);
 			resp.getOutputStream().flush();
 		} else {
+			resp.setStatus(response.getStatusLine().getStatusCode());
 			response.writeToOutput(resp);
 		}
 	}
@@ -119,7 +121,8 @@ public class ResponseServlet extends HttpServlet {
 	private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response,
 			String ip) throws UnsupportedEncodingException {
 		FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-		fulfilledClientRequest.setRawRequest( (response.getRequestUrl()!=null) ? response.getRequestUrl().toString() : ""); 
+		fulfilledClientRequest.setRawRequest((response.getRequestUrl() != null) ? response.getRequestUrl().toString()
+				: "");
 		fulfilledClientRequest.setRequestorIP(ip);
 		fulfilledClientRequest.setServiceId(service.getId());
 		fulfilledClientRequest.setServiceName(service.getServiceName());
@@ -127,7 +130,7 @@ public class ResponseServlet extends HttpServlet {
 		fulfilledClientRequest.setClientRequestHeaders(request.getHeaderInfo());
 		fulfilledClientRequest.setClientRequestParameters(request.getParameterInfo());
 		fulfilledClientRequest.setResponseMessage(response);
-		fulfilledClientRequest.setClientRequestCookies(request.getCookieInfoAsString() ) ;//response.getRequestCookies());
+		fulfilledClientRequest.setClientRequestCookies(request.getCookieInfoAsString());// response.getRequestCookies());
 		fulfilledClientRequest.setClientResponseCookies(response.getResponseCookiesAsString());
 
 		fulfilledClientRequest.setServiceResponseType(service.getServiceResponseType());
