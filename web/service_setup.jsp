@@ -129,7 +129,7 @@
 	            <label for="service_url">Mock service URL: </label>
 	            <input type="text" id="service_url" class="text ui-corner-all ui-widget-content" name="service_url" maxlength="1000" size="90%" value="<c:out value="${mockservice.url}"/>" />
 	            <div class="tinyfieldset">You can make up a new but unique <i>mock</i> URL to map to the real URL(s). Your mock URL will look like this: 
-	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />">
+	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />"/>
 	               </div>
 	            </div>
 	            <div id="invalidUrl" style="display:none;color:red;"><span>Note:</span> </div>
@@ -152,6 +152,7 @@
                             <option value="text/plain;" <c:if test="${mockservice.httpContentType eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
                             <option value="text/css;" <c:if test="${mockservice.httpContentType eq 'text/css;'}">selected="selected"</c:if>>text/css;</option>
                             <option value="application/json;" <c:if test="${mockservice.httpContentType eq 'application/json;'}">selected="selected"</c:if>>application/json;</option>
+                            <option value="application/json;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'application/json;charset=utf-8'}">selected="selected"</c:if>>application/json;charset=utf-8</option>
                             <option value="text/html;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'text/html;charset=utf-8'}">selected="selected"</c:if>>text/html;charset=utf-8</option>
                             <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpContentType eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
                             <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->
