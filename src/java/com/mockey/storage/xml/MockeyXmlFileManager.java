@@ -61,7 +61,6 @@ import com.mockey.ui.ServiceMergeResults;
  */
 public class MockeyXmlFileManager {
 
-	private static final long serialVersionUID = 2874257060865115637L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	public static final String MOCK_SERVICE_DEFINITION = "mock_service_definitions.xml";
 	protected static final String MOCK_SERVICE_FOLDER = "mockey_def_depot";

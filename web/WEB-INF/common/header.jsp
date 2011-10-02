@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en">
@@ -6,9 +7,12 @@
 <title>Mockey - <c:out value="${requestScope.pageTitle}"/></title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
 <link rel="shortcut icon" href="<c:url value="/images/favicon.ico" />">
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/hoverbox.css" />" media="screen, projection" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/superfish.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/jquery-ui-1.8.1.custom/css/flick/jquery-ui-1.8.1.custom.css" />" />
+<link rel="stylesheet" type="text/css" href="<c:url value="/javascript/fileuploader/fileuploader.css" />" />
+
 <script type="text/javascript" src="<c:url value="/javascript/util.js" />"></script>
 <script type="text/javascript" src="<c:url value="/jquery-ui-1.8.1.custom/js/jquery-1.4.2.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/jquery-ui-1.8.1.custom/js/jquery-ui-1.8.1.custom.min.js" />"></script>
@@ -18,6 +22,7 @@
 <script type="text/javascript" src="<c:url value="/javascript/superfish.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/hoverIntent.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery.hint.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/fileuploader/fileuploader.js" />"></script>
 
 <script LANGUAGE="Javascript">
 <!---
@@ -232,6 +237,9 @@ $(document).ready(function() {
 					<li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
 	                <a title="Twisting" href="<c:url value="/twisting/setup" />"
 	                    style="">Twisting</a></li>
+	                <li <c:if test="${currentTab == 'filesysteminfo'}">class="current"</c:if>>
+	                <a title="Image Depot" href="<c:url value="/filesysteminfo" />"
+	                    style="">Image Depot</a></li>   
 				</ul>
 			</li>
 			<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
