@@ -27,17 +27,18 @@
  */
 package com.mockey.runner;
 
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.resource.Resource;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.Resource;
 
 public class ClassPathResourceHandler extends ContextHandler {
     private ResourceHandler realResourceHandler = null;

@@ -46,8 +46,8 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
-import com.mockey.storage.xml.MockeyXmlFileManager;
 import com.mockey.storage.xml.MockeyXmlFactory;
+import com.mockey.storage.xml.MockeyXmlFileManager;
 
 /**
  * In memory implementation to the storage of mock services and scenarios.

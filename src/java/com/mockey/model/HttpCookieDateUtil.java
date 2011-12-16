@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.http.impl.cookie.DateParseException;
+
 /**
  * A utility class for parsing and formatting HTTP dates as used in cookies and
  * other headers.  This class handles dates as defined by RFC 2616 section

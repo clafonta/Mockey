@@ -27,13 +27,13 @@
  */
 package com.mockey.runner;
 
-import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.webapp.WebXmlConfiguration;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebXmlConfiguration;
 
 public class PreCompiledJspConfiguration extends WebXmlConfiguration {
 
