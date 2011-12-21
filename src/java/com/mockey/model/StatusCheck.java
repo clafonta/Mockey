@@ -1,0 +1,134 @@
+/*
+ * This file is part of Mockey, a tool for testing application 
+ * interactions over HTTP, with a focus on testing web services, 
+ * specifically web applications that consume XML, JSON, and HTML.
+ *  
+ * Copyright (C) 2009-2010  Authors:
+ * 
+ * chad.lafontaine (chad.lafontaine AT gmail DOT com)
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ */
+package com.mockey.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Extend this class if you need to track meta information, which includes 'last
+ * visited' and 'tags'
+ * 
+ * @author clafonta
+ * 
+ */
+public abstract class StatusCheck {
+
+	private List<String> tagList = new ArrayList<String>();
+	private Long lastVisit = null;
+
+	/**
+	 * Add tag to the list. Method ensures no duplication, space trimming, and
+	 * is case insensitive. Actually, this method will force lower-case
+	 * 
+	 * @param tag
+	 */
+	public void addTagToList(String tag) {
+
+		this.tagList = createUniqueLowercaseTagList(this.tagList, tag);
+
+	}
+
+	public List<String> getTagList() {
+		return this.tagList;
+	}
+
+	public void setTagList(List<String> argTagList) {
+		this.tagList = createUniqueLowercaseTagList(argTagList, null);
+	}
+
+	public void setTag(String tag) {
+		this.tagList = createUniqueLowercaseTagList(null, tag);
+	}
+
+	public String getTag() {
+		StringBuffer sb = new StringBuffer();
+		if (this.tagList != null) {
+			for (String arg : this.tagList) {
+				sb.append(arg + " ");
+			}
+		}
+		return sb.toString().trim().toLowerCase();
+	}
+
+	public Long getLastVisit() {
+		return lastVisit;
+	}
+
+	public void setLastVisit(Long lastVisited) {
+		this.lastVisit = lastVisited;
+	}
+
+	/**
+	 * 
+	 * @param tagList
+	 *            - can be null; if not null, then all values will be lower
+	 *            cased, duplicates removed, values trimmed. Example: [a, b, def
+	 *            def, HIG] will return a list of [a, b, def, hig]
+	 * @param tagArg
+	 *            - can be null; if not null, value will be split based on the
+	 *            'space' character. Example 'abc def' will have a return list
+	 *            value of 2
+	 * @return Always a String list containing 0 or more String values, each
+	 *         lower-case
+	 */
+	private List<String> createUniqueLowercaseTagList(List<String> tagList,
+			String tagArg) {
+
+		// LIST CLEAN
+		List<String> targetTagList = new ArrayList<String>();
+		if (tagList != null) {
+			// REMOVE DUPLICATES AND ENSURE TO SPLIT VALUES BASED ON 'space'
+			// CHARACTER
+			for (String obj : tagList) {
+
+				String[] splitTagArg = obj.toLowerCase().trim().split(" ");
+				for (String cleanObj : splitTagArg) {
+					if (cleanObj.toLowerCase().trim().length() > 0
+							&& !targetTagList.contains(cleanObj.toLowerCase()
+									.trim())) {
+						targetTagList.add(cleanObj);
+					}
+				}
+			}
+		}
+
+		// TAG HANDLING
+		//
+
+		// Let's make sure no duplicates, case-insensitive
+		if (tagArg != null) {
+			String[] splitTagArg = tagArg.toLowerCase().trim().split(" ");
+			for (String cleanTag : splitTagArg) {
+				if (cleanTag.toLowerCase().trim().length() > 0
+						&&!targetTagList.contains(cleanTag.toLowerCase().trim())) {
+					targetTagList.add(cleanTag);
+				}
+			}
+		}
+		return targetTagList;
+
+	}
+}

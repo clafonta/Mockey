@@ -64,6 +64,19 @@ public class UrlTest {
 		assert "http".equals(url.getScheme());
 		assert 8080 == url.getPort();
 	}
+	
+	@Test
+	public void validateEmptySetings() {
+		
+		Url emptySettings = new Url("");
+		assert !emptySettings.hasSettings() : " Expected FALSE; with empty String as argument in constructor, should be 'no settings'.";
+		
+		emptySettings = new Url("   ");
+		assert !emptySettings.hasSettings() : " Expected FALSE; with empty String as argument in constructor, should be 'no settings'.";
+		
+		emptySettings = new Url("http://www.google.com");
+		assert emptySettings.hasSettings() : " Expected FALSE; with empty String as argument in constructor, should be 'no settings'.";
+	}
 
 	@Test
 	public void extractMockUrlFromFullUrl() throws MalformedURLException {

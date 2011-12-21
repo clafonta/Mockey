@@ -49,72 +49,90 @@ import com.mockey.storage.xml.MockeyXmlFileManager;
  */
 public class UploadConfigurationServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 2874257060865115637L;
+	private static final long serialVersionUID = 2874257060865115637L;
 
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.service(req, resp);
-    }
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		super.service(req, resp);
+	}
 
-    /**
-     * 
-     * 
-     * @param req
-     *            basic request
-     * @param resp
-     *            basic resp
-     * @throws ServletException
-     *             basic
-     * @throws IOException
-     *             basic
-     */
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	/**
+	 * 
+	 * 
+	 * @param req
+	 *            basic request
+	 * @param resp
+	 *            basic resp
+	 * @throws ServletException
+	 *             basic
+	 * @throws IOException
+	 *             basic
+	 */
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
-        RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
-        dispatch.forward(req, resp);
-    }
+		RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
+		dispatch.forward(req, resp);
+	}
 
-    /**
-     * 
-     * 
-     * @param req
-     *            basic request
-     * @param resp
-     *            basic resp
-     * @throws ServletException
-     *             basic
-     * @throws IOException
-     *             basic
-     */
-    @SuppressWarnings("unchecked")
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	/**
+	 * 
+	 * 
+	 * @param req
+	 *            basic request
+	 * @param resp
+	 *            basic resp
+	 * @throws ServletException
+	 *             basic
+	 * @throws IOException
+	 *             basic
+	 */
+	@SuppressWarnings("unchecked")
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
-        try {
-            // Create a new file upload handler
-            DiskFileUpload upload = new DiskFileUpload();
+		String taglistValue = "";
+		byte[] data = null;
+		try {
+			// STEP 1. GATHER UPLOADED ITEMS
+			// Create a new file upload handler
+			DiskFileUpload upload = new DiskFileUpload();
 
-            // Parse the request
-            List<FileItem> items = upload.parseRequest(req);
-            Iterator<FileItem> iter = items.iterator();
-            while (iter.hasNext()) {
-                FileItem item = (FileItem) iter.next();
+			// Parse the request
+			List<FileItem> items = upload.parseRequest(req);
+			Iterator<FileItem> iter = items.iterator();
+			while (iter.hasNext()) {
+				FileItem item = (FileItem) iter.next();
 
-                if (!item.isFormField()) {
+				if (!item.isFormField()) {
 
-                    byte[] data = item.get();
-                    MockeyXmlFileManager configurationReader = new MockeyXmlFileManager();
-                    ServiceMergeResults results = configurationReader.loadConfigurationWithXmlDef(new String(data));
+					data = item.get();
 
-                    Util.saveSuccessMessage("Service definitions uploaded.", req);
-                    req.setAttribute("conflicts", results.getConflictMsgs());
-                    req.setAttribute("additions", results.getAdditionMessages());
+				} else {
 
-                }
-            }
-        } catch (Exception e) {
-            Util.saveErrorMessage("Unable to upload or parse file.", req);
-        }
+					String name = item.getFieldName();
+					if ("taglist".equals(name)) {
+						taglistValue = item.getString();
+					}
 
-        RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
-        dispatch.forward(req, resp);
-    }
+				}
+			}
+
+			// STEP 2. PERSIST THE DATA
+			if (data != null) {
+				MockeyXmlFileManager configurationReader = new MockeyXmlFileManager();
+				ServiceMergeResults results = configurationReader
+						.loadConfigurationWithXmlDef(new String(data), taglistValue);
+
+				Util.saveSuccessMessage("Service definitions uploaded.", req);
+				req.setAttribute("conflicts", results.getConflictMsgs());
+				req.setAttribute("additions", results.getAdditionMessages());
+			}
+		} catch (Exception e) {
+			Util.saveErrorMessage("Unable to upload or parse file.", req);
+		}
+
+		RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
+		dispatch.forward(req, resp);
+	}
 }

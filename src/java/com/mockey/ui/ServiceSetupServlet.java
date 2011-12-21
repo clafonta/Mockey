@@ -56,6 +56,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static final Boolean TRANSIENT_STATE = new Boolean(true);
+
 	/**
 	 * 
 	 */
@@ -194,7 +195,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		}
 		// NEW REAL URL LIST
 		// 1. Overwrite list of predefined URLs
-		// 2. Ensure non-empty trim String for new Url objects. 
+		// 2. Ensure non-empty trim String for new Url objects.
 		if (realSrvUrl != null) {
 			List<Url> newUrlList = new ArrayList<Url>();
 			for (int i = 0; i < realSrvUrl.length; i++) {
@@ -207,7 +208,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			}
 			service.setRealServiceUrls(newUrlList);
 		}
-		
+
 		// UPDATE HANGTIME - optional
 		try {
 			service.setHangTime(Integer.parseInt(req.getParameter("hangTime")));
@@ -218,20 +219,24 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		// NAME - optional
 		if (req.getParameter("serviceName") != null) {
-		   service.setServiceName(req.getParameter("serviceName"));
+			service.setServiceName(req.getParameter("serviceName"));
 		}
-		
-		
+
+		// TAG - optional
+		if (req.getParameter("tag") != null) {
+			service.setTag(req.getParameter("tag"));
+		}
+
 		// DESCRIPTION - optional
 		if (req.getParameter("description") != null) {
 			service.setDescription(req.getParameter("description"));
 		}
-		
+
 		// MOCK URL - optional
 		if (req.getParameter("url") != null) {
 			service.setUrl(req.getParameter("url"));
 		}
-		
+
 		// CONTENT TYPE - optional
 		if (req.getParameter("httpContentType") != null) {
 			service.setHttpContentType(req.getParameter("httpContentType"));

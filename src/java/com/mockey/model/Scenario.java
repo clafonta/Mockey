@@ -27,12 +27,13 @@
  */
 package com.mockey.model;
 
+
 /**
  * A Scenario is a specific response from a Service.
  * 
  * @author chad.lafontaine
  */
-public class Scenario implements PersistableItem {
+public class Scenario extends StatusCheck implements PersistableItem {
 
 	private Long id;
 	private Long serviceId;
@@ -40,7 +41,7 @@ public class Scenario implements PersistableItem {
 	private String requestMessage;
 	private String responseMessage;
 	private String matchStringArg = null;
-
+	
 	public String getScenarioName() {
 		return scenarioName;
 	}
@@ -126,4 +127,6 @@ public class Scenario implements PersistableItem {
 		}
 		return false;
 	}
+
+	
 }

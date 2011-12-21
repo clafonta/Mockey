@@ -43,9 +43,10 @@
 			        realUrl = $("#service_real_url"),
 			        serviceName = $("#service_name"),
 			        hangtime = $("#hang_time"),
+			        tag = $('#tag'),
 			        serviceContentType = $("#service_http_content_type");
 			 
-			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(),
+			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(), tag: tag.val(),
 				   'realServiceUrl[]':  realServiceUrlValues, url: url.val(), httpContentType: serviceContentType.val(),
 				   hangTime: hangtime.val() } ,function(data){
 					   
@@ -145,6 +146,9 @@
                 <label for="service_url">Hang time: </label>
                 <input type="text" id="hang_time" class="text ui-corner-all ui-widget-content" style="width:100px;" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
                 <div class="tinyfieldset">The delay time in milliseconds.</div>
+                <label for="service_url">Tag(s):</label> 
+                <input type="text" id="tag" class="text ui-corner-all ui-widget-content" name="tag" maxlength="1000" size="90%" value="<c:out value="${mockservice.tag}"/>" />
+                <div class="tinyfieldset"><strong>Optional.</strong> Add 1 or more tags seperated with spaces. Tags can be useful for all kinds of things. Use it as meta-data for your services, plans, scenarios, etc.</div>
                 <label>HTTP header definition:</label>
 	            <select id="service_http_content_type" name="httpContentType">
 	                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>

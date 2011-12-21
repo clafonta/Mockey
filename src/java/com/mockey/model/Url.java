@@ -143,7 +143,8 @@ public class Url {
 		}
 		if (hostAndPort.indexOf(":") > 0) {
 			this.host = hostAndPort.substring(0, hostAndPort.indexOf(":"));
-			String portArg = hostAndPort.substring(hostAndPort.indexOf(":") + 1, hostAndPort.length());
+			String portArg = hostAndPort.substring(
+					hostAndPort.indexOf(":") + 1, hostAndPort.length());
 			try {
 				this.port = Integer.valueOf(portArg);
 			} catch (Exception e) {
@@ -182,7 +183,8 @@ public class Url {
 	 *         and 80 for HTTPS and HTTP respectively.
 	 */
 	public boolean isDefaultPort() {
-		return ("https".equals(scheme) && 443 == port) || ("http".equals(scheme) && 80 == port);
+		return ("https".equals(scheme) && 443 == port)
+				|| ("http".equals(scheme) && 80 == port);
 	}
 
 	/**
@@ -247,28 +249,55 @@ public class Url {
 	}
 
 	/**
-	 * Given a valid URL with query and reference arguments, this method will extract remove those values
-	 * and return a value with SCHEME://HOST[:PORT]//PATH
+	 * Given a valid URL with query and reference arguments, this method will
+	 * extract remove those values and return a value with
+	 * SCHEME://HOST[:PORT]//PATH
 	 * 
 	 * @param validUrl
 	 * @return
 	 * @throws MalformedURLException
 	 */
-	public static String getSchemeHostPortPathFromURL(String validUrl) throws MalformedURLException {
+	public static String getSchemeHostPortPathFromURL(String validUrl)
+			throws MalformedURLException {
 		URL aURL = new URL(validUrl);
 		String port = "";
-		if(aURL.getPort() > -1){
-			port = ":"+aURL.getPort();
+		if (aURL.getPort() > -1) {
+			port = ":" + aURL.getPort();
 		}
-		String schemeHostPortPath = aURL.getProtocol() + "://" + aURL.getHost() + port + aURL.getPath();
+		String schemeHostPortPath = aURL.getProtocol() + "://" + aURL.getHost()
+				+ port + aURL.getPath();
 		return schemeHostPortPath;
 	}
 	
-	
+	/**
+	 * Convenience method. When did this get here? 
+	 * 
+	 * @return
+	 */
+	public boolean hasSettings(){
+		if( this.getFullUrl()!=null && this.getFullUrl().trim().length() > 0){
+			return true;
+		}else {
+			return false;
+		}
+	}
+
 	public static void main(String[] args) {
+		// What's this? 
+		// URL not Url? 
+		// Ah...we're testing URL for help here.
 		URL aURL;
 		try {
-			aURL = new URL("http://java.sun.com:80/docs/books/tutorial/index.html////?");
+			Url b = new Url();
+			
+			System.out.println(b.hasSettings());
+			b = new Url("http://www.google.com");
+			System.out.println(b.hasSettings());
+			b = new Url("");
+			System.out.println(b.hasSettings() + " '" + b.toString() + "'");
+			
+			aURL = new URL(
+					"http://java.sun.com:80/docs/books/tutorial/index.html////?");
 
 			System.out.println("protocol = " + aURL.getProtocol());
 			System.out.println("authority = " + aURL.getAuthority());
@@ -278,7 +307,7 @@ public class Url {
 			System.out.println("query = " + aURL.getQuery());
 			System.out.println("filename = " + aURL.getFile());
 			System.out.println("ref = " + aURL.getRef());
-			System.out.println("As a string = " + aURL.toString());			
+			System.out.println("As a string = " + aURL.toString());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

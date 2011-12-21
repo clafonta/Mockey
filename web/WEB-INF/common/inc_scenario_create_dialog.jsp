@@ -7,15 +7,16 @@ $(document).ready( function() {
         resizable: true,
         height:500,
         width:700,
-        modal: false,
+        modal: true,
         autoOpen: false
     });
     var name = $("#scenario_name"),
         match = $("#scenario_match"),
         responsemsg = $("#scenario_response"),
         universal_error_scenario = $('#universal_error_scenario'),
+        tag = $('#tag'),
         error_scenario = $('#error_scenario'),
-        allFields = $([]).add(name).add(match).add(universal_error_scenario).add(error_scenario).add(responsemsg),
+        allFields = $([]).add(name).add(match).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag),
         tips = $(".validateTips");  
     
     function updateTips(t) {
@@ -59,6 +60,7 @@ $(document).ready( function() {
             $('#scenario_name').val('');
             $('#scenario_match').val('');
             $('#scenario_response').val(''); 
+            $('#tag').val(''); 
             $('#universal_error_scenario').attr('checked', false);
             $('#error_scenario').attr('checked', false);
             $('#dialog-create-scenario').dialog('open');
@@ -69,7 +71,7 @@ $(document).ready( function() {
                            allFields.removeClass('ui-state-error');
                            bValid = bValid && checkLength(name,"scenario name",3,1000);
                            if (bValid) {
-                               $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
+                               $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), matchStringArg: match.val(),
                                     responseMessage: responsemsg.val(), 
                                     universalErrorScenario: universal_error_scenario.is(':checked'), 
                                     errorScenario: error_scenario.is(':checked')  } ,function(data){
@@ -102,6 +104,7 @@ $(document).ready( function() {
                     $('#service-name-for-scenario').text(data.serviceName);
                     $('#scenario_name').val(data.name);
                     $('#scenario_match').val(data.match);
+                    $('#tag').val(data.tag);
                     $('#scenario_response').val(data.response); 
                     $('#error_scenario').attr('checked', data.scenarioErrorFlag);
                     $('#universal_error_scenario').attr('checked', data.universalScenarioErrorFlag);
@@ -113,7 +116,7 @@ $(document).ready( function() {
                                allFields.removeClass('ui-state-error');
                                bValid = bValid && checkLength(name,"scenario name",3,1000);
                                if (bValid) {
-                                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId, matchStringArg: match.val(),
+                                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId,  tag: tag.val(), matchStringArg: match.val(),
                                         responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.is(':checked'), 
                                         errorScenario: error_scenario.is(':checked')  } ,function(data){
                                                console.log(data);
@@ -150,7 +153,9 @@ $(document).ready( function() {
             success: function(data) {
               serviceId = data.serviceId;
               serviceName = data.serviceName;
+              tag = data.tag;
               $('#service-name-for-scenario').text(serviceName);
+              $('#tag').text(tag);
               $('#scenario_name').val('Give this a name');
               $('#scenario_match').val('');
               $('#scenario_response').val(data.responseBody); 
@@ -166,7 +171,7 @@ $(document).ready( function() {
                        allFields.removeClass('ui-state-error');
                        bValid = bValid && checkLength(name,"scenario name",3,1000);
                        if (bValid) {
-                           $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, matchStringArg: match.val(),
+                           $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), matchStringArg: match.val(),
                                 responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.val(), 
                                     errorScenario: error_scenario.val()  } ,function(data){
                                     
@@ -196,6 +201,8 @@ $(document).ready( function() {
         <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
         <label for="scenario_match">Match argument</label>
         <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
+        <label for="scenario_match">Tag(s)</label> [optional]
+        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" title="Add 1 or more tags seperated with spaces. (Optional)" />
         <div class="tinyfieldset childform" style="margin-bottom: 1em;">
                 <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="true">Universal Error Response</input>
                 <br />

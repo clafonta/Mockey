@@ -32,17 +32,15 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 
-
 /**
  * Defines a proxy server to communicate with
  */
 public class ProxyServerModel {
 
 	private boolean proxyEnabled = false;
-    private Url proxyUrl;
+	private Url proxyUrl;
 	private String proxyUsername;
 	private String proxyPassword;
-
 
 	public boolean isProxyEnabled() {
 		return proxyEnabled;
@@ -60,16 +58,16 @@ public class ProxyServerModel {
 		this.proxyUrl = new Url(proxyUrl);
 	}
 
-    public String getProxyUrl() {
-        return proxyUrl != null ? proxyUrl.toString() : null;
-    }
+	public String getProxyUrl() {
+		return proxyUrl != null ? proxyUrl.toString() : null;
+	}
 
-    public int getProxyPort() {
+	public int getProxyPort() {
 		return proxyUrl.getPort();
 	}
 
 	public String getProxyUsername() {
-	    
+
 		return this.proxyUsername;
 	}
 
@@ -89,23 +87,44 @@ public class ProxyServerModel {
 		return proxyUrl.getScheme();
 	}
 
-    public HttpHost getHttpHost() {
-        return new HttpHost(getProxyHost(), getProxyPort(), getProxyScheme());
-    }
-    public AuthScope getAuthScope() {
-        return new AuthScope(getProxyHost(), getProxyPort());
-    }
-    
-    public Credentials getCredentials() {
-        String username = getProxyUsername();
-        String pass = getProxyPassword();
-        if(username == null){
-            username = "";
-        }
-        if(pass==null){
-            username = "";
-        }
-        // Can't pass null
-        return new UsernamePasswordCredentials(username, pass);
-    }
+	public HttpHost getHttpHost() {
+		return new HttpHost(getProxyHost(), getProxyPort(), getProxyScheme());
+	}
+
+	public AuthScope getAuthScope() {
+		return new AuthScope(getProxyHost(), getProxyPort());
+	}
+
+	public Credentials getCredentials() {
+		String username = getProxyUsername();
+		String pass = getProxyPassword();
+		if (username == null) {
+			username = "";
+		}
+		if (pass == null) {
+			username = "";
+		}
+		// Can't pass null
+		return new UsernamePasswordCredentials(username, pass);
+	}
+
+	/**
+	 * Convenience method to see if there are any proxy model settings.
+	 * 
+	 * @return false if all attributes of this instance are null or empty, true
+	 *         otherwise
+	 */
+	public boolean hasSettings() {
+		boolean yesSomeSettingExists = false;
+		if(this.proxyUrl!=null && this.proxyUrl.hasSettings()){
+			yesSomeSettingExists = true;
+		}else if(this.proxyUsername!=null && this.proxyUsername.trim().length() > 0){
+			yesSomeSettingExists = true;
+		}else if(this.proxyPassword!=null && this.proxyPassword.trim().length() > 0){
+			yesSomeSettingExists = true;
+		}else {
+			yesSomeSettingExists = false;
+		}
+		return yesSomeSettingExists;
+	}
 }

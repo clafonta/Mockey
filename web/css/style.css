@@ -134,6 +134,30 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .info_message a {text-decoration: underline;}
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;}
+.tag_word { 
+    background-color: #EEEEEE; 
+    color: #666666;
+	padding: 2px 3px 2px 3px;
+	margin: 2px 3px 2px 3px;
+	-moz-border-radius: 0.4em;
+    -webkit-border-radius: 0.3em;
+    border: thin solid #BDBDBD;
+    font-size: 0.9em;
+}
+table.tag_word_table { 
+    background-color: none; 
+	padding: 0px;
+	margin: 0px;
+	border-collapse: collapse;
+    border: none;
+    width:100%;
+}
+table.tag_word_table tr td {
+	margin: 0px;
+	padding: 0.5em;
+	font-stretch: ultra-condensed;
+	color:#666666;
+}
 .code, .code_text {
 font-family:'Courier',serif;
 font-weight:100; font-stretch: ultra-condensed;color:#666666;}

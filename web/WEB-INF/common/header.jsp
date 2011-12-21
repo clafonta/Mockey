@@ -273,8 +273,8 @@ $(document).ready(function() {
 		
 		    <span id="memory-only-config" class="configuration-info" style="display:none;">
             <a href="#" id="transient_unknown" class="tiny" style="display: none;">___</a>
-            <a href="#" id="transient_true" class="tiny transient-onclick" val="true" style="display: none; color: green;">Transient is ON</a>
-            <a href="#" id="transient_false" class="tiny transient-onclick" val="false" style="display: none;color: red; ">Transient is OFF</a> 
+            <a href="#" id="transient_true" class="tiny transient-onclick" val="true" style="display: none; color: green;">In Memory Only</a>
+            <a href="#" id="transient_false" class="tiny transient-onclick" val="false" style="display: none;color: red; ">Writing to file</a> 
             </span>
             
 			<span class="configuration-info" >
@@ -296,7 +296,7 @@ $(document).ready(function() {
 			</span>
 		</div>
 		<div id="header_tool_wrapper_left" >
-		  <input type="text" value="${term}" title="Search" class="blur text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me"> <img src="<c:url value="/images/search.png" />" /></a>
+		  <input type="text" value="${term}" title="Search" class="blur text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me" style="text-decoration:none;"> <img src="<c:url value="/images/search.png" />" /></a>
 		</div>
 	</div>
 	<div style="clear:both;"/>

@@ -29,6 +29,7 @@ package com.mockey.model;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -50,7 +51,7 @@ import com.mockey.ui.Util;
  * @author chad.lafontaine
  * 
  */
-public class Service implements PersistableItem, ExecutableService {
+public class Service extends StatusCheck implements PersistableItem, ExecutableService {
 
 	public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
 	public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
@@ -69,12 +70,13 @@ public class Service implements PersistableItem, ExecutableService {
 	private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 	private String httpMethod = "GET";
 	private String url = "";
+	
 	private List<FulfilledClientRequest> fulfilledRequests;
 	private List<Url> realServiceUrls = new ArrayList<Url>();
 	private boolean allowRedirectFollow = true;
 	private static Log logger = LogFactory.getLog(Service.class);
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-
+	
 	public List<FulfilledClientRequest> getFulfilledRequests() {
 		return fulfilledRequests;
 	}
@@ -369,6 +371,7 @@ public class Service implements PersistableItem, ExecutableService {
 	 * Static Scenario.
 	 */
 	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl) {
+		this.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 		ResponseFromService response = null;
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
 			response = proxyTheRequest(request, realServiceUrl);
@@ -692,4 +695,5 @@ public class Service implements PersistableItem, ExecutableService {
 	public Boolean getTransientState() {
 		return transientState;
 	}
+	
 }

@@ -215,7 +215,7 @@ public class HomeServlet extends HttpServlet {
 					store.deleteEverything();
 					MockeyXmlFileManager reader = new MockeyXmlFileManager();
 
-					reader.loadConfigurationWithXmlDef(inputString.toString());
+					reader.loadConfigurationWithXmlDef(inputString.toString(), null);
 					logger.info("Loaded definitions from " + fileName);
 					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
 					jsonResultObject.put(API_CONFIGURATION_PARAMETER_FILE, fileName);

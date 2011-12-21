@@ -115,6 +115,10 @@ public class ScenarioServlet extends HttpServlet {
 		}
 		scenario.setScenarioName(scenarioName);
 
+		if (req.getParameter("tag") != null) {
+			scenario.setTag(req.getParameter("tag"));
+		}
+		
 		if (req.getParameter("responseMessage") != null) {
 			scenario.setResponseMessage(req.getParameter("responseMessage"));
 		}

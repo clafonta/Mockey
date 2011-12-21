@@ -28,15 +28,18 @@
 package com.mockey.model;
 
 /**
- * Used in retrieving and saving reference meta data of a service. 
+ * Used in retrieving and saving reference meta data of a service.
+ * 
+ * ____Why is this class needed?____  
  * 
  * @author chadlafontaine
- *
+ * 
  */
-public class ServiceRef implements PersistableItem{
+public class ServiceRef implements PersistableItem {
 
 	private String fileName = null;
 	private Long id = null;
+
 	public Long getId() {
 		return id;
 	}
@@ -44,7 +47,7 @@ public class ServiceRef implements PersistableItem{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public String getFileName() {
 		return fileName;
 	}

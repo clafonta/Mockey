@@ -109,7 +109,7 @@ public class ServiceMergeServlet extends HttpServlet {
 					MockeyXmlFileManager configurationReader = new MockeyXmlFileManager();
 					mergeResults = configurationReader.mergeServices(
 							serviceMergeSource, serviceMergeDestination,
-							mergeResults);
+							mergeResults, null);
 
 				}
 				responseMap.put("additions", mergeResults.getAdditionMsg());

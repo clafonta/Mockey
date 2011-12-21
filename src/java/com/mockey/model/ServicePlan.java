@@ -42,7 +42,7 @@ import java.util.List;
  * @author chad.lafontaine
  * 
  */
-public class ServicePlan implements PersistableItem {
+public class ServicePlan extends StatusCheck implements PersistableItem {
 	private Long id;
 	private String name;
 	private String description;
