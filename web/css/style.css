@@ -101,7 +101,7 @@ div.tableofcontents ul li:before {
 ul.simple { list-style: none;	}
 ul.simple li {	margin:0.5em; }
 ul.upload-result { list-style: disc;   }
-ul.upload-result li {  margin:0.5em; }
+ul.upload-result li {  margin:0.5em 0 0.5em 0.9em; }
 
 .edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
@@ -135,12 +135,12 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;}
 .tag_word { 
-    background-color: #EEEEEE; 
+    background-color: #CEEEEE; 
     color: #666666;
 	padding: 2px 3px 2px 3px;
 	margin: 2px 3px 2px 3px;
-	-moz-border-radius: 0.4em;
-    -webkit-border-radius: 0.3em;
+	-moz-border-radius: 0.1em;
+    -webkit-border-radius: 0.1em;
     border: thin solid #BDBDBD;
     font-size: 0.9em;
 }
