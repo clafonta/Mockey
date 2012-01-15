@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -51,6 +53,7 @@ import com.mockey.model.ApiDocFieldValue;
 import com.mockey.model.ApiDocRequest;
 import com.mockey.model.ApiDocResponse;
 import com.mockey.model.ApiDocService;
+import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IApiStorage;
 import com.mockey.storage.IApiStorageInMemory;
@@ -277,8 +280,23 @@ public class HomeServlet extends HttpServlet {
 				return;
 			}
 		}
-
-		req.setAttribute("services", Util.orderAlphabeticallyByServiceName(store.getServices()));
+		
+		//Filter check.
+		List<Service> serviceList = null; 
+		String tagFilter = (String)req.getSession().getAttribute(TagHelperServlet.FILTER_TAG);
+		if(tagFilter!=null && tagFilter.trim().length()>0){
+			List<Service> filteredList = new ArrayList<Service>();
+			for(Service tempService: store.getServices()){
+				if(tempService.hasTag(tagFilter) ){
+					filteredList.add(tempService);
+				}
+			}
+			serviceList = Util.orderAlphabeticallyByServiceName(filteredList);
+			
+		}else {
+			serviceList = Util.orderAlphabeticallyByServiceName(store.getServices());
+		}
+		req.setAttribute("services", serviceList);
 		req.setAttribute("plans", Util.orderAlphabeticallyByServicePlanName(store.getServicePlans()));
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");

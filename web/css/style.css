@@ -134,15 +134,10 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .info_message a {text-decoration: underline;}
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;}
+.count-box {border: thin solid #bdbdbd; background: #EF959E; margin-left:-0.8em; margin-top:-0.6em; padding:0.2em;color:#FFFFFF; width:18px; font-size:10px; text-align:center;}
 .tag_word { 
-    background-color: #CEEEEE; 
     color: #666666;
-	padding: 2px 3px 2px 3px;
-	margin: 2px 3px 2px 3px;
-	-moz-border-radius: 0.1em;
-    -webkit-border-radius: 0.1em;
-    border: thin solid #BDBDBD;
-    font-size: 0.9em;
+	font-size: 0.9em;
 }
 table.tag_word_table { 
     background-color: none; 
@@ -154,7 +149,7 @@ table.tag_word_table {
 }
 table.tag_word_table tr td {
 	margin: 0px;
-	padding: 0.5em;
+	padding: 0em;
 	font-stretch: ultra-condensed;
 	color:#666666;
 }

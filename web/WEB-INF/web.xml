@@ -308,6 +308,22 @@
             com.mockey.storage.file.FileViewServlet
         </servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>
+            TagHelperServlet
+        </servlet-name>
+        <servlet-class>
+            com.mockey.ui.TagHelperServlet
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>
+            TagHelperServlet
+        </servlet-name>
+        <url-pattern>
+            /taghelp
+        </url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>
             FileViewServlet

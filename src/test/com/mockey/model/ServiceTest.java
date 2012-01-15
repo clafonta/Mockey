@@ -23,6 +23,25 @@ public class ServiceTest {
 		assert (service.getTagList().size() == 1);
 
 	}
+	
+	@Test
+	public void removeTagsFromService() {
+		Service service = new Service();
+		String arg1 = "development";
+		String arg2 = "development";
+		String arg3 = " development ";
+		String arg4 = "DEVELOPMENT";
+		service.addTagToList(arg1);
+		service.addTagToList(arg2);
+		service.addTagToList(arg3);
+		service.addTagToList(arg4);
+		service.removeTagFromList("somethings");
+		assert (service.getTagList().size() == 1);
+		service.removeTagFromList(null);
+		service.removeTagFromList("development somethings");
+		assert (service.getTagList().size() == 0);
+
+	}
 
 	@Test
 	public void addTagListToService() {

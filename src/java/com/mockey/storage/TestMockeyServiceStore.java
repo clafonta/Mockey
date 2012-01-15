@@ -321,4 +321,10 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		return null;
 	}
 
+
+	public void deleteTagFromStore(String tag) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

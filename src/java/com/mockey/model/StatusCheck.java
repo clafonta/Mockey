@@ -31,7 +31,7 @@ import java.util.List;
  * Extend this class if you need to track meta information, which includes 'last
  * visited' and 'tags'
  * 
- * @author clafonta
+ * @author chad.lafontaine
  * 
  */
 public abstract class StatusCheck {
@@ -49,6 +49,32 @@ public abstract class StatusCheck {
 
 		this.tagList = createUniqueLowercaseTagList(this.tagList, tag);
 
+	}
+	
+	/**
+	 * Clear's tag list
+	 */
+	public void clearTagList(){
+		this.tagList = new ArrayList<String>();
+	}
+	
+	/**
+	 * 
+	 * @param tag
+	 */
+	public void removeTagFromList(String tag){
+		
+		if(tag!=null && tag.trim().length()>0){
+			String cleanTag = tag.toLowerCase().trim();
+			String delims = "[ ]+";
+			String[] tokens = cleanTag.split(delims);
+			if (this.tagList != null) {
+				for (String arg : tokens) {
+					this.tagList.remove(arg);
+				}
+			}
+			
+		}
 	}
 
 	public List<String> getTagList() {
@@ -79,6 +105,25 @@ public abstract class StatusCheck {
 
 	public void setLastVisit(Long lastVisited) {
 		this.lastVisit = lastVisited;
+	}
+	
+	public boolean hasTag(String tag){
+		boolean hasTag = false;
+		if(tag!=null && tag.trim().length() > 0){
+			String cleanTag = tag.trim().toLowerCase();
+			String delims = "[ ]+";
+			String[] tokens = cleanTag.split(delims);
+			for(String token: tokens){
+				for(String tagArg : this.tagList){
+					if(tagArg.equals(token)){
+						hasTag = true;
+						return hasTag;
+					}
+				}
+			}
+		}
+		return hasTag;
+		
 	}
 
 	/**

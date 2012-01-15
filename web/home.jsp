@@ -175,11 +175,6 @@ $(document).ready( function() {
         });
      });
 
-   $('#tag-view-link').click( function() {
-   		$('#view-tag-txt').toggle();
-   		$('#hide-tag-txt').toggle();
-   		$('.status-info').toggle();
-   });
     
     $('.gt').each( function() {
         $(this).click(function(){   
@@ -308,17 +303,13 @@ $(document).ready( function() {
 				                            	<c:url value="/setup" var="setupUrl">
 				                                	<c:param name="serviceId" value="${mockservice.id}" />
 				                             	</c:url>
+				                             	
 				                                <span style="float:right;"><a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
-				                                
+				                                <div class="count-box">${status.count}</div>
 												<div style="margin-bottom:0.5em;">
-												<span class="tiny blur">${status.count})</span> <mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
+												 <mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
 												</div>
-												<div style="margin: 1em 0; display:none;" class="status-info">
 												
-												  <c:forEach var="tagItem" items="${mockservice.tagList}"  varStatus="status">
-												    <span class="tiny tag_word">${tagItem}</span>
-												  </c:forEach>												
-												</div>
 												<div class="toggle-buttons">
 				                                  <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
 				                                  <span class="toggle_button tiny">
@@ -329,15 +320,16 @@ $(document).ready( function() {
 						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>
 						                          </c:if>
 						                        </div>
-				                               
+			                                    
+												<div style="padding-top:10px;">
+												<mockey-tag:statusCheck lastVisit="${mockservice.lastVisit}" tag="${mockservice.tag}"/>					
+												</div>
 											</div>
 								    	</c:forEach>
 								    	
 								    </div>
 							    </div>
-							    <div style="margin: 0.5em;" class="power-link">
-								    <a href="#" id="tag-view-link"><span id="view-tag-txt">View Tags</span><span id="hide-tag-txt" style="display:none;">Hide Tags</span></a>
-								</div>
+							    
 							    <div id="tabs-2">
 							        <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
 								    <div class="scroll">
@@ -394,16 +386,7 @@ $(document).ready( function() {
                                     
                                    <div class="service-label">Service name: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div class="service-value big"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></div>
-                                   <table class="tag_word_table status-info" style="display:none;">
-                                      <tr><td class="tiny" style="width:55px;">Last visit:</td><td class="tiny"><mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/></td></tr>
-                                      <tr><td class="tiny">Tag(s):</td><td class="tiny">
-                                      <c:forEach var="tag" items="${mockservice.tagList}" varStatus="status" >
-									       <span class="tag_word">${tag}</span> 
-									   </c:forEach>
-	                                   
-                                      </td>
-                                      </tr>
-                                   </table>
+                                   <mockey-tag:statusCheck lastVisit="${mockservice.lastVisit}" tag="${mockservice.tag}"/>
                                    <div class="service-label border-top">Mock URL: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
                                    <div class="service-def-spacer"></div>
@@ -449,9 +432,12 @@ $(document).ready( function() {
 		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
 		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
 		                                      <span> <a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
+		                                      
 		                                      <c:forEach var="tag" items="${scenario.tagList}" varStatus="status" >
-											       <span class="tag_word status-info" style="display:none;">${tag}</span> 
+											       <span class="tag_word status-info">${tag}</span> 
 											  </c:forEach>
+											  <span>
+											  <mockey-tag:prettyDate lastVisit="${scenario.lastVisit}"/></span>
 		                                    </li>
 		                                  </c:forEach>
 		                                  </c:when>
