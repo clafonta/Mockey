@@ -15,10 +15,10 @@ if(lastVisit!=null && lastVisit.trim().length() > 0){
 %>
 
 <table class="tag_word_table status-info">
-                                      
 <tr>
-   <td class="tiny" style="text-align:right;"><strong>Tag(s):</strong></td><td class="tiny" style="padding-left:5px;">
-${tag}</td>
+   <td class="tiny" style="text-align:right;"><span class="power-link"><a href="#" class="manageTagLink">Tag(s)</a>:</span></td><td class="tiny" style="padding-left:5px;">${tag}</td>
 </tr>
-                                      <tr><td class="tiny" style="text-align:right; width:58px;">Last visit:</td><td class="tiny" style="padding-left:5px;"><%=time%></td></tr>
-                                   </table>
+<tr>
+   <td class="tiny" style="text-align:right; width:58px;">Last visit:</td><td class="tiny" style="padding-left:5px;"><%=time%></td>
+</tr>
+</table>

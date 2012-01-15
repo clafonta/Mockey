@@ -20,6 +20,23 @@ $(document).ready( function() {
         $(this).removeClass("invisiblefiled-in-focus").addClass("invisiblefield");   
     }); 
     
+    $('.manageTagLink').each( function() {
+        $(this).click( function() {             
+            $('#dialog-tag-manage').dialog('open');
+                $('#dialog-tag-manage').dialog({ 
+                    buttons: {                      
+                      Cancel: function(){
+                          $(this).dialog('close');
+                      }
+                    }
+              }); 
+              // Reset the size.
+              $('#dialog-tag-manage').dialog({height: 450 });
+                
+              return false;
+            });
+        });
+    
 	$('.createPlanLink').each( function() {
         $(this).click( function() {             
             $('#dialog-create-plan').dialog('open');
@@ -240,18 +257,56 @@ $(document).ready( function() {
     $('#dialog-delete-scenario-confirm').dialog({autoOpen: false, minHeight: 250, width: 300, height: 120, modal: false, resizable: false });
     $("#dialog-create-plan").dialog({minHeight: 250, height:250, width: 500,  modal: false, autoOpen: false, resizable: true });
     $("#dialog-delete-service-confirm").dialog({ resizable: false, height: 120, modal: false, autoOpen: false });
-    
+    $("#dialog-tag-manage").dialog({ resizable: false, height: 420, minHeight: 450, modal: true, autoOpen: false });
     $('.hideServiceScenarioLink').each( function() {
         $(this).click( function() {
            
         });
     });
-    
+    $("#filter-tag-button").click( function() {
+           var filterTag = $('#filter-tag').val();
+           $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
+					   //console.log(data);
+					   if(data.success){
+						   document.location="<c:url value="/home" />";
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+           
+        });
+    $('.clear-tag-button').each( function() {
+       $(this).click( function() {
+           $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_off' } ,function(data){
+					   //console.log(data);
+					   if(data.success){
+						   document.location="<c:url value="/home" />";
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        });
+      });
+    $("#delete-tag-button").click( function() {
+    	   var filterTag = $('#filter-tag').val();
+           alert('delete '+ filterTag);
+        });
+  
  });
 </script>
     <div id="main">
     
         <%@ include file="/WEB-INF/common/message.jsp" %>
+        <!-- SERVICE PLAN CREATE DIALOG -->
+        <div id="dialog-tag-manage" title="Tag Helper">
+            <p>
+            <input type="text" name="filter-tag" id="filter-tag" title="Enter tag(s) here" class="text ui-widget-content ui-corner-all" />
+            <ul class="button-list">
+            <li><a href="#" class="hhButtonBlue" id="filter-tag-button">Filter view with tag(s)</a></li>
+            <li><a href="#" class="hhButtonBlue clear-tag-button" id="clear-tag-button">Clear Filter</a></li>
+            <li><a href="#" class="hhButtonBlue" id="delete-tag-button">Remove tag(s) from all things.</a></li>
+            </p>
+        </div>
         
         <!-- SERVICE PLAN CREATE DIALOG -->
         <div id="dialog-create-plan" title="Service Plan">
@@ -499,8 +554,15 @@ $(document).ready( function() {
 	          <p class="intro_txt">Hello, this is Mockey. It looks like this is the first time you are using Mockey because 
 	          it's in a clean state. To learn more about Mockey, see the <a href="<c:url value="/help"/>">help</a> section. </p> 
 			  <p class="info_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. 
-			  If you were expecting to see services, then maybe something went wrong. Checkout the <a href="<c:url value="/console"/>">debug output</a>. 
+			  If you were expecting to see services, then maybe filtering is on
+			  
+			   or something went wrong. Checkout the <a href="<c:url value="/console"/>">debug output</a>.
+			   
+			    
 			  </p>
+			  
+			  <c:if test="${not empty sessionScope.FILTER_SESSION_TAG}"><p class="info_message">Hey! You're filtering on '<strong>${sessionScope.FILTER_SESSION_TAG}</strong>' <a href="#" class="hhButtonGreen clear-tag-button">Clear Filter by Tag(s)</a> </p></c:if>
+			  
 			</c:otherwise>
         </c:choose>
 <c:if test="${mode ne 'edit_plan'}">

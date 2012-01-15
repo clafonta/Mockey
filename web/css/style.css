@@ -98,6 +98,9 @@ div.tableofcontents ul li:before {
     content: "\00BB \0020";
 
 }
+ul.button-list {list-style: none; }
+ul.button-list li {margin-top:10px;}
+ul.button-list a {width:170px;}
 ul.simple { list-style: none;	}
 ul.simple li {	margin:0.5em; }
 ul.upload-result { list-style: disc;   }
@@ -134,7 +137,7 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .info_message a {text-decoration: underline;}
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;}
-.count-box {border: thin solid #bdbdbd; background: #EF959E; margin-left:-0.8em; margin-top:-0.6em; padding:0.2em;color:#FFFFFF; width:18px; font-size:10px; text-align:center;}
+.count-box {border: thin solid #bdbdbd; background: #EF959E; margin-left:-0.8em; margin-top:-0.6em; margin-bottom:0.5em; padding:0.1em;color:#FFFFFF; width:18px; font-size:10px; text-align:center;}
 .tag_word { 
     color: #666666;
 	font-size: 0.9em;
@@ -146,12 +149,14 @@ table.tag_word_table {
 	border-collapse: collapse;
     border: none;
     width:100%;
+    
 }
 table.tag_word_table tr td {
 	margin: 0px;
-	padding: 0em;
+	padding: 0.2em 0;
 	font-stretch: ultra-condensed;
 	color:#666666;
+	font-size: 12px;
 }
 .code, .code_text {
 font-family:'Courier',serif;
