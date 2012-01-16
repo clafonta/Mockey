@@ -92,6 +92,15 @@ public class ConfigurationInfoAJAXServlet extends HttpServlet {
 			} else {
 				messageObject.put("twist_enabled", false);
 			}
+			String filter = (String)req.getSession().getAttribute(TagHelperServlet.FILTER_TAG);
+			if(filter!=null && filter.trim().length()>0){
+				messageObject.put("filter_view_arg", filter.trim());
+				messageObject.put("filter_view_status", "on");
+			}else {
+				messageObject.put("filter_view_arg", "");
+				messageObject.put("filter_view_status", "off");
+			}
+			
 			resp.setContentType("application/json;");
 			responseObject.put("result", messageObject);
 

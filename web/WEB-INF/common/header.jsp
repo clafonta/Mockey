@@ -84,6 +84,12 @@ $(document).ready(function() {
          }
         $('#memory-only-config').show(); 
         
+        if(data.result.filter_view_status=='on'){
+          $("#filter-tag-field").val(data.result.filter_view_arg);
+        }
+         
+         
+        
        
 	});
 
@@ -157,7 +163,31 @@ $(document).ready(function() {
         modal: true,
         autoOpen: false
     });
-        
+    
+    $("#filter-tag-update-button").click( function() {
+           var filterTag = $('#filter-tag-field').val();
+           $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
+					   //console.log(data);
+					   if(data.success){
+						   document.location="<c:url value="/home" />";
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+           
+        });
+    $('.clear-tag-button').each( function() {
+       $(this).click( function() {
+           $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_off' } ,function(data){
+					   //console.log(data);
+					   if(data.success){
+						   document.location="<c:url value="/home" />";
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        });
+      });
     $('#flush').each( function() {
         $(this).click( function() {
         	$('#dialog-flush-confirm').show();
@@ -270,7 +300,7 @@ $(document).ready(function() {
 	<div id="header_tool_wrapper">
 	   
 		<div id="header_tool_wrapper_right" >
-		
+            
 		    <span id="memory-only-config" class="configuration-info" style="display:none;">
             <a href="#" id="transient_unknown" class="tiny" style="display: none;">___</a>
             <a href="#" id="transient_true" class="tiny transient-onclick" val="true" style="display: none; color: green;">In Memory Only</a>
@@ -298,9 +328,10 @@ $(document).ready(function() {
 		<div id="header_tool_wrapper_left" >
 		  <input type="text" value="${term}" title="Search" class="blur text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me" style="text-decoration:none;"> <img src="<c:url value="/images/search.png" />" /></a>
 		</div>
+		
 	</div>
 	<div style="clear:both;"/>
-	
+		
 </div>
 
 

@@ -31,7 +31,7 @@ $(document).ready( function() {
                     }
               }); 
               // Reset the size.
-              $('#dialog-tag-manage').dialog({height: 450 });
+              $('#dialog-tag-manage').dialog({height: 250 });
                 
               return false;
             });
@@ -275,9 +275,10 @@ $(document).ready( function() {
 				}, 'json' );
            
         });
-    $('.clear-tag-button').each( function() {
-       $(this).click( function() {
-           $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_off' } ,function(data){
+   
+    $("#delete-tag-button").click( function() {
+    	   var filterTag = $('#filter-tag').val();
+           $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_store', tag: filterTag } ,function(data){
 					   //console.log(data);
 					   if(data.success){
 						   document.location="<c:url value="/home" />";
@@ -286,25 +287,24 @@ $(document).ready( function() {
 					    }
 				}, 'json' );
         });
-      });
-    $("#delete-tag-button").click( function() {
-    	   var filterTag = $('#filter-tag').val();
-           alert('delete '+ filterTag);
-        });
   
  });
 </script>
     <div id="main">
-    
+    <div id="filter_view_div">
+	<span>Filter Services by Tag(s): </span> 
+	<input type="text" id="filter-tag-field" style="width:350px;" title="Enter tags here. View services by matching tags."  name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" /> 
+	<a href="#" id="filter-tag-update-button" class="hhButton">Apply Filter</a> <a href="#" class="hhButtonRed clear-tag-button" id="">Clear Filter View</a>
+	<a href="#" class="manageTagLink">Tag Helper</a>
+	</div>
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <!-- SERVICE PLAN CREATE DIALOG -->
         <div id="dialog-tag-manage" title="Tag Helper">
-            <p>
+            <p><strong>WARNING:</strong>
+            This will go through each Service and Scenario, and remove tag(s). 
             <input type="text" name="filter-tag" id="filter-tag" title="Enter tag(s) here" class="text ui-widget-content ui-corner-all" />
             <ul class="button-list">
-            <li><a href="#" class="hhButtonBlue" id="filter-tag-button">Filter view with tag(s)</a></li>
-            <li><a href="#" class="hhButtonBlue clear-tag-button" id="clear-tag-button">Clear Filter</a></li>
-            <li><a href="#" class="hhButtonBlue" id="delete-tag-button">Remove tag(s) from all things.</a></li>
+            <li><a href="#" class="hhButtonRed" id="delete-tag-button">Remove tag(s) from all things.</a></li>
             </p>
         </div>
         
@@ -377,7 +377,7 @@ $(document).ready( function() {
 						                        </div>
 			                                    
 												<div style="padding-top:10px;">
-												<mockey-tag:statusCheck lastVisit="${mockservice.lastVisit}" tag="${mockservice.tag}"/>					
+												<mockey-tag:statusCheck lastVisit="${mockservice.lastVisit}" tag="${mockservice.tag}" serviceName="${mockservice.serviceName}" serviceId="${mockservice.id}"/>					
 												</div>
 											</div>
 								    	</c:forEach>
@@ -441,7 +441,7 @@ $(document).ready( function() {
                                     
                                    <div class="service-label">Service name: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div class="service-value big"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></div>
-                                   <mockey-tag:statusCheck lastVisit="${mockservice.lastVisit}" tag="${mockservice.tag}"/>
+                                   <mockey-tag:statusCheck lastVisit="${mockservice.lastVisit}" tag="${mockservice.tag}" serviceName="${mockservice.serviceName}" serviceId="${mockservice.id}"/>
                                    <div class="service-label border-top">Mock URL: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
                                    <div class="service-def-spacer"></div>
@@ -488,11 +488,11 @@ $(document).ready( function() {
 		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
 		                                      <span> <a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
 		                                      
-		                                      <c:forEach var="tag" items="${scenario.tagList}" varStatus="status" >
-											       <span class="tag_word status-info">${tag}</span> 
-											  </c:forEach>
+		                                      
+											       <span class="tag_word status-info">${scenario.tag}</span> 
+											  
 											  <span>
-											  <mockey-tag:prettyDate lastVisit="${scenario.lastVisit}"/></span>
+											  
 		                                    </li>
 		                                  </c:forEach>
 		                                  </c:when>
@@ -561,7 +561,7 @@ $(document).ready( function() {
 			    
 			  </p>
 			  
-			  <c:if test="${not empty sessionScope.FILTER_SESSION_TAG}"><p class="info_message">Hey! You're filtering on '<strong>${sessionScope.FILTER_SESSION_TAG}</strong>' <a href="#" class="hhButtonGreen clear-tag-button">Clear Filter by Tag(s)</a> </p></c:if>
+			  <c:if test="${not empty sessionScope.FILTER_SESSION_TAG}"><p class="info_message">Hey! You're filtering on '<strong>${sessionScope.FILTER_SESSION_TAG}</strong>' <a style="margin-left:40px;" href="#" class="clear-tag-button">Clear Filter by Tag(s)</a> </p></c:if>
 			  
 			</c:otherwise>
         </c:choose>

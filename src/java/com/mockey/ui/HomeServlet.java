@@ -289,7 +289,7 @@ public class HomeServlet extends HttpServlet {
 			for(Service tempService: store.getServices()){
 				if(tempService.hasTag(tagFilter) ){
 					filteredList.add(tempService);
-				}
+				} 
 			}
 			serviceList = Util.orderAlphabeticallyByServiceName(filteredList);
 			

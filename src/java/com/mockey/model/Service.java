@@ -696,4 +696,17 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		return transientState;
 	}
 	
+	public boolean hasTag(String tag){
+		boolean has = super.hasTag(tag);
+		if(!has){
+			// Check scenarios...
+			for(Scenario s: this.getScenarios()){
+				has = s.hasTag(tag);
+				if(has){
+					break;
+				}
+			}
+		}
+		return has;
+	}
 }

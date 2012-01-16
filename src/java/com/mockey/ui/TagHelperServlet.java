@@ -84,6 +84,16 @@ public class TagHelperServlet extends HttpServlet {
 				// Redirect to Home and SET as session FILTER, your tags.
 				req.getSession().removeAttribute(FILTER_TAG);
 				jsonObject.put("success", "Filter by tag is off.");
+			} else if ("filter_status".equals(action)) {
+				// Redirect to Home and SET as session FILTER, your tags.
+				String filter = (String)req.getSession().getAttribute(FILTER_TAG);
+				if(filter!=null && filter.trim().length()>0){
+					jsonObject.put("filter", filter.trim());
+					jsonObject.put("status", "on");
+				}else {
+					jsonObject.put("filter", "");
+					jsonObject.put("status", "off");
+				}
 			} else if ("delete_tag_from_store".equals(action)) {
 				store.deleteTagFromStore(tag);
 				jsonObject.put("success", "Deleted tag from all things.");
