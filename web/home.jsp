@@ -31,7 +31,7 @@ $(document).ready( function() {
                     }
               }); 
               // Reset the size.
-              $('#dialog-tag-manage').dialog({height: 250 });
+              $('#dialog-tag-manage').dialog({height: 350 });
                 
               return false;
             });
@@ -304,7 +304,8 @@ $(document).ready( function() {
             This will go through each Service and Scenario, and remove tag(s). 
             <input type="text" name="filter-tag" id="filter-tag" title="Enter tag(s) here" class="text ui-widget-content ui-corner-all" />
             <ul class="button-list">
-            <li><a href="#" class="hhButtonRed" id="delete-tag-button">Remove tag(s) from all things.</a></li>
+            <li><a href="#" class="hhButtonRed" style="color:#FFFFFF;" id="delete-tag-button">Remove tag(s) from all things.</a></li>
+            </ul>
             </p>
         </div>
         

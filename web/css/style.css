@@ -433,8 +433,8 @@ line-height: 1.4em;
   color: #333;
 }
 .hhButtonRed {
-  background-color: #FFCCFF;
-  color: #333;
+  background-color: #E80C24;
+  color: #FFFFFF;
 }
 
 .hhButton:hover, .hhButtonGreen:hover, .hhButtonRed:hover, .hhButtonBlue:hover {

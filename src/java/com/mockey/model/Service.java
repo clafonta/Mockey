@@ -569,17 +569,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 
 		if (url != null) {
 
-			boolean found = false;
-			for (int i = 0; i < this.realServiceUrls.size(); i++) {
-				Url tmpUrl = this.realServiceUrls.get(i);
-				if (tmpUrl.getFullUrl().equalsIgnoreCase(url.getFullUrl())) {
-
-					this.realServiceUrls.set(i, url);
-
-					found = true;
-					break;
-				}
-			}
+			boolean found = this.hasRealServiceUrl(url);
 			if (!found && !url.getFullUrl().trim().isEmpty()) {
 				this.realServiceUrls.add(url);
 			}
@@ -620,7 +610,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		boolean has = false;
 		try {
 			for (Url urlTmp : this.realServiceUrls) {
-				if (urlTmp.getFullUrl().equalsIgnoreCase(url.getFullUrl())) {
+				if (urlTmp.getFullUrl().trim().equalsIgnoreCase(url.getFullUrl())) {
 					has = true;
 					break;
 				}

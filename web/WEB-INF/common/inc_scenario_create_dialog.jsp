@@ -202,7 +202,7 @@ $(document).ready( function() {
         <label for="scenario_match">Match argument</label>
         <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
         <label for="scenario_match">Tag(s)</label> [optional]
-        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" title="Add 1 or more tags seperated with spaces. (Optional)" />
+        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" title="" />
         <div class="tinyfieldset childform" style="margin-bottom: 1em;">
                 <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="true">Universal Error Response</input>
                 <br />

@@ -29,7 +29,9 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,6 +58,8 @@ public class ServiceSetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static final Boolean TRANSIENT_STATE = new Boolean(true);
+	private static final SimpleDateFormat formatter = new SimpleDateFormat(
+			"MM/dd/yyyy");
 
 	/**
 	 * 
@@ -225,6 +229,22 @@ public class ServiceSetupServlet extends HttpServlet {
 		// TAG - optional
 		if (req.getParameter("tag") != null) {
 			service.setTag(req.getParameter("tag"));
+		}
+
+		// Last visist
+		if (req.getParameter("lastVisit") != null) {
+			try {
+				String lastvisit = req.getParameter("lastVisit");
+				if (lastvisit.trim().length() > 0 && !"mm/dd/yyyy".equals(lastvisit.trim().toLowerCase())) {
+					Date f = formatter.parse(lastvisit);
+					service.setLastVisit(f.getTime());
+				} else {
+					service.setLastVisit(null);
+				}
+			} catch (Exception e) {
+
+			}
+
 		}
 
 		// DESCRIPTION - optional

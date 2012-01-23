@@ -273,8 +273,7 @@ public class MockeyXmlFileManager {
 		// 1) MATCHING MOCK URL
 		// If there is an existing/matching mockURL, then this isn't
 		// a new service and we DON'T want to overwrite. But, we
-		// want new Scenarios if they exist. A new scenario is based
-		// on
+		// want new Scenarios if they exist. See Scenario.equals()
 		//
 		// 2) NO MATCHING MOCK URL
 		// If there is no matching service URL, then we want to create a new
@@ -305,7 +304,7 @@ public class MockeyXmlFileManager {
 					mergeResults
 							.addConflictMsg("Service '"
 									+ uploadedServiceBean.getServiceName()
-									+ "' not created; will try to merge into existing service labeled '"
+									+ "' not created; will try to merge new/different Scenarios into existing service labeled '"
 									+ inMemoryServiceBean.getServiceName()
 									+ "' ");
 
@@ -318,7 +317,7 @@ public class MockeyXmlFileManager {
 						mergeResults
 								.addConflictMsg("Service '"
 										+ uploadedServiceBean.getServiceName()
-										+ "' not created; will try to merge into existing service labeled '"
+										+ "' not created because of same Service Name but conflicting Real URL. e labeled '"
 										+ inMemoryServiceBean.getServiceName()
 										+ "' ");
 						break;
@@ -343,12 +342,15 @@ public class MockeyXmlFileManager {
 
 				// Save to the IN-MEMORY STORE
 				store.saveOrUpdateService(uploadedServiceBean);
-				mergeResults.addAdditionMsg("Service '"
-						+ uploadedServiceBean.getServiceName() + "' created. ");
+				mergeResults
+						.addAdditionMsg("Uploaded Service '"
+								+ uploadedServiceBean.getServiceName()
+								+ "' created with scenarios. Reason: no matching name or list matching real URLs.");
 
 			} else {
+				// We have an existing Service
 				// Just merge scenarios per matching services
-				mergeResults = mergeServices(uploadedServiceBean,
+				mergeResults = this.mergeServices(uploadedServiceBean,
 						inMemoryServiceBean, mergeResults, tagArguments);
 			}
 
@@ -357,87 +359,92 @@ public class MockeyXmlFileManager {
 	}
 
 	/**
+	 * This method will make an effort to take things that exist in the
 	 * 
-	 * @param uploadedServiceBean
-	 * @param inMemoryServiceBean
+	 * @param uploadedService
+	 * @param inMemoryService
 	 * @param readResults
 	 * @return
 	 */
-	public ServiceMergeResults mergeServices(Service uploadedServiceBean,
-			Service inMemoryServiceBean, ServiceMergeResults readResults,
-			String tagArguments) {
+	public ServiceMergeResults mergeServices(Service uploadedService,
+			Service inMemoryService
+
+			, ServiceMergeResults readResults, String tagArguments) {
 
 		Boolean originalMode = store.getReadOnlyMode();
 		store.setReadOnlyMode(true);
 
-		if (uploadedServiceBean != null && inMemoryServiceBean != null) {
+		if (uploadedService != null
+				&& inMemoryService != null
+				&& uploadedService
+						.getServiceName()
+						.trim()
+						.equalsIgnoreCase(
+								inMemoryService.getServiceName().trim())
+
+		) {
 
 			// #TAG HANDLING for the Service - BEGIN
 			// Ensure Service gets incoming/uploaded tag arguments
-			inMemoryServiceBean.addTagToList(tagArguments);
+			inMemoryService.addTagToList(tagArguments);
 			// #TAG HANDLING for the Service - END
 
 			if (readResults == null) {
 				readResults = new ServiceMergeResults();
 			}
-			Iterator<Scenario> uploadedServiceScenarioListIter = uploadedServiceBean
+			Iterator<Scenario> uploadedListIter = uploadedService
 					.getScenarios().iterator();
-			Iterator<Scenario> mIter = inMemoryServiceBean.getScenarios()
+			Iterator<Scenario> inMemListIter = inMemoryService.getScenarios()
 					.iterator();
-			while (uploadedServiceScenarioListIter.hasNext()) {
-				Scenario uploadedScenario = (Scenario) uploadedServiceScenarioListIter
-						.next();
-				boolean existingScenarioBool = false;
-				Scenario inMemoryScenarioBean = null;
-				while (mIter.hasNext()) {
-					inMemoryScenarioBean = (Scenario) mIter.next();
-					if (inMemoryScenarioBean.equals(uploadedScenario)) {
 
-						existingScenarioBool = true;
+			while (uploadedListIter.hasNext()) {
+				Scenario uploadedScenario = (Scenario) uploadedListIter.next();
+				boolean inMemScenarioExistTemp = false;
+				Scenario inMemScenarioTemp = null;
+
+				while (inMemListIter.hasNext()) {
+					inMemScenarioTemp = (Scenario) inMemListIter.next();
+
+					if (inMemScenarioTemp.equals(uploadedScenario)) {
+
+						inMemScenarioExistTemp = true;
 						break;
 					}
 				}
-				if (!existingScenarioBool) {
+				if (!inMemScenarioExistTemp) {
+
 					// Hey, we have a new scenario.
-					uploadedScenario.setServiceId(inMemoryServiceBean.getId());
+					// NOTE: incoming/uploaded scenario has an ID.
+					// We MUST nullify it, to ensure there's no common Service's
+					// scenario's ID
+					uploadedScenario.setId(null);
+					uploadedScenario.setServiceId(inMemoryService.getId());
 					// Tag for Service:Scenario
 					uploadedScenario.addTagToList(tagArguments);
-					inMemoryServiceBean.saveOrUpdateScenario(uploadedScenario);
+					inMemoryService.saveOrUpdateScenario(uploadedScenario);
 
-					store.saveOrUpdateService(inMemoryServiceBean);
-					readResults.addAdditionMsg("Scenario '"
+					store.saveOrUpdateService(inMemoryService);
+					readResults.addAdditionMsg("Scenario name '"
 							+ uploadedScenario.getScenarioName()
-							+ "' added to service '"
-							+ inMemoryServiceBean.getServiceName() + "' ");
+							+ "' from uploaded service named '"
+							+ uploadedService.getServiceName()
+							+ "' was merged into service '"
+							+ inMemoryService.getServiceName() + "' ");
 				} else {
 					// SAVE TAGS
-					inMemoryScenarioBean.addTagToList(tagArguments);
-					inMemoryServiceBean
-							.saveOrUpdateScenario(inMemoryScenarioBean);
-					store.saveOrUpdateService(inMemoryServiceBean);
+					inMemScenarioTemp.addTagToList(tagArguments);
+					inMemoryService.saveOrUpdateScenario(inMemScenarioTemp);
+					store.saveOrUpdateService(inMemoryService);
 					// Although we still need to
-					readResults.addConflictMsg("Scenario '"
-							+ inMemoryScenarioBean.getScenarioName()
-							+ "' not added, already defined in service '"
-							+ inMemoryServiceBean.getServiceName() + "' ");
+					readResults
+							.addConflictMsg("Uploaded Scenario '"
+									+ uploadedScenario.getScenarioName()
+									+ "' not added, already defined in in-memory service '"
+									+ inMemoryService.getServiceName() + "' ");
 				}
 
 			}
-			// Merge URLs
-			try {
-				for (Url url : uploadedServiceBean.getRealServiceUrls()) {
-					if (inMemoryServiceBean.hasRealServiceUrl(url)) {
-						readResults.addConflictMsg("Real url already defined: "
-								+ url.getFullUrl());
-					} else {
-						readResults.addAdditionMsg("Added real URL: "
-								+ url.getFullUrl());
-						inMemoryServiceBean.saveOrUpdateRealServiceUrl(url);
-					}
-				}
-			} catch (Exception e) {
 
-			}
 		}
 
 		store.setReadOnlyMode(originalMode);

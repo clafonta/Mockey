@@ -8,9 +8,9 @@
 <%@ attribute name="serviceId" required="true"%>
 <%
 Calendar now = Calendar.getInstance();
-SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd ', ' hh:mm:ss a zzz");
+SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 String time = "";
-if(lastVisit!=null && lastVisit.trim().length() > 0){
+if(lastVisit!=null && lastVisit.trim().length() > 1 ){
  time = formatter.format(new Date(new Long(lastVisit)));
 
 }

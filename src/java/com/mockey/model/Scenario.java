@@ -116,9 +116,9 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	 */
 	public boolean equals(Scenario otherScenario) {
 		try {
-			if (this.scenarioName.equalsIgnoreCase(otherScenario
+			if (this.scenarioName.trim().equalsIgnoreCase(otherScenario
 					.getScenarioName())
-					&& this.responseMessage.equalsIgnoreCase(otherScenario
+					&& this.responseMessage.trim().equalsIgnoreCase(otherScenario
 							.getResponseMessage())) {
 				return true;
 			}

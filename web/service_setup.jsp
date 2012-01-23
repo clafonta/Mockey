@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
+<%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
 <c:set var="actionKey" value="edit_service" scope="request" />
 <c:set var="pageTitle" value="Configure" scope="request" />
 <c:set var="currentTab" value="setup" scope="request" />
@@ -44,11 +45,12 @@
 			        serviceName = $("#service_name"),
 			        hangtime = $("#hang_time"),
 			        tag = $('#tag'),
+			        lastVisit = $("#last_visit"),
 			        serviceContentType = $("#service_http_content_type");
 			 
 			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(), tag: tag.val(),
 				   'realServiceUrl[]':  realServiceUrlValues, url: url.val(), httpContentType: serviceContentType.val(),
-				   hangTime: hangtime.val() } ,function(data){
+				   lastVisit: lastVisit.val(), hangTime: hangtime.val() } ,function(data){
 					   
 					   if (data.result.redirect){
 						   window.location.replace(data.result.redirect);
@@ -149,6 +151,11 @@
                 <label for="service_url">Tag(s):</label> 
                 <input type="text" id="tag" class="text ui-corner-all ui-widget-content" name="tag" maxlength="1000" size="90%" value="<c:out value="${mockservice.tag}"/>" />
                 <div class="tinyfieldset"><strong>Optional.</strong> Add 1 or more tags seperated with spaces. Tags can be useful for all kinds of things. Use it as meta-data for your services, plans, scenarios, etc.</div>
+                <label for="service_url">Last visit:</label>
+                <input type="text" id="last_visit" title="mm/dd/yyyy" class="text ui-corner-all ui-widget-content" style="width:100px;" name="lastvisit" maxlength="20" size="30px" value="<mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/>" />                                
+                <div class="tinyfieldset">The last time this service was called.</div>
+                                    
+                
                 <label>HTTP header definition:</label>
 	            <select id="service_http_content_type" name="httpContentType">
 	                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
