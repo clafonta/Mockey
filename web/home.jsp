@@ -202,7 +202,60 @@ $(document).ready( function() {
         });
      });
     
-   
+   $('.service-scenario-tag-remove').each( function() {
+        $(this).click( function() {
+            var scenarioId = this.id.split("_")[1];
+			var serviceId = this.id.split("_")[2];
+			var tagCount= this.id.split("_")[3];
+			var tagId = 'service-scenario-tag-id_'+scenarioId+'_'+serviceId+'_'+tagCount;
+			var filterTag = $('#'+tagId).attr('value');
+            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_scenario', tag: filterTag, scenarioId: scenarioId, serviceId: serviceId } ,function(data){
+					   if(data.success){
+						   $('#'+tagId).hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+    $('.service-plan-tag-remove').each( function() {
+        $(this).click( function() {
+            var servicePlanId = this.id.split("_")[1];
+			var tagCount= this.id.split("_")[2];
+			var tagId = 'service-plan-tag-id_'+servicePlanId+'_'+tagCount;
+			var filterTag = $('#'+tagId).attr('value');
+            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_service_plan', tag: filterTag, servicePlanId: servicePlanId } ,function(data){
+					   if(data.success){
+						   $('#'+tagId).hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+   $('.service-tag-remove').each( function() {
+        $(this).click( function() {
+            var serviceId = this.id.split("_")[1];
+			var tagCount= this.id.split("_")[2];
+			var view= this.id.split("_")[3];
+			var tagId = 'service-tag-id_'+serviceId+'_'+tagCount;
+			var filterTag = $(this).attr('value');
+            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_service', tag: filterTag, serviceId: serviceId } ,function(data){
+					   if(data.success){
+						   $('#'+tagId+'_detail').hide();
+						   $('#'+tagId+'_master').hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
     $('.serviceScenarioResponseTypeLink').each( function() {
 		$(this).click( function() {
 			var scenarioId = this.id.split("_")[1];
@@ -381,7 +434,7 @@ $(document).ready( function() {
 						                        </div>
 			                                    
 												<div style="padding-top:10px;">
-												<mockey-tag:statusCheck lastVisit="${mockservice.lastVisit}" tag="${mockservice.tag}" serviceName="${mockservice.serviceName}" serviceId="${mockservice.id}"/>					
+												<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>					
 												</div>
 											</div>
 								    	</c:forEach>
@@ -401,7 +454,7 @@ $(document).ready( function() {
 			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
 			                                
 			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
-			                                <span class="tiny">Tag(s): ${plan.tag}</span>
+			                                <mockey-tag:statusCheckByServicePlan servicePlan="${plan}"/>
 			                                <div style="padding-top:0.6em;">  
 			                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#"> Set This Plan </a> &nbsp;
 			                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#">Save As Plan</a></div>
@@ -445,7 +498,7 @@ $(document).ready( function() {
                                     
                                    <div class="service-label">Service name: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div class="service-value big"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></div>
-                                   <mockey-tag:statusCheck lastVisit="${mockservice.lastVisit}" tag="${mockservice.tag}" serviceName="${mockservice.serviceName}" serviceId="${mockservice.id}"/>
+                                   <mockey-tag:statusCheckByService service="${mockservice}" view="detail"/>
                                    <div class="service-label border-top">Mock URL: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
                                    <div class="service-def-spacer"></div>
@@ -492,11 +545,7 @@ $(document).ready( function() {
 		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
 		                                      <span> <a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
 		                                      
-		                                      
-											       <span class="tag_word status-info">${scenario.tag}</span> 
-											  
-											  <span>
-											  
+		                                      <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
 		                                    </li>
 		                                  </c:forEach>
 		                                  </c:when>

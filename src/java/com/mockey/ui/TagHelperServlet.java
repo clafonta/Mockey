@@ -41,6 +41,7 @@ import org.json.JSONObject;
 
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -68,6 +69,7 @@ public class TagHelperServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String serviceId = req.getParameter("serviceId");
+		String servicePlanId = req.getParameter("servicePlanId");
 		String scenarioId = req.getParameter("scenarioId");
 		String action = req.getParameter("action");
 		String tag = req.getParameter("tag");
@@ -86,11 +88,12 @@ public class TagHelperServlet extends HttpServlet {
 				jsonObject.put("success", "Filter by tag is off.");
 			} else if ("filter_status".equals(action)) {
 				// Redirect to Home and SET as session FILTER, your tags.
-				String filter = (String)req.getSession().getAttribute(FILTER_TAG);
-				if(filter!=null && filter.trim().length()>0){
+				String filter = (String) req.getSession().getAttribute(
+						FILTER_TAG);
+				if (filter != null && filter.trim().length() > 0) {
 					jsonObject.put("filter", filter.trim());
 					jsonObject.put("status", "on");
-				}else {
+				} else {
 					jsonObject.put("filter", "");
 					jsonObject.put("status", "off");
 				}
@@ -104,6 +107,15 @@ public class TagHelperServlet extends HttpServlet {
 				service.removeTagFromList(tag);
 				store.saveOrUpdateService(service);
 				jsonObject.put("success", "Deleted tag from Service.");
+
+			} else if ("delete_tag_from_service_plan".equals(action)) {
+				ServicePlan servicePlan = store.getServicePlanById(new Long(
+						servicePlanId));
+
+				servicePlan.removeTagFromList(tag);
+				store.saveOrUpdateServicePlan(servicePlan);
+
+				jsonObject.put("success", "Deleted tag from Service Plan.");
 
 			} else if ("delete_tag_from_scenario".equals(action)) {
 				Service service = store.getServiceById(new Long(serviceId));

@@ -138,9 +138,21 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;}
 .count-box {border: thin solid #bdbdbd; background: #EF959E; margin-left:-0.8em; margin-top:-0.6em; margin-bottom:0.5em; padding:0.1em;color:#FFFFFF; width:18px; font-size:10px; text-align:center;}
+.tag_word_lead {
+    color:#666666;
+    font-size: 10px;
+}
 .tag_word { 
-    color: #666666;
-	font-size: 0.9em;
+    color: #555555;
+	font-size: 10px;
+	padding: 2px;
+	margin-left: 2px;
+	border: thin solid #EEEEEE;
+    background:#FFFFFF;
+    border: thin solid #bdbdbd;
+}.tag_word a {
+    padding-right:10px; 
+    style:none;
 }
 table.tag_word_table { 
     background-color: none; 
