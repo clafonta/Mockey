@@ -28,7 +28,6 @@
 package com.mockey.ui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -37,10 +36,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mockey.model.Scenario;
+import com.mockey.SearchResultBuilder;
 import com.mockey.model.SearchResult;
-import com.mockey.model.Service;
-import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -71,73 +68,21 @@ public class SearchServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
-		List<SearchResult> searchResultList = new ArrayList<SearchResult>();
+		SearchResultBuilder searchResultBuilder = new SearchResultBuilder();
+
 		String term = req.getParameter("term");
-
-		if (term != null && term.trim().length() > 0) {
-			term = term.trim();
-			for (Service service : store.getServices()) {
-
-				SearchResult sr = buildSearchResult(term, service.getServiceName());
-				if (sr != null) {
-					sr.setType("service");
-					sr.setServiceId("" + service.getId());
-					searchResultList.add(sr);
-
-				}
-
-				for (Url url : service.getRealServiceUrls()) {
-					SearchResult subresult = buildSearchResult(term, url.toString());
-					if (subresult != null) {
-						subresult.setType("service");
-						subresult.setServiceId("" + service.getId());
-						searchResultList.add(subresult);
-					}
-				}
-
-				for (Scenario scenario : service.getScenarios()) {
-					SearchResult subresult = buildSearchResult(term, scenario.getResponseMessage());
-					if (subresult != null) {
-						subresult.setType("scenario");
-						subresult.setServiceId("" + service.getId());
-						subresult.setScenarioId("" + scenario.getId());
-						subresult.setScenarioName(scenario.getScenarioName());
-						searchResultList.add(subresult);
-					}
-				}
-
-			}
-		}
+		List<SearchResult> searchResultList = searchResultBuilder
+				.buildSearchResults(term, store);
 
 		req.setAttribute("results", searchResultList);
 		req.setAttribute("term", term);
-		RequestDispatcher dispatch = req.getRequestDispatcher("/search_result.jsp");
+		RequestDispatcher dispatch = req
+				.getRequestDispatcher("/search_result.jsp");
 		dispatch.forward(req, resp);
 
-	}
-
-	private SearchResult buildSearchResult(String term, String content) {
-
-		SearchResult result = null;
-		if (term != null && content != null) {
-			int index = content.toLowerCase().indexOf(term.toLowerCase());
-			if (index > -1) {
-				result = new SearchResult();
-
-				String teaserContent = content.substring(index);
-
-				if (teaserContent.length() > 150) {
-					teaserContent.substring(0, 148);
-
-				}
-				result.setContent(teaserContent);
-
-			}
-
-		}
-		return result;
 	}
 
 }

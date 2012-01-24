@@ -54,6 +54,7 @@ import com.mockey.model.ApiDocRequest;
 import com.mockey.model.ApiDocResponse;
 import com.mockey.model.ApiDocService;
 import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 import com.mockey.model.Url;
 import com.mockey.storage.IApiStorage;
 import com.mockey.storage.IApiStorageInMemory;
@@ -281,10 +282,18 @@ public class HomeServlet extends HttpServlet {
 			}
 		}
 		
-		//Filter check.
+		
 		List<Service> serviceList = null; 
+		List<ServicePlan> servicePlanList = null; 
 		String tagFilter = (String)req.getSession().getAttribute(TagHelperServlet.FILTER_TAG);
+		
+		//******************
+		// Filter 
+		//******************
 		if(tagFilter!=null && tagFilter.trim().length()>0){
+			//************************************
+			// Filter by SERVICES
+			//************************************
 			List<Service> filteredList = new ArrayList<Service>();
 			for(Service tempService: store.getServices()){
 				if(tempService.hasTag(tagFilter) ){
@@ -293,12 +302,26 @@ public class HomeServlet extends HttpServlet {
 			}
 			serviceList = Util.orderAlphabeticallyByServiceName(filteredList);
 			
+			//************************************
+			// Filter by SERVICE PLANS
+			//************************************
+			List<ServicePlan> filteredPlanList = new ArrayList<ServicePlan>();
+			for(ServicePlan tempServicePlan: store.getServicePlans()){
+				if(tempServicePlan.hasTag(tagFilter) ){
+					filteredPlanList.add(tempServicePlan);
+				} 
+			}
+			
+			serviceList = Util.orderAlphabeticallyByServiceName(filteredList);
+			servicePlanList = Util.orderAlphabeticallyByServicePlanName(filteredPlanList);
+			
+			//
 		}else {
 			serviceList = Util.orderAlphabeticallyByServiceName(store.getServices());
+			servicePlanList = Util.orderAlphabeticallyByServicePlanName(store.getServicePlans());
 		}
 		req.setAttribute("services", serviceList);
-		
-		req.setAttribute("plans", Util.orderAlphabeticallyByServicePlanName(store.getServicePlans()));
+		req.setAttribute("plans",servicePlanList);  // );
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 		dispatch.forward(req, resp);

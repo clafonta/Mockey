@@ -46,7 +46,8 @@ $(document).ready( function() {
                            var bValid = true;  
                            if (bValid) {
                         	   var servicePlanName = $('input[name=service_plan_name]').val();  
-                        	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName } ,function(data){
+                        	   var servicePlanTag = $('input[name=service_plan_tag]').val();  
+                        	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName, service_plan_tag:servicePlanTag } ,function(data){
                                    if(data.result.success && data.result.planid){
                                        //$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
                                        // We redirect here. Because appending HTML would require we append this 
@@ -66,7 +67,7 @@ $(document).ready( function() {
                     }
               }); 
               // Reset the size.
-              $('#dialog-create-plan').dialog({height: 250 });
+              $('#dialog-create-plan').dialog({height: 350 });
                 
               return false;
             });
@@ -255,7 +256,7 @@ $(document).ready( function() {
     $('#dialog').dialog({ autoOpen: false, minHeight: 300, width:700, height:500, modal: true });
     $('#dialog-delete-service-plan-confirm').dialog({autoOpen: false, height: 150, resizable: false });
     $('#dialog-delete-scenario-confirm').dialog({autoOpen: false, minHeight: 250, width: 300, height: 120, modal: false, resizable: false });
-    $("#dialog-create-plan").dialog({minHeight: 250, height:250, width: 500,  modal: false, autoOpen: false, resizable: true });
+    $("#dialog-create-plan").dialog({minHeight: 350, height:350, width: 500,  modal: false, autoOpen: false, resizable: true });
     $("#dialog-delete-service-confirm").dialog({ resizable: false, height: 120, modal: false, autoOpen: false });
     $("#dialog-tag-manage").dialog({ resizable: false, height: 420, minHeight: 450, modal: true, autoOpen: false });
     $('.hideServiceScenarioLink').each( function() {
@@ -301,7 +302,7 @@ $(document).ready( function() {
         <!-- SERVICE PLAN CREATE DIALOG -->
         <div id="dialog-tag-manage" title="Tag Helper">
             <p><strong>WARNING:</strong>
-            This will go through each Service and Scenario, and remove tag(s). 
+            This will remove tag(s) from each Service, Scenario, and Service Plan. 
             <input type="text" name="filter-tag" id="filter-tag" title="Enter tag(s) here" class="text ui-widget-content ui-corner-all" />
             <ul class="button-list">
             <li><a href="#" class="hhButtonRed" style="color:#FFFFFF;" id="delete-tag-button">Remove tag(s) from all things.</a></li>
@@ -315,12 +316,14 @@ $(document).ready( function() {
             <fieldset>
                 <label for="service_plan_name">Service Plan name</label>
                 <input type="text" name="service_plan_name" id="service_plan_name" class="text ui-widget-content ui-corner-all" />
+                <label for="service_plan_tag" class="blur">Tag(s) - <i>optional</i></label>
+                <input type="text" name="service_plan_tag" id="service_plan_tag" title="Optional tags here" class="text ui-widget-content ui-corner-all" />
             </fieldset> 
             </p>
         </div>
         
         <c:choose>
-	        <c:when test="${!empty services}">    
+	        <c:when test="${!empty services || !empty plans}">    
 	          <c:choose>
 				    <c:when test="${empty param.serviceId}">
 				        
@@ -398,7 +401,7 @@ $(document).ready( function() {
 			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
 			                                
 			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
-			                                
+			                                <span class="tiny">Tag(s): ${plan.tag}</span>
 			                                <div style="padding-top:0.6em;">  
 			                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#"> Set This Plan </a> &nbsp;
 			                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#">Save As Plan</a></div>
