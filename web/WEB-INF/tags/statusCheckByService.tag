@@ -5,19 +5,12 @@
 <%@ attribute name="view" required="true" %> 
 <%@ attribute name="service" required="true" type="com.mockey.model.Service" %>
 
-<%
-// There are TWO views, DETAIL or MASTER
-//
-Calendar now = Calendar.getInstance();
-SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-String time = "";
-
-if(service.getLastVisit()!=null && service.getLastVisit() > 0 ){
- time = formatter.format(new Date(new Long(service.getLastVisit())));
-
-}
-%>
-<span class="tag_word_lead">Last visit: ${time}</span>
+<div class="tag_word_group">
+<span class="tag_word_lead">Last visit:</span>
+<c:if test="${not empty service.lastVisitSimple}">
+<span class="tag_word" id="remove-service-last_${service.id}_${view}"><a href="#" title="Delete last visit" class="service-lastvisit-remove remove_grey" id="remove-service-last_${service.id}">X</a>
+${service.lastVisitSimple}</span>
+</c:if> 
 <br />
 <span class="tag_word_lead">Tag(s):</span>
 <c:forEach var="tagArg" items="${service.tagList}"  varStatus="status">
@@ -26,3 +19,4 @@ if(service.getLastVisit()!=null && service.getLastVisit() > 0 ){
 			${tagArg}
 		</span>	  
 </c:forEach>
+</div>

@@ -30,6 +30,7 @@ package com.mockey.ui;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -411,6 +412,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 
 		}
 		servicePlan.setPlanItemList(planItemList);
+		servicePlan.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 		return store.saveOrUpdateServicePlan(servicePlan);
 
 	}
@@ -430,5 +432,9 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 				store.saveOrUpdateService(service);
 			}
 		}
+		// Why do we save the Plan here? 
+		// To save the lastVisit time
+		servicePlan.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+		store.saveOrUpdateServicePlan(servicePlan);
 	}
 }

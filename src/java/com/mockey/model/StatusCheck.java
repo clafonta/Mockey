@@ -24,7 +24,10 @@
  */
 package com.mockey.model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +41,8 @@ public abstract class StatusCheck {
 
 	private List<String> tagList = new ArrayList<String>();
 	private Long lastVisit = null;
+	private final SimpleDateFormat formatter = new SimpleDateFormat(
+			"MM/dd/yyyy");
 
 	/**
 	 * Add tag to the list. Method ensures no duplication, space trimming, and
@@ -50,21 +55,21 @@ public abstract class StatusCheck {
 		this.tagList = createUniqueLowercaseTagList(this.tagList, tag);
 
 	}
-	
+
 	/**
 	 * Clear's tag list
 	 */
-	public void clearTagList(){
+	public void clearTagList() {
 		this.tagList = new ArrayList<String>();
 	}
-	
+
 	/**
 	 * 
 	 * @param tag
 	 */
-	public void removeTagFromList(String tag){
-		
-		if(tag!=null && tag.trim().length()>0){
+	public void removeTagFromList(String tag) {
+
+		if (tag != null && tag.trim().length() > 0) {
 			String cleanTag = tag.toLowerCase().trim();
 			String delims = "[ ]+";
 			String[] tokens = cleanTag.split(delims);
@@ -73,7 +78,7 @@ public abstract class StatusCheck {
 					this.tagList.remove(arg);
 				}
 			}
-			
+
 		}
 	}
 
@@ -106,16 +111,16 @@ public abstract class StatusCheck {
 	public void setLastVisit(Long lastVisited) {
 		this.lastVisit = lastVisited;
 	}
-	
-	public boolean hasTag(String tag){
+
+	public boolean hasTag(String tag) {
 		boolean hasTag = false;
-		if(tag!=null && tag.trim().length() > 0){
+		if (tag != null && tag.trim().length() > 0) {
 			String cleanTag = tag.trim().toLowerCase();
 			String delims = "[ ]+";
 			String[] tokens = cleanTag.split(delims);
-			for(String token: tokens){
-				for(String tagArg : this.tagList){
-					if(tagArg.equals(token)){
+			for (String token : tokens) {
+				for (String tagArg : this.tagList) {
+					if (tagArg.equals(token)) {
 						hasTag = true;
 						return hasTag;
 					}
@@ -123,7 +128,7 @@ public abstract class StatusCheck {
 			}
 		}
 		return hasTag;
-		
+
 	}
 
 	/**
@@ -168,7 +173,8 @@ public abstract class StatusCheck {
 			String[] splitTagArg = tagArg.toLowerCase().trim().split(" ");
 			for (String cleanTag : splitTagArg) {
 				if (cleanTag.toLowerCase().trim().length() > 0
-						&&!targetTagList.contains(cleanTag.toLowerCase().trim())) {
+						&& !targetTagList.contains(cleanTag.toLowerCase()
+								.trim())) {
 					targetTagList.add(cleanTag);
 				}
 			}
@@ -176,4 +182,19 @@ public abstract class StatusCheck {
 		return targetTagList;
 
 	}
+
+	/**
+	 * Helper method.
+	 * 
+	 * @return if available, in MM/dd/yyyy format.
+	 */
+	public String getLastVisitSimple() {
+		String time = "";
+
+		if (this.getLastVisit() != null && this.getLastVisit() > 0) {
+			time = formatter.format(new Date(new Long(this.getLastVisit())));
+		}
+		return time;
+	}
+
 }

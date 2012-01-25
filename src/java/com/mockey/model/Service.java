@@ -467,10 +467,12 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		// 2) Based on scenario selected.
 		//
 		Scenario scenario = this.getScenario(this.getDefaultScenarioId());
+		
 		ResponseFromService response = new ResponseFromService();
 
 		if (scenario != null) {
 			response.setBody(scenario.getResponseMessage());
+			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 		} else {
 			response.setBody("NO SCENARIO SELECTED");
 		}

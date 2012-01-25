@@ -194,7 +194,7 @@ $(document).ready( function() {
      });
 
     
-    $('.gt').each( function() {
+    $('.service-view-master-link').each( function() {
         $(this).click(function(){   
           var serviceId = this.id.split("_")[1]; 	
           $(".parentform").removeClass("parentformselected");
@@ -248,6 +248,37 @@ $(document).ready( function() {
 					   if(data.success){
 						   $('#'+tagId+'_detail').hide();
 						   $('#'+tagId+'_master').hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+       
+   $('.service-lastvisit-remove').each( function() {
+        $(this).click( function() {
+            var serviceId = this.id.split("_")[1];
+            $.post('<c:url value="/lastvisithelp"/>', { action: 'clear_last_visit', serviceId: serviceId } ,function(data){
+					   if(data.success){
+					       $('#remove-service-last_'+serviceId+'_detail').hide();
+					       $('#remove-service-last_'+serviceId+'_master').hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+   $('.scenario-lastvisit-remove').each( function() {
+        $(this).click( function() {
+            var scenarioId = this.id.split("_")[1];
+            var serviceId = this.id.split("_")[2];
+            $.post('<c:url value="/lastvisithelp"/>', { action: 'clear_last_visit', serviceId: serviceId, scenarioId: scenarioId } ,function(data){
+					   if(data.success){
+					       $('#remove-scenario-last_'+scenarioId+'_'+serviceId).hide();
         				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
 					    }else {
 					       alert("Hmm...");
@@ -346,9 +377,10 @@ $(document).ready( function() {
 </script>
     <div id="main">
     <div id="filter_view_div">
-	<span>Filter Services by Tag(s): </span> 
-	<input type="text" id="filter-tag-field" style="width:350px;" title="Enter tags here. View services by matching tags."  name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" /> 
-	<a href="#" id="filter-tag-update-button" class="hhButton">Apply Filter</a> <a href="#" class="hhButtonRed clear-tag-button" id="">Clear Filter View</a>
+	<span class="basic_label">Filter this page view: </span> 
+	<input type="text" id="filter-tag-field" style="width:500px;" title="Enter tags here. View services, scenarios, and/or plans by matching tags."  name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
+	<a href="#" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
+	<a href="#" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
 	<a href="#" class="manageTagLink">Tag Helper</a>
 	</div>
         <%@ include file="/WEB-INF/common/message.jsp" %>
@@ -422,20 +454,17 @@ $(document).ready( function() {
 												 <mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
 												</div>
 												
-												<div class="toggle-buttons">
+												<div class="toggle-buttons" style="margin-bottom:8px;">
 				                                  <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
 				                                  <span class="toggle_button tiny">
-												      <a class="gt" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>">view</a> |
+												      <a class="service-view-master-link" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>">view</a> |
 												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a>
 												  </span>
 												  <c:if test="${empty mockservice.scenarios}">
 						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>
 						                          </c:if>
 						                        </div>
-			                                    
-												<div style="padding-top:10px;">
 												<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>					
-												</div>
 											</div>
 								    	</c:forEach>
 								    	
@@ -523,13 +552,14 @@ $(document).ready( function() {
                                    <div class="service-label border-top" style="margin-top:1em;">Select a static scenario:
                                    <span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
-                                   <div>
-                                   <ul id="scenario-list_${mockservice.id}" class="simple group">
+                                   <div >
+                                   <div id="scenario-list_${mockservice.id}">
 	                                    <div id="result1" class="jTemplatesTest"></div>
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
-		                                    <li style="padding-top: 0.5em;" id="service-scenario-info_${scenario.id}_${mockservice.id}">
+		                                    <div class="service-detail-scenario-list-item">
+		                                    <div style="padding-top: 0.5em;" id="service-scenario-info_${scenario.id}_${mockservice.id}">
 		                                      <c:choose>
 		                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
 		                                          <c:set var="off_class" value="hide" />
@@ -544,9 +574,9 @@ $(document).ready( function() {
 		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
 		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
 		                                      <span> <a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
-		                                      
-		                                      <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
-		                                    </li>
+		                                    </div>
+		                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
+		                                    </div>
 		                                  </c:forEach>
 		                                  </c:when>
 		                                  <c:otherwise>
@@ -557,10 +587,10 @@ $(document).ready( function() {
 					                                <c:param name="serviceId" value="${mockservice.id}" />
 					                                <c:param name="createScenario" value="yes" />
 					                             </c:url>
-		                                  	<li class="alert_message"><span>You need to create a scenario before using <strong>Static</strong> or <strong>Dynamic</strong> scenario</span></li>
+		                                  	<div class="alert_message"><span>You need to create a scenario before using <strong>Static</strong> or <strong>Dynamic</strong> scenario</span></div>
 		                                  </c:otherwise>
 		                                </c:choose>
-	                                </ul>
+	                                </div>
                                    </div>
                                  </div>
                                  

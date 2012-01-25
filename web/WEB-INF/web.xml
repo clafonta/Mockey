@@ -316,6 +316,22 @@
             com.mockey.ui.TagHelperServlet
         </servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>
+            LastVisitTagHelperServlet
+        </servlet-name>
+        <servlet-class>
+            com.mockey.ui.LastVisitTagHelperServlet
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>
+            LastVisitTagHelperServlet
+        </servlet-name>
+        <url-pattern>
+            /lastvisithelp
+        </url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>
             TagHelperServlet
