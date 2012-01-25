@@ -287,6 +287,20 @@ $(document).ready( function() {
         	
         });
    });
+   $('.service-plan-lastvisit-remove').each( function() {
+        $(this).click( function() {
+            var servicePlanId = this.id.split("_")[1];
+            $.post('<c:url value="/lastvisithelp"/>', { action: 'clear_last_visit', servicePlanId: servicePlanId } ,function(data){
+					   if(data.success){
+					       $('#remove-service-plan-last_'+servicePlanId).hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
     $('.serviceScenarioResponseTypeLink').each( function() {
 		$(this).click( function() {
 			var scenarioId = this.id.split("_")[1];
