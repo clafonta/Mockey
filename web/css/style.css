@@ -1,5 +1,5 @@
 html, body{	padding-top: 0px;	background: #FFFFFF;font: 0.9em Helvetica,Arial,sans-serif; height:100%;}
-.big{font-size: 1.8em;}
+.big{font-size: 2em;}
 .tiny, .tinyfieldset{font-size: 90%;}
 .tinyfieldset {padding:0.1em 0 2em 0; }
 .setplan{border: thin solid #bdbdbd; margin-top:0.8em; padding:0.8em; }
@@ -110,7 +110,14 @@ ul.upload-result li {  margin:0.5em 0 0.5em 0.9em; }
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
 p{margin: 0.5em 0.0em; padding: 1px;line-height:130%;}
 a{color: #00F;text-decoration:underline}
-.response_not, .response_set { height: 1em;  -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; padding: 0.5em 0.8em; margin: auto; text-align: center; text-decoration:none; font-size: 0.8em;
+.response_not, .response_set { 
+   height: 1em;  
+   -webkit-border-radius: 0.5em; 
+   -moz-border-radius: 0.5em; 
+   padding: 0.5em 0.8em; 
+   margin: auto; 
+   text-align: center; 
+   text-decoration:none; font-size: 0.8em;
    border: 1px solid #A9A9A9; 
    border-bottom : 2px solid #A9A9A9;
    border-right : 2px solid #A9A9A9;
@@ -140,6 +147,8 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .count-box {border: thin solid #bdbdbd; background: #EF959E; margin-left:-0.8em; margin-top:-0.6em; margin-bottom:0.5em; padding:0.1em;color:#FFFFFF; width:18px; font-size:10px; text-align:center;}
 .tag_word_group {
     line-height:18px;
+    padding-top:5px;
+    margin-top:5px;
 }
 .tag_word_lead {
     color:#666666;
@@ -402,7 +411,7 @@ padding: 8px;
 .service { list-style: none; word-break:break-all;	}
 .service div {	margin:0.5em 0 0.5em 0; }
 .basic_label {color:#666666;}
-div.service-value {color:#666666; font-weight:bold;}
+div.service-value {color:#FF0084; font-weight:normal;padding-left:1em;}
 div.service-label {color:#555555; padding-top:0.8em;}
 div.border-top{border-top:1px solid #BDBDBD;}
 div.not-top {margin-top:2em;}
@@ -411,6 +420,7 @@ div.not-top {margin-top:2em;}
 .service-detail-scenario-list-item{
  border: thin dashed #bdbdbd;
  padding:2px 5px;
+ background-color:#FFFBF2;
 }
 /* EDIT SCENARIO FORM */
 .edit-scenario-name-label, .edit-scenario-match-label, .edit-scenario-response-label {font-weight:bold; font-size:1.0em;}

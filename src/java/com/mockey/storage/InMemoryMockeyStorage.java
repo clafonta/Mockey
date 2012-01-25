@@ -596,6 +596,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 				}
 				
 			}
+			for(ServicePlan servicePlan: servicePlanStore.getOrderedList()){
+				servicePlan.removeTagFromList(tag);
+			}
 			this.writeMemoryToFile();
 		}
 		

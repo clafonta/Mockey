@@ -568,11 +568,11 @@ $(document).ready( function() {
                                    </div>
                                    <div >
                                    <div id="scenario-list_${mockservice.id}">
-	                                    <div id="result1" class="jTemplatesTest"></div>
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
-		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
+		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status"  >
 		                                    <div class="service-detail-scenario-list-item">
+		                                    <div class="count-box" style="margin-left:-5px;margin-top:-2px;">${status.count}</div>
 		                                    <div style="padding-top: 0.5em;" id="service-scenario-info_${scenario.id}_${mockservice.id}">
 		                                      <c:choose>
 		                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
@@ -584,9 +584,10 @@ $(document).ready( function() {
 		                                          <c:set var="on_class" value="hide" />
 		                                        </c:otherwise>
 		                                      </c:choose>
+		                                      
 		                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
 		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
-		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
+		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="60"/></a>
 		                                      <span> <a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
 		                                    </div>
 		                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
