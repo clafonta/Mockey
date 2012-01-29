@@ -386,7 +386,7 @@ $(document).ready( function() {
 					    }
 				}, 'json' );
         });
-  
+            
  });
 </script>
     <div id="main">
@@ -462,8 +462,11 @@ $(document).ready( function() {
 				                                	<c:param name="serviceId" value="${mockservice.id}" />
 				                             	</c:url>
 				                             	
-				                                <span style="float:right;"><a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
+				                                <span style="float:right;">
+				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a>
+				                                </span>
 				                                <div class="count-box">${status.count}</div>
+				                                
 												<div style="margin-bottom:0.5em;">
 												 <mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
 												</div>
@@ -473,6 +476,7 @@ $(document).ready( function() {
 				                                  <span class="toggle_button tiny">
 												      <a class="service-view-master-link" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>">view</a> |
 												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a>
+												      <mockey-tag:conflictFlag service="${mockservice}" conflictInfo="${conflictInfo}"/>
 												  </span>
 												  <c:if test="${empty mockservice.scenarios}">
 						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>

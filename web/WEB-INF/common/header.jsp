@@ -13,6 +13,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/jquery-ui-1.8.1.custom/css/flick/jquery-ui-1.8.1.custom.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/javascript/fileuploader/fileuploader.css" />" />
 <%
+// Only for DEV. This polls every few seconds and will refressh this page's CSS
 //<script type="text/javascript" src="<c:url value="/javascript/cssrefresh.js" />"></script>
 %>
 <script type="text/javascript" src="<c:url value="/javascript/util.js" />"></script>
@@ -21,6 +22,7 @@
 <script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-impromptu.2.7.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery.textarearesizer.compressed.js" />"></script>
+
 <script type="text/javascript" src="<c:url value="/javascript/superfish.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/hoverIntent.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery.hint.js" />"></script>
@@ -224,6 +226,16 @@ $(document).ready(function() {
             document.location="<c:url value="/search?term=" />" + term;
         }
     });
+    
+    $('.toggle-conflict-link').each( function() {
+        $(this).click( function() {
+            var tVal = this.id.split("_")[1];
+            $('#conflict-info_' + tVal).toggle();
+            
+          }); 
+       
+     });
+    
      
 });
 

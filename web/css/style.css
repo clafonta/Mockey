@@ -482,6 +482,21 @@ line-height: 1.4em;
 }
 .consoleTextArea {display:block;margin-bottom:0pt;width:100%;height: 700px;background-color: #FFFFF2; border:thin solid #BDBDBD;}
 
+.tooltip {
+display: none;
+margin-top:10px;
+padding: 10px 13px;
+text-align: left;
+}
+div.tooltip ul  {
+     list-style: none;
+
+}
+div.tooltip ul li:before {
+    content: "\00BB \0020";
+
+}
+
 /*Credits: Dynamic Drive CSS Library */
 /*URL: http://www.dynamicdrive.com/style/ */
 
@@ -511,6 +526,7 @@ border-width: 0;
 padding: 2px;
 }
 
+            
 .thumbnail:hover span{ /*CSS for enlarged image on hover*/
 visibility: visible;
 top: 0;
