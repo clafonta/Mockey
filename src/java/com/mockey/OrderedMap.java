@@ -28,7 +28,7 @@
 package com.mockey;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +50,7 @@ import com.mockey.model.PersistableItem;
  * @author chad.lafontaine
  * 
  */
-public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T> implements Map<Long, T> {
+public class OrderedMap<T extends PersistableItem> extends ConcurrentHashMap<Long, T> implements Map<Long, T> {
 
     private static final long serialVersionUID = -1654150132938363942L;
     private Integer maxSize = null;
@@ -86,6 +86,13 @@ public class OrderedMap<T extends PersistableItem> extends HashMap<Long, T> impl
 
         }
         return item;
+    }
+
+    public T get(Object key) {
+      if (key == null) {
+        return null;
+      }
+      return super.get(key);
     }
 
     private Long getSmallestValue() {

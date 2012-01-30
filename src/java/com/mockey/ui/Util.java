@@ -55,7 +55,8 @@ public class Util {
 	 * @param message
 	 * @param req
 	 */
-	private static void save(String message, String messageKey, HttpServletRequest req) {
+	private static void save(String message, String messageKey,
+			HttpServletRequest req) {
 
 		// HISTORY: This method use to save a List of messages
 		// for the purpose to display to the end user. But since
@@ -107,13 +108,15 @@ public class Util {
 	 * @param services
 	 * @return
 	 */
-	public static List<Service> orderAlphabeticallyByServiceName(List<Service> services) {
+	public static List<Service> orderAlphabeticallyByServiceName(
+			List<Service> services) {
 
 		// Custom comparator
 		class ServiceNameComparator implements Comparator<Service> {
 
 			public int compare(Service s1, Service s2) {
-				return s1.getServiceName().compareToIgnoreCase(s2.getServiceName());
+				return s1.getServiceName().compareToIgnoreCase(
+						s2.getServiceName());
 
 			}
 
@@ -130,7 +133,8 @@ public class Util {
 	 * @param services
 	 * @return
 	 */
-	public static List<ServicePlan> orderAlphabeticallyByServicePlanName(List<ServicePlan> servicePlans) {
+	public static List<ServicePlan> orderAlphabeticallyByServicePlanName(
+			List<ServicePlan> servicePlans) {
 
 		// Custom comparator
 		class ServicePlanNameComparator implements Comparator<ServicePlan> {
@@ -146,14 +150,15 @@ public class Util {
 
 		return servicePlans;
 	}
-	
+
 	/**
 	 * Returns the services list ordered alphabetically.
 	 * 
 	 * @param services
 	 * @return
 	 */
-	public static List<ApiDocService> orderAlphabeticallyByApiName(List<ApiDocService> apiDocServices) {
+	public static List<ApiDocService> orderAlphabeticallyByApiName(
+			List<ApiDocService> apiDocServices) {
 
 		// Custom comparator
 		class ApiDocServiceComparator implements Comparator<ApiDocService> {
@@ -176,13 +181,15 @@ public class Util {
 	 * @param services
 	 * @return
 	 */
-	public static List<Scenario> orderAlphabeticallyByScenarioName(List<Scenario> scenarios) {
+	public static List<Scenario> orderAlphabeticallyByScenarioName(
+			List<Scenario> scenarios) {
 
 		// Custom comparator
 		class ScenarioNameComparator implements Comparator<Scenario> {
 
 			public int compare(Scenario s1, Scenario s2) {
-				return s1.getScenarioName().compareToIgnoreCase(s2.getScenarioName());
+				return s1.getScenarioName().compareToIgnoreCase(
+						s2.getScenarioName());
 			}
 		}
 		// Sort me.
@@ -211,7 +218,8 @@ public class Util {
 			jsonResult.put("result", jsonObject);
 			result = jsonResult.toString();
 		} catch (JSONException je) {
-			result = "Unable to create JSON format response. " + je.getMessage();
+			result = "Unable to create JSON format response. "
+					+ je.getMessage();
 		}
 
 		return result;

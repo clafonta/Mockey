@@ -69,6 +69,7 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 			jsonObject.put("serviceId", "" + serviceId);
 			jsonObject.put("serviceName", "" + service.getServiceName());
 			jsonObject.put("scenarioId", "" + scenario.getId());
+			jsonObject.put("tag", "" + scenario.getTag());
 			jsonObject.put("name", scenario.getScenarioName());
 			jsonObject.put("match", scenario.getMatchStringArg());
 			jsonObject.put("response", scenario.getResponseMessage());

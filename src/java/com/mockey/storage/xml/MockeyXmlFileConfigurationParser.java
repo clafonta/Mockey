@@ -98,6 +98,8 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "http_content_type", "httpContentType");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "hang_time", "hangTime");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "url", "url");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "tag", "tag");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "last_visit", "lastVisit");
 
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "proxyurl", "realServiceUrlByString");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "default_real_url_index", "defaultRealUrlIndex");
@@ -112,9 +114,12 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addObjectCreate(ROOT_SERVICE_SCENARIO, Scenario.class);
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "id", "id");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "name", "scenarioName");
+		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "tag", "tag");
+		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "last_visit", "lastVisit");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
+		
 		fullSetDigester.addSetNext(ROOT_SERVICE_SCENARIO, "saveOrUpdateScenario");
 
 		// PLAN
@@ -122,6 +127,8 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_PLAN, "name", "name");//     
 		fullSetDigester.addSetProperties(ROOT_PLAN, "description", "description");//
 		fullSetDigester.addSetProperties(ROOT_PLAN, "id", "id");
+		fullSetDigester.addSetProperties(ROOT_PLAN, "tag", "tag");
+		fullSetDigester.addSetProperties(ROOT_PLAN, "last_visit", "lastVisit");
 		fullSetDigester.addSetNext(ROOT_PLAN, "saveOrUpdateServicePlan");
 		fullSetDigester.addObjectCreate(ROOT_PLAN_ITEM, PlanItem.class);
 		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "hang_time", "hangTime");

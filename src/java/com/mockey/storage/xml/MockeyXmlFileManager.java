@@ -43,6 +43,7 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
@@ -61,12 +62,12 @@ import com.mockey.ui.ServiceMergeResults;
  */
 public class MockeyXmlFileManager {
 
-	private static final long serialVersionUID = 2874257060865115637L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	public static final String MOCK_SERVICE_DEFINITION = "mock_service_definitions.xml";
 	protected static final String MOCK_SERVICE_FOLDER = "mockey_def_depot";
 	private static Logger logger = Logger.getLogger(MockeyXmlFileManager.class);
-	private static final String FILESEPERATOR = System.getProperty("file.separator");
+	private static final String FILESEPERATOR = System
+			.getProperty("file.separator");
 
 	/**
 	 * Basic constructor. Will create a folder on the file system to store XML
@@ -78,7 +79,8 @@ public class MockeyXmlFileManager {
 		if (!fileDepot.exists()) {
 			boolean success = fileDepot.mkdir();
 			if (!success) {
-				logger.fatal("Unable to create a folder called " + MOCK_SERVICE_FOLDER);
+				logger.fatal("Unable to create a folder called "
+						+ MOCK_SERVICE_FOLDER);
 			}
 		}
 	}
@@ -91,10 +93,12 @@ public class MockeyXmlFileManager {
 	 * @throws SAXException
 	 * @throws SAXParseException
 	 */
-	private String getFileContentAsString(File file) throws IOException, SAXParseException, SAXException {
+	private String getFileContentAsString(File file) throws IOException,
+			SAXParseException, SAXException {
 
 		FileInputStream fstream = new FileInputStream(file);
-		BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
+		BufferedReader br = new BufferedReader(new InputStreamReader(fstream,
+				Charset.forName(HTTP.UTF_8)));
 		StringBuffer inputString = new StringBuffer();
 		// Read File Line By Line
 		String strLine = null;
@@ -109,17 +113,19 @@ public class MockeyXmlFileManager {
 	/**
 	 * Loads from default file definition file.
 	 * 
-	 * @return results of loading configuration, includes additions and possible conflicts.
-	 *  
+	 * @return results of loading configuration, includes additions and possible
+	 *         conflicts.
+	 * 
 	 * @throws SAXParseException
 	 * @throws IOException
 	 */
-	public ServiceMergeResults loadConfiguration() throws SAXParseException, IOException {
+	public ServiceMergeResults loadConfiguration() throws SAXParseException,
+			IOException {
 		File n = new File(MOCK_SERVICE_DEFINITION);
 		logger.debug("Loading configuration from " + MOCK_SERVICE_DEFINITION);
 
 		try {
-			return loadConfigurationWithXmlDef(getFileContentAsString(n));
+			return loadConfigurationWithXmlDef(getFileContentAsString(n), null);
 		} catch (SAXException e) {
 			logger.error("Ouch, unable to parse" + n.getAbsolutePath(), e);
 		}
@@ -128,13 +134,15 @@ public class MockeyXmlFileManager {
 
 	/**
 	 * 
-	 * @param data
+	 * @param strXMLDefintion
+	 * @param tagArguments
 	 * @return results (conflicts and additions).
 	 * @throws IOException
-	 * @throws SAXException
 	 * @throws SAXParseException
+	 * @throws SAXException
 	 */
-	public ServiceMergeResults loadConfigurationWithXmlDef(String strXMLDefintion) throws IOException,
+	public ServiceMergeResults loadConfigurationWithXmlDef(
+			String strXMLDefintion, String tagArguments) throws IOException,
 			SAXParseException, SAXException {
 		ServiceMergeResults mergeResults = new ServiceMergeResults();
 
@@ -143,60 +151,98 @@ public class MockeyXmlFileManager {
 		// the file system.
 		// If the STORE has many definitions, then each SAVE will loop over
 		// every file and write.
-		// 
+		//
 		// NOT GOOD FOR PERFORMANCE
-		// 
-		// Solution: put the store in a temporary transient state, then revert
-		// to original
-		// READ ONLY MODE setting
+		//
+		// Solution: put the store in a temporary transient state
+		// (memory-mode-only), then revert to original transient setting,
+		// which could have been in memory-only or write-to-file in the
+		// first place.
 		//
 		// *********************
 		Boolean originalTransientState = store.getReadOnlyMode();
 		store.setReadOnlyMode(true);
 
+		// STEP #1. CREATE A TEMP STORE
+		// Read the incoming XML file, and create a new/temporary store.
+		//
 		MockeyXmlFileConfigurationReader msfr = new MockeyXmlFileConfigurationReader();
-		IMockeyStorage mockServiceStoreTemporary = msfr.readDefinition(strXMLDefintion);
-		// PROXY SETTINGs
-		store.setProxy(mockServiceStoreTemporary.getProxy());
+		IMockeyStorage mockServiceStoreTemporary = msfr
+				.readDefinition(strXMLDefintion);
 
-		// UNIVERSAL RESPONSE SETTINGS
-		if (store.getUniversalErrorScenario() != null && mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
-			mergeResults.addConflictMsg("Universal error message already defined with name '"
-					+ store.getUniversalErrorScenario().getScenarioName() + "'");
+		// STEP #2. PROXY SETTINGS
+		// If the proxy settings are _empty_, then set the incoming
+		// proxy settings. Otherwise, call out a merge conflict.
+		//
+		ProxyServerModel proxyServerModel = store.getProxy();
+		if (proxyServerModel.hasSettings()) {
+			mergeResults
+					.addConflictMsg("Proxy settings NOT set from incoming file.");
+		} else {
+			store.setProxy(mockServiceStoreTemporary.getProxy());
+			mergeResults.addAdditionMsg("Proxy settings set.");
+		}
+
+		// STEP #3. UNIVERSAL RESPONSE SETTINGS
+		if (store.getUniversalErrorScenario() != null
+				&& mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
+			mergeResults
+					.addConflictMsg("Universal error message already defined with name '"
+							+ store.getUniversalErrorScenario()
+									.getScenarioName() + "'");
 		} else if (store.getUniversalErrorScenario() == null
 				&& mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
 
-			store.setUniversalErrorScenarioId(mockServiceStoreTemporary.getUniversalErrorScenario().getId());
-			store.setUniversalErrorServiceId(mockServiceStoreTemporary.getUniversalErrorScenario().getServiceId());
+			store.setUniversalErrorScenarioId(mockServiceStoreTemporary
+					.getUniversalErrorScenario().getId());
+			store.setUniversalErrorServiceId(mockServiceStoreTemporary
+					.getUniversalErrorScenario().getServiceId());
 			mergeResults.addAdditionMsg("Universal error response defined.");
 
 		}
 
-		// Service References
+		// STEP #4. BUILD SERVICE REFERENCES
+		// *** I totally forget why I do this. ***
+		// Come on! Comments needed. Why references?
+		// Can we not use them?
 		List<Service> serviceListFromRefs = new ArrayList<Service>();
 		for (ServiceRef serviceRef : mockServiceStoreTemporary.getServiceRefs()) {
 			try {
-				String mockServiceDefinition = getFileContentAsString(new File(serviceRef.getFileName()));
+				String mockServiceDefinition = getFileContentAsString(new File(
+						serviceRef.getFileName()));
 
-				List<Service> tmpList = msfr.readServiceDefinition(mockServiceDefinition);
+				List<Service> tmpList = msfr
+						.readServiceDefinition(mockServiceDefinition);
 				for (Service tmpService : tmpList) {
 					serviceListFromRefs.add(tmpService);
 				}
 			} catch (SAXParseException spe) {
-				logger.error("Unable to parse file of name " + serviceRef.getFileName(), spe);
-				mergeResults.addConflictMsg("File not parseable: " + serviceRef.getFileName());
+				logger.error(
+						"Unable to parse file of name "
+								+ serviceRef.getFileName(), spe);
+				mergeResults.addConflictMsg("File not parseable: "
+						+ serviceRef.getFileName());
 
 			} catch (FileNotFoundException fnf) {
 				logger.error("File not found: " + serviceRef.getFileName());
-				mergeResults.addConflictMsg("File not found: " + serviceRef.getFileName());
+				mergeResults.addConflictMsg("File not found: "
+						+ serviceRef.getFileName());
 			}
 
 		}
-		addServicesToStore(mergeResults, serviceListFromRefs);
-		// Service
-		mergeResults = addServicesToStore(mergeResults, mockServiceStoreTemporary.getServices());
+		addServicesToStore(mergeResults, serviceListFromRefs, tagArguments);
 
-		for (ServicePlan servicePlan : mockServiceStoreTemporary.getServicePlans()) {
+		// STEP #5. MERGE SERVICES AND SCENARIOS
+		// Since this gets complicated, logic was moved to it's own method.
+		mergeResults = addServicesToStore(mergeResults,
+				mockServiceStoreTemporary.getServices(), tagArguments);
+
+		// STEP #6. MERGE SERVICE PLANS
+		for (ServicePlan servicePlan : mockServiceStoreTemporary
+				.getServicePlans()) {
+			if (tagArguments != null) {
+				servicePlan.addTagToList(tagArguments);
+			}
 			store.saveOrUpdateServicePlan(servicePlan);
 		}
 
@@ -216,7 +262,10 @@ public class MockeyXmlFileManager {
 		return mergeResults;
 	}
 
-	private ServiceMergeResults addServicesToStore(ServiceMergeResults mergeResults, List<Service> serviceList) {
+	// Let's Merge!
+	private ServiceMergeResults addServicesToStore(
+			ServiceMergeResults mergeResults, List<Service> serviceListToAdd,
+			String tagArguments) {
 		// When loading a definition file, by default, we should
 		// compare the uploaded Service list mock URL to what's currently
 		// in memory.
@@ -224,37 +273,85 @@ public class MockeyXmlFileManager {
 		// 1) MATCHING MOCK URL
 		// If there is an existing/matching mockURL, then this isn't
 		// a new service and we DON'T want to overwrite. But, we
-		// want new Scenarios if they exist. A new scenario is based
-		// on
+		// want new Scenarios if they exist. See Scenario.equals()
 		//
 		// 2) NO MATCHING MOCK URL
-		// If there is no matching service URL, then create a new
-		// service and associated scenarios.
-		for (Service uploadedServiceBean : serviceList) {
+		// If there is no matching service URL, then we want to create a new
+		// service and associated scenarios. But here's an odd case. What if
+		// we are merging two same-name Services, each with empty matching URL
+		// lists?
+		//
+
+		for (Service uploadedServiceBean : serviceListToAdd) {
 			List<Service> serviceBeansInMemory = store.getServices();
-			Iterator<Service> iter3 = serviceBeansInMemory.iterator();
-			boolean existingServiceWithMatchingMockUrl = false;
+			Iterator<Service> inMemoryServiceIter = serviceBeansInMemory
+					.iterator();
+
+			boolean existingService = false;
 			Service inMemoryServiceBean = null;
-			while (iter3.hasNext()) {
-				inMemoryServiceBean = (Service) iter3.next();
-				Url firstMatchingUrl = inMemoryServiceBean.getFirstMatchingRealServiceUrl(uploadedServiceBean);
-				if (firstMatchingUrl != null) {
-					existingServiceWithMatchingMockUrl = true;
-					mergeResults.addConflictMsg("Service '" + uploadedServiceBean.getServiceName()
-							+ "' not created; will try to merge into existing service labeled '"
-							+ inMemoryServiceBean.getServiceName() + "' ");
-					break;
+
+			while (inMemoryServiceIter.hasNext()) {
+				inMemoryServiceBean = (Service) inMemoryServiceIter.next();
+
+				// Same name?
+				if (uploadedServiceBean
+						.getServiceName()
+						.trim()
+						.toLowerCase()
+						.equals(inMemoryServiceBean.getServiceName().trim()
+								.toLowerCase())) {
+					existingService = true;
+					mergeResults
+							.addConflictMsg("Service '"
+									+ uploadedServiceBean.getServiceName()
+									+ "' not created; will try to merge new/different Scenarios into existing service labeled '"
+									+ inMemoryServiceBean.getServiceName()
+									+ "' ");
+
+				} else {
+					// First, check if both have empty Real service list
+					Url firstMatchingUrl = inMemoryServiceBean
+							.getFirstMatchingRealServiceUrl(uploadedServiceBean);
+					if (firstMatchingUrl != null) {
+						existingService = true;
+						mergeResults
+								.addConflictMsg("Service '"
+										+ uploadedServiceBean.getServiceName()
+										+ "' not created because of same Service Name but conflicting Real URL. e labeled '"
+										+ inMemoryServiceBean.getServiceName()
+										+ "' ");
+						break;
+					}
 				}
 			}
-			if (!existingServiceWithMatchingMockUrl) {
-				// We null it, to not stomp on any services
+			if (!existingService) {
+				// YES, no in-store matching URL. WARNING: This is a new
+				// service, but it's NAME may be the same as another existing
+				// service. First, we null ID, to not write-over on any in-store
+				// services with same ID
 				uploadedServiceBean.setId(null);
+
+				// #TAG HANDLING - BEGIN
+				// Ensure Service, and all it's child scenarios have
+				// incoming/uploaded tag arguments
+				uploadedServiceBean.addTagToList(tagArguments);
+				for (Scenario scenarioTmp : uploadedServiceBean.getScenarios()) {
+					scenarioTmp.setTag(tagArguments);
+				}
+				// #TAG HANDLING - END
+
+				// Save to the IN-MEMORY STORE
 				store.saveOrUpdateService(uploadedServiceBean);
-				mergeResults.addAdditionMsg("Service '" + uploadedServiceBean.getServiceName() + "' created. ");
+				mergeResults
+						.addAdditionMsg("Uploaded Service '"
+								+ uploadedServiceBean.getServiceName()
+								+ "' created with scenarios. Reason: no matching name or list matching real URLs.");
 
 			} else {
+				// We have an existing Service
 				// Just merge scenarios per matching services
-				mergeResults = mergeServices(uploadedServiceBean, inMemoryServiceBean, mergeResults);
+				mergeResults = this.mergeServices(uploadedServiceBean,
+						inMemoryServiceBean, mergeResults, tagArguments);
 			}
 
 		}
@@ -262,66 +359,94 @@ public class MockeyXmlFileManager {
 	}
 
 	/**
+	 * This method will make an effort to take things that exist in the
 	 * 
-	 * @param uploadedServiceBean
-	 * @param inMemoryServiceBean
+	 * @param uploadedService
+	 * @param inMemoryService
 	 * @param readResults
 	 * @return
 	 */
-	public ServiceMergeResults mergeServices(Service uploadedServiceBean, Service inMemoryServiceBean,
-			ServiceMergeResults readResults) {
-		
-		//
+	public ServiceMergeResults mergeServices(Service uploadedService,
+			Service inMemoryService
+
+			, ServiceMergeResults readResults, String tagArguments) {
+
 		Boolean originalMode = store.getReadOnlyMode();
 		store.setReadOnlyMode(true);
-		
-		if (uploadedServiceBean != null && inMemoryServiceBean != null) {
-			// Merge Scenarios
+
+		if (uploadedService != null
+				&& inMemoryService != null
+				&& uploadedService
+						.getServiceName()
+						.trim()
+						.equalsIgnoreCase(
+								inMemoryService.getServiceName().trim())
+
+		) {
+
+			// #TAG HANDLING for the Service - BEGIN
+			// Ensure Service gets incoming/uploaded tag arguments
+			inMemoryService.addTagToList(tagArguments);
+			// #TAG HANDLING for the Service - END
+
 			if (readResults == null) {
 				readResults = new ServiceMergeResults();
 			}
-			Iterator<Scenario> uIter = uploadedServiceBean.getScenarios().iterator();
-			Iterator<Scenario> mIter = inMemoryServiceBean.getScenarios().iterator();
-			while (uIter.hasNext()) {
-				Scenario uploadedScenario = (Scenario) uIter.next();
-				boolean existingScenario = false;
-				Scenario mBean = null;
-				while (mIter.hasNext()) {
-					mBean = (Scenario) mIter.next();
-					if (mBean.equals(uploadedScenario)) {
-						existingScenario = true;
+			Iterator<Scenario> uploadedListIter = uploadedService
+					.getScenarios().iterator();
+			Iterator<Scenario> inMemListIter = inMemoryService.getScenarios()
+					.iterator();
+
+			while (uploadedListIter.hasNext()) {
+				Scenario uploadedScenario = (Scenario) uploadedListIter.next();
+				boolean inMemScenarioExistTemp = false;
+				Scenario inMemScenarioTemp = null;
+
+				while (inMemListIter.hasNext()) {
+					inMemScenarioTemp = (Scenario) inMemListIter.next();
+
+					if (inMemScenarioTemp.equals(uploadedScenario)) {
+
+						inMemScenarioExistTemp = true;
 						break;
 					}
 				}
-				if (!existingScenario) {
-					uploadedScenario.setServiceId(inMemoryServiceBean.getId());
-					inMemoryServiceBean.saveOrUpdateScenario(uploadedScenario);
-					store.saveOrUpdateService(inMemoryServiceBean);
-					readResults.addAdditionMsg("Scenario '" + uploadedScenario.getScenarioName()
-							+ "' added to service '" + inMemoryServiceBean.getServiceName() + "' ");
+				if (!inMemScenarioExistTemp) {
+
+					// Hey, we have a new scenario.
+					// NOTE: incoming/uploaded scenario has an ID.
+					// We MUST nullify it, to ensure there's no common Service's
+					// scenario's ID
+					uploadedScenario.setId(null);
+					uploadedScenario.setServiceId(inMemoryService.getId());
+					// Tag for Service:Scenario
+					uploadedScenario.addTagToList(tagArguments);
+					inMemoryService.saveOrUpdateScenario(uploadedScenario);
+
+					store.saveOrUpdateService(inMemoryService);
+					readResults.addAdditionMsg("Scenario name '"
+							+ uploadedScenario.getScenarioName()
+							+ "' from uploaded service named '"
+							+ uploadedService.getServiceName()
+							+ "' was merged into service '"
+							+ inMemoryService.getServiceName() + "' ");
 				} else {
+					// SAVE TAGS
+					inMemScenarioTemp.addTagToList(tagArguments);
+					inMemoryService.saveOrUpdateScenario(inMemScenarioTemp);
+					store.saveOrUpdateService(inMemoryService);
+					// Although we still need to
 					readResults
-							.addConflictMsg("Scenario '" + mBean.getScenarioName()
-									+ "' not added, already defined in service '"
-									+ inMemoryServiceBean.getServiceName() + "' ");
+							.addConflictMsg("Uploaded Scenario '"
+									+ uploadedScenario.getScenarioName()
+									+ "' not added, already defined in in-memory service '"
+									+ inMemoryService.getServiceName() + "' ");
 				}
 
 			}
-			// Merge URLs
-			try {
-				for (Url url : uploadedServiceBean.getRealServiceUrls()) {
-					if (inMemoryServiceBean.hasRealServiceUrl(url)) {
-						readResults.addConflictMsg("Real url already defined: " + url.getFullUrl());
-					} else {
-						readResults.addAdditionMsg("Added real URL: " + url.getFullUrl());
-						inMemoryServiceBean.saveOrUpdateRealServiceUrl(url);
-					}
-				}
-			} catch (Exception e) {
 
-			}
 		}
-		
+
 		store.setReadOnlyMode(originalMode);
 		return readResults;
 	}
@@ -337,7 +462,8 @@ public class MockeyXmlFileManager {
 		if (result.length() == 0) {
 			result = "autogenerated_name";
 		}
-		return MockeyXmlFileManager.MOCK_SERVICE_FOLDER + FILESEPERATOR + result + ".xml";
+		return MockeyXmlFileManager.MOCK_SERVICE_FOLDER + FILESEPERATOR
+				+ result + ".xml";
 	}
 
 }

@@ -108,6 +108,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			serviceElement.setAttribute("description", getSafeForXmlOutputString(mockServiceBean.getDescription()));
 			serviceElement.setAttribute("hang_time", getSafeForXmlOutputString("" + mockServiceBean.getHangTime()));
 			serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
+			serviceElement.setAttribute("tag", getSafeForXmlOutputString(mockServiceBean.getTag()) );
+			serviceElement.setAttribute("last_visit", getSafeForXmlOutputString(""+mockServiceBean.getLastVisit()) );
 			serviceElement.setAttribute("http_content_type", getSafeForXmlOutputString(""
 					+ mockServiceBean.getHttpContentType()));
 			serviceElement.setAttribute("default_scenario_id", getSafeForXmlOutputString(""
@@ -132,7 +134,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				Element scenarioElement = document.createElement("scenario");
 				scenarioElement.setAttribute("id", scenario.getId().toString());
 				scenarioElement.setAttribute("name", getSafeForXmlOutputString(scenario.getScenarioName()));
-
+				scenarioElement.setAttribute("tag", getSafeForXmlOutputString(scenario.getTag()));
+				scenarioElement.setAttribute("last_visit", getSafeForXmlOutputString(""+scenario.getLastVisit()));
 				Element scenarioMatchStringElement = document.createElement("scenario_match");
 				CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
 						.getMatchStringArg()));
@@ -213,6 +216,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				servicePlanElement.setAttribute("name", servicePlan.getName());
 				servicePlanElement.setAttribute("description", servicePlan.getDescription());
 				servicePlanElement.setAttribute("id", "" + servicePlan.getId());
+				servicePlanElement.setAttribute("tag", servicePlan.getTag());
+				servicePlanElement.setAttribute("last_visit", getSafeForXmlOutputString(""+servicePlan.getLastVisit()));
 				for (PlanItem pi : servicePlan.getPlanItemList()) {
 					Element planItemElement = document.createElement("plan_item");
 					planItemElement.setAttribute("hang_time", "" + pi.getHangTime());

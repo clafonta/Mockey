@@ -29,6 +29,7 @@ package com.mockey.model;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -50,7 +51,7 @@ import com.mockey.ui.Util;
  * @author chad.lafontaine
  * 
  */
-public class Service implements PersistableItem, ExecutableService {
+public class Service extends StatusCheck implements PersistableItem, ExecutableService {
 
 	public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
 	public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
@@ -69,12 +70,13 @@ public class Service implements PersistableItem, ExecutableService {
 	private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 	private String httpMethod = "GET";
 	private String url = "";
+	
 	private List<FulfilledClientRequest> fulfilledRequests;
 	private List<Url> realServiceUrls = new ArrayList<Url>();
 	private boolean allowRedirectFollow = true;
 	private static Log logger = LogFactory.getLog(Service.class);
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-
+	
 	public List<FulfilledClientRequest> getFulfilledRequests() {
 		return fulfilledRequests;
 	}
@@ -369,6 +371,7 @@ public class Service implements PersistableItem, ExecutableService {
 	 * Static Scenario.
 	 */
 	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl) {
+		this.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 		ResponseFromService response = null;
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
 			response = proxyTheRequest(request, realServiceUrl);
@@ -464,10 +467,12 @@ public class Service implements PersistableItem, ExecutableService {
 		// 2) Based on scenario selected.
 		//
 		Scenario scenario = this.getScenario(this.getDefaultScenarioId());
+		
 		ResponseFromService response = new ResponseFromService();
 
 		if (scenario != null) {
 			response.setBody(scenario.getResponseMessage());
+			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 		} else {
 			response.setBody("NO SCENARIO SELECTED");
 		}
@@ -566,17 +571,7 @@ public class Service implements PersistableItem, ExecutableService {
 
 		if (url != null) {
 
-			boolean found = false;
-			for (int i = 0; i < this.realServiceUrls.size(); i++) {
-				Url tmpUrl = this.realServiceUrls.get(i);
-				if (tmpUrl.getFullUrl().equalsIgnoreCase(url.getFullUrl())) {
-
-					this.realServiceUrls.set(i, url);
-
-					found = true;
-					break;
-				}
-			}
+			boolean found = this.hasRealServiceUrl(url);
 			if (!found && !url.getFullUrl().trim().isEmpty()) {
 				this.realServiceUrls.add(url);
 			}
@@ -617,7 +612,7 @@ public class Service implements PersistableItem, ExecutableService {
 		boolean has = false;
 		try {
 			for (Url urlTmp : this.realServiceUrls) {
-				if (urlTmp.getFullUrl().equalsIgnoreCase(url.getFullUrl())) {
+				if (urlTmp.getFullUrl().trim().equalsIgnoreCase(url.getFullUrl())) {
 					has = true;
 					break;
 				}
@@ -691,5 +686,19 @@ public class Service implements PersistableItem, ExecutableService {
 
 	public Boolean getTransientState() {
 		return transientState;
+	}
+	
+	public boolean hasTag(String tag){
+		boolean has = super.hasTag(tag);
+		if(!has){
+			// Check scenarios...
+			for(Scenario s: this.getScenarios()){
+				has = s.hasTag(tag);
+				if(has){
+					break;
+				}
+			}
+		}
+		return has;
 	}
 }

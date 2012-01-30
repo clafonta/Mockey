@@ -46,7 +46,6 @@ import org.apache.commons.collections.iterators.IteratorEnumeration;
 public class RedoRequestWrapper extends HttpServletRequestWrapper {
     private String body = "";
     private Map parameterMap = new HashMap();
-    private String queryString = "";
     private Map headerMap = new HashMap();
     private String contentType = "";
     private String requestURI = "";

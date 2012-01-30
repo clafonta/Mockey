@@ -134,5 +134,15 @@ public interface IMockeyStorage {
 
 	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 
+	
+	/**
+	 * Removes the tag from all Services and Scenarios
+	 * 
+	 * @param tag - a space delimited argument. 
+	 */
+	public void deleteTagFromStore(String tag);
+	
 	public Service getServiceByName(String serviceName);
+	
+	
 }

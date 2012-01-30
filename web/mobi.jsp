@@ -29,7 +29,7 @@
                <input type="hidden" name="filter" value="${filter}" />   
                <input type="hidden" name="serviceId" value="${mockservice.id}" />               
                <h2>Service name: <c:out value="${mockservice.serviceName}" /></h2>               
-               Mock URL: <mockey:url value="${mockservice.serviceUrl}"/>
+               Mock URL: <mockey:url value="${mockservice.url}" />
                <br />
                <p>
 			     <input type="radio" name="serviceResponseType" value="0" <c:if test='${mockservice.serviceResponseType eq 0}'>checked</c:if> />

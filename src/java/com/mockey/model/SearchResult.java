@@ -6,9 +6,6 @@
  * Copyright (C) 2009-2010  Authors:
  * 
  * chad.lafontaine (chad.lafontaine AT gmail DOT com)
- * neil.cronin (neil AT rackle DOT com) 
- * lorin.kobashigawa (lkb AT kgawa DOT com)
- * rob.meyer (rob AT bigdis DOT com)
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,22 +33,20 @@ package com.mockey.model;
 public class SearchResult {
 	
 	private String content = null;
-	private String type = null;
+	private SearchResultType type = null;
 	private String serviceId = null;
 	private String scenarioId = null;
+	private String servicePlanId = null;
 	private String scenarioName = null;
+	private String serviceName = null;
+	private String servicePlanName = null;
 	public String getContent() {
 		return content;
 	}
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
+	
 	public String getServiceId() {
 		return serviceId;
 	}
@@ -70,7 +65,38 @@ public class SearchResult {
 	public String getScenarioName() {
 		return scenarioName;
 	}
+	public SearchResultType getType() {
+		return type;
+	}
+	public void setType(SearchResultType type) {
+		this.type = type;
+	}
 	
+	public String getServicePlanId() {
+		return servicePlanId;
+	}
+	public void setServicePlanId(String servicePlanId) {
+		this.servicePlanId = servicePlanId;
+	}
+	public String getServiceName() {
+		return serviceName;
+	}
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+	public String getServicePlanName() {
+		return servicePlanName;
+	}
+	public void setServicePlanName(String servicePlanName) {
+		this.servicePlanName = servicePlanName;
+	}
+	public String getTypeAsString(){
+		if(this.type!=null){
+			return this.type.toString();
+		}else {
+			return null;
+		}
+	}
 	
 
 }

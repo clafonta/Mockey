@@ -20,16 +20,34 @@ $(document).ready( function() {
         $(this).removeClass("invisiblefiled-in-focus").addClass("invisiblefield");   
     }); 
     
+    $('.manageTagLink').each( function() {
+        $(this).click( function() {             
+            $('#dialog-tag-manage').dialog('open');
+                $('#dialog-tag-manage').dialog({ 
+                    buttons: {                      
+                      Cancel: function(){
+                          $(this).dialog('close');
+                      }
+                    }
+              }); 
+              // Reset the size.
+              $('#dialog-tag-manage').dialog({height: 350 });
+                
+              return false;
+            });
+        });
+    
 	$('.createPlanLink').each( function() {
         $(this).click( function() {             
             $('#dialog-create-plan').dialog('open');
-                $('#dialog-create-plan').dialog({
+                $('#dialog-create-plan').dialog({ 
                     buttons: {
                       "Create plan": function() {
                            var bValid = true;  
                            if (bValid) {
                         	   var servicePlanName = $('input[name=service_plan_name]').val();  
-                        	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName } ,function(data){
+                        	   var servicePlanTag = $('input[name=service_plan_tag]').val();  
+                        	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName, service_plan_tag:servicePlanTag } ,function(data){
                                    if(data.result.success && data.result.planid){
                                        //$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
                                        // We redirect here. Because appending HTML would require we append this 
@@ -49,7 +67,7 @@ $(document).ready( function() {
                     }
               }); 
               // Reset the size.
-              $('#dialog-create-plan').dialog({height: 250 });
+              $('#dialog-create-plan').dialog({height: 350 });
                 
               return false;
             });
@@ -175,9 +193,8 @@ $(document).ready( function() {
         });
      });
 
-   
     
-    $('.gt').each( function() {
+    $('.service-view-master-link').each( function() {
         $(this).click(function(){   
           var serviceId = this.id.split("_")[1]; 	
           $(".parentform").removeClass("parentformselected");
@@ -185,7 +202,105 @@ $(document).ready( function() {
         });
      });
     
-   
+   $('.service-scenario-tag-remove').each( function() {
+        $(this).click( function() {
+            var scenarioId = this.id.split("_")[1];
+			var serviceId = this.id.split("_")[2];
+			var tagCount= this.id.split("_")[3];
+			var tagId = 'service-scenario-tag-id_'+scenarioId+'_'+serviceId+'_'+tagCount;
+			var filterTag = $('#'+tagId).attr('value');
+            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_scenario', tag: filterTag, scenarioId: scenarioId, serviceId: serviceId } ,function(data){
+					   if(data.success){
+						   $('#'+tagId).hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+    $('.service-plan-tag-remove').each( function() {
+        $(this).click( function() {
+            var servicePlanId = this.id.split("_")[1];
+			var tagCount= this.id.split("_")[2];
+			var tagId = 'service-plan-tag-id_'+servicePlanId+'_'+tagCount;
+			var filterTag = $('#'+tagId).attr('value');
+            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_service_plan', tag: filterTag, servicePlanId: servicePlanId } ,function(data){
+					   if(data.success){
+						   $('#'+tagId).hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+   $('.service-tag-remove').each( function() {
+        $(this).click( function() {
+            var serviceId = this.id.split("_")[1];
+			var tagCount= this.id.split("_")[2];
+			var view= this.id.split("_")[3];
+			var tagId = 'service-tag-id_'+serviceId+'_'+tagCount;
+			var filterTag = $(this).attr('value');
+            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_service', tag: filterTag, serviceId: serviceId } ,function(data){
+					   if(data.success){
+						   $('#'+tagId+'_detail').hide();
+						   $('#'+tagId+'_master').hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+       
+   $('.service-lastvisit-remove').each( function() {
+        $(this).click( function() {
+            var serviceId = this.id.split("_")[1];
+            $.post('<c:url value="/lastvisithelp"/>', { action: 'clear_last_visit', serviceId: serviceId } ,function(data){
+					   if(data.success){
+					       $('#remove-service-last_'+serviceId+'_detail').hide();
+					       $('#remove-service-last_'+serviceId+'_master').hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+   $('.scenario-lastvisit-remove').each( function() {
+        $(this).click( function() {
+            var scenarioId = this.id.split("_")[1];
+            var serviceId = this.id.split("_")[2];
+            $.post('<c:url value="/lastvisithelp"/>', { action: 'clear_last_visit', serviceId: serviceId, scenarioId: scenarioId } ,function(data){
+					   if(data.success){
+					       $('#remove-scenario-last_'+scenarioId+'_'+serviceId).hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
+   $('.service-plan-lastvisit-remove').each( function() {
+        $(this).click( function() {
+            var servicePlanId = this.id.split("_")[1];
+            $.post('<c:url value="/lastvisithelp"/>', { action: 'clear_last_visit', servicePlanId: servicePlanId } ,function(data){
+					   if(data.success){
+					       $('#remove-service-plan-last_'+servicePlanId).hide();
+        				   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        	
+        });
+   });
     $('.serviceScenarioResponseTypeLink').each( function() {
 		$(this).click( function() {
 			var scenarioId = this.id.split("_")[1];
@@ -236,23 +351,63 @@ $(document).ready( function() {
 		});
 	});
 
-    $('#dialog').dialog({ autoOpen: false, minHeight: 300, width:700, height:500 });
+    $('#dialog').dialog({ autoOpen: false, minHeight: 300, width:700, height:500, modal: true });
     $('#dialog-delete-service-plan-confirm').dialog({autoOpen: false, height: 150, resizable: false });
     $('#dialog-delete-scenario-confirm').dialog({autoOpen: false, minHeight: 250, width: 300, height: 120, modal: false, resizable: false });
-    $("#dialog-create-plan").dialog({minHeight: 250, height:250, width: 500,  modal: false, autoOpen: false, resizable: true });
+    $("#dialog-create-plan").dialog({minHeight: 350, height:350, width: 500,  modal: false, autoOpen: false, resizable: true });
     $("#dialog-delete-service-confirm").dialog({ resizable: false, height: 120, modal: false, autoOpen: false });
-    
+    $("#dialog-tag-manage").dialog({ resizable: false, height: 420, minHeight: 450, modal: true, autoOpen: false });
     $('.hideServiceScenarioLink').each( function() {
         $(this).click( function() {
            
         });
     });
-    
+    $("#filter-tag-button").click( function() {
+           var filterTag = $('#filter-tag').val();
+           $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
+					   //console.log(data);
+					   if(data.success){
+						   document.location="<c:url value="/home" />";
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+           
+        });
+   
+    $("#delete-tag-button").click( function() {
+    	   var filterTag = $('#filter-tag').val();
+           $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_store', tag: filterTag } ,function(data){
+					   //console.log(data);
+					   if(data.success){
+						   document.location="<c:url value="/home" />";
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        });
+            
  });
 </script>
     <div id="main">
-    
+    <div id="filter_view_div">
+	<span class="basic_label">Filter this page view: </span> 
+	<input type="text" id="filter-tag-field" style="width:500px;" title="Enter tags here. View services, scenarios, and/or plans by matching tags."  name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
+	<a href="#" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
+	<a href="#" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
+	<a href="#" class="manageTagLink">Tag Helper</a>
+	</div>
         <%@ include file="/WEB-INF/common/message.jsp" %>
+        <!-- SERVICE PLAN CREATE DIALOG -->
+        <div id="dialog-tag-manage" title="Tag Helper">
+            <p><strong>WARNING:</strong>
+            This will remove tag(s) from each Service, Scenario, and Service Plan. 
+            <input type="text" name="filter-tag" id="filter-tag" title="Enter tag(s) here" class="text ui-widget-content ui-corner-all" />
+            <ul class="button-list">
+            <li><a href="#" class="hhButtonRed" style="color:#FFFFFF;" id="delete-tag-button">Remove tag(s) from all things.</a></li>
+            </ul>
+            </p>
+        </div>
         
         <!-- SERVICE PLAN CREATE DIALOG -->
         <div id="dialog-create-plan" title="Service Plan">
@@ -260,12 +415,14 @@ $(document).ready( function() {
             <fieldset>
                 <label for="service_plan_name">Service Plan name</label>
                 <input type="text" name="service_plan_name" id="service_plan_name" class="text ui-widget-content ui-corner-all" />
+                <label for="service_plan_tag" class="blur">Tag(s) - <i>optional</i></label>
+                <input type="text" name="service_plan_tag" id="service_plan_tag" title="Optional tags here" class="text ui-widget-content ui-corner-all" />
             </fieldset> 
             </p>
         </div>
         
         <c:choose>
-	        <c:when test="${!empty services}">    
+	        <c:when test="${!empty services || !empty plans}">    
 	          <c:choose>
 				    <c:when test="${empty param.serviceId}">
 				        
@@ -296,6 +453,7 @@ $(document).ready( function() {
 									  <a id="allresponsetype_2" class="allresponsetype response_not" style="text-decoration:none;" href="#">Dynamic</a>
 								  </p>
 								  </div>
+								  
 								  <div class="scroll">
 		                            	<c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 			                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" >
@@ -303,24 +461,34 @@ $(document).ready( function() {
 				                            	<c:url value="/setup" var="setupUrl">
 				                                	<c:param name="serviceId" value="${mockservice.id}" />
 				                             	</c:url>
-				                                <span style="float:right;"><a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a></span>
+				                             	
+				                                <span style="float:right;">
+				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a>
+				                                </span>
+				                                <div class="count-box">${status.count}</div>
 				                                
 												<div style="margin-bottom:0.5em;">
-												<mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
+												 <mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
 												</div>
-				                                <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
-				                                <span class="toggle_button tiny">
-												      <a class="gt" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>">view</a> |
+												
+												<div class="toggle-buttons" style="margin-bottom:8px;">
+				                                  <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
+				                                  <span class="toggle_button tiny">
+												      <a class="service-view-master-link" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>">view</a> |
 												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a>
-												</span>
-												 <c:if test="${empty mockservice.scenarios}">
+												      <mockey-tag:conflictFlag service="${mockservice}" conflictInfo="${conflictInfo}"/>
+												  </span>
+												  <c:if test="${empty mockservice.scenarios}">
 						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>
-						                         </c:if>
-				                               
+						                          </c:if>
+						                        </div>
+												<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>					
 											</div>
 								    	</c:forEach>
+								    	
 								    </div>
 							    </div>
+							    
 							    <div id="tabs-2">
 							        <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
 								    <div class="scroll">
@@ -333,7 +501,7 @@ $(document).ready( function() {
 			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
 			                                
 			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
-			                                
+			                                <mockey-tag:statusCheckByServicePlan servicePlan="${plan}"/>
 			                                <div style="padding-top:0.6em;">  
 			                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#"> Set This Plan </a> &nbsp;
 			                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#">Save As Plan</a></div>
@@ -376,8 +544,8 @@ $(document).ready( function() {
                                  <div class="service" width="350px;">
                                     
                                    <div class="service-label">Service name: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
-                                   <div class="service-value big"><mockey:slug text="${mockservice.serviceName}" maxLength="30"/></div>
-                                   <div class="service-def-spacer"></div>
+                                   <div class="service-value big"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></div>
+                                   <mockey-tag:statusCheckByService service="${mockservice}" view="detail"/>
                                    <div class="service-label border-top">Mock URL: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
                                    <div class="service-def-spacer"></div>
@@ -402,14 +570,14 @@ $(document).ready( function() {
                                    <div class="service-label border-top" style="margin-top:1em;">Select a static scenario:
                                    <span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
-                                   <div>
-                                   <ul id="scenario-list_${mockservice.id}" class="simple group">
-	                                    <div id="result1" class="jTemplatesTest"></div>
-	                                    
+                                   <div >
+                                   <div id="scenario-list_${mockservice.id}">
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
-		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}">
-		                                    <li style="padding-top: 0.5em;" id="service-scenario-info_${scenario.id}_${mockservice.id}">
+		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status"  >
+		                                    <div class="service-detail-scenario-list-item">
+		                                    <div class="count-box" style="margin-left:-5px;margin-top:-2px;">${status.count}</div>
+		                                    <div style="padding-top: 0.5em;" id="service-scenario-info_${scenario.id}_${mockservice.id}">
 		                                      <c:choose>
 		                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
 		                                          <c:set var="off_class" value="hide" />
@@ -420,12 +588,14 @@ $(document).ready( function() {
 		                                          <c:set var="on_class" value="hide" />
 		                                        </c:otherwise>
 		                                      </c:choose>
-		                                     
+		                                      
 		                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
 		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
-		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="40"/></a>
+		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="60"/></a>
 		                                      <span> <a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
-		                                    </li>
+		                                    </div>
+		                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
+		                                    </div>
 		                                  </c:forEach>
 		                                  </c:when>
 		                                  <c:otherwise>
@@ -436,10 +606,10 @@ $(document).ready( function() {
 					                                <c:param name="serviceId" value="${mockservice.id}" />
 					                                <c:param name="createScenario" value="yes" />
 					                             </c:url>
-		                                  	<li class="alert_message"><span>You need to create a scenario before using <strong>Static</strong> or <strong>Dynamic</strong> scenario</span></li>
+		                                  	<div class="alert_message"><span>You need to create a scenario before using <strong>Static</strong> or <strong>Dynamic</strong> scenario</span></div>
 		                                  </c:otherwise>
 		                                </c:choose>
-	                                </ul>
+	                                </div>
                                    </div>
                                  </div>
                                  
@@ -454,6 +624,7 @@ $(document).ready( function() {
 	                    			<c:otherwise><span style="color:red;">not set</span></c:otherwise>
 	                    			</c:choose>
 			                     </div>
+			                     
                               </div>
                               </div>
                               </c:forEach>
@@ -485,8 +656,15 @@ $(document).ready( function() {
 	          <p class="intro_txt">Hello, this is Mockey. It looks like this is the first time you are using Mockey because 
 	          it's in a clean state. To learn more about Mockey, see the <a href="<c:url value="/help"/>">help</a> section. </p> 
 			  <p class="info_message">There are no mock services defined. You can <a href="<c:url value="upload"/>">upload one</a>, <a href="<c:url value="setup"/>">create one manually</a> or start <a href="<c:url value="help#record"/>">recording</a>. 
-			  If you were expecting to see services, then maybe something went wrong. Checkout the <a href="<c:url value="/console"/>">debug output</a>. 
+			  If you were expecting to see services, then maybe filtering is on
+			  
+			   or something went wrong. Checkout the <a href="<c:url value="/console"/>">debug output</a>.
+			   
+			    
 			  </p>
+			  
+			  <c:if test="${not empty sessionScope.FILTER_SESSION_TAG}"><p class="info_message">Hey! You're filtering on '<strong>${sessionScope.FILTER_SESSION_TAG}</strong>' <a style="margin-left:40px;" href="#" class="clear-tag-button">Clear Filter by Tag(s)</a> </p></c:if>
+			  
 			</c:otherwise>
         </c:choose>
 <c:if test="${mode ne 'edit_plan'}">

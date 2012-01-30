@@ -584,4 +584,25 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return this.transientState;
 	}
 
+	
+	
+	public void deleteTagFromStore(String tag) {
+
+		if(tag!=null && tag.trim().length()>0){
+			for(Service service: mockServiceStore.getOrderedList()){
+				service.removeTagFromList(tag);
+				for(Scenario scenario: service.getScenarios()){
+					scenario.removeTagFromList(tag);
+				}
+				
+			}
+			for(ServicePlan servicePlan: servicePlanStore.getOrderedList()){
+				servicePlan.removeTagFromList(tag);
+			}
+			this.writeMemoryToFile();
+		}
+		
+		
+	}
+
 }

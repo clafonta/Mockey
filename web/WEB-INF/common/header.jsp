@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en">
@@ -6,20 +7,27 @@
 <title>Mockey - <c:out value="${requestScope.pageTitle}"/></title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
 <link rel="shortcut icon" href="<c:url value="/images/favicon.ico" />">
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/hoverbox.css" />" media="screen, projection" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/superfish.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/jquery-ui-1.8.1.custom/css/flick/jquery-ui-1.8.1.custom.css" />" />
+<link rel="stylesheet" type="text/css" href="<c:url value="/javascript/fileuploader/fileuploader.css" />" />
+<%
+// Only for DEV. This polls every few seconds and will refressh this page's CSS
+//<script type="text/javascript" src="<c:url value="/javascript/cssrefresh.js" />"></script>
+%>
 <script type="text/javascript" src="<c:url value="/javascript/util.js" />"></script>
 <script type="text/javascript" src="<c:url value="/jquery-ui-1.8.1.custom/js/jquery-1.4.2.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/jquery-ui-1.8.1.custom/js/jquery-ui-1.8.1.custom.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery-impromptu.2.7.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery.textarearesizer.compressed.js" />"></script>
+
 <script type="text/javascript" src="<c:url value="/javascript/superfish.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/hoverIntent.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery.hint.js" />"></script>
-
-<script LANGUAGE="Javascript">
+<script type="text/javascript" src="<c:url value="/javascript/fileuploader/fileuploader.js" />"></script>
+<script language="Javascript">
 <!---
 function decision(message, url){
 if(confirm(message)) location.href = url;
@@ -78,6 +86,12 @@ $(document).ready(function() {
              $("#transient_false").show(); 
          }
         $('#memory-only-config').show(); 
+        
+        if(data.result.filter_view_status=='on'){
+          $("#filter-tag-field").val(data.result.filter_view_arg);
+        }
+         
+         
         
        
 	});
@@ -152,7 +166,31 @@ $(document).ready(function() {
         modal: true,
         autoOpen: false
     });
-        
+    
+    $("#filter-tag-update-button").click( function() {
+           var filterTag = $('#filter-tag-field').val();
+           $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
+					   //console.log(data);
+					   if(data.success){
+						   document.location="<c:url value="/home" />";
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+           
+        });
+    $('.clear-tag-button').each( function() {
+       $(this).click( function() {
+           $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_off' } ,function(data){
+					   //console.log(data);
+					   if(data.success){
+						   document.location="<c:url value="/home" />";
+					    }else {
+					       alert("Hmm...");
+					    }
+				}, 'json' );
+        });
+      });
     $('#flush').each( function() {
         $(this).click( function() {
         	$('#dialog-flush-confirm').show();
@@ -188,6 +226,16 @@ $(document).ready(function() {
             document.location="<c:url value="/search?term=" />" + term;
         }
     });
+    
+    $('.toggle-conflict-link').each( function() {
+        $(this).click( function() {
+            var tVal = this.id.split("_")[1];
+            $('#conflict-info_' + tVal).toggle();
+            
+          }); 
+       
+     });
+    
      
 });
 
@@ -232,6 +280,9 @@ $(document).ready(function() {
 					<li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
 	                <a title="Twisting" href="<c:url value="/twisting/setup" />"
 	                    style="">Twisting</a></li>
+	                <li <c:if test="${currentTab == 'filesysteminfo'}">class="current"</c:if>>
+	                <a title="Image Depot" href="<c:url value="/filesysteminfo" />"
+	                    style="">Image Depot</a></li>   
 				</ul>
 			</li>
 			<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
@@ -262,11 +313,11 @@ $(document).ready(function() {
 	<div id="header_tool_wrapper">
 	   
 		<div id="header_tool_wrapper_right" >
-		
+            
 		    <span id="memory-only-config" class="configuration-info" style="display:none;">
             <a href="#" id="transient_unknown" class="tiny" style="display: none;">___</a>
-            <a href="#" id="transient_true" class="tiny transient-onclick" val="true" style="display: none; color: green;">Transient is ON</a>
-            <a href="#" id="transient_false" class="tiny transient-onclick" val="false" style="display: none;color: red; ">Transient is OFF</a> 
+            <a href="#" id="transient_true" class="tiny transient-onclick" val="true" style="display: none; color: green;">In Memory Only</a>
+            <a href="#" id="transient_false" class="tiny transient-onclick" val="false" style="display: none;color: red; ">Writing to file</a> 
             </span>
             
 			<span class="configuration-info" >
@@ -288,11 +339,12 @@ $(document).ready(function() {
 			</span>
 		</div>
 		<div id="header_tool_wrapper_left" >
-		  <input type="text" value="${term}" title="Search" class="blur text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me"> <img src="<c:url value="/images/search.png" />" /></a>
+		  <input type="text" value="${term}" title="Search" class="blur text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me" style="text-decoration:none;"> <img src="<c:url value="/images/search.png" />" /></a>
 		</div>
+		
 	</div>
 	<div style="clear:both;"/>
-	
+		
 </div>
 
 

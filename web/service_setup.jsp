@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
+<%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
 <c:set var="actionKey" value="edit_service" scope="request" />
 <c:set var="pageTitle" value="Configure" scope="request" />
 <c:set var="currentTab" value="setup" scope="request" />
@@ -43,11 +44,13 @@
 			        realUrl = $("#service_real_url"),
 			        serviceName = $("#service_name"),
 			        hangtime = $("#hang_time"),
+			        tag = $('#tag'),
+			        lastVisit = $("#last_visit"),
 			        serviceContentType = $("#service_http_content_type");
 			 
-			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(),
+			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(), tag: tag.val(),
 				   'realServiceUrl[]':  realServiceUrlValues, url: url.val(), httpContentType: serviceContentType.val(),
-				   hangTime: hangtime.val() } ,function(data){
+				   lastVisit: lastVisit.val(), hangTime: hangtime.val() } ,function(data){
 					   
 					   if (data.result.redirect){
 						   window.location.replace(data.result.redirect);
@@ -129,7 +132,7 @@
 	            <label for="service_url">Mock service URL: </label>
 	            <input type="text" id="service_url" class="text ui-corner-all ui-widget-content" name="service_url" maxlength="1000" size="90%" value="<c:out value="${mockservice.url}"/>" />
 	            <div class="tinyfieldset">You can make up a new but unique <i>mock</i> URL to map to the real URL(s). Your mock URL will look like this: 
-	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />">
+	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />"/>
 	               </div>
 	            </div>
 	            <div id="invalidUrl" style="display:none;color:red;"><span>Note:</span> </div>
@@ -145,6 +148,14 @@
                 <label for="service_url">Hang time: </label>
                 <input type="text" id="hang_time" class="text ui-corner-all ui-widget-content" style="width:100px;" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
                 <div class="tinyfieldset">The delay time in milliseconds.</div>
+                <label for="service_url">Tag(s):</label> 
+                <input type="text" id="tag" class="text ui-corner-all ui-widget-content" name="tag" maxlength="1000" size="90%" value="<c:out value="${mockservice.tag}"/>" />
+                <div class="tinyfieldset"><strong>Optional.</strong> Add 1 or more tags seperated with spaces. Tags can be useful for all kinds of things. Use it as meta-data for your services, plans, scenarios, etc.</div>
+                <label for="service_url">Last visit:</label>
+                <input type="text" id="last_visit" title="mm/dd/yyyy" class="text ui-corner-all ui-widget-content" style="width:100px;" name="lastvisit" maxlength="20" size="30px" value="<mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/>" />                                
+                <div class="tinyfieldset">The last time this service was called.</div>
+                                    
+                
                 <label>HTTP header definition:</label>
 	            <select id="service_http_content_type" name="httpContentType">
 	                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
@@ -152,6 +163,7 @@
                             <option value="text/plain;" <c:if test="${mockservice.httpContentType eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
                             <option value="text/css;" <c:if test="${mockservice.httpContentType eq 'text/css;'}">selected="selected"</c:if>>text/css;</option>
                             <option value="application/json;" <c:if test="${mockservice.httpContentType eq 'application/json;'}">selected="selected"</c:if>>application/json;</option>
+                            <option value="application/json;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'application/json;charset=utf-8'}">selected="selected"</c:if>>application/json;charset=utf-8</option>
                             <option value="text/html;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'text/html;charset=utf-8'}">selected="selected"</c:if>>text/html;charset=utf-8</option>
                             <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpContentType eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
                             <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->

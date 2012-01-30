@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -51,6 +52,8 @@ import com.mockey.model.ApiDocFieldValue;
 import com.mockey.model.ApiDocRequest;
 import com.mockey.model.ApiDocResponse;
 import com.mockey.model.ApiDocService;
+import com.mockey.model.ConflictInfo;
+import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IApiStorage;
 import com.mockey.storage.IApiStorageInMemory;
@@ -72,7 +75,7 @@ public class HomeServlet extends HttpServlet {
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE = "deleteAllServices";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_INIT = "init";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE = "transientState";
-	
+
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
 
@@ -92,7 +95,8 @@ public class HomeServlet extends HttpServlet {
 			ApiDocService apiDocService = new ApiDocService();
 			apiDocService.setName(API_CONFIGURATION_NAME);
 			apiDocService.setServicePath("/home");
-			apiDocService.setDescription("If you need to initialize Mockey with a definitions file, then this API may serve your needs. ");
+			apiDocService
+					.setDescription("If you need to initialize Mockey with a definitions file, then this API may serve your needs. ");
 			// *****************************
 			// REQUEST DEFINITION
 			// *****************************
@@ -102,35 +106,43 @@ public class HomeServlet extends HttpServlet {
 			// Parameter - 'action'
 			ApiDocAttribute reqAttributeAction = new ApiDocAttribute();
 			reqAttributeAction.setFieldName(API_CONFIGURATION_PARAMETER_ACTION);
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE,
-					"Delete all configurations, history, settings, etc., and start with a clean Mockey. "));
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_CONFIGURATION_PARAMETER_ACTION_VALUE_INIT,
-					"Will delete everything and configure Mockey with the defined file. "));
+			reqAttributeAction
+					.addFieldValues(new ApiDocFieldValue(
+							API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE,
+							"Delete all configurations, history, settings, etc., and start with a clean Mockey. "));
+			reqAttributeAction
+					.addFieldValues(new ApiDocFieldValue(
+							API_CONFIGURATION_PARAMETER_ACTION_VALUE_INIT,
+							"Will delete everything and configure Mockey with the defined file. "));
 			apiDocRequest.addAttribute(reqAttributeAction);
 
 			// Parameter - 'file'
 			ApiDocAttribute reqAttributeFile = new ApiDocAttribute();
 			reqAttributeFile.setFieldName(API_CONFIGURATION_PARAMETER_FILE);
-			reqAttributeFile.addFieldValues(new ApiDocFieldValue("[string]",
-					"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
-			reqAttributeFile.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
+			reqAttributeFile
+					.addFieldValues(new ApiDocFieldValue(
+							"[string]",
+							"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
+			reqAttributeFile
+					.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
 			apiDocRequest.addAttribute(reqAttributeFile);
 
 			// Parameter - 'type'
 			ApiDocAttribute reqAttributeType = new ApiDocAttribute();
 			reqAttributeType.setFieldName(API_CONFIGURATION_PARAMETER_TYPE);
 			reqAttributeType
-					.addFieldValues(new ApiDocFieldValue("json",
+					.addFieldValues(new ApiDocFieldValue(
+							"json",
 							"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
 			apiDocRequest.addAttribute(reqAttributeType);
 			apiDocService.setApiRequest(apiDocRequest);
-			
+
 			// Parameter - 'transientState'
 			ApiDocAttribute reqAttributeState = new ApiDocAttribute();
-			reqAttributeState.setFieldName(API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE);
 			reqAttributeState
-					.addFieldValues(new ApiDocFieldValue("boolean",
-							"Read only mode? Also known as transient."));
+					.setFieldName(API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE);
+			reqAttributeState.addFieldValues(new ApiDocFieldValue("boolean",
+					"Read only mode? Also known as transient."));
 			apiDocRequest.addAttribute(reqAttributeState);
 			apiDocService.setApiRequest(apiDocRequest);
 
@@ -156,7 +168,8 @@ public class HomeServlet extends HttpServlet {
 			// Response attribute 'file'
 			ApiDocAttribute resAttributeFile = new ApiDocAttribute();
 			resAttributeFile.setFieldName(API_CONFIGURATION_PARAMETER_FILE);
-			resAttributeFile.setFieldDescription("Name of file used to initialize Mockey.");
+			resAttributeFile
+					.setFieldDescription("Name of file used to initialize Mockey.");
 			apiResponse.addAttribute(resAttributeFile);
 
 			// Response attribute 'success'
@@ -177,7 +190,8 @@ public class HomeServlet extends HttpServlet {
 		}
 	}
 
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
 		String action = req.getParameter(API_CONFIGURATION_PARAMETER_ACTION);
 		String type = req.getParameter(API_CONFIGURATION_PARAMETER_TYPE);
@@ -190,43 +204,54 @@ public class HomeServlet extends HttpServlet {
 			// Load with local file.
 			String fileName = req.getParameter("file");
 			Boolean transientState = new Boolean(true);
-			try{
-				transientState = new Boolean(req.getParameter(API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE));
+			try {
+				transientState = new Boolean(
+						req.getParameter(API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE));
 				store.setReadOnlyMode(transientState);
 				logger.debug("Read only mode? " + transientState);
-			}catch(Exception e){
-				
+			} catch (Exception e) {
+
 			}
 			try {
 				File f = new File(fileName);
 				if (f.exists()) {
 					// Slurp it up and initialize definitions.
 					FileInputStream fstream = new FileInputStream(f);
-					BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
+					BufferedReader br = new BufferedReader(
+							new InputStreamReader(fstream,
+									Charset.forName(HTTP.UTF_8)));
 					StringBuffer inputString = new StringBuffer();
 					// Read File Line By Line
 					String strLine = null;
 					// READ FIRST
 					while ((strLine = br.readLine()) != null) {
 						// Print the content on the console
-						inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
+						inputString.append(new String(strLine
+								.getBytes(HTTP.UTF_8)));
 					}
 					// DELETE SECOND
 					store.deleteEverything();
 					MockeyXmlFileManager reader = new MockeyXmlFileManager();
 
-					reader.loadConfigurationWithXmlDef(inputString.toString());
+					reader.loadConfigurationWithXmlDef(inputString.toString(),
+							null);
 					logger.info("Loaded definitions from " + fileName);
-					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
-					jsonResultObject.put(API_CONFIGURATION_PARAMETER_FILE, fileName);
+					jsonResultObject.put(SUCCESS, "Loaded definitions from "
+							+ fileName);
+					jsonResultObject.put(API_CONFIGURATION_PARAMETER_FILE,
+							fileName);
 				} else {
 					logger.info(fileName + " does not exist. doing nothing.");
-					jsonResultObject.put(FAIL, fileName + " does not exist. doing nothing.");
+					jsonResultObject.put(FAIL, fileName
+							+ " does not exist. doing nothing.");
 				}
 			} catch (Exception e) {
-				logger.debug("Unable to load service definitions with name: '" + fileName + "'", e);
+				logger.debug("Unable to load service definitions with name: '"
+						+ fileName + "'", e);
 				try {
-					jsonResultObject.put(FAIL, "Unable to load service definitions with name: '" + fileName + "'");
+					jsonResultObject.put(FAIL,
+							"Unable to load service definitions with name: '"
+									+ fileName + "'");
 				} catch (Exception ef) {
 					logger.error("Unable to produce a JSON response.", e);
 				}
@@ -263,7 +288,8 @@ public class HomeServlet extends HttpServlet {
 				JSONObject jsonResponseObject = new JSONObject();
 				JSONObject jsonObject = new JSONObject();
 				try {
-					jsonObject.put(SUCCESS, "All is deleted. You have a clean slate. Enjoy.");
+					jsonObject.put(SUCCESS,
+							"All is deleted. You have a clean slate. Enjoy.");
 					jsonResponseObject.put("result", jsonObject);
 				} catch (JSONException e) {
 					logger.error("Unable to produce a JSON result.", e);
@@ -278,8 +304,19 @@ public class HomeServlet extends HttpServlet {
 			}
 		}
 
-		req.setAttribute("services", Util.orderAlphabeticallyByServiceName(store.getServices()));
-		req.setAttribute("plans", Util.orderAlphabeticallyByServicePlanName(store.getServicePlans()));
+		// Filter....
+		String tagFilter = (String) req.getSession().getAttribute(
+				TagHelperServlet.FILTER_TAG);
+		FilterHelper filterHelper = new FilterHelper();
+		List<Service> filteredServiceList = filterHelper.getFilteredServices(
+				tagFilter, store);
+
+		ConflictHelper conflictHelper = new ConflictHelper();
+		ConflictInfo conflictInfo = conflictHelper.getConflictInfo(filteredServiceList);
+		req.setAttribute("services", filteredServiceList);
+		req.setAttribute("conflictInfo", conflictInfo);
+		req.setAttribute("plans",
+				filterHelper.getFilteredServicePlans(tagFilter, store));
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 		dispatch.forward(req, resp);

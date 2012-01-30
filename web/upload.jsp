@@ -15,13 +15,22 @@
 <p>Import your service definition(s) here. Import will try to <i>merge</i> services already defined with services defined in your import file. If you're not sure about this, 
 you should <a href="">Export</a> your service definitions first. If things go bad for you, then you can 
 <strong>Flush</strong> and re-import your saved definitions file.</p>
+<p class="tiny">
+<strong>Why Tags?</strong>
+Each tag will be applied to each service and scenario. This can be useful when merging different files and you want to keep track on the when and where things came from.
+</p>
 <form class="centerform" action="<c:url value="/upload"/>" method="POST" enctype="multipart/form-data">
 	<fieldset>
 		
-	    <p><input class="normal" type="file" name="file" size="50"/></p>
+	    <h4>Your Definition File</h4>
+	    <p><input class="text ui-corner-all ui-widget-content" type="file" name="file" size="50"/></p>
+	    
+	    
+	    <p>Tag it (Optional) <input title="Add tags here, seperated with spaces. Optional." class="blur text ui-corner-all ui-widget-content" type="test" name="taglist" size="50"/></p>
 	    <p align="right"><button id="upload-file">Import service definitions</button></p>
 	</fieldset>
 </form>
+
 </div>
 <c:if test="${not empty conflicts}">
 	<h2 class="highlight">Conflicts</h2>
