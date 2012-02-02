@@ -78,7 +78,8 @@ public abstract class StatusCheck {
 					this.tagList.remove(arg);
 				}
 			}
-
+			
+			
 		}
 	}
 

@@ -72,6 +72,7 @@ public class HomeServlet extends HttpServlet {
 	private static final String API_CONFIGURATION_PARAMETER_ACTION = "action";
 	private static final String API_CONFIGURATION_PARAMETER_TYPE = "type";
 	private static final String API_CONFIGURATION_PARAMETER_FILE = "file";
+	private static final String API_CONFIGURATION_PARAMETER_FILTER_TAG = "filterTag";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE = "deleteAllServices";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_INIT = "init";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE = "transientState";
@@ -195,6 +196,16 @@ public class HomeServlet extends HttpServlet {
 
 		String action = req.getParameter(API_CONFIGURATION_PARAMETER_ACTION);
 		String type = req.getParameter(API_CONFIGURATION_PARAMETER_TYPE);
+
+		// ***********
+		// FILTER
+		// ***********
+		String filterTagParameter = req
+				.getParameter(API_CONFIGURATION_PARAMETER_FILTER_TAG);
+		if (filterTagParameter != null) {
+			store.setFilterTag(filterTagParameter);
+		}
+
 		if (action != null && "init".equals(action)) {
 
 			// Flush - clean slate.
@@ -282,6 +293,7 @@ public class HomeServlet extends HttpServlet {
 			// Flush - clean slate.
 			IMockeyStorage store = StorageRegistry.MockeyStorage;
 			store.deleteEverything();
+
 			if (type != null && type.trim().equalsIgnoreCase("json")) {
 				resp.setContentType("application/json;");
 				PrintWriter out = resp.getWriter();
@@ -304,19 +316,19 @@ public class HomeServlet extends HttpServlet {
 			}
 		}
 
-		// Filter....
-		String tagFilter = (String) req.getSession().getAttribute(
-				TagHelperServlet.FILTER_TAG);
+		String filterTagArg = store.getFilterTag();
 		FilterHelper filterHelper = new FilterHelper();
 		List<Service> filteredServiceList = filterHelper.getFilteredServices(
-				tagFilter, store);
+				filterTagArg, store);
 
 		ConflictHelper conflictHelper = new ConflictHelper();
-		ConflictInfo conflictInfo = conflictHelper.getConflictInfo(filteredServiceList);
+		ConflictInfo conflictInfo = conflictHelper
+				.getConflictInfo(filteredServiceList);
 		req.setAttribute("services", filteredServiceList);
 		req.setAttribute("conflictInfo", conflictInfo);
 		req.setAttribute("plans",
-				filterHelper.getFilteredServicePlans(tagFilter, store));
+				filterHelper.getFilteredServicePlans(filterTagArg, store));
+		req.setAttribute("filterTag", filterTagArg);
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 		dispatch.forward(req, resp);
