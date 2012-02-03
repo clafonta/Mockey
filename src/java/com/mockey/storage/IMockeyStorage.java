@@ -48,6 +48,8 @@ public interface IMockeyStorage {
 
 	public void setReadOnlyMode(Boolean transientState);
 	
+	public String getFilterTag();
+	
 	public Boolean getReadOnlyMode();
 	
 	public void deleteEverything();
@@ -142,6 +144,7 @@ public interface IMockeyStorage {
 	 */
 	public void deleteTagFromStore(String tag);
 	
+	public void setFilterTag(String tag);
 	public Service getServiceByName(String serviceName);
 	
 	

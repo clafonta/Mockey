@@ -59,6 +59,9 @@ public class JettyRunner {
 		jsap.registerParameter(new FlaggedOption("transientState", JSAP.BOOLEAN_PARSER, "true",
 				JSAP.NOT_REQUIRED, 't', "transientState", "Read only mode if set to true, no updates are made to the file system."));
 
+		jsap.registerParameter(new FlaggedOption("filterTag", JSAP.STRING_PARSER, "",
+				JSAP.NOT_REQUIRED, 'F', "filterTag", "Filter tag for services and scenarios, useful for 'only use information with this tag'. "));
+
 		// parse the command line options
 		JSAPResult config = jsap.parse(args);
 
@@ -70,11 +73,13 @@ public class JettyRunner {
 		// Construct the new arguments for jetty-runner
 		int port = config.getInt("port");
 		boolean transientState = true;
+		
 		try {
 			transientState = config.getBoolean("transientState");
 		}catch(Exception e){
 			//
 		}
+		
 		// Initialize Log4J file roller appender.
 		StartUpServlet.getDebugFile();
 		InputStream log4jInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(
@@ -102,15 +107,20 @@ public class JettyRunner {
 		server.start();
 		// Construct the arguments for Mockey
 		String file = String.valueOf(config.getString("file"));
+		String filterTag = config.getString("filterTag");
+		String fTagParam = "";
+		if(filterTag!=null){
+			fTagParam = "&filterTag="+ URLEncoder.encode(filterTag, "UTF-8");
+		}
 		// Startup displays a big message and URL redirects after x seconds. Snazzy.
 		String initUrl = "/home";
 		// BUT...if a file is defined, (which it *should*),
 		// then let's initialize with it instead.
 		if (file != null && file.trim().length() > 0) {
 			URLEncoder.encode(initUrl, "UTF-8");
-			initUrl = "/home?action=init&transientState="+transientState+"&file=" + URLEncoder.encode(file, "UTF-8");
+			initUrl = "/home?action=init&transientState="+transientState+"&file=" + URLEncoder.encode(file, "UTF-8") + fTagParam;
 		}else {
-			initUrl = "/home?action=init&transientState="+transientState+"&file=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8");
+			initUrl = "/home?action=init&transientState="+transientState+"&file=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8") + fTagParam;
 			
 		}
 

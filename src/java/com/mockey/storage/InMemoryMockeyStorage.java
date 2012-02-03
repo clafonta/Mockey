@@ -72,6 +72,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
 	// Yes, by default, we need this as TRUE.
 	private Boolean transientState = new Boolean(true);
+	private String filterTag = null;
 
 	/**
 	 * 
@@ -138,28 +139,39 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return null;
 	}
 
+	
+	/**
+	 * This will only return a Service
+	 * @see #getFilterTag()
+	 */
 	public Service getServiceByUrl(String url) {
-
+		
+		Service service = null;
 		try {
-			for (Service service : getServices()) {
+			
+			
+			Iterator<Service> iter = getServices().iterator();
+			while(iter.hasNext() && service == null) {
+				Service serviceTmp = iter.next();
 				// 1. Check for matching name.
 
-				Url serviceMockUrl = new Url(service.getUrl());
+				Url serviceMockUrl = new Url(serviceTmp.getUrl());
 				// logger.debug("Comparing: " + url.trim()+
 				// " == "+serviceMockUrl.getFullUrl().trim() );
 				if (url.trim().equalsIgnoreCase(serviceMockUrl.getFullUrl().trim())) {
 
-					return service;
+					service = serviceTmp;
+					break;
 				}
 				// 2. If no Mock url match, then check real URLs.
-				Iterator<Url> altUrlIter = service.getRealServiceUrls().iterator();
-				while (altUrlIter.hasNext()) {
+				Iterator<Url> altUrlIter = serviceTmp.getRealServiceUrls().iterator();
+				while (altUrlIter.hasNext() && service==null) {
 					Url altUrl = altUrlIter.next();
-					// logger.debug("Comparing: " + url.trim()+
-					// " == "+serviceMockUrl.getFullUrl().trim() );
 
 					if (url.trim().equalsIgnoreCase(altUrl.getFullUrl().trim())) {
-						return service;
+						
+						service = serviceTmp;
+						break;
 					}
 				}
 
@@ -168,10 +180,22 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			logger.error("Unable to retrieve service w/ url pattern: " + url, e);
 		}
 
-		logger.debug("Didn't find service with Service path: " + url + ".  Creating a new one.");
-
-		Service service = new Service();
-
+		
+		String filterTag = this.getFilterTag();
+		if(service!=null && filterTag!=null && filterTag.trim().length() > 0 && service.hasTag(filterTag)){
+			logger.debug("Found service with Service path: " + url + ", with tag filter '" + filterTag +"'.");
+			return service;
+		}else if(service!=null && filterTag!=null && filterTag.trim().length() > 0 && !service.hasTag(filterTag)){
+			logger.debug("Found service with Service path: " + url + ", but DOES NOT have a matching tag filter of '" + filterTag +"', so Mocke is returning not-found.");
+			service = null;
+		} else if(service!=null){
+			logger.debug("Found service with Service path: " + url + ". No tag filter. ");
+			return service;
+		} else {
+			logger.debug("Didn't find service with Service path: " + url + ".  Creating a new one.");
+		}
+		
+		service = new Service();
 		Url newUrl = null;
 
 		try {
@@ -184,6 +208,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			logger.error("Unable to build a Service with URL '" + url + "'", e);
 		}
 
+		service.setTag(this.getFilterTag());
 		return service;
 	}
 
@@ -312,6 +337,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		mockServiceStore = new OrderedMap<Service>();
 		servicePlanStore = new OrderedMap<ServicePlan>();
 		twistInfoStore = new OrderedMap<TwistInfo>();
+		this.filterTag = null;
 		this.univeralErrorServiceId = null;
 		this.univeralErrorScenarioId = null;
 		this.writeMemoryToFile();
@@ -593,16 +619,34 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 				service.removeTagFromList(tag);
 				for(Scenario scenario: service.getScenarios()){
 					scenario.removeTagFromList(tag);
+					if(tag.trim().toLowerCase().equals(scenario.getLastVisitSimple())){
+						scenario.setLastVisit(null);
+					}
 				}
 				
+				if(tag.trim().toLowerCase().equals(service.getLastVisitSimple())){
+					service.setLastVisit(null);
+				}
 			}
 			for(ServicePlan servicePlan: servicePlanStore.getOrderedList()){
 				servicePlan.removeTagFromList(tag);
+				
+				if(tag.trim().toLowerCase().equals(servicePlan.getLastVisitSimple())){
+					servicePlan.setLastVisit(null);
+				}
 			}
 			this.writeMemoryToFile();
 		}
 		
 		
+	}
+
+	public String getFilterTag() {
+		return filterTag;
+	}
+
+	public void setFilterTag(String filterTag) {
+		this.filterTag = filterTag;
 	}
 
 }

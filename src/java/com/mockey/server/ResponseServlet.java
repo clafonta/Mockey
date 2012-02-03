@@ -68,10 +68,11 @@ public class ResponseServlet extends HttpServlet {
 	 * type.
 	 */
 	@SuppressWarnings("static-access")
-	public void service(HttpServletRequest originalHttpReqFromClient, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void service(HttpServletRequest originalHttpReqFromClient,
+			HttpServletResponse resp) throws ServletException, IOException {
 
-		RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
+		RequestFromClient request = new RequestFromClient(
+				originalHttpReqFromClient);
 
 		logger.info(request.getHeaderInfo());
 		logger.info(request.getParameterInfo());
@@ -81,7 +82,8 @@ public class ResponseServlet extends HttpServlet {
 
 		String contextRoot = originalHttpReqFromClient.getContextPath();
 		if (originalHttpReqURI.startsWith(contextRoot)) {
-			originalHttpReqURI = originalHttpReqURI.substring(contextRoot.length(), originalHttpReqURI.length());
+			originalHttpReqURI = originalHttpReqURI.substring(
+					contextRoot.length(), originalHttpReqURI.length());
 		}
 
 		Url serviceUrl = new Url(originalHttpReqURI);
@@ -91,7 +93,8 @@ public class ResponseServlet extends HttpServlet {
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
 
 		ResponseFromService response = service.execute(request, urlToExecute);
-		logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr());
+		logRequestAsFulfilled(service, request, response,
+				originalHttpReqFromClient.getRemoteAddr());
 
 		try {
 			// Wait for a X hang time seconds.
@@ -106,88 +109,106 @@ public class ResponseServlet extends HttpServlet {
 		// TODO:
 		// return all headers and cookies to allow setup of
 		// services and/or scenarios copied/created from History.
-	    final String charSet=getServiceCharSet(service);
+		final String charSet = getServiceCharSet(service);
 
-	    resp.setCharacterEncoding(charSet); // "UTF-8");
-	    resp.setContentType(service.getHttpContentType());
-	    if (!(service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY)) {
-	        resp.setContentType(service.getHttpContentType());
-	        byte[] myCharSetBytes = response.getBody().getBytes(charSet);
-	        new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
-	        resp.getOutputStream().flush();
-	    } else {
-	        resp.setStatus(response.getStatusLine().getStatusCode());
-	        response.writeToOutput(resp);
-	    }
+		resp.setCharacterEncoding(charSet); // "UTF-8");
+		resp.setContentType(service.getHttpContentType());
+		if (!(service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY)) {
+			resp.setContentType(service.getHttpContentType());
+			byte[] myCharSetBytes = response.getBody().getBytes(charSet);
+			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
+			resp.getOutputStream().flush();
+		} else {
+			if (response.getStatusLine() != null) {
+				resp.setStatus(response.getStatusLine().getStatusCode());
+			}
+			response.writeToOutput(resp);
+		}
 	}
-	
+
 	/**
-	 * Determines the proper CharSet for the given service and returns it. 
-	 * If there is an issue or no charset is specified for the service, 
-	 * then the default charset ISO-8859-1 is returned.
+	 * Determines the proper CharSet for the given service and returns it. If
+	 * there is an issue or no charset is specified for the service, then the
+	 * default charset ISO-8859-1 is returned.
 	 * 
 	 * @param service
 	 * @return the charset for this service.
 	 */
-	private String getServiceCharSet(Service service)
-	{
-		String charSet=HTTP.ISO_8859_1;
+	private String getServiceCharSet(Service service) {
+		String charSet = HTTP.ISO_8859_1;
 
-	    try {
-	    	//check content type for charset and try to use that if its there...
-		    //example: "application/json;charset=utf-8" should use the charset "utf-8"
-	        if(service.getHttpContentType()!=null) {
-	            final String contentTypeLower=service.getHttpContentType().toLowerCase();
-	            int charsetIndex=contentTypeLower.indexOf("charset=");
+		try {
+			// check content type for charset and try to use that if its
+			// there...
+			// example: "application/json;charset=utf-8" should use the charset
+			// "utf-8"
+			if (service.getHttpContentType() != null) {
+				final String contentTypeLower = service.getHttpContentType()
+						.toLowerCase();
+				int charsetIndex = contentTypeLower.indexOf("charset=");
 
-	            if(charsetIndex>=0) {
-	            	charSet=contentTypeLower.substring(charsetIndex+"charset=".length());
+				if (charsetIndex >= 0) {
+					charSet = contentTypeLower.substring(charsetIndex
+							+ "charset=".length());
 
-	                //content-type can have multiple attributes so we make sure that if there
-	                //are multiple we trim off any that follow the charset
-	                int trailingSemiColonIdx=charSet.indexOf(';');
-	                if(trailingSemiColonIdx>0) {
-	                	charSet=charSet.substring(0, trailingSemiColonIdx);
-	                }
-	                
-	                //kill trailing white space if any
-	                charSet=charSet.trim();
-	                
-	                //make sure it is a valid charset before returning it (note charSet 
-	                //names are case insensitive so using the lowercase version is OK)
-	                Charset.forName(charSet);
-	            }
-	        }
-	    } catch(Exception e) { 
-	    	//malformed content types or unsupported charsets will end up here
-	    	//not much we can do other than default to the regular charset
-	        charSet=HTTP.ISO_8859_1;
-	        logger.info("Unable to use charset for service \""+service.getServiceName()+"\" from content-type \""
-	        		+service.getHttpContentType()+"\". Defaulting to ISO-8859-1.", e);
-	    }
-	    
-	    return charSet;
+					// content-type can have multiple attributes so we make sure
+					// that if there
+					// are multiple we trim off any that follow the charset
+					int trailingSemiColonIdx = charSet.indexOf(';');
+					if (trailingSemiColonIdx > 0) {
+						charSet = charSet.substring(0, trailingSemiColonIdx);
+					}
+
+					// kill trailing white space if any
+					charSet = charSet.trim();
+
+					// make sure it is a valid charset before returning it (note
+					// charSet
+					// names are case insensitive so using the lowercase version
+					// is OK)
+					Charset.forName(charSet);
+				}
+			}
+		} catch (Exception e) {
+			// malformed content types or unsupported charsets will end up here
+			// not much we can do other than default to the regular charset
+			charSet = HTTP.ISO_8859_1;
+			logger.info(
+					"Unable to use charset for service \""
+							+ service.getServiceName()
+							+ "\" from content-type \""
+							+ service.getHttpContentType()
+							+ "\". Defaulting to ISO-8859-1.", e);
+		}
+
+		return charSet;
 	}
 
-	private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response,
-			String ip) throws UnsupportedEncodingException {
+	private void logRequestAsFulfilled(Service service,
+			RequestFromClient request, ResponseFromService response, String ip)
+			throws UnsupportedEncodingException {
 		FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-		fulfilledClientRequest.setRawRequest((response.getRequestUrl() != null) ? response.getRequestUrl().toString()
-				: "");
+		fulfilledClientRequest
+				.setRawRequest((response.getRequestUrl() != null) ? response
+						.getRequestUrl().toString() : "");
 		fulfilledClientRequest.setRequestorIP(ip);
 		fulfilledClientRequest.setServiceId(service.getId());
 		fulfilledClientRequest.setServiceName(service.getServiceName());
 		fulfilledClientRequest.setClientRequestBody(request.getBodyInfo());
 		fulfilledClientRequest.setClientRequestHeaders(request.getHeaderInfo());
-		fulfilledClientRequest.setClientRequestParameters(request.getParameterInfo());
+		fulfilledClientRequest.setClientRequestParameters(request
+				.getParameterInfo());
 		fulfilledClientRequest.setResponseMessage(response);
-		fulfilledClientRequest.setClientRequestCookies(request.getCookieInfoAsString());// response.getRequestCookies());
-		fulfilledClientRequest.setClientResponseCookies(response.getResponseCookiesAsString());
+		fulfilledClientRequest.setClientRequestCookies(request
+				.getCookieInfoAsString());// response.getRequestCookies());
+		fulfilledClientRequest.setClientResponseCookies(response
+				.getResponseCookiesAsString());
 
-		fulfilledClientRequest.setServiceResponseType(service.getServiceResponseType());
+		fulfilledClientRequest.setServiceResponseType(service
+				.getServiceResponseType());
 		if (response.getOriginalRequestUrlBeforeTwisting() != null) {
-			fulfilledClientRequest.setOriginalUrlBeforeTwisting(response.getOriginalRequestUrlBeforeTwisting()
-					.toString());
+			fulfilledClientRequest.setOriginalUrlBeforeTwisting(response
+					.getOriginalRequestUrlBeforeTwisting().toString());
 		}
 		store.saveOrUpdateFulfilledClientRequest(fulfilledClientRequest);
 	}

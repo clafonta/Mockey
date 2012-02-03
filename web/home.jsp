@@ -391,8 +391,8 @@ $(document).ready( function() {
 </script>
     <div id="main">
     <div id="filter_view_div">
-	<span class="basic_label">Filter this page view: </span> 
-	<input type="text" id="filter-tag-field" style="width:500px;" title="Enter tags here. View services, scenarios, and/or plans by matching tags."  name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
+	<span class="basic_label">Filter services with tags:</span> 
+	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}"  name="filter-tag-field" class="text ui-corner-all ui-widget-content" />
 	<a href="#" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
 	<a href="#" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
 	<a href="#" class="manageTagLink">Tag Helper</a>
@@ -663,7 +663,7 @@ $(document).ready( function() {
 			    
 			  </p>
 			  
-			  <c:if test="${not empty sessionScope.FILTER_SESSION_TAG}"><p class="info_message">Hey! You're filtering on '<strong>${sessionScope.FILTER_SESSION_TAG}</strong>' <a style="margin-left:40px;" href="#" class="clear-tag-button">Clear Filter by Tag(s)</a> </p></c:if>
+			  <c:if test="${not empty filterTag}"><p class="info_message">Hey! You're filtering on '<strong>${filterTag}</strong>' <a style="margin-left:40px;" href="#" class="clear-tag-button">Clear Filter by Tag(s)</a> </p></c:if>
 			  
 			</c:otherwise>
         </c:choose>

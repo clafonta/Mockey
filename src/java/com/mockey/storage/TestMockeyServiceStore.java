@@ -327,4 +327,11 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		
 	}
 
+	public String getFilterTag() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public void setFilterTag(String tag){
+		
+	}
 }

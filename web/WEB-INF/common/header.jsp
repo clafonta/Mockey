@@ -339,7 +339,7 @@ $(document).ready(function() {
 			</span>
 		</div>
 		<div id="header_tool_wrapper_left" >
-		  <input type="text" value="${term}" title="Search" class="blur text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me" style="text-decoration:none;"> <img src="<c:url value="/images/search.png" />" /></a>
+		  <input type="text" value="${term}" title="Search" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me" style="text-decoration:none;"> <img src="<c:url value="/images/search.png" />" /></a>
 		</div>
 		
 	</div>
