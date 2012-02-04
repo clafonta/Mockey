@@ -27,7 +27,6 @@
  */
 package com.mockey.model;
 
-
 /**
  * A Scenario is a specific response from a Service.
  * 
@@ -37,11 +36,16 @@ public class Scenario extends StatusCheck implements PersistableItem {
 
 	private Long id;
 	private Long serviceId;
-	private String scenarioName;
-	private String requestMessage;
-	private String responseMessage;
-	private String matchStringArg = null;
-	
+	// ****************
+	// Why empty string and not use null?
+	// We write/persist Scenario to XML and handling null and empty string gets
+	// weird. XML doesn't allow 'attribute = null' but has 'attribute = ""'
+	// ************
+	private String scenarioName = "";
+	private String requestMessage = "";
+	private String responseMessage = "";
+	private String matchStringArg = "";
+
 	public String getScenarioName() {
 		return scenarioName;
 	}
@@ -76,10 +80,12 @@ public class Scenario extends StatusCheck implements PersistableItem {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("Scenario name:" + this.getScenarioName());
-		sb.append("Match string:" + this.getMatchStringArg());
-		sb.append("Request msg:" + this.getRequestMessage());
-		sb.append("Response msg:" + this.getResponseMessage());
+		sb.append("Scenario name: " + this.getScenarioName() + "\n");
+		sb.append("Match string : " + this.getMatchStringArg() + "\n");
+		sb.append("Request msg  : " + this.getRequestMessage() + "\n");
+		sb.append("Response msg : " + this.getResponseMessage() + "\n");
+		sb.append("Tag          : " + this.getTag() + "\n");
+		sb.append("Last visit   : " + this.getLastVisitSimple() + "\n");
 		return sb.toString();
 	}
 
@@ -114,19 +120,32 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	 * @return true if scenario name and scenario response message are equal
 	 *         (case ignored), otherwise false.
 	 */
-	public boolean equals(Scenario otherScenario) {
+	public boolean hasSameNameAndResponse(Scenario otherScenario) {
 		try {
-			if (this.scenarioName.trim().equalsIgnoreCase(otherScenario
-					.getScenarioName())
-					&& this.responseMessage.trim().equalsIgnoreCase(otherScenario
-							.getResponseMessage())) {
+
+			if (isMatching(this.scenarioName, otherScenario.getScenarioName())
+					&& isMatching(this.responseMessage,
+							otherScenario.getResponseMessage())) {
 				return true;
+
 			}
+
 		} catch (Exception e) {
 
 		}
 		return false;
 	}
 
-	
+	public boolean isMatching(String arg1, String arg2) {
+		boolean match = false;
+		if (arg1 != null && arg2 != null) {
+			if (arg1.trim().equalsIgnoreCase(arg2.trim())) {
+				match = true;
+			}
+		} else if (arg1 == null && arg2 == null) {
+			match = true;
+		}
+		return match;
+	}
+
 }

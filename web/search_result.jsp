@@ -44,7 +44,7 @@
          </div>
          </c:when>
         <c:otherwise>
-        <div class="info_message">Sorry, but no results for search.</div>
+        <div class="info_message">Sorry, but no search results for the term: <strong>${term}</strong></div>
         </c:otherwise>
         </c:choose>
         

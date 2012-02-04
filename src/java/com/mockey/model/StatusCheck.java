@@ -26,7 +26,8 @@ package com.mockey.model;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -95,10 +96,16 @@ public abstract class StatusCheck {
 		this.tagList = createUniqueLowercaseTagList(null, tag);
 	}
 
+	/**
+	 * 
+	 * @return alphabetic ordered list
+	 */
 	public String getTag() {
 		StringBuffer sb = new StringBuffer();
+		
 		if (this.tagList != null) {
-			for (String arg : this.tagList) {
+			List<String> orderedList = orderAlphabetically(this.tagList);
+			for (String arg : orderedList) {
 				sb.append(arg + " ");
 			}
 		}
@@ -196,6 +203,31 @@ public abstract class StatusCheck {
 			time = formatter.format(new Date(new Long(this.getLastVisit())));
 		}
 		return time;
+	}
+	
+	/**
+	 * Returns the services list ordered alphabetically.
+	 * 
+	 * @param services
+	 * @return
+	 */
+	private List<String> orderAlphabetically(
+			List<String> stringList) {
+
+		// Custom comparator
+		class StringComparator implements Comparator<String> {
+
+			public int compare(String s1, String s2) {
+				return s1.compareToIgnoreCase(
+						s2);
+
+			}
+
+		}
+		// Sort me.
+		Collections.sort(stringList, new StringComparator());
+
+		return stringList;
 	}
 
 }

@@ -214,7 +214,11 @@ $(document).ready(function() {
     
     $('#search_me').each( function() {
         $(this).click( function() {
-            var term = $('#search_term').val();
+            var term = $('#search_term').attr('value');
+            var title = $('#search_term').attr('title');
+            if(title === term){
+            	term = "";
+            }
             document.location="<c:url value="/search?term=" />" + term;
           }); 
        
