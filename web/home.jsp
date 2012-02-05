@@ -47,6 +47,9 @@ $(document).ready( function() {
                            if (bValid) {
                         	   var servicePlanName = $('input[name=service_plan_name]').val();  
                         	   var servicePlanTag = $('input[name=service_plan_tag]').val();  
+                        	   if(servicePlanTag === $('input[name=service_plan_tag]').attr('title') ){
+                        	      servicePlanTag = '';
+                        	   }
                         	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName, service_plan_tag:servicePlanTag } ,function(data){
                                    if(data.result.success && data.result.planid){
                                        //$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 

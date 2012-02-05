@@ -300,9 +300,7 @@ $(document).ready(function() {
 				</ul>
 			</li>
 			<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
-				<a href="<c:url value="/upload" />">Import</a></li>
-			<li <c:if test="${currentTab == 'export'}">class="current"</c:if>>
-				<a href="<c:url value="/export" />">Export</a></li>
+				<a href="<c:url value="/upload" />">Import/Export</a></li>
 			<li <c:if test="${currentTab == 'history'}">class="current"</c:if>>
 				<a href="<c:url value="/history" />">History</a></li>
 			<li <c:if test="${currentTab == 'proxy'}">class="current"</c:if>>

@@ -325,7 +325,7 @@ public class MockeyXmlFileManager {
 				// incoming/uploaded tag arguments
 				uploadedServiceBean.addTagToList(tagArguments);
 				for (Scenario scenarioTmp : uploadedServiceBean.getScenarios()) {
-					scenarioTmp.setTag(tagArguments);
+					scenarioTmp.addTagToList(tagArguments);
 				}
 				// #TAG HANDLING - END
 

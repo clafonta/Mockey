@@ -31,8 +31,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -212,8 +214,13 @@ public class HomeServlet extends HttpServlet {
 			IMockeyStorage store = StorageRegistry.MockeyStorage;
 			JSONObject jsonResultObject = new JSONObject();
 
-			// Load with local file.
+			// Load with a definitions file.
 			String fileName = req.getParameter("file");
+			// Or with a URL
+			String fileUrl = req.getParameter("url");
+			
+			
+			
 			Boolean transientState = new Boolean(true);
 			try {
 				transientState = new Boolean(
@@ -223,11 +230,26 @@ public class HomeServlet extends HttpServlet {
 			} catch (Exception e) {
 
 			}
+			InputStream fstream = null;
 			try {
-				File f = new File(fileName);
-				if (f.exists()) {
-					// Slurp it up and initialize definitions.
-					FileInputStream fstream = new FileInputStream(f);
+				
+				if(fileUrl!=null){
+					// or, from a URL, then retrieve an InputStream from a URL
+					fstream = new URL(fileUrl).openStream();
+				} else if(fileName!=null){
+					File f = new File(fileName);
+					if(f.exists()){
+						fstream = new FileInputStream(f);
+					}else {
+						logger.info("Filename '" + fileName + "' does not exist. doing nothing.");
+						jsonResultObject.put(FAIL, fileName
+								+ " does not exist. doing nothing.");
+					}
+				}
+				
+				
+				if (fstream !=null) {
+					
 					BufferedReader br = new BufferedReader(
 							new InputStreamReader(fstream,
 									Charset.forName(HTTP.UTF_8)));
@@ -251,20 +273,25 @@ public class HomeServlet extends HttpServlet {
 							+ fileName);
 					jsonResultObject.put(API_CONFIGURATION_PARAMETER_FILE,
 							fileName);
-				} else {
-					logger.info(fileName + " does not exist. doing nothing.");
-					jsonResultObject.put(FAIL, fileName
-							+ " does not exist. doing nothing.");
-				}
+				} 
 			} catch (Exception e) {
+				
 				logger.debug("Unable to load service definitions with name: '"
-						+ fileName + "'", e);
+						+ fileName + "' or URL: " + fileUrl, e);
 				try {
 					jsonResultObject.put(FAIL,
-							"Unable to load service definitions with name: '"
-									+ fileName + "'");
+							"Unable to load service definitions with filename: '"
+									+ fileName + "' or URL: " + fileUrl);
 				} catch (Exception ef) {
 					logger.error("Unable to produce a JSON response.", e);
+				}
+			} finally {
+				if(fstream!=null){
+					try{
+						fstream.close();
+					}catch(Exception e){
+						
+					}
 				}
 			}
 

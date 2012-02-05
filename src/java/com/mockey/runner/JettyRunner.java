@@ -50,40 +50,60 @@ public class JettyRunner {
 			args = new String[0];
 
 		// Initialize the argument parser
-		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar", "Starts a Jetty server running Mockey");
-		jsap.registerParameter(new FlaggedOption("port", JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p', "port",
-				"port to run Jetty on"));
-		jsap.registerParameter(new FlaggedOption("file", JSAP.STRING_PARSER, MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
-				JSAP.NOT_REQUIRED, 'f', "file", "relative path to file to initialize Mockey"));
-		
-		jsap.registerParameter(new FlaggedOption("transientState", JSAP.BOOLEAN_PARSER, "true",
-				JSAP.NOT_REQUIRED, 't', "transientState", "Read only mode if set to true, no updates are made to the file system."));
+		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar",
+				"Starts a Jetty server running Mockey");
+		jsap.registerParameter(new FlaggedOption("port", JSAP.INTEGER_PARSER,
+				"8080", JSAP.NOT_REQUIRED, 'p', "port", "port to run Jetty on"));
+		jsap.registerParameter(new FlaggedOption(
+				"file",
+				JSAP.STRING_PARSER,
+				MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
+				JSAP.NOT_REQUIRED,
+				'f',
+				"file",
+				"Relative path to a mockey-definitions file to initialize Mockey, relative to where you're starting Mockey"));
 
-		jsap.registerParameter(new FlaggedOption("filterTag", JSAP.STRING_PARSER, "",
-				JSAP.NOT_REQUIRED, 'F', "filterTag", "Filter tag for services and scenarios, useful for 'only use information with this tag'. "));
+		jsap.registerParameter(new FlaggedOption("url", JSAP.STRING_PARSER, "",
+				JSAP.NOT_REQUIRED, 'u', "url",
+				"URL to a mockey-definitions file to initialize Mockey"));
+
+		jsap.registerParameter(new FlaggedOption("transientState",
+				JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',
+				"transientState",
+				"Read only mode if set to true, no updates are made to the file system."));
+
+		jsap.registerParameter(new FlaggedOption(
+				"filterTag",
+				JSAP.STRING_PARSER,
+				"",
+				JSAP.NOT_REQUIRED,
+				'F',
+				"filterTag",
+				"Filter tag for services and scenarios, useful for 'only use information with this tag'. "));
 
 		// parse the command line options
 		JSAPResult config = jsap.parse(args);
 
 		// Bail out if they asked for the --help
-		if (jsap.messagePrinted()){
+		if (jsap.messagePrinted()) {
 			System.exit(1);
 		}
 
 		// Construct the new arguments for jetty-runner
 		int port = config.getInt("port");
 		boolean transientState = true;
-		
+
 		try {
 			transientState = config.getBoolean("transientState");
-		}catch(Exception e){
+		} catch (Exception e) {
 			//
 		}
-		
+
 		// Initialize Log4J file roller appender.
 		StartUpServlet.getDebugFile();
-		InputStream log4jInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-				"WEB-INF/log4j.properties");
+		InputStream log4jInputStream = Thread.currentThread()
+				.getContextClassLoader()
+				.getResourceAsStream("WEB-INF/log4j.properties");
 		Properties log4JProperties = new Properties();
 		log4JProperties.load(log4jInputStream);
 		PropertyConfigurator.configure(log4JProperties);
@@ -107,24 +127,37 @@ public class JettyRunner {
 		server.start();
 		// Construct the arguments for Mockey
 		String file = String.valueOf(config.getString("file"));
+		String url = String.valueOf(config.getString("url"));
 		String filterTag = config.getString("filterTag");
 		String fTagParam = "";
-		if(filterTag!=null){
-			fTagParam = "&filterTag="+ URLEncoder.encode(filterTag, "UTF-8");
+		if (filterTag != null) {
+			fTagParam = "&filterTag=" + URLEncoder.encode(filterTag, "UTF-8");
 		}
-		// Startup displays a big message and URL redirects after x seconds. Snazzy.
+		// Startup displays a big message and URL redirects after x seconds.
+		// Snazzy.
 		String initUrl = "/home";
 		// BUT...if a file is defined, (which it *should*),
 		// then let's initialize with it instead.
-		if (file != null && file.trim().length() > 0) {
+		if (url != null && url.trim().length() > 0) {
 			URLEncoder.encode(initUrl, "UTF-8");
-			initUrl = "/home?action=init&transientState="+transientState+"&file=" + URLEncoder.encode(file, "UTF-8") + fTagParam;
-		}else {
-			initUrl = "/home?action=init&transientState="+transientState+"&file=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8") + fTagParam;
-			
+			initUrl = "/home?action=init&transientState=" + transientState
+					+ "&url=" + URLEncoder.encode(url, "UTF-8") + fTagParam;
+		} else if (file != null && file.trim().length() > 0) {
+			URLEncoder.encode(initUrl, "UTF-8");
+			initUrl = "/home?action=init&transientState=" + transientState
+					+ "&file=" + URLEncoder.encode(file, "UTF-8") + fTagParam;
+		} else {
+			initUrl = "/home?action=init&transientState="
+					+ transientState
+					+ "&file="
+					+ URLEncoder.encode(
+							MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
+							"UTF-8") + fTagParam;
+
 		}
 
-		new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();
+		new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port),
+				initUrl, 0)).start();
 
 		server.join();
 	}

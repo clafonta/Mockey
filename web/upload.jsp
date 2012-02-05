@@ -11,6 +11,11 @@
 
 <%@ include file="/WEB-INF/common/message.jsp"%>
 <div>
+<h1>Export</h1>
+<p>
+You can <a href="<c:url value="/export"/>">view</a> or <a href="<c:url value="/export?download"/>">download</a> this Mockey's definition.
+
+</p>
 <h1>Import</h1>
 <p>Import your service definition(s) here. Import will try to <i>merge</i> services already defined with services defined in your import file. If you're not sure about this, 
 you should <a href="">Export</a> your service definitions first. If things go bad for you, then you can 

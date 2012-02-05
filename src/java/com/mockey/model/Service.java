@@ -181,6 +181,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 
 	public Scenario saveOrUpdateScenario(Scenario scenario) {
 		scenario.setServiceId(this.id);
+		//System.out.println("XXXXXXXXXXXXX Tag is:" + scenario.getTag());
 		return (Scenario) this.scenarios.save(scenario);
 	}
 
