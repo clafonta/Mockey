@@ -377,6 +377,9 @@ $(document).ready( function() {
    
     $("#delete-tag-button").click( function() {
     	   var filterTag = $('#filter-tag').val();
+           if(filterTag === $('#filter-tag').attr('title')){
+              filterTag = '';
+           }
            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_store', tag: filterTag } ,function(data){
 					   //console.log(data);
 					   if(data.success){
@@ -391,11 +394,13 @@ $(document).ready( function() {
 </script>
     <div id="main">
     <div id="filter_view_div">
+    
 	<span class="basic_label">Filter services with tags:</span> 
-	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}"  name="filter-tag-field" class="text ui-corner-all ui-widget-content" />
+	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" title="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
 	<a href="#" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
 	<a href="#" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
 	<a href="#" class="manageTagLink">Tag Helper</a>
+	
 	</div>
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <!-- SERVICE PLAN CREATE DIALOG -->

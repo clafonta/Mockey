@@ -167,8 +167,18 @@ $(document).ready(function() {
         autoOpen: false
     });
     
+    $('.blur').each( function(){
+    	var fieldVal = $(this).val();
+        if(fieldVal !== $(this).attr('title')){
+              $(this).removeClass('blur')
+           }
+    });
+    
     $("#filter-tag-update-button").click( function() {
            var filterTag = $('#filter-tag-field').val();
+           if(filterTag === $('#filter-tag-field').attr('title')){
+              filterTag = '';
+           }
            $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
 					   //console.log(data);
 					   if(data.success){
