@@ -10,7 +10,7 @@
 $(document).ready( function() {
 	$('#tabs').tabs().hide();
 	$('#tabs:not(:first)').hide();
-    $('#tabs:first').fadeIn('fast');
+    $('#tabs:first').fadeIn('slow');
 	
     $('.invisible-focusable').addClass("invisiblefield");  
 	$('.invisible-focusable').focus(function() {  

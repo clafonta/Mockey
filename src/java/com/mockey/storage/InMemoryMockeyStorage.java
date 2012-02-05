@@ -229,6 +229,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 	public Service saveOrUpdateService(Service mockServiceBean) {
+		//System.out.println("XXXXXXXXXXXXX Saving Service. Name is: " + mockServiceBean.getServiceName());
 		PersistableItem item = mockServiceStore.save(mockServiceBean);
 		if (mockServiceBean != null && !mockServiceBean.getTransientState()) {
 			this.writeMemoryToFile();
