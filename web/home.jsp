@@ -447,8 +447,8 @@ $(document).ready( function() {
 							<td valign="top" width="220px;" style="padding-left:0;">
 							<div id="tabs" style="display:none;">
 								<ul>
-									<li><a href="#tabs-1">Services</a></li>
-									<li><a href="#tabs-2">Plans</a></li>
+									<li><a href="#tabs-1" style="font-weight:100;">Services</a></li>
+									<li><a href="#tabs-2" style="font-weight:100;">Plans</a></li>
 								</ul>
 							  	<div id="tabs-1">
 							  	  <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
