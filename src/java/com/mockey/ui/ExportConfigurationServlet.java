@@ -64,7 +64,10 @@ public class ExportConfigurationServlet extends HttpServlet {
         }
 
         resp.setContentType("application/json");
-        resp.setHeader("Content-disposition", "attachment; filename=mockservice.xml");
+        if(req.getParameter("download")!=null){
+        	resp.setHeader("Content-disposition", "attachment; filename=mockservice.xml");
+        }
+        
         resp.setContentLength(fileOutput.getBytes().length);
 
         PrintStream out = new PrintStream(resp.getOutputStream());

@@ -133,7 +133,7 @@ public class MockeyXmlFileConfigurationReader {
 		System.out.println(getStorageAsString(mockServiceList));
 		
 		for(ServiceRef ref : mockServiceList.getServiceRefs()){
-			String fragXMLFilename = "/Users/chadlafontaine/Work/test/" ; //+ ref.getFileName();
+			String fragXMLFilename = "/Users/chadlafontaine/Work/test/" + ref.getFileName();
 
 			java.io.FileInputStream fragmentIs = new java.io.FileInputStream(fragXMLFilename);
 

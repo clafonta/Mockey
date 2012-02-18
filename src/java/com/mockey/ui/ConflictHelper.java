@@ -92,7 +92,7 @@ public class ConflictHelper {
 			for (Scenario scenarioA : serviceA.getScenarios()) {
 				for (Scenario scenarioB : serviceA.getScenarios()) {
 
-					if (scenarioA.equals(scenarioB)
+					if (scenarioA.hasSameNameAndResponse(scenarioB)
 							&& !scenarioA.getId().equals(scenarioB.getId())) {
 						conflictInfo.addConflict(serviceA, serviceA,
 								MATCH_SCENARIO);

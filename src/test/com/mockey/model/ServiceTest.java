@@ -91,4 +91,19 @@ public class ServiceTest {
 
 
 	}
+	
+	@Test
+	public void addRealUrlsToService() {
+		Service service = new Service();
+		Url url1 = new Url("http://www.abc.com");
+		Url url2 = new Url("http://www.ABC.com");
+		Url url3 = new Url("http://www.def.com");
+		service.saveOrUpdateRealServiceUrl(url1);
+		service.saveOrUpdateRealServiceUrl(url2);
+		service.saveOrUpdateRealServiceUrl(url3);
+				
+		assert (service.getRealServiceUrls().size() == 2) : "Service should have 2 Real URLs " + service.getRealServiceUrls().size();
+		
+
+	}
 }

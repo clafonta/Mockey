@@ -1,4 +1,4 @@
-html, body{	padding-top: 0px;	background: #FFFFFF;font: 0.9em Helvetica,Arial,sans-serif; height:100%;}
+html, body{	padding-top: 0px;	background: #FFFFFF;font: 0.9em sans-serif; height:100%;font-weight:100;}
 .big{font-size: 2em;}
 .tiny, .tinyfieldset{font-size: 90%;}
 .tinyfieldset {padding:0.1em 0 2em 0; }
@@ -6,22 +6,20 @@ html, body{	padding-top: 0px;	background: #FFFFFF;font: 0.9em Helvetica,Arial,sa
 .tiny_service_delete{font-size: 80%;}
 .gt{ color: black;}
 a.gt:hover {color: black;}
-.gt_active, .gt_highlight{	color: #06F; font-weight: bold; font-size:120%;}
-h1, h2, h3, .h1{margin: 1em 0em 0.5em 0em; padding:1px;}
+.gt_active, .gt_highlight{	color: #06F; font-weight: 300; font-size:120%;}
+h1, h2, h3, .h1{margin: 1em 0em 0.5em 0em; padding:1px;  font-weight:200;}
 hr{  border: 0;  width: 100%;height: 2px;background-color: #06F;}
 h1, .h1{ font-size:160%; color: #666666;}
 h2 { font-size:140%; color: #666666;}
-h3 { font-size:120%; color: #4E2F30;}
-h4 {font-size: 100%; color: black;font-weight: bold;margin: 1em 0em 0.5em 0em; padding:1px;}
+h3 { font-size:120%; color: #666666;font-weight:200;}
+h4 {font-size: 100%; color: black;font-weight: 200;margin: 1em 0em 0.5em 0em; padding:1px;}
 img {border:0;}
 .highlight{color: #ff0073;}
 .highlight_pos{color: #06F;}
-.logo_link {   color: #666666;    text-decoration: none;  font-weight:bold; font-size: 2em; 
-font-family: georgia,Helvetica,Arial, sans-serif;
-
+.logo_link {   color: #666666;    text-decoration: none;  font-weight:100; font-size: 2em;  font-family: sans-serif;
 }
-text-shadow: 1px 1px 1px #AAAAAA;
-
+strong, b {
+font-weight: 600;
 }
 .nav{	color: #06F;	text-decoration: none;	font-weight:bold;}
 .group {	border: thin dashed #bdbdbd;	margin: 5px;	padding: 5px;}
@@ -108,7 +106,7 @@ ul.upload-result li {  margin:0.5em 0 0.5em 0.9em; }
 
 .edit{float:right; margin-top:-1.5em; margin-left:2em;font-size:80%;}
 p#action_links{	margin: 0em;	padding: 1em 0.5em 1em 0.5em;	background-color: #f0f8ff;	border-left: thin solid #bdbdbd; border-right: thin solid #bdbdbd; border-top: thin solid #bdbdbd;}
-p{margin: 0.5em 0.0em; padding: 1px;line-height:130%;}
+p{margin: 0.5em 0.0em; padding: 1px;line-height:130%;color:#3D3D3D}
 a{color: #00F;text-decoration:underline}
 .response_not, .response_set { 
    height: 1em;  
@@ -129,18 +127,18 @@ a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
 div#container{width:875px;margin:0 auto}
-div#main{width: 100%; margin-top: 10px }
-div{margin-top: 1px }
+div#main{width: 100%; margin-top: 10px; }
+div{margin-top: 1px; font-weight:300; }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
 .spread{margin-left:0.8em;font-size:80%;}
 span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;}
 .api_message {  margin: 0.8em;  padding: 0.8em; text-align: left;   color: black;}
 .hint_message, .alert_message, .conflict_message, .addition_message, .info_message {	margin: 0.8em;	padding: 0.8em;	text-align: left;	color: black;	border: thin solid #d3d3d3;}
 .hint_message{background-color: #3782B6;}
-.alert_message{border: thin solid #E80C24; background-color: #FFB4B2;}
+.alert_message{border: thin solid #FE9EA7; background-color: #FFD7D5;}
 .conflict_message {background-color: rgb(255, 215, 215);}
 .addition_message {background-color: #8AFFAB;}
-.info_message {background-color: #A0CAE8; color:#6666666;}
+.info_message {background-color: #CADEED; color:#666666;border:1px solid #C0C0FF;}
 .info_message a {text-decoration: underline;}
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;}
@@ -309,7 +307,7 @@ div.grippie {background:#EEEEEE url(../images/grippie.png) no-repeat scroll cent
 .remove_grey {padding: 0 0.5em 0 0.2em; color:#C0C0C0;text-decoration:none;font-size:80%;margin-bottom:02em;}
 .remove_grey:hover{color:#FF0000;}
 label, input { display:inline; }
-label {font-weight:900;}
+label {font-weight:500;}
 input.text  {
 margin: 0.8em 0 0.8em 0;
 padding:0.4em;
@@ -317,6 +315,8 @@ width:95%;
 }
 input.blur {
 color:#999999;
+font-family:sans-serif;
+font-weight:100;
 }
 
 #header_tool_wrapper {
@@ -411,7 +411,7 @@ padding: 8px;
 .service { list-style: none; word-break:break-all;	}
 .service div {	margin:0.5em 0 0.5em 0; }
 .basic_label {color:#666666;}
-div.service-value {color:#FF0084; font-weight:normal;padding-left:1em;}
+div.service-value {color:#616161; font-weight:100;}
 div.service-label {color:#555555; padding-top:0.8em;}
 div.border-top{border-top:1px solid #BDBDBD;}
 div.not-top {margin-top:2em;}

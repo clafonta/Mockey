@@ -167,8 +167,18 @@ $(document).ready(function() {
         autoOpen: false
     });
     
+    $('.blur').each( function(){
+    	var fieldVal = $(this).val();
+        if(fieldVal !== $(this).attr('title')){
+              $(this).removeClass('blur')
+           }
+    });
+    
     $("#filter-tag-update-button").click( function() {
            var filterTag = $('#filter-tag-field').val();
+           if(filterTag === $('#filter-tag-field').attr('title')){
+              filterTag = '';
+           }
            $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
 					   //console.log(data);
 					   if(data.success){
@@ -214,7 +224,11 @@ $(document).ready(function() {
     
     $('#search_me').each( function() {
         $(this).click( function() {
-            var term = $('#search_term').val();
+            var term = $('#search_term').attr('value');
+            var title = $('#search_term').attr('title');
+            if(title === term){
+            	term = "";
+            }
             document.location="<c:url value="/search?term=" />" + term;
           }); 
        
@@ -286,9 +300,7 @@ $(document).ready(function() {
 				</ul>
 			</li>
 			<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
-				<a href="<c:url value="/upload" />">Import</a></li>
-			<li <c:if test="${currentTab == 'export'}">class="current"</c:if>>
-				<a href="<c:url value="/export" />">Export</a></li>
+				<a href="<c:url value="/upload" />">Import/Export</a></li>
 			<li <c:if test="${currentTab == 'history'}">class="current"</c:if>>
 				<a href="<c:url value="/history" />">History</a></li>
 			<li <c:if test="${currentTab == 'proxy'}">class="current"</c:if>>

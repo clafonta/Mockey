@@ -114,8 +114,8 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addObjectCreate(ROOT_SERVICE_SCENARIO, Scenario.class);
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "id", "id");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "name", "scenarioName");
-		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "tag", "tag");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "last_visit", "lastVisit");
+		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "tag", "tag");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");

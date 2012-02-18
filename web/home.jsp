@@ -10,7 +10,7 @@
 $(document).ready( function() {
 	$('#tabs').tabs().hide();
 	$('#tabs:not(:first)').hide();
-    $('#tabs:first').fadeIn('fast');
+    $('#tabs:first').fadeIn('slow');
 	
     $('.invisible-focusable').addClass("invisiblefield");  
 	$('.invisible-focusable').focus(function() {  
@@ -47,6 +47,9 @@ $(document).ready( function() {
                            if (bValid) {
                         	   var servicePlanName = $('input[name=service_plan_name]').val();  
                         	   var servicePlanTag = $('input[name=service_plan_tag]').val();  
+                        	   if(servicePlanTag === $('input[name=service_plan_tag]').attr('title') ){
+                        	      servicePlanTag = '';
+                        	   }
                         	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName, service_plan_tag:servicePlanTag } ,function(data){
                                    if(data.result.success && data.result.planid){
                                        //$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
@@ -377,6 +380,9 @@ $(document).ready( function() {
    
     $("#delete-tag-button").click( function() {
     	   var filterTag = $('#filter-tag').val();
+           if(filterTag === $('#filter-tag').attr('title')){
+              filterTag = '';
+           }
            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_store', tag: filterTag } ,function(data){
 					   //console.log(data);
 					   if(data.success){
@@ -391,11 +397,13 @@ $(document).ready( function() {
 </script>
     <div id="main">
     <div id="filter_view_div">
+    
 	<span class="basic_label">Filter services with tags:</span> 
-	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}"  name="filter-tag-field" class="text ui-corner-all ui-widget-content" />
+	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" title="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
 	<a href="#" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
 	<a href="#" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
 	<a href="#" class="manageTagLink">Tag Helper</a>
+	
 	</div>
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <!-- SERVICE PLAN CREATE DIALOG -->
@@ -439,8 +447,8 @@ $(document).ready( function() {
 							<td valign="top" width="220px;" style="padding-left:0;">
 							<div id="tabs" style="display:none;">
 								<ul>
-									<li><a href="#tabs-1">Services</a></li>
-									<li><a href="#tabs-2">Plans</a></li>
+									<li><a href="#tabs-1" style="font-weight:100;">Services</a></li>
+									<li><a href="#tabs-2" style="font-weight:100;">Plans</a></li>
 								</ul>
 							  	<div id="tabs-1">
 							  	  <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>

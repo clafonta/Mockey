@@ -202,9 +202,13 @@ public class MockeyXmlFileManager {
 		}
 
 		// STEP #4. BUILD SERVICE REFERENCES
-		// *** I totally forget why I do this. ***
-		// Come on! Comments needed. Why references?
-		// Can we not use them?
+		// Why is this needed?
+		// We are adding _new_ services into the Store, and that means that the
+		// store's state is always changing. We need references as a saved
+		// snapshot list of store state prior to adding new services.
+		// **********
+		// I forget why we really need this though...
+		// **********
 		List<Service> serviceListFromRefs = new ArrayList<Service>();
 		for (ServiceRef serviceRef : mockServiceStoreTemporary.getServiceRefs()) {
 			try {
@@ -304,30 +308,15 @@ public class MockeyXmlFileManager {
 					mergeResults
 							.addConflictMsg("Service '"
 									+ uploadedServiceBean.getServiceName()
-									+ "' not created; will try to merge new/different Scenarios into existing service labeled '"
+									+ "' not created because one with the same name already defined. '"
 									+ inMemoryServiceBean.getServiceName()
 									+ "' ");
 
-				} else {
-					// First, check if both have empty Real service list
-					Url firstMatchingUrl = inMemoryServiceBean
-							.getFirstMatchingRealServiceUrl(uploadedServiceBean);
-					if (firstMatchingUrl != null) {
-						existingService = true;
-						mergeResults
-								.addConflictMsg("Service '"
-										+ uploadedServiceBean.getServiceName()
-										+ "' not created because of same Service Name but conflicting Real URL. e labeled '"
-										+ inMemoryServiceBean.getServiceName()
-										+ "' ");
-						break;
-					}
-				}
+				} 
 			}
 			if (!existingService) {
-				// YES, no in-store matching URL. WARNING: This is a new
-				// service, but it's NAME may be the same as another existing
-				// service. First, we null ID, to not write-over on any in-store
+				// YES, no in-store matching Name. 
+				// We null ID, to not write-over on any in-store
 				// services with same ID
 				uploadedServiceBean.setId(null);
 
@@ -336,7 +325,7 @@ public class MockeyXmlFileManager {
 				// incoming/uploaded tag arguments
 				uploadedServiceBean.addTagToList(tagArguments);
 				for (Scenario scenarioTmp : uploadedServiceBean.getScenarios()) {
-					scenarioTmp.setTag(tagArguments);
+					scenarioTmp.addTagToList(tagArguments);
 				}
 				// #TAG HANDLING - END
 
@@ -345,7 +334,7 @@ public class MockeyXmlFileManager {
 				mergeResults
 						.addAdditionMsg("Uploaded Service '"
 								+ uploadedServiceBean.getServiceName()
-								+ "' created with scenarios. Reason: no matching name or list matching real URLs.");
+								+ "' created with scenarios.");
 
 			} else {
 				// We have an existing Service
@@ -384,14 +373,20 @@ public class MockeyXmlFileManager {
 
 		) {
 
+			// ********************** TAG - BEGIN ***********************
 			// #TAG HANDLING for the Service - BEGIN
-			// Ensure Service gets incoming/uploaded tag arguments
+			// Ensure Service gets incoming/uploaded-file tag arguments
 			inMemoryService.addTagToList(tagArguments);
+			// Ensure Service gets uploaded Service tag arguments
+			inMemoryService.addTagToList(uploadedService.getTag());
 			// #TAG HANDLING for the Service - END
+			// ********************** TAG - END *****************
 
+			// ********************* SCENARIOS BEGIN *******************
 			if (readResults == null) {
 				readResults = new ServiceMergeResults();
 			}
+
 			Iterator<Scenario> uploadedListIter = uploadedService
 					.getScenarios().iterator();
 			Iterator<Scenario> inMemListIter = inMemoryService.getScenarios()
@@ -405,7 +400,8 @@ public class MockeyXmlFileManager {
 				while (inMemListIter.hasNext()) {
 					inMemScenarioTemp = (Scenario) inMemListIter.next();
 
-					if (inMemScenarioTemp.equals(uploadedScenario)) {
+					if (inMemScenarioTemp
+							.hasSameNameAndResponse(uploadedScenario)) {
 
 						inMemScenarioExistTemp = true;
 						break;
@@ -423,7 +419,6 @@ public class MockeyXmlFileManager {
 					uploadedScenario.addTagToList(tagArguments);
 					inMemoryService.saveOrUpdateScenario(uploadedScenario);
 
-					store.saveOrUpdateService(inMemoryService);
 					readResults.addAdditionMsg("Scenario name '"
 							+ uploadedScenario.getScenarioName()
 							+ "' from uploaded service named '"
@@ -431,10 +426,14 @@ public class MockeyXmlFileManager {
 							+ "' was merged into service '"
 							+ inMemoryService.getServiceName() + "' ");
 				} else {
-					// SAVE TAGS
+					// OK, we have a MATCHING Scenario.
+					// Be sure to add the uploaded-file tags
 					inMemScenarioTemp.addTagToList(tagArguments);
+					// Be sure to add the uploaded-scenario tags
+					inMemScenarioTemp.addTagToList(uploadedScenario.getTag());
+					// Save the scenario to the Service
 					inMemoryService.saveOrUpdateScenario(inMemScenarioTemp);
-					store.saveOrUpdateService(inMemoryService);
+
 					// Although we still need to
 					readResults
 							.addConflictMsg("Uploaded Scenario '"
@@ -444,6 +443,14 @@ public class MockeyXmlFileManager {
 				}
 
 			}
+			// ********************* SCENARIOS - END ******************
+
+			// ********************* REAL URLS - BEGIN *******************
+			for (Url uploadedUrl : uploadedService.getRealServiceUrls()) {
+				inMemoryService.saveOrUpdateRealServiceUrl(uploadedUrl);
+			}
+			// ********************* REAL URLS - END   *******************
+			store.saveOrUpdateService(inMemoryService);
 
 		}
 

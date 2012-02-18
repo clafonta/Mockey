@@ -116,6 +116,14 @@ public class UrlTest {
 		} catch (MalformedURLException e) {
 			
 		}
+		
+		try {
+			urlArg = "sometextfile.txt";
+			Url.getSchemeHostPortPathFromURL(urlArg);
+			Assert.fail("'null' should have thrown a MalformedURLException but got " + Url.getSchemeHostPortPathFromURL(urlArg));
+		} catch (MalformedURLException e) {
+			
+		}
 	}
 
 }
