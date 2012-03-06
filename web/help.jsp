@@ -24,6 +24,7 @@
 		        <li>&#187; <a href="#initialization">Initialization</a></li>
 		        <li>&#187; <a href="#error_handling">Error Handling</a></li>		        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
+		        <li>&#187; <a href="#inspector">Request Inspector</a></li>
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		    </ul>
 	    </div>
@@ -378,8 +379,35 @@
         Mockey is not only for Humans. Robots can use it too. See <a href="service_api">here</a>.
         </p>
     </div>
-    
-	<div class="help_section_zebra">
+    <div class="help_section_zebra">
+	    <a href="#inspector" name="inspector"></a>
+        <h2>Request Inspector</h2>
+        <p>
+        You can create your own Service request inspectors to help validate incoming requests. Here's how to create your own request inspectors:
+        <br />
+        <br />
+        <strong>Step 1.</strong> Implement this class and jar it up.
+        	<pre class="tiny">
+// implement this class
+package com.mockey.model;
+import javax.servlet.http.HttpServletRequest;
+
+public interface IRequestInspector {
+
+	public void analyze(HttpServletRequest request);
+} 
+			</pre> 
+		<br />
+		<br />
+		<strong>Step 2.</strong> Upon start up of Mockey, pass in your jar file with your class(es) and dependencies. See <i>"java -jar Mockey.jar --help"</i> for details. 
+		<br />
+		<br />
+		<strong>Step 3.</strong> After start up, Mockey should have your implementation listed as an option in your Service definition creation form. 
+		If you did things right, you should see your output in the logs files. 
+		
+        </p>
+    </div>
+	<div class="help_section">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

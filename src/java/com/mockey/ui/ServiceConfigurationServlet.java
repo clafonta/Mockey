@@ -208,6 +208,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		String hangTime = req.getParameter(ServiceConfigurationAPI.API_SERVICE_HANGTIME);
 		String scenarioId = req.getParameter(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID);
 		String scenarioName = req.getParameter(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME);
+		String requestInspectorName = req.getParameter(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME);
 		String httpContentType = req.getParameter(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE);
 		String serviceResponseType = req.getParameter(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
 		String defaultUrlIndex = req.getParameter("defaultUrlIndex");
@@ -236,6 +237,15 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		} catch (Exception e) {
 
 		}
+		
+		try {
+			if (requestInspectorName != null) {
+				service.setRequestInspectorName(requestInspectorName);
+			}
+		} catch (Exception e) {
+			log.debug("Updating service without a 'request Inspector Name' value although, one was given:" + requestInspectorName);
+		}
+
 
 		try {
 			if (hangTime != null) {
@@ -289,6 +299,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE, service
 						.getServiceResponseTypeAsString());
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, service.getHangTime());
+				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME, service.getRequestInspectorName());
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE, service.getHttpContentType());
 				jsonResponseObject.put("result", jsonResultObject);
 			} else {
@@ -297,6 +308,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_ID + ":" + serviceId + " ");
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_NAME + ":" + serviceName + " ");
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_HANGTIME + ":" + hangTime + " ");
+				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME + ":"+ requestInspectorName);
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID + ":" + scenarioId + " ");
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME + ":" + scenarioName + " ");
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE + ":" + httpContentType + " ");

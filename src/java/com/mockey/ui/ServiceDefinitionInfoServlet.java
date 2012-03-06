@@ -183,6 +183,7 @@ public class ServiceDefinitionInfoServlet extends HttpServlet {
 				jsonServiceObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE, tempService
 						.getServiceResponseTypeAsString());
 				jsonServiceObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, tempService.getHangTime());
+				jsonServiceObject.put(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME, tempService.getRequestInspectorName());
 				jsonServiceObject.put(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE, tempService
 						.getHttpContentType());
 				for (Scenario tempScenario : tempService.getScenarios()) {

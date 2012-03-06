@@ -66,6 +66,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	private Long errorScenarioId;
 	private String httpContentType = "text/html;charset=utf-8";
 	private int hangTime = 0;
+	private String requestInspectorName;
 	private OrderedMap<Scenario> scenarios = new OrderedMap<Scenario>();
 	private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 	private String httpMethod = "GET";
@@ -700,5 +701,13 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			}
 		}
 		return has;
+	}
+	
+	public String getRequestInspectorName() {
+		return requestInspectorName;
+	}
+
+	public void setRequestInspectorName(String requestInspectorName) {
+		this.requestInspectorName = requestInspectorName;
 	}
 }

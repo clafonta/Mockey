@@ -49,12 +49,14 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mockey.ClassPathHack;
 import com.mockey.model.ApiDocAttribute;
 import com.mockey.model.ApiDocFieldValue;
 import com.mockey.model.ApiDocRequest;
 import com.mockey.model.ApiDocResponse;
 import com.mockey.model.ApiDocService;
 import com.mockey.model.ConflictInfo;
+import com.mockey.model.SampleRequestInspector;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IApiStorage;
@@ -75,6 +77,7 @@ public class HomeServlet extends HttpServlet {
 	private static final String API_CONFIGURATION_PARAMETER_TYPE = "type";
 	private static final String API_CONFIGURATION_PARAMETER_FILE = "file";
 	private static final String API_CONFIGURATION_PARAMETER_FILTER_TAG = "filterTag";
+	private static final String API_CONFIGURATION_PARAMETER_VALIDATOR_PATH = "validatorPath";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE = "deleteAllServices";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_INIT = "init";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE = "transientState";
@@ -207,6 +210,22 @@ public class HomeServlet extends HttpServlet {
 		if (filterTagParameter != null) {
 			store.setFilterTag(filterTagParameter);
 		}
+		
+		String validatorPathParameter = req
+				.getParameter(API_CONFIGURATION_PARAMETER_VALIDATOR_PATH);
+		if (validatorPathParameter != null) {
+			logger.debug("Validator Path is: " + validatorPathParameter);
+			File x = new File(validatorPathParameter);
+			logger.debug("File would be at: " + x.getAbsolutePath());
+			ClassPathHack.getInfo(validatorPathParameter);
+		}
+		// DEMO of validator
+		if(store.getRequestInspectorByClass(SampleRequestInspector.class)==null){
+			SampleRequestInspector sri = new SampleRequestInspector();
+			store.saveOrUpdateIRequestInspector(sri);
+		}
+		
+		
 
 		if (action != null && "init".equals(action)) {
 

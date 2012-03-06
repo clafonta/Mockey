@@ -38,8 +38,10 @@ import org.apache.log4j.Logger;
 
 import com.mockey.OrderedMap;
 import com.mockey.model.FulfilledClientRequest;
+import com.mockey.model.IRequestInspector;
 import com.mockey.model.PersistableItem;
 import com.mockey.model.ProxyServerModel;
+import com.mockey.model.SampleRequestInspector;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
@@ -60,7 +62,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
 	private OrderedMap<ServiceRef> serviceRefStore = new OrderedMap<ServiceRef>();
 	private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
-
+	private List<IRequestInspector> requestInspectorList = new ArrayList<IRequestInspector>();
 	private OrderedMap<TwistInfo> twistInfoStore = new OrderedMap<TwistInfo>();
 
 	private static Logger logger = Logger
@@ -173,14 +175,17 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 						if (url.trim().equalsIgnoreCase(
 								altUrl.getFullUrl().trim())) {
-							// We have a URL match. Check for Filter if available.
-							if (filterTag.length() == 0 || (filterTag.length() > 0 && serviceTmp.hasTag(filterTag))) {
+							// We have a URL match. Check for Filter if
+							// available.
+							if (filterTag.length() == 0
+									|| (filterTag.length() > 0 && serviceTmp
+											.hasTag(filterTag))) {
 								service = serviceTmp;
 							} else {
 								// Matching URL but no matching Filter.
 								// Keep searching....
 							}
-							
+
 							break;
 						}
 					}
@@ -229,7 +234,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 	public Service saveOrUpdateService(Service mockServiceBean) {
-		//System.out.println("XXXXXXXXXXXXX Saving Service. Name is: " + mockServiceBean.getServiceName());
+		// System.out.println("XXXXXXXXXXXXX Saving Service. Name is: " +
+		// mockServiceBean.getServiceName());
 		PersistableItem item = mockServiceStore.save(mockServiceBean);
 		if (mockServiceBean != null && !mockServiceBean.getTransientState()) {
 			this.writeMemoryToFile();
@@ -679,6 +685,58 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public void setFilterTag(String filterTag) {
 		this.filterTag = filterTag;
+	}
+
+	public List<IRequestInspector> getRequestInspectorList() {
+		return this.requestInspectorList;
+	}
+
+	public IRequestInspector getRequestInspectorByClass(Class newParam) {
+		IRequestInspector iri = null;
+		for (IRequestInspector item : this.requestInspectorList) {
+			if (newParam.isInstance(item)) {
+				iri = item;
+				break;
+			}
+		}
+		return iri;
+	}
+
+	public IRequestInspector getRequestInspectorByClassName(String className) {
+		IRequestInspector iri = null;
+		try {
+			Class cls = Class.forName(className);
+			for (IRequestInspector item : this.requestInspectorList) {
+				if (cls.isInstance(item)) {
+					iri = item;
+					break;
+				}
+			}
+		} catch (Exception e) {
+
+		}
+		return iri;
+	}
+
+	public void saveOrUpdateIRequestInspector(IRequestInspector arg) {
+
+		if (!this.requestInspectorList.contains(arg)) {
+			this.requestInspectorList.add(arg);
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		IMockeyStorage store = StorageRegistry.MockeyStorage;
+		SampleRequestInspector arg = new SampleRequestInspector();
+		store.saveOrUpdateIRequestInspector(arg);
+
+		List<IRequestInspector> list = store.getRequestInspectorList();
+
+		IRequestInspector arg2 = store
+				.getRequestInspectorByClass(SampleRequestInspector.class);
+		System.out.println("Done");
 	}
 
 }
