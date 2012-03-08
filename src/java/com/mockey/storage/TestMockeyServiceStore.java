@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.mockey.model.FulfilledClientRequest;
+import com.mockey.model.IRequestInspector;
 import com.mockey.model.PlanItem;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
@@ -333,5 +334,38 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 	}
 	public void setFilterTag(String tag){
 		
+	}
+
+	
+	public List<IRequestInspector> getRequestInspectorList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	public IRequestInspector getRequestInspectorByClass(Class newParam) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	public void saveOrUpdateService(IRequestInspector requestInspector) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveOrUpdateIRequestInspector(IRequestInspector arg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
+
+	
+	public IRequestInspector getRequestInspectorByClassName(String newParam) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

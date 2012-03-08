@@ -45,6 +45,13 @@ import com.mockey.storage.xml.MockeyXmlFileManager;
 import com.mockey.ui.StartUpServlet;
 
 public class JettyRunner {
+	private static final String ARG_PORT = "port";
+	private static final String ARG_URL = "url";
+	private static final String ARG_VALIDATOR = "validator";
+	private static final String ARG_TRANSIENT = "transientState";
+	private static final String ARG_FILTERTAG = "filterTag";
+	private static final String ARG_FILE = "file";
+	
 	public static void main(String[] args) throws Exception {
 		if (args == null)
 			args = new String[0];
@@ -52,33 +59,37 @@ public class JettyRunner {
 		// Initialize the argument parser
 		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar",
 				"Starts a Jetty server running Mockey");
-		jsap.registerParameter(new FlaggedOption("port", JSAP.INTEGER_PARSER,
-				"8080", JSAP.NOT_REQUIRED, 'p', "port", "port to run Jetty on"));
+		jsap.registerParameter(new FlaggedOption(ARG_PORT, JSAP.INTEGER_PARSER,
+				"8080", JSAP.NOT_REQUIRED, 'p', ARG_PORT, "port to run Jetty on"));
 		jsap.registerParameter(new FlaggedOption(
-				"file",
+				ARG_FILE,
 				JSAP.STRING_PARSER,
 				MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
 				JSAP.NOT_REQUIRED,
 				'f',
-				"file",
+				ARG_FILE,
 				"Relative path to a mockey-definitions file to initialize Mockey, relative to where you're starting Mockey"));
 
-		jsap.registerParameter(new FlaggedOption("url", JSAP.STRING_PARSER, "",
-				JSAP.NOT_REQUIRED, 'u', "url",
+		jsap.registerParameter(new FlaggedOption(ARG_URL, JSAP.STRING_PARSER, "",
+				JSAP.NOT_REQUIRED, 'u', ARG_URL,
 				"URL to a mockey-definitions file to initialize Mockey"));
+		
+		jsap.registerParameter(new FlaggedOption(ARG_VALIDATOR, JSAP.STRING_PARSER, "",
+				JSAP.NOT_REQUIRED, 'v', ARG_VALIDATOR,
+				"Path to a Jar file of Java classes to be used for validating incoming Mockey requests."));
 
-		jsap.registerParameter(new FlaggedOption("transientState",
+		jsap.registerParameter(new FlaggedOption(ARG_TRANSIENT,
 				JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',
-				"transientState",
+				ARG_TRANSIENT,
 				"Read only mode if set to true, no updates are made to the file system."));
 
 		jsap.registerParameter(new FlaggedOption(
-				"filterTag",
+				ARG_FILTERTAG,
 				JSAP.STRING_PARSER,
 				"",
 				JSAP.NOT_REQUIRED,
 				'F',
-				"filterTag",
+				ARG_FILTERTAG,
 				"Filter tag for services and scenarios, useful for 'only use information with this tag'. "));
 
 		// parse the command line options
@@ -90,11 +101,11 @@ public class JettyRunner {
 		}
 
 		// Construct the new arguments for jetty-runner
-		int port = config.getInt("port");
+		int port = config.getInt(ARG_PORT);
 		boolean transientState = true;
 
 		try {
-			transientState = config.getBoolean("transientState");
+			transientState = config.getBoolean(ARG_TRANSIENT);
 		} catch (Exception e) {
 			//
 		}
@@ -126,12 +137,16 @@ public class JettyRunner {
 
 		server.start();
 		// Construct the arguments for Mockey
-		String file = String.valueOf(config.getString("file"));
-		String url = String.valueOf(config.getString("url"));
-		String filterTag = config.getString("filterTag");
+		String file = String.valueOf(config.getString(ARG_FILE));
+		String url = String.valueOf(config.getString(ARG_URL));
+		String filterTag = config.getString(ARG_FILTERTAG);
+		String validatePath= String.valueOf(config.getString(ARG_VALIDATOR));
 		String fTagParam = "";
 		if (filterTag != null) {
 			fTagParam = "&filterTag=" + URLEncoder.encode(filterTag, "UTF-8");
+		}
+		if (validatePath != null) {
+			fTagParam = fTagParam + "&validatorPath=" + URLEncoder.encode(validatePath, "UTF-8");
 		}
 		// Startup displays a big message and URL redirects after x seconds.
 		// Snazzy.

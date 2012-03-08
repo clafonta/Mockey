@@ -107,6 +107,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			serviceElement.setAttribute("name", mockServiceBean.getServiceName());
 			serviceElement.setAttribute("description", getSafeForXmlOutputString(mockServiceBean.getDescription()));
 			serviceElement.setAttribute("hang_time", getSafeForXmlOutputString("" + mockServiceBean.getHangTime()));
+			serviceElement.setAttribute("request_inspector_name", getSafeForXmlOutputString("" + mockServiceBean.getRequestInspectorName()));
 			serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
 			serviceElement.setAttribute("tag", getSafeForXmlOutputString(mockServiceBean.getTag()) );
 			serviceElement.setAttribute("last_visit", getSafeForXmlOutputString(""+mockServiceBean.getLastVisit()) );

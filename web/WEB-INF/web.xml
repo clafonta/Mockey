@@ -324,6 +324,22 @@
             com.mockey.ui.LastVisitTagHelperServlet
         </servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>
+            RequestInspectorAjaxServlet
+        </servlet-name>
+        <servlet-class>
+            com.mockey.ui.RequestInspectorAjaxServlet
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>
+            RequestInspectorAjaxServlet
+        </servlet-name>
+        <url-pattern>
+            /requestinspectors
+        </url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>
             LastVisitTagHelperServlet

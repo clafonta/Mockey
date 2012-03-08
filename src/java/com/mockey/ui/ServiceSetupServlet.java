@@ -47,6 +47,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mockey.ServiceValidator;
+import com.mockey.model.IRequestInspector;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
@@ -162,7 +163,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		}
 
 		req.setAttribute("mockservice", service);
-
+		req.setAttribute("requestInspectorList", store.getRequestInspectorList());
 		RequestDispatcher dispatch = req
 				.getRequestDispatcher("/service_setup.jsp");
 		dispatch.forward(req, resp);
@@ -210,7 +211,10 @@ public class ServiceSetupServlet extends HttpServlet {
 				}
 
 			}
-			service.setRealServiceUrls(newUrlList);
+			
+			for(Url urlItem: newUrlList){
+				service.saveOrUpdateRealServiceUrl(urlItem);
+			}
 		}
 
 		// UPDATE HANGTIME - optional
@@ -245,6 +249,16 @@ public class ServiceSetupServlet extends HttpServlet {
 
 			}
 
+		}
+		String classNameForRequestInspector = req.getParameter("requestInspectorName");
+		if(classNameForRequestInspector!=null){
+			
+			IRequestInspector iri = store.getRequestInspectorByClassName(classNameForRequestInspector);
+			if(iri!=null){
+				service.setRequestInspectorName(classNameForRequestInspector);
+			}else {
+				service.setRequestInspectorName("");
+			}
 		}
 
 		// DESCRIPTION - optional

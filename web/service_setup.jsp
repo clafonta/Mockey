@@ -44,13 +44,14 @@
 			        realUrl = $("#service_real_url"),
 			        serviceName = $("#service_name"),
 			        hangtime = $("#hang_time"),
+			        requestInspectorName = $("#request_inspector_name"),
 			        tag = $('#tag'),
 			        lastVisit = $("#last_visit"),
 			        serviceContentType = $("#service_http_content_type");
 			 
 			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(), tag: tag.val(),
 				   'realServiceUrl[]':  realServiceUrlValues, url: url.val(), httpContentType: serviceContentType.val(),
-				   lastVisit: lastVisit.val(), hangTime: hangtime.val() } ,function(data){
+				   lastVisit: lastVisit.val(), requestInspectorName: requestInspectorName.val(), hangTime: hangtime.val() } ,function(data){
 					   
 					   if (data.result.redirect){
 						   window.location.replace(data.result.redirect);
@@ -72,8 +73,6 @@
 							message = message + '<div>' + data.result.serviceUrlMsg+'</div>' 
 							                  + '<div style="color:red;" >' + data.result.serviceUrl + '</div>';
 						}
-						
-						
 						
 					   	$.prompt('<div style=\"color:red;\">Not updated:</div> ' + message);
 					   }
@@ -170,6 +169,15 @@
                           </select>
 	           <div class="tinyfieldset">For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
                                 style="font-style: italic;">application/json;</span>, etc. </div>
+               <label>Request inspector:</label>
+	           <select id="request_inspector_name" name="requestInspectorName">
+	           		<option value="" <c:if test="${mockservice.requestInspectorName eq ''}">selected="selected"</c:if>>[select]</option>
+	           		<c:forEach var="riItem" items="${requestInspectorList}">
+	                        <option value="${riItem.class.name}" <c:if test="${mockservice.requestInspectorName eq riItem.class.name}">selected="selected"</c:if>>${riItem.class.name}</option>
+	                </c:forEach>
+	           </select>
+	           <div class="tinyfieldset"><strong>Optional.</strong> Assign a request inspector to this service. For more on this, read the <a href="<c:url value="/help#inspector"/>">help</a> section.</div>
+                                
 	    </fieldset>
         <p align="right">
 	        <c:choose>

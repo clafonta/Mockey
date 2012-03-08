@@ -88,9 +88,8 @@ public class MockeyXmlFileManagerTest {
 		Service service = new Service();
 		service.setServiceName("Service 1");
 		service.setTag("abc");
-		List<Url> realUrlList = new ArrayList<Url>();
-		realUrlList.add(new Url("http://www.abc.com"));
-		service.setRealServiceUrls(realUrlList);
+		service.saveOrUpdateRealServiceUrl(new Url("http://www.abc.com"));
+
 		store.saveOrUpdateService(service);
 
 		// ***************************
@@ -107,9 +106,9 @@ public class MockeyXmlFileManagerTest {
 		service = new Service();
 		service.setServiceName("Service 1");
 		service.setTag("def");
-		realUrlList = new ArrayList<Url>();
-		realUrlList.add(new Url("http://www.def.com"));
-		service.setRealServiceUrls(realUrlList);
+
+		service.saveOrUpdateRealServiceUrl(new Url("http://www.def.com"));
+
 		store.saveOrUpdateService(service);
 
 		// ***************************
@@ -129,10 +128,9 @@ public class MockeyXmlFileManagerTest {
 		Service serviceToTest = storeServices.get(0);
 		assert (serviceToTest.getRealServiceUrls().size() == 2) : "Number of Real URLS in the Service should have been 2 but was "
 				+ serviceToTest.getRealServiceUrls().size();
-		
 
 	}
-	
+
 	@Test
 	public void checkForMergedServiceTags() {
 
@@ -177,10 +175,12 @@ public class MockeyXmlFileManagerTest {
 				+ storeServices.size();
 		Service serviceToTest = storeServices.get(0);
 		assert (serviceToTest.getTagList().size() == 2) : "Number of Tags in the Service should have been size 2, with value 'abc def' but was size "
-		+ serviceToTest.getTagList().size() + " with value '" + serviceToTest.getTag() +"'";
+				+ serviceToTest.getTagList().size()
+				+ " with value '"
+				+ serviceToTest.getTag() + "'";
 
 	}
-	
+
 	@Test
 	public void checkForMergedServiceScenarioTags() {
 
@@ -208,8 +208,8 @@ public class MockeyXmlFileManagerTest {
 
 		// ***************************
 		// Rebuild the store with:
-		// - Same Service, same scenario 
-		// - Service scenario has different tag 
+		// - Same Service, same scenario
+		// - Service scenario has different tag
 		// ***************************
 		store.deleteEverything();
 		service = new Service();
@@ -232,11 +232,15 @@ public class MockeyXmlFileManagerTest {
 		Service serviceToTest = storeServices.get(0);
 		List<Scenario> scenarioList = serviceToTest.getScenarios();
 		assert (scenarioList.size() == 1) : "Number of Service scenarios in the Store should have been 1 but was "
-		+ scenarioList.size() + " with value: \n" +  getScenarioListAsString(scenarioList);
-		
+				+ scenarioList.size()
+				+ " with value: \n"
+				+ getScenarioListAsString(scenarioList);
+
 		Scenario scenarioTest = scenarioList.get(0);
 		assert (scenarioTest.getTagList().size() == 2) : "Number of Tags in the Service Scenario should have been size 2, with value 'abc def' but was size "
-		+ scenarioTest.getTagList().size() + " with value '" + scenarioTest.getTag() +"'";
+				+ scenarioTest.getTagList().size()
+				+ " with value '"
+				+ scenarioTest.getTag() + "'";
 
 	}
 
@@ -297,29 +301,29 @@ public class MockeyXmlFileManagerTest {
 		}
 		return storeAsXml;
 	}
-	
-	private String getScenarioListAsString(List<Scenario> scenarioList){
+
+	private String getScenarioListAsString(List<Scenario> scenarioList) {
 		StringBuffer sb = new StringBuffer();
-		for(Scenario scenario : scenarioList){
+		for (Scenario scenario : scenarioList) {
 			sb.append(scenario.toString() + "\n");
-			
+
 		}
 		return sb.toString();
 	}
 
 	private List<Service> getServiceList() {
 		List<Service> serviceList = new ArrayList<Service>();
-		List<Url> realUrlList = new ArrayList<Url>();
-		realUrlList.add(new Url("http://www.abc.com"));
-		realUrlList.add(new Url("http://www.nbc.com"));
+
 		Service service = new Service();
 		service.setServiceName("Service 1");
-		service.setRealServiceUrls(realUrlList);
+		service.saveOrUpdateRealServiceUrl(new Url("http://www.abc.com"));
+		service.saveOrUpdateRealServiceUrl(new Url("http://www.nbc.com"));
 		serviceList.add(service);
 
 		service = new Service();
 		service.setServiceName("Service 2");
-		service.setRealServiceUrls(realUrlList);
+		service.saveOrUpdateRealServiceUrl(new Url("http://www.abc.com"));
+		service.saveOrUpdateRealServiceUrl(new Url("http://www.nbc.com"));
 		serviceList.add(service);
 		return serviceList;
 	}

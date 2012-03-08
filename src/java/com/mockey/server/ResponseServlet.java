@@ -41,6 +41,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;
+import com.mockey.model.IRequestInspector;
 import com.mockey.model.RequestFromClient;
 import com.mockey.model.ResponseFromService;
 import com.mockey.model.Service;
@@ -64,8 +65,11 @@ public class ResponseServlet extends HttpServlet {
 
 	/**
 	 * Parses the caller's remote address, parses the URL, (the URI) then
-	 * determines the appropriate mockservice for the definition of the response
-	 * type.
+	 * determines the appropriate mock service for the definition of the
+	 * response. If the mock service type includes a request inspector, then it
+	 * will be processed.
+	 * 
+	 * @see com.mockey.model.Service#getRequestInspectorName()
 	 */
 	@SuppressWarnings("static-access")
 	public void service(HttpServletRequest originalHttpReqFromClient,
@@ -88,6 +92,16 @@ public class ResponseServlet extends HttpServlet {
 
 		Url serviceUrl = new Url(originalHttpReqURI);
 		Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
+
+		// REQUEST INSPECTOR (OPTIONAL, PER SERVICE) - BEGIN
+		String requestInspectorName = service.getRequestInspectorName();
+
+		IRequestInspector requestInspector = store
+				.getRequestInspectorByClassName(requestInspectorName);
+		if (requestInspector != null) {
+			requestInspector.analyze(originalHttpReqFromClient);
+		}
+		// REQUEST INSPECTOR (OPTIONAL, PER SERVICE) - END
 		Url urlToExecute = service.getDefaultRealUrl();
 
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());

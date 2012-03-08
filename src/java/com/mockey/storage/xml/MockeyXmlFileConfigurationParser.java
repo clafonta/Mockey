@@ -96,6 +96,7 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "name", "serviceName");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "description", "description");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "http_content_type", "httpContentType");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "request_inspector_name", "requestInspectorName");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "hang_time", "hangTime");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "url", "url");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "tag", "tag");
