@@ -21,7 +21,7 @@ import com.mockey.model.IRequestInspector;
  *         http://stackoverflow.com/questions/60764/how-should
  *         -i-load-jars-dynamically-at-runtime
  */
-public class IRequestInspectorImplementationJarFileLoaderUtil {
+public class RequestInspectorImplJarFileLoaderUtil {
 	/**
 	 * Parameters of the method to add an URL to the System classes.
 	 */
@@ -163,7 +163,7 @@ public class IRequestInspectorImplementationJarFileLoaderUtil {
 			NoSuchMethodException {
 
 		// Second test
-		String jarFileName = "MobileAnalytics.jar";
+		String jarFileName = "SomeJarFile.jar";
 
 		addFile(jarFileName);
 		String[] infoList = getListOfClassesThatImplementIRequestInspector(jarFileName);
@@ -171,7 +171,7 @@ public class IRequestInspectorImplementationJarFileLoaderUtil {
 			System.out.println("Things that implent:" + item);
 		}
 
-		IRequestInspector instance = getRequestInspectorInstance("com.mep.analytics.AnalyticsAnalyzer");
+		IRequestInspector instance = getRequestInspectorInstance("com.test.RequestInspectorImpl");
 
 		System.out.println("Class type is:"
 				+ instance.getClass().getCanonicalName());

@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mockey.IRequestInspectorImplementationJarFileLoaderUtil;
+import com.mockey.RequestInspectorImplJarFileLoaderUtil;
 import com.mockey.model.ApiDocAttribute;
 import com.mockey.model.ApiDocFieldValue;
 import com.mockey.model.ApiDocRequest;
@@ -226,14 +226,14 @@ public class HomeServlet extends HttpServlet {
 
 				File x = new File(validatorPathParameter);
 				// Step 1. Load jar File
-				IRequestInspectorImplementationJarFileLoaderUtil.addFile(x);
+				RequestInspectorImplJarFileLoaderUtil.addFile(x);
 				// Step 2. Get list of class names that implement
 				// IRequestInspector
-				String[] validRequestInspectors = IRequestInspectorImplementationJarFileLoaderUtil
+				String[] validRequestInspectors = RequestInspectorImplJarFileLoaderUtil
 						.getListOfClassesThatImplementIRequestInspector(validatorPathParameter);
 				// Step 3. Create Instances, and save to the store.
 				for (String item : validRequestInspectors) {
-					IRequestInspector instance = IRequestInspectorImplementationJarFileLoaderUtil
+					IRequestInspector instance = RequestInspectorImplJarFileLoaderUtil
 							.getRequestInspectorInstance(item);
 					store.saveOrUpdateIRequestInspector(instance);
 				}
