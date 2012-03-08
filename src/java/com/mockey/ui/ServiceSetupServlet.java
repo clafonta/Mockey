@@ -211,7 +211,10 @@ public class ServiceSetupServlet extends HttpServlet {
 				}
 
 			}
-			service.setRealServiceUrls(newUrlList);
+			
+			for(Url urlItem: newUrlList){
+				service.saveOrUpdateRealServiceUrl(urlItem);
+			}
 		}
 
 		// UPDATE HANGTIME - optional

@@ -75,7 +75,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
 	// Yes, by default, we need this as TRUE.
 	private Boolean transientState = new Boolean(true);
-	private String filterTag = null;
+	private String globalFilterTag = null;
 
 	/**
 	 * 
@@ -150,44 +150,26 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public Service getServiceByUrl(String url) {
 
 		Service service = null;
+		String filterTag = this.getFilterTag();
 		try {
 
 			// **************************************************
 			// Be sure to include Filter match if non-empty
 			// **************************************************
-			String filterTag = this.getFilterTag();
-			if (filterTag == null) {
-				filterTag = "";
-			} else {
-				filterTag = filterTag.toLowerCase().trim();
-			}
+
 			Iterator<Service> iter = getServices().iterator();
 			while (iter.hasNext() && service == null) {
 				Service serviceTmp = iter.next();
 				if (service == null) {
 					// Real URL
 					List<Url> serviceUrlList = serviceTmp.getRealServiceUrls();
-					// Hack: append the Mock URL, so we don't have to loop twice
-					serviceUrlList.add(new Url(serviceTmp.getUrl()));
+					service = getMatchServiceBasedOnUrl(url,
+							new Url(serviceTmp.getUrl()), serviceTmp);
 					Iterator<Url> altUrlIter = serviceUrlList.iterator();
 					while (altUrlIter.hasNext() && service == null) {
 						Url altUrl = altUrlIter.next();
-
-						if (url.trim().equalsIgnoreCase(
-								altUrl.getFullUrl().trim())) {
-							// We have a URL match. Check for Filter if
-							// available.
-							if (filterTag.length() == 0
-									|| (filterTag.length() > 0 && serviceTmp
-											.hasTag(filterTag))) {
-								service = serviceTmp;
-							} else {
-								// Matching URL but no matching Filter.
-								// Keep searching....
-							}
-
-							break;
-						}
+						service = getMatchServiceBasedOnUrl(url, altUrl,
+								serviceTmp);
 					}
 				}
 
@@ -230,6 +212,24 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 
 		service.setTag(this.getFilterTag());
+		return service;
+	}
+
+	private Service getMatchServiceBasedOnUrl(String url, Url altUrl,
+			Service serviceTmp) {
+		Service service = null;
+		if (url.trim().equalsIgnoreCase(altUrl.getFullUrl().trim())) {
+			// We have a URL match. Check for Filter if
+			// available.
+			if (this.getFilterTag().length() == 0
+					|| (this.getFilterTag().length() > 0 && serviceTmp.hasTag(this.getFilterTag()))) {
+				service = serviceTmp;
+			} else {
+				// Matching URL but no matching Filter.
+				// Keep searching....
+			}
+
+		}
 		return service;
 	}
 
@@ -363,7 +363,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		servicePlanStore = new OrderedMap<ServicePlan>();
 		twistInfoStore = new OrderedMap<TwistInfo>();
 		this.proxyInfoBean = new ProxyServerModel();
-		this.filterTag = null;
+		this.globalFilterTag = "";
 		this.univeralErrorServiceId = null;
 		this.univeralErrorScenarioId = null;
 		this.writeMemoryToFile();
@@ -680,11 +680,20 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 	public String getFilterTag() {
-		return filterTag;
+		if (this.globalFilterTag == null) {
+			this.globalFilterTag = "";
+		} else {
+			this.globalFilterTag = this.globalFilterTag.toLowerCase().trim();
+		}
+		return this.globalFilterTag;
 	}
 
 	public void setFilterTag(String filterTag) {
-		this.filterTag = filterTag;
+		if (filterTag == null) {
+			this.globalFilterTag = "";
+		} else {
+			this.globalFilterTag = filterTag.toLowerCase().trim();
+		}
 	}
 
 	public List<IRequestInspector> getRequestInspectorList() {

@@ -49,13 +49,14 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mockey.ClassPathHack;
+import com.mockey.IRequestInspectorImplementationJarFileLoaderUtil;
 import com.mockey.model.ApiDocAttribute;
 import com.mockey.model.ApiDocFieldValue;
 import com.mockey.model.ApiDocRequest;
 import com.mockey.model.ApiDocResponse;
 import com.mockey.model.ApiDocService;
 import com.mockey.model.ConflictInfo;
+import com.mockey.model.IRequestInspector;
 import com.mockey.model.SampleRequestInspector;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
@@ -91,6 +92,12 @@ public class HomeServlet extends HttpServlet {
 	 * is displayed to the end user via the Service API help page.
 	 */
 	public void init() throws ServletException {
+
+		// DEMO of validator
+		if (store.getRequestInspectorByClass(SampleRequestInspector.class) == null) {
+			SampleRequestInspector sri = new SampleRequestInspector();
+			store.saveOrUpdateIRequestInspector(sri);
+		}
 		// *****************************
 		// THIS SERVICE API DESCRIPTION CONTRACT
 		// *****************************
@@ -201,8 +208,7 @@ public class HomeServlet extends HttpServlet {
 
 		String action = req.getParameter(API_CONFIGURATION_PARAMETER_ACTION);
 		String type = req.getParameter(API_CONFIGURATION_PARAMETER_TYPE);
-
-		// ***********
+		
 		// FILTER
 		// ***********
 		String filterTagParameter = req
@@ -210,36 +216,38 @@ public class HomeServlet extends HttpServlet {
 		if (filterTagParameter != null) {
 			store.setFilterTag(filterTagParameter);
 		}
-		
-		String validatorPathParameter = req
-				.getParameter(API_CONFIGURATION_PARAMETER_VALIDATOR_PATH);
-		if (validatorPathParameter != null) {
-			logger.debug("Validator Path is: " + validatorPathParameter);
-			File x = new File(validatorPathParameter);
-			logger.debug("File would be at: " + x.getAbsolutePath());
-			ClassPathHack.getInfo(validatorPathParameter);
-		}
-		// DEMO of validator
-		if(store.getRequestInspectorByClass(SampleRequestInspector.class)==null){
-			SampleRequestInspector sri = new SampleRequestInspector();
-			store.saveOrUpdateIRequestInspector(sri);
-		}
-		
-		
 
 		if (action != null && "init".equals(action)) {
 
-			// Flush - clean slate.
-			IMockeyStorage store = StorageRegistry.MockeyStorage;
+			// ************* VALIDATOR - BEGIN
+			String validatorPathParameter = req
+					.getParameter(API_CONFIGURATION_PARAMETER_VALIDATOR_PATH);
+			if (validatorPathParameter != null) {
+
+				File x = new File(validatorPathParameter);
+				// Step 1. Load jar File
+				IRequestInspectorImplementationJarFileLoaderUtil.addFile(x);
+				// Step 2. Get list of class names that implement
+				// IRequestInspector
+				String[] validRequestInspectors = IRequestInspectorImplementationJarFileLoaderUtil
+						.getListOfClassesThatImplementIRequestInspector(validatorPathParameter);
+				// Step 3. Create Instances, and save to the store.
+				for (String item : validRequestInspectors) {
+					IRequestInspector instance = IRequestInspectorImplementationJarFileLoaderUtil
+							.getRequestInspectorInstance(item);
+					store.saveOrUpdateIRequestInspector(instance);
+				}
+			}
+
+			// ************* VALIDATOR - END
+
 			JSONObject jsonResultObject = new JSONObject();
 
 			// Load with a definitions file.
 			String fileName = req.getParameter("file");
 			// Or with a URL
 			String fileUrl = req.getParameter("url");
-			
-			
-			
+
 			Boolean transientState = new Boolean(true);
 			try {
 				transientState = new Boolean(
@@ -251,24 +259,24 @@ public class HomeServlet extends HttpServlet {
 			}
 			InputStream fstream = null;
 			try {
-				
-				if(fileUrl!=null){
+
+				if (fileUrl != null) {
 					// or, from a URL, then retrieve an InputStream from a URL
 					fstream = new URL(fileUrl).openStream();
-				} else if(fileName!=null){
+				} else if (fileName != null) {
 					File f = new File(fileName);
-					if(f.exists()){
+					if (f.exists()) {
 						fstream = new FileInputStream(f);
-					}else {
-						logger.info("Filename '" + fileName + "' does not exist. doing nothing.");
+					} else {
+						logger.info("Filename '" + fileName
+								+ "' does not exist. doing nothing.");
 						jsonResultObject.put(FAIL, fileName
 								+ " does not exist. doing nothing.");
 					}
 				}
-				
-				
-				if (fstream !=null) {
-					
+
+				if (fstream != null) {
+
 					BufferedReader br = new BufferedReader(
 							new InputStreamReader(fstream,
 									Charset.forName(HTTP.UTF_8)));
@@ -292,9 +300,9 @@ public class HomeServlet extends HttpServlet {
 							+ fileName);
 					jsonResultObject.put(API_CONFIGURATION_PARAMETER_FILE,
 							fileName);
-				} 
+				}
 			} catch (Exception e) {
-				
+
 				logger.debug("Unable to load service definitions with name: '"
 						+ fileName + "' or URL: " + fileUrl, e);
 				try {
@@ -305,11 +313,11 @@ public class HomeServlet extends HttpServlet {
 					logger.error("Unable to produce a JSON response.", e);
 				}
 			} finally {
-				if(fstream!=null){
-					try{
+				if (fstream != null) {
+					try {
 						fstream.close();
-					}catch(Exception e){
-						
+					} catch (Exception e) {
+
 					}
 				}
 			}
@@ -337,7 +345,7 @@ public class HomeServlet extends HttpServlet {
 
 		} else if (action != null && "deleteAllServices".equals(action)) {
 			// Flush - clean slate.
-			IMockeyStorage store = StorageRegistry.MockeyStorage;
+			
 			store.deleteEverything();
 
 			if (type != null && type.trim().equalsIgnoreCase("json")) {

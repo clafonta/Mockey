@@ -73,7 +73,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	private String url = "";
 	
 	private List<FulfilledClientRequest> fulfilledRequests;
-	private List<Url> realServiceUrls = new ArrayList<Url>();
+	private List<Url> realServiceUrlList = new ArrayList<Url>();
 	private boolean allowRedirectFollow = true;
 	private static Log logger = LogFactory.getLog(Service.class);
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
@@ -210,8 +210,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		StringBuffer sb = new StringBuffer();
 		sb.append("Service name:").append(this.getServiceName()).append("\n");
 		sb.append("Real URL(s):\n");
-		if (this.realServiceUrls != null && !this.realServiceUrls.isEmpty()) {
-			Iterator<Url> iter = this.realServiceUrls.iterator();
+		if (this.realServiceUrlList != null && !this.realServiceUrlList.isEmpty()) {
+			Iterator<Url> iter = this.realServiceUrlList.iterator();
 			while (iter.hasNext()) {
 				sb.append(iter.next() + "\n");
 			}
@@ -557,12 +557,9 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	}
 
 	public List<Url> getRealServiceUrls() {
-		return realServiceUrls;
+		return realServiceUrlList;
 	}
 
-	public void setRealServiceUrls(List<Url> realServiceUrls) {
-		this.realServiceUrls = realServiceUrls;
-	}
 
 	/**
 	 * 
@@ -574,7 +571,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 
 			boolean found = this.hasRealServiceUrl(url);
 			if (!found && !url.getFullUrl().trim().isEmpty()) {
-				this.realServiceUrls.add(url);
+				this.realServiceUrlList.add(url);
 			}
 
 			// BONUS
@@ -597,7 +594,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public Url getFirstMatchingRealServiceUrl(Service otherService) {
 
 		Url matchUrl = null;
-		if (this.realServiceUrls != null && otherService != null && !otherService.getRealServiceUrls().isEmpty()) {
+		if (this.realServiceUrlList != null && otherService != null && !otherService.getRealServiceUrls().isEmpty()) {
 
 			for (Url otherUrl : otherService.getRealServiceUrls()) {
 				if (this.hasRealServiceUrl(otherUrl)) {
@@ -612,7 +609,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public boolean hasRealServiceUrl(Url url) {
 		boolean has = false;
 		try {
-			for (Url urlTmp : this.realServiceUrls) {
+			for (Url urlTmp : this.realServiceUrlList) {
 				if (urlTmp.getFullUrl().trim().equalsIgnoreCase(url.getFullUrl())) {
 					has = true;
 					break;
@@ -669,13 +666,13 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public Url getDefaultRealUrl() {
 		Url d = null;
 		try {
-			d = this.realServiceUrls.get(this.defaultRealUrlIndex);
+			d = this.realServiceUrlList.get(this.defaultRealUrlIndex);
 		} catch (Exception e) {
 			// OK, let's try and be smart.
 			// Reset index.
 			this.defaultRealUrlIndex = 0;
-			if (!this.realServiceUrls.isEmpty()) {
-				d = this.realServiceUrls.get(0);
+			if (!this.realServiceUrlList.isEmpty()) {
+				d = this.realServiceUrlList.get(0);
 			}
 		}
 		return d;

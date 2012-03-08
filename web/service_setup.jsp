@@ -169,7 +169,7 @@
                           </select>
 	           <div class="tinyfieldset">For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
                                 style="font-style: italic;">application/json;</span>, etc. </div>
-               <label>Request inspectore:</label>
+               <label>Request inspector:</label>
 	           <select id="request_inspector_name" name="requestInspectorName">
 	           		<option value="" <c:if test="${mockservice.requestInspectorName eq ''}">selected="selected"</c:if>>[select]</option>
 	           		<c:forEach var="riItem" items="${requestInspectorList}">
