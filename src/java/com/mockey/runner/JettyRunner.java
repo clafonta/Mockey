@@ -46,50 +46,31 @@ import com.mockey.ui.StartUpServlet;
 
 public class JettyRunner {
 	private static final String ARG_PORT = "port";
-	private static final String ARG_URL = "url";
-	private static final String ARG_VALIDATOR = "validator";
-	private static final String ARG_TRANSIENT = "transientState";
-	private static final String ARG_FILTERTAG = "filterTag";
-	private static final String ARG_FILE = "file";
-	
+	private static final String HOMEURL = "/home";
+
 	public static void main(String[] args) throws Exception {
 		if (args == null)
 			args = new String[0];
 
 		// Initialize the argument parser
-		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar",
-				"Starts a Jetty server running Mockey");
-		jsap.registerParameter(new FlaggedOption(ARG_PORT, JSAP.INTEGER_PARSER,
-				"8080", JSAP.NOT_REQUIRED, 'p', ARG_PORT, "port to run Jetty on"));
-		jsap.registerParameter(new FlaggedOption(
-				ARG_FILE,
-				JSAP.STRING_PARSER,
-				MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
-				JSAP.NOT_REQUIRED,
-				'f',
-				ARG_FILE,
+		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar", "Starts a Jetty server running Mockey");
+		jsap.registerParameter(new FlaggedOption(ARG_PORT, JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p',
+				ARG_PORT, "port to run Jetty on"));
+		jsap.registerParameter(new FlaggedOption(BSC.FILE, JSAP.STRING_PARSER,
+				MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, JSAP.NOT_REQUIRED, 'f', BSC.FILE,
 				"Relative path to a mockey-definitions file to initialize Mockey, relative to where you're starting Mockey"));
 
-		jsap.registerParameter(new FlaggedOption(ARG_URL, JSAP.STRING_PARSER, "",
-				JSAP.NOT_REQUIRED, 'u', ARG_URL,
+		jsap.registerParameter(new FlaggedOption(BSC.URL, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'u', BSC.URL,
 				"URL to a mockey-definitions file to initialize Mockey"));
-		
-		jsap.registerParameter(new FlaggedOption(ARG_VALIDATOR, JSAP.STRING_PARSER, "",
-				JSAP.NOT_REQUIRED, 'v', ARG_VALIDATOR,
-				"Path to a Jar file of Java classes to be used for validating incoming Mockey requests."));
 
-		jsap.registerParameter(new FlaggedOption(ARG_TRANSIENT,
-				JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',
-				ARG_TRANSIENT,
-				"Read only mode if set to true, no updates are made to the file system."));
+		jsap.registerParameter(new FlaggedOption(BSC.PLUGINPATH, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'j',
+				BSC.PLUGINPATH, "Path to plugin Jar file or directory containing one or more Jar files."));
 
-		jsap.registerParameter(new FlaggedOption(
-				ARG_FILTERTAG,
-				JSAP.STRING_PARSER,
-				"",
-				JSAP.NOT_REQUIRED,
-				'F',
-				ARG_FILTERTAG,
+		jsap.registerParameter(new FlaggedOption(BSC.TRANSIENT, JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',
+				BSC.TRANSIENT, "Read only mode if set to true, no updates are made to the file system."));
+
+		jsap.registerParameter(new FlaggedOption(BSC.FILTERTAG, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'F',
+				BSC.FILTERTAG,
 				"Filter tag for services and scenarios, useful for 'only use information with this tag'. "));
 
 		// parse the command line options
@@ -105,15 +86,14 @@ public class JettyRunner {
 		boolean transientState = true;
 
 		try {
-			transientState = config.getBoolean(ARG_TRANSIENT);
+			transientState = config.getBoolean(BSC.TRANSIENT);
 		} catch (Exception e) {
 			//
 		}
 
 		// Initialize Log4J file roller appender.
 		StartUpServlet.getDebugFile();
-		InputStream log4jInputStream = Thread.currentThread()
-				.getContextClassLoader()
+		InputStream log4jInputStream = Thread.currentThread().getContextClassLoader()
 				.getResourceAsStream("WEB-INF/log4j.properties");
 		Properties log4JProperties = new Properties();
 		log4JProperties.load(log4jInputStream);
@@ -137,42 +117,38 @@ public class JettyRunner {
 
 		server.start();
 		// Construct the arguments for Mockey
-		String file = String.valueOf(config.getString(ARG_FILE));
-		String url = String.valueOf(config.getString(ARG_URL));
-		String filterTag = config.getString(ARG_FILTERTAG);
-		String validatePath= String.valueOf(config.getString(ARG_VALIDATOR));
+		String file = String.valueOf(config.getString(BSC.FILE));
+		String url = String.valueOf(config.getString(BSC.URL));
+		String filterTag = config.getString(BSC.FILTERTAG);
+		String plugginPath = String.valueOf(config.getString(BSC.PLUGINPATH));
 		String fTagParam = "";
 		if (filterTag != null) {
-			fTagParam = "&filterTag=" + URLEncoder.encode(filterTag, "UTF-8");
+			fTagParam = "&" + BSC.FILTERTAG + "=" + URLEncoder.encode(filterTag, "UTF-8");
 		}
-		if (validatePath != null) {
-			fTagParam = fTagParam + "&validatorPath=" + URLEncoder.encode(validatePath, "UTF-8");
+		if (plugginPath != null) {
+			fTagParam = fTagParam + "&" + BSC.PLUGINPATH + "=" + URLEncoder.encode(plugginPath, "UTF-8");
 		}
 		// Startup displays a big message and URL redirects after x seconds.
 		// Snazzy.
-		String initUrl = "/home";
+		String initUrl = HOMEURL;
 		// BUT...if a file is defined, (which it *should*),
 		// then let's initialize with it instead.
 		if (url != null && url.trim().length() > 0) {
 			URLEncoder.encode(initUrl, "UTF-8");
-			initUrl = "/home?action=init&transientState=" + transientState
-					+ "&url=" + URLEncoder.encode(url, "UTF-8") + fTagParam;
+			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
+					+ BSC.URL + "=" + URLEncoder.encode(url, "UTF-8") + fTagParam;
 		} else if (file != null && file.trim().length() > 0) {
 			URLEncoder.encode(initUrl, "UTF-8");
-			initUrl = "/home?action=init&transientState=" + transientState
-					+ "&file=" + URLEncoder.encode(file, "UTF-8") + fTagParam;
+			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
+					+ BSC.FILE + "=" + URLEncoder.encode(file, "UTF-8") + fTagParam;
 		} else {
-			initUrl = "/home?action=init&transientState="
-					+ transientState
-					+ "&file="
-					+ URLEncoder.encode(
-							MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
-							"UTF-8") + fTagParam;
+			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
+					+ BSC.FILE + "=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8")
+					+ fTagParam;
 
 		}
 
-		new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port),
-				initUrl, 0)).start();
+		new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();
 
 		server.join();
 	}

@@ -161,6 +161,7 @@ public class UploadConfigurationServlet extends HttpServlet {
 					definitionsAsString = new String(data);
 				}
 			} catch (Exception e) {
+				logger.error("Unable to read or parse file: ", e);
 				Util.saveErrorMessage("Unable to upload or parse file.", req);
 			}
 		} 

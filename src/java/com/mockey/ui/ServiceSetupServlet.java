@@ -47,9 +47,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mockey.ServiceValidator;
-import com.mockey.model.IRequestInspector;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
+import com.mockey.plugin.PluginStore;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -59,17 +59,14 @@ public class ServiceSetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static final Boolean TRANSIENT_STATE = new Boolean(true);
-	private static final SimpleDateFormat formatter = new SimpleDateFormat(
-			"MM/dd/yyyy");
+	private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
 	/**
 	 * 
 	 */
-	public void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		if (req.getParameter("all") != null
-				&& req.getParameter("responseType") != null) {
+		if (req.getParameter("all") != null && req.getParameter("responseType") != null) {
 			List<Service> services = store.getServices();
 			// #1. Get a handle of the original read-only-mode (transient?)
 			Boolean origReadOnlyMode = store.getReadOnlyMode();
@@ -77,10 +74,8 @@ public class ServiceSetupServlet extends HttpServlet {
 				// #2. Put the store in TRANSIENT STATE (memory only)
 				// why? To prevent repeating file writes to the file system
 				store.setReadOnlyMode(TRANSIENT_STATE);
-				int serviceResponseType = Integer.parseInt(req
-						.getParameter("responseType"));
-				for (Iterator<Service> iterator = services.iterator(); iterator
-						.hasNext();) {
+				int serviceResponseType = Integer.parseInt(req.getParameter("responseType"));
+				for (Iterator<Service> iterator = services.iterator(); iterator.hasNext();) {
 					Service service = iterator.next();
 
 					service.setServiceResponseType(serviceResponseType);
@@ -113,8 +108,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			store.deleteService(service);
 			store.deleteFulfilledClientRequestsForService(serviceId);
 
-			Util.saveSuccessMessage("Service '" + service.getServiceName()
-					+ "' was deleted.", req);
+			Util.saveSuccessMessage("Service '" + service.getServiceName() + "' was deleted.", req);
 
 			// Check to see if any plans need an update.
 			String errorMessage = null;
@@ -145,8 +139,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Long serviceId = null;
 		try {
 			serviceId = new Long(req.getParameter("serviceId"));
@@ -163,9 +156,9 @@ public class ServiceSetupServlet extends HttpServlet {
 		}
 
 		req.setAttribute("mockservice", service);
-		req.setAttribute("requestInspectorList", store.getRequestInspectorList());
-		RequestDispatcher dispatch = req
-				.getRequestDispatcher("/service_setup.jsp");
+
+		req.setAttribute("requestInspectorList", PluginStore.getInstance().getRequestInspectorImplClassNameList());
+		RequestDispatcher dispatch = req.getRequestDispatcher("/service_setup.jsp");
 		dispatch.forward(req, resp);
 	}
 
@@ -181,8 +174,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String[] realSrvUrl = req.getParameterValues("realServiceUrl[]");
 
 		Service service = new Service();
@@ -211,8 +203,8 @@ public class ServiceSetupServlet extends HttpServlet {
 				}
 
 			}
-			
-			for(Url urlItem: newUrlList){
+
+			for (Url urlItem : newUrlList) {
 				service.saveOrUpdateRealServiceUrl(urlItem);
 			}
 		}
@@ -251,12 +243,15 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		}
 		String classNameForRequestInspector = req.getParameter("requestInspectorName");
-		if(classNameForRequestInspector!=null){
-			
-			IRequestInspector iri = store.getRequestInspectorByClassName(classNameForRequestInspector);
-			if(iri!=null){
+		if (classNameForRequestInspector != null) {
+			/**
+			 * OPTIONAL See if we can create an instance of a request inspector.
+			 * If yes, then set the service to the name.
+			 */
+			Object requestInspector = PluginStore.getInstance().createInspectorInstance(classNameForRequestInspector);
+			if (requestInspector != null) {
 				service.setRequestInspectorName(classNameForRequestInspector);
-			}else {
+			} else {
 				service.setRequestInspectorName("");
 			}
 		}
@@ -284,12 +279,11 @@ public class ServiceSetupServlet extends HttpServlet {
 			Util.saveSuccessMessage("Service updated.", req);
 			Service updatedService = store.saveOrUpdateService(service);
 
-			String redirectUrl = Url.getContextAwarePath("/setup?serviceId="
-					+ updatedService.getId(), req.getContextPath());
+			String redirectUrl = Url.getContextAwarePath("/setup?serviceId=" + updatedService.getId(),
+					req.getContextPath());
 			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
-			String resultingJSON = "{ \"result\": { \"redirect\": \""
-					+ redirectUrl + "\"}}";
+			String resultingJSON = "{ \"result\": { \"redirect\": \"" + redirectUrl + "\"}}";
 			out.println(resultingJSON);
 			out.flush();
 			out.close();

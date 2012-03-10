@@ -22,12 +22,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-package com.mockey.storage;
+package com.mockey.plugin;
 
-import org.testng.annotations.Test;
+import java.util.ArrayList;
+import java.util.List;
 
-@Test
-public class TestInMemoryMockeyStorage {
+/**
+ * Captures 0 or more messages as a result of evaluating incoming request via 1
+ * or more RequestInspector(s).
+ * 
+ * @author chadlafontaine
+ * 
+ */
+public class RequestInspectionResult {
+	private List<String> resultMessageList = new ArrayList<String>();
 
-	
+	public boolean hasResultMessages() {
+		if (this.resultMessageList != null && this.resultMessageList.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public List<String> getResultMessageList() {
+		return resultMessageList;
+	}
+
+	public void addResultMessage(String resultMessage) {
+		if (resultMessage != null && resultMessage.trim().length() > 0 && !this.resultMessageList.contains(resultMessage)) {
+			this.resultMessageList.add(resultMessage);
+		}
+
+	}
+
 }

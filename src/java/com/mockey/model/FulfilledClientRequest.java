@@ -29,6 +29,8 @@ package com.mockey.model;
 
 import java.util.Date;
 
+import com.mockey.plugin.RequestInspectionResult;
+
 /**
  * Represents the snap-shot of what-just-happened between the Client and Server,
  * response may be a mock scenario/service definition or a real response from
@@ -53,6 +55,7 @@ public class FulfilledClientRequest implements PersistableItem {
 	private String originalUrlBeforeTwisting = null;
 	private int serviceResponseType = -1;
 	private ResponseFromService responseMessage;
+	private RequestInspectionResult requestInspectionResult;
 	private Date time = new Date();
 	/**
 	 * Value of the response type, defining Static, Dynamic, or Proxy response. 
@@ -197,7 +200,12 @@ public class FulfilledClientRequest implements PersistableItem {
 		return clientResponseCookies;
 	}
 
-	
+	public RequestInspectionResult getRequestInspectionResult() {
+		return requestInspectionResult;
+	}
 
+	public void setRequestInspectionResult(RequestInspectionResult requestInspectionResult) {
+		this.requestInspectionResult = requestInspectionResult;
+	}
 	
 }

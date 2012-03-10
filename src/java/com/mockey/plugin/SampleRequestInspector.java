@@ -22,12 +22,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-package com.mockey.storage;
+package com.mockey.plugin;
 
-import org.testng.annotations.Test;
+import javax.servlet.http.HttpServletRequest;
 
-@Test
-public class TestInMemoryMockeyStorage {
+import org.apache.log4j.Logger;
 
+/**
+ * This is a sample implementation of the <code>IRequestInspector</code>
+ * @author chadlafontaine
+ *
+ */
+public class SampleRequestInspector implements IRequestInspector {
+	private static Logger logger = Logger.getLogger(SampleRequestInspector.class);
 	
+	private final String FOOBAAR = "foobarKey";
+	private String errorMessage = null;
+
+	public void analyze(HttpServletRequest request) {
+		if (request.getParameter(FOOBAAR) != null) {
+			this.errorMessage = "Howdy! This isn't a real error. This is here to show you that you can use Request Inspectors to validate incoming requests.";
+			logger.error(this.errorMessage);
+		}
+
+	}
+
+	public boolean hasPostAnalyzeMessage() {
+		if (this.errorMessage != null) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public String getPostAnalyzeResultMessage() {
+		return this.errorMessage;
+	}
+
+	public boolean isGlobal() {
+		return true;
+	}
+
 }

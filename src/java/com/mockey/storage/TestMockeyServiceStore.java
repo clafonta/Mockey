@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.mockey.model.FulfilledClientRequest;
-import com.mockey.model.IRequestInspector;
 import com.mockey.model.PlanItem;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
@@ -40,6 +39,7 @@ import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
 import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
+import com.mockey.plugin.IRequestInspector;
 
 public class TestMockeyServiceStore implements IMockeyStorage {
 
@@ -312,59 +312,52 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
 		return null;
 	}
-	
+
 	public void setReadOnlyMode(Boolean transientState) {
-		
+
 	}
-	
+
 	public Boolean getReadOnlyMode() {
 
 		return null;
 	}
 
-
 	public void deleteTagFromStore(String tag) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String getFilterTag() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public void setFilterTag(String tag){
-		
+
+	public void setFilterTag(String tag) {
+
 	}
 
-	
 	public List<IRequestInspector> getRequestInspectorList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
-	public IRequestInspector getRequestInspectorByClass(Class newParam) {
+	public void saveOrUpdateService(IRequestInspector requestInspector) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void saveOrUpdateIRequestInspector(IRequestInspector arg) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public IRequestInspector getRequestInspectorByClassName(String newParam) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
-	public void saveOrUpdateService(IRequestInspector requestInspector) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void saveOrUpdateIRequestInspector(IRequestInspector arg) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	
-
-	
-	public IRequestInspector getRequestInspectorByClassName(String newParam) {
+	public IRequestInspector getRequestInspectorByClass(Class<?> clazz) {
 		// TODO Auto-generated method stub
 		return null;
 	}

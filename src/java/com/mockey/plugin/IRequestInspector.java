@@ -22,21 +22,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-package com.mockey.model;
+package com.mockey.plugin;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Used to inspect the incoming request to Mockey. 
+ * Used to inspect an incoming request to Mockey. This implementation can be
+ * applied to an individual service or if the global flag is set to true, will
+ * be applied to each incoming request mapped to a Service. What is the purpose
+ * of this? This is designed to inform developers and QA whether or not their
+ * service requests is missing important information, e.g. a session token,
+ * cookie information, etc.
  * 
  * @see com.mockey.model.Service#getRequestInspectorName()
  * @see com.mockey.storage.IMockeyStorage#getRequestInspectorByClassName(String)
  * 
  * @author clafonta
- *
+ * 
  */
 public interface IRequestInspector {
-	
+
+	/**
+	 * Implementation will evaluate incoming request, example may include
+	 * incoming parameters, headers, body, etc.
+	 * 
+	 * @param request
+	 */
 	public void analyze(HttpServletRequest request);
+
+	/**
+	 * 
+	 * @return message to display
+	 */
+	public String getPostAnalyzeResultMessage();
+
+	/**
+	 * 
+	 * @return true if this implementation should be applied to each service,
+	 *         false otherwise.
+	 */
+	public boolean isGlobal();
 
 }

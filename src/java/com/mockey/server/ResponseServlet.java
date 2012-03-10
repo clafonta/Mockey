@@ -41,11 +41,12 @@ import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;
-import com.mockey.model.IRequestInspector;
 import com.mockey.model.RequestFromClient;
 import com.mockey.model.ResponseFromService;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
+import com.mockey.plugin.PluginStore;
+import com.mockey.plugin.RequestInspectionResult;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
@@ -72,11 +73,10 @@ public class ResponseServlet extends HttpServlet {
 	 * @see com.mockey.model.Service#getRequestInspectorName()
 	 */
 	@SuppressWarnings("static-access")
-	public void service(HttpServletRequest originalHttpReqFromClient,
-			HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest originalHttpReqFromClient, HttpServletResponse resp)
+			throws ServletException, IOException {
 
-		RequestFromClient request = new RequestFromClient(
-				originalHttpReqFromClient);
+		RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
 
 		logger.info(request.getHeaderInfo());
 		logger.info(request.getParameterInfo());
@@ -86,29 +86,27 @@ public class ResponseServlet extends HttpServlet {
 
 		String contextRoot = originalHttpReqFromClient.getContextPath();
 		if (originalHttpReqURI.startsWith(contextRoot)) {
-			originalHttpReqURI = originalHttpReqURI.substring(
-					contextRoot.length(), originalHttpReqURI.length());
+			originalHttpReqURI = originalHttpReqURI.substring(contextRoot.length(), originalHttpReqURI.length());
 		}
 
 		Url serviceUrl = new Url(originalHttpReqURI);
 		Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
 
-		// REQUEST INSPECTOR (OPTIONAL, PER SERVICE) - BEGIN
-		String requestInspectorName = service.getRequestInspectorName();
+		// ************************************
+		// BEGIN - REQUEST INSPECTORS
+		// Check for Global
+		PluginStore pluginStore = PluginStore.getInstance();
+		RequestInspectionResult inspectionMessage = pluginStore.processRequestInspectors(service,
+				originalHttpReqFromClient);
 
-		IRequestInspector requestInspector = store
-				.getRequestInspectorByClassName(requestInspectorName);
-		if (requestInspector != null) {
-			requestInspector.analyze(originalHttpReqFromClient);
-		}
-		// REQUEST INSPECTOR (OPTIONAL, PER SERVICE) - END
+		// END INSPECTORS
+		// ************************************
 		Url urlToExecute = service.getDefaultRealUrl();
 
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
 
 		ResponseFromService response = service.execute(request, urlToExecute);
-		logRequestAsFulfilled(service, request, response,
-				originalHttpReqFromClient.getRemoteAddr());
+		logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr(), inspectionMessage);
 
 		try {
 			// Wait for a X hang time seconds.
@@ -157,13 +155,11 @@ public class ResponseServlet extends HttpServlet {
 			// example: "application/json;charset=utf-8" should use the charset
 			// "utf-8"
 			if (service.getHttpContentType() != null) {
-				final String contentTypeLower = service.getHttpContentType()
-						.toLowerCase();
+				final String contentTypeLower = service.getHttpContentType().toLowerCase();
 				int charsetIndex = contentTypeLower.indexOf("charset=");
 
 				if (charsetIndex >= 0) {
-					charSet = contentTypeLower.substring(charsetIndex
-							+ "charset=".length());
+					charSet = contentTypeLower.substring(charsetIndex + "charset=".length());
 
 					// content-type can have multiple attributes so we make sure
 					// that if there
@@ -187,43 +183,32 @@ public class ResponseServlet extends HttpServlet {
 			// malformed content types or unsupported charsets will end up here
 			// not much we can do other than default to the regular charset
 			charSet = HTTP.ISO_8859_1;
-			logger.info(
-					"Unable to use charset for service \""
-							+ service.getServiceName()
-							+ "\" from content-type \""
-							+ service.getHttpContentType()
-							+ "\". Defaulting to ISO-8859-1.", e);
+			logger.info("Unable to use charset for service \"" + service.getServiceName() + "\" from content-type \""
+					+ service.getHttpContentType() + "\". Defaulting to ISO-8859-1.", e);
 		}
 
 		return charSet;
 	}
 
-	private void logRequestAsFulfilled(Service service,
-			RequestFromClient request, ResponseFromService response, String ip)
-			throws UnsupportedEncodingException {
-		FulfilledClientRequest fulfilledClientRequest = new FulfilledClientRequest();
-		fulfilledClientRequest
-				.setRawRequest((response.getRequestUrl() != null) ? response
-						.getRequestUrl().toString() : "");
-		fulfilledClientRequest.setRequestorIP(ip);
-		fulfilledClientRequest.setServiceId(service.getId());
-		fulfilledClientRequest.setServiceName(service.getServiceName());
-		fulfilledClientRequest.setClientRequestBody(request.getBodyInfo());
-		fulfilledClientRequest.setClientRequestHeaders(request.getHeaderInfo());
-		fulfilledClientRequest.setClientRequestParameters(request
-				.getParameterInfo());
-		fulfilledClientRequest.setResponseMessage(response);
-		fulfilledClientRequest.setClientRequestCookies(request
-				.getCookieInfoAsString());// response.getRequestCookies());
-		fulfilledClientRequest.setClientResponseCookies(response
-				.getResponseCookiesAsString());
+	private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response,
+			String ip, RequestInspectionResult inspectionResult) throws UnsupportedEncodingException {
+		FulfilledClientRequest fcr = new FulfilledClientRequest();
+		fcr.setRawRequest((response.getRequestUrl() != null) ? response.getRequestUrl().toString() : "");
+		fcr.setRequestorIP(ip);
+		fcr.setServiceId(service.getId());
+		fcr.setServiceName(service.getServiceName());
+		fcr.setClientRequestBody(request.getBodyInfo());
+		fcr.setClientRequestHeaders(request.getHeaderInfo());
+		fcr.setClientRequestParameters(request.getParameterInfo());
+		fcr.setResponseMessage(response);
+		fcr.setClientRequestCookies(request.getCookieInfoAsString());// response.getRequestCookies());
+		fcr.setClientResponseCookies(response.getResponseCookiesAsString());
 
-		fulfilledClientRequest.setServiceResponseType(service
-				.getServiceResponseType());
+		fcr.setServiceResponseType(service.getServiceResponseType());
 		if (response.getOriginalRequestUrlBeforeTwisting() != null) {
-			fulfilledClientRequest.setOriginalUrlBeforeTwisting(response
-					.getOriginalRequestUrlBeforeTwisting().toString());
+			fcr.setOriginalUrlBeforeTwisting(response.getOriginalRequestUrlBeforeTwisting().toString());
 		}
-		store.saveOrUpdateFulfilledClientRequest(fulfilledClientRequest);
+		fcr.setRequestInspectionResult(inspectionResult);
+		store.saveOrUpdateFulfilledClientRequest(fcr);
 	}
 }

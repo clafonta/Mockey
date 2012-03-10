@@ -49,17 +49,16 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mockey.RequestInspectorImplJarFileLoaderUtil;
 import com.mockey.model.ApiDocAttribute;
 import com.mockey.model.ApiDocFieldValue;
 import com.mockey.model.ApiDocRequest;
 import com.mockey.model.ApiDocResponse;
 import com.mockey.model.ApiDocService;
 import com.mockey.model.ConflictInfo;
-import com.mockey.model.IRequestInspector;
-import com.mockey.model.SampleRequestInspector;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
+import com.mockey.plugin.PluginStore;
+import com.mockey.runner.BSC;
 import com.mockey.storage.IApiStorage;
 import com.mockey.storage.IApiStorageInMemory;
 import com.mockey.storage.IMockeyStorage;
@@ -72,17 +71,7 @@ public class HomeServlet extends HttpServlet {
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static Logger logger = Logger.getLogger(HomeServlet.class);
 	private IApiStorage apiStore = IApiStorageInMemory.getInstance();
-
-	private static final String API_CONFIGURATION_NAME = "Initialization";
-	private static final String API_CONFIGURATION_PARAMETER_ACTION = "action";
-	private static final String API_CONFIGURATION_PARAMETER_TYPE = "type";
-	private static final String API_CONFIGURATION_PARAMETER_FILE = "file";
-	private static final String API_CONFIGURATION_PARAMETER_FILTER_TAG = "filterTag";
-	private static final String API_CONFIGURATION_PARAMETER_VALIDATOR_PATH = "validatorPath";
 	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE = "deleteAllServices";
-	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_INIT = "init";
-	private static final String API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE = "transientState";
-
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
 
@@ -93,20 +82,18 @@ public class HomeServlet extends HttpServlet {
 	 */
 	public void init() throws ServletException {
 
-		// DEMO of validator
-		if (store.getRequestInspectorByClass(SampleRequestInspector.class) == null) {
-			SampleRequestInspector sri = new SampleRequestInspector();
-			store.saveOrUpdateIRequestInspector(sri);
-		}
+		// Load up request inspectors
+		PluginStore.getInstance().initializeOrUpdateStore();
+		
 		// *****************************
 		// THIS SERVICE API DESCRIPTION CONTRACT
 		// *****************************
 		// This information is used in the API JSP document, used to describe
 		// how to make setting changes from a head-less client.
 
-		if (apiStore.getApiDocServiceByName(API_CONFIGURATION_NAME) == null) {
+		if (apiStore.getApiDocServiceByName("Initialization") == null) {
 			ApiDocService apiDocService = new ApiDocService();
-			apiDocService.setName(API_CONFIGURATION_NAME);
+			apiDocService.setName("Initialization");
 			apiDocService.setServicePath("/home");
 			apiDocService
 					.setDescription("If you need to initialize Mockey with a definitions file, then this API may serve your needs. ");
@@ -118,44 +105,35 @@ public class HomeServlet extends HttpServlet {
 
 			// Parameter - 'action'
 			ApiDocAttribute reqAttributeAction = new ApiDocAttribute();
-			reqAttributeAction.setFieldName(API_CONFIGURATION_PARAMETER_ACTION);
-			reqAttributeAction
-					.addFieldValues(new ApiDocFieldValue(
-							API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE,
-							"Delete all configurations, history, settings, etc., and start with a clean Mockey. "));
-			reqAttributeAction
-					.addFieldValues(new ApiDocFieldValue(
-							API_CONFIGURATION_PARAMETER_ACTION_VALUE_INIT,
-							"Will delete everything and configure Mockey with the defined file. "));
+			reqAttributeAction.setFieldName(BSC.ACTION);
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE,
+					"Delete all configurations, history, settings, etc., and start with a clean Mockey. "));
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(BSC.INIT,
+					"Will delete everything and configure Mockey with the defined file. "));
 			apiDocRequest.addAttribute(reqAttributeAction);
 
 			// Parameter - 'file'
 			ApiDocAttribute reqAttributeFile = new ApiDocAttribute();
-			reqAttributeFile.setFieldName(API_CONFIGURATION_PARAMETER_FILE);
-			reqAttributeFile
-					.addFieldValues(new ApiDocFieldValue(
-							"[string]",
-							"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
-			reqAttributeFile
-					.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
+			reqAttributeFile.setFieldName(BSC.FILE);
+			reqAttributeFile.addFieldValues(new ApiDocFieldValue("[string]",
+					"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
+			reqAttributeFile.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
 			apiDocRequest.addAttribute(reqAttributeFile);
 
 			// Parameter - 'type'
 			ApiDocAttribute reqAttributeType = new ApiDocAttribute();
-			reqAttributeType.setFieldName(API_CONFIGURATION_PARAMETER_TYPE);
+			reqAttributeType.setFieldName(BSC.TYPE);
 			reqAttributeType
-					.addFieldValues(new ApiDocFieldValue(
-							"json",
+					.addFieldValues(new ApiDocFieldValue("json",
 							"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
 			apiDocRequest.addAttribute(reqAttributeType);
 			apiDocService.setApiRequest(apiDocRequest);
 
 			// Parameter - 'transientState'
 			ApiDocAttribute reqAttributeState = new ApiDocAttribute();
+			reqAttributeState.setFieldName(BSC.TRANSIENT);
 			reqAttributeState
-					.setFieldName(API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE);
-			reqAttributeState.addFieldValues(new ApiDocFieldValue("boolean",
-					"Read only mode? Also known as transient."));
+					.addFieldValues(new ApiDocFieldValue("boolean", "Read only mode? Also known as transient."));
 			apiDocRequest.addAttribute(reqAttributeState);
 			apiDocService.setApiRequest(apiDocRequest);
 
@@ -180,9 +158,8 @@ public class HomeServlet extends HttpServlet {
 
 			// Response attribute 'file'
 			ApiDocAttribute resAttributeFile = new ApiDocAttribute();
-			resAttributeFile.setFieldName(API_CONFIGURATION_PARAMETER_FILE);
-			resAttributeFile
-					.setFieldDescription("Name of file used to initialize Mockey.");
+			resAttributeFile.setFieldName(BSC.FILE);
+			resAttributeFile.setFieldDescription("Name of file used to initialize Mockey.");
 			apiResponse.addAttribute(resAttributeFile);
 
 			// Response attribute 'success'
@@ -203,55 +180,40 @@ public class HomeServlet extends HttpServlet {
 		}
 	}
 
-	public void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		String action = req.getParameter(API_CONFIGURATION_PARAMETER_ACTION);
-		String type = req.getParameter(API_CONFIGURATION_PARAMETER_TYPE);
-		
+		String action = req.getParameter(BSC.ACTION);
+		String type = req.getParameter(BSC.TYPE);
+
 		// FILTER
 		// ***********
-		String filterTagParameter = req
-				.getParameter(API_CONFIGURATION_PARAMETER_FILTER_TAG);
+		String filterTagParameter = req.getParameter(BSC.FILTERTAG);
 		if (filterTagParameter != null) {
 			store.setFilterTag(filterTagParameter);
 		}
 
 		if (action != null && "init".equals(action)) {
 
-			// ************* VALIDATOR - BEGIN
-			String validatorPathParameter = req
-					.getParameter(API_CONFIGURATION_PARAMETER_VALIDATOR_PATH);
-			if (validatorPathParameter != null) {
-
-				File x = new File(validatorPathParameter);
-				// Step 1. Load jar File
-				RequestInspectorImplJarFileLoaderUtil.addFile(x);
-				// Step 2. Get list of class names that implement
-				// IRequestInspector
-				String[] validRequestInspectors = RequestInspectorImplJarFileLoaderUtil
-						.getListOfClassesThatImplementIRequestInspector(validatorPathParameter);
-				// Step 3. Create Instances, and save to the store.
-				for (String item : validRequestInspectors) {
-					IRequestInspector instance = RequestInspectorImplJarFileLoaderUtil
-							.getRequestInspectorInstance(item);
-					store.saveOrUpdateIRequestInspector(instance);
-				}
+			// ************* PLUGIN - BEGIN
+			String pluginPath = req.getParameter(BSC.PLUGINPATH);
+			if (pluginPath != null) {
+				PluginStore.getInstance().initializeOrUpdateStore(pluginPath);			
+			}else {
+				PluginStore.getInstance().initializeOrUpdateStore();
 			}
 
-			// ************* VALIDATOR - END
+			// ************* PLUGIN - END
 
 			JSONObject jsonResultObject = new JSONObject();
 
 			// Load with a definitions file.
 			String fileName = req.getParameter("file");
 			// Or with a URL
-			String fileUrl = req.getParameter("url");
+			String fileUrl = req.getParameter(BSC.URL);
 
 			Boolean transientState = new Boolean(true);
 			try {
-				transientState = new Boolean(
-						req.getParameter(API_CONFIGURATION_PARAMETER_ACTION_VALUE_TRANSIENT_STATE));
+				transientState = new Boolean(req.getParameter(BSC.TRANSIENT));
 				store.setReadOnlyMode(transientState);
 				logger.debug("Read only mode? " + transientState);
 			} catch (Exception e) {
@@ -268,47 +230,37 @@ public class HomeServlet extends HttpServlet {
 					if (f.exists()) {
 						fstream = new FileInputStream(f);
 					} else {
-						logger.info("Filename '" + fileName
-								+ "' does not exist. doing nothing.");
-						jsonResultObject.put(FAIL, fileName
-								+ " does not exist. doing nothing.");
+						logger.info("Filename '" + fileName + "' does not exist. doing nothing.");
+						jsonResultObject.put(FAIL, fileName + " does not exist. doing nothing.");
 					}
 				}
 
 				if (fstream != null) {
 
-					BufferedReader br = new BufferedReader(
-							new InputStreamReader(fstream,
-									Charset.forName(HTTP.UTF_8)));
+					BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
 					StringBuffer inputString = new StringBuffer();
 					// Read File Line By Line
 					String strLine = null;
 					// READ FIRST
 					while ((strLine = br.readLine()) != null) {
 						// Print the content on the console
-						inputString.append(new String(strLine
-								.getBytes(HTTP.UTF_8)));
+						inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
 					}
 					// DELETE SECOND
 					store.deleteEverything();
 					MockeyXmlFileManager reader = new MockeyXmlFileManager();
 
-					reader.loadConfigurationWithXmlDef(inputString.toString(),
-							null);
+					reader.loadConfigurationWithXmlDef(inputString.toString(), null);
 					logger.info("Loaded definitions from " + fileName);
-					jsonResultObject.put(SUCCESS, "Loaded definitions from "
-							+ fileName);
-					jsonResultObject.put(API_CONFIGURATION_PARAMETER_FILE,
-							fileName);
+					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
+					jsonResultObject.put(BSC.FILE, fileName);
 				}
 			} catch (Exception e) {
 
-				logger.debug("Unable to load service definitions with name: '"
-						+ fileName + "' or URL: " + fileUrl, e);
+				logger.debug("Unable to load service definitions with name: '" + fileName + "' or URL: " + fileUrl, e);
 				try {
-					jsonResultObject.put(FAIL,
-							"Unable to load service definitions with filename: '"
-									+ fileName + "' or URL: " + fileUrl);
+					jsonResultObject.put(FAIL, "Unable to load service definitions with filename: '" + fileName
+							+ "' or URL: " + fileUrl);
 				} catch (Exception ef) {
 					logger.error("Unable to produce a JSON response.", e);
 				}
@@ -345,7 +297,7 @@ public class HomeServlet extends HttpServlet {
 
 		} else if (action != null && "deleteAllServices".equals(action)) {
 			// Flush - clean slate.
-			
+
 			store.deleteEverything();
 
 			if (type != null && type.trim().equalsIgnoreCase("json")) {
@@ -354,8 +306,7 @@ public class HomeServlet extends HttpServlet {
 				JSONObject jsonResponseObject = new JSONObject();
 				JSONObject jsonObject = new JSONObject();
 				try {
-					jsonObject.put(SUCCESS,
-							"All is deleted. You have a clean slate. Enjoy.");
+					jsonObject.put(SUCCESS, "All is deleted. You have a clean slate. Enjoy.");
 					jsonResponseObject.put("result", jsonObject);
 				} catch (JSONException e) {
 					logger.error("Unable to produce a JSON result.", e);
@@ -372,16 +323,13 @@ public class HomeServlet extends HttpServlet {
 
 		String filterTagArg = store.getFilterTag();
 		FilterHelper filterHelper = new FilterHelper();
-		List<Service> filteredServiceList = filterHelper.getFilteredServices(
-				filterTagArg, store);
+		List<Service> filteredServiceList = filterHelper.getFilteredServices(filterTagArg, store);
 
 		ConflictHelper conflictHelper = new ConflictHelper();
-		ConflictInfo conflictInfo = conflictHelper
-				.getConflictInfo(filteredServiceList);
+		ConflictInfo conflictInfo = conflictHelper.getConflictInfo(filteredServiceList);
 		req.setAttribute("services", filteredServiceList);
 		req.setAttribute("conflictInfo", conflictInfo);
-		req.setAttribute("plans",
-				filterHelper.getFilteredServicePlans(filterTagArg, store));
+		req.setAttribute("plans", filterHelper.getFilteredServicePlans(filterTagArg, store));
 		req.setAttribute("filterTag", filterTagArg);
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");

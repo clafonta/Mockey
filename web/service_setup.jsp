@@ -128,6 +128,7 @@
 				<label for="service_name">Service name:</label>
 	            <input type="text" id="service_name" class="text ui-corner-all ui-widget-content" name="service_name" maxlength="1000" size="90%" value="<c:out value="${mockservice.serviceName}"/>" />
 	            <div class="tinyfieldset">Use a self descriptive name. For example, if you were to use this for 'authentication' testing, then call it 'Authentication'.</div>
+	            <hr>
 	            <label for="service_url">Mock service URL: </label>
 	            <input type="text" id="service_url" class="text ui-corner-all ui-widget-content" name="service_url" maxlength="1000" size="90%" value="<c:out value="${mockservice.url}"/>" />
 	            <div class="tinyfieldset">You can make up a new but unique <i>mock</i> URL to map to the real URL(s). Your mock URL will look like this: 
@@ -135,6 +136,7 @@
 	               </div>
 	            </div>
 	            <div id="invalidUrl" style="display:none;color:red;"><span>Note:</span> </div>
+	            <hr>
 	            <label for="service_url" id="real_service_url_label">Real service URLs</label>
 	            <div id="real_service_url_list">
 					<c:forEach var="realServiceUrl" items="${mockservice.realServiceUrls}">
@@ -144,19 +146,26 @@
 				<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="1000" size="90%" value="" />
 					<a title="Add row" id="add-row" href="#" style="color:red;text-decoration:none;font-size:1em;">+</a>
                 <div class="tinyfieldset">You'll need a real service URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</div>
+                <hr>
                 <label for="service_url">Hang time: </label>
-                <input type="text" id="hang_time" class="text ui-corner-all ui-widget-content" style="width:100px;" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
+                <div>
+                <input type="text" id="hang_time" class="text ui-corner-all ui-widget-content" style="width:250px;" name="hangtime" maxlength="20" size="30px" value="<c:out value="${mockservice.hangTime}"/>" />
+                </div>
                 <div class="tinyfieldset">The delay time in milliseconds.</div>
+                <hr>
                 <label for="service_url">Tag(s):</label> 
                 <input type="text" id="tag" class="text ui-corner-all ui-widget-content" name="tag" maxlength="1000" size="90%" value="<c:out value="${mockservice.tag}"/>" />
                 <div class="tinyfieldset"><strong>Optional.</strong> Add 1 or more tags seperated with spaces. Tags can be useful for all kinds of things. Use it as meta-data for your services, plans, scenarios, etc.</div>
+                <hr>
                 <label for="service_url">Last visit:</label>
-                <input type="text" id="last_visit" title="mm/dd/yyyy" class="text ui-corner-all ui-widget-content" style="width:100px;" name="lastvisit" maxlength="20" size="30px" value="<mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/>" />                                
+                <div>
+                <input type="text" id="last_visit" title="mm/dd/yyyy" class="text ui-corner-all ui-widget-content" style="width:250px;" name="lastvisit" maxlength="20" size="30px" value="<mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/>" />
+                </div>                                
                 <div class="tinyfieldset">The last time this service was called.</div>
-                                    
-                
+                <hr>
                 <label>HTTP header definition:</label>
-	            <select id="service_http_content_type" name="httpContentType">
+                <div>
+	            <select style="width:400px;" id="service_http_content_type" name="httpContentType">
 	                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
                             <option value="text/xml;" <c:if test="${mockservice.httpContentType eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
                             <option value="text/plain;" <c:if test="${mockservice.httpContentType eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
@@ -167,15 +176,19 @@
                             <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpContentType eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
                             <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->
                           </select>
+               </div>
 	           <div class="tinyfieldset">For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
                                 style="font-style: italic;">application/json;</span>, etc. </div>
+               <hr>
                <label>Request inspector:</label>
-	           <select id="request_inspector_name" name="requestInspectorName">
+               <div>
+	           <select style="width:400px;" id="request_inspector_name" name="requestInspectorName">
 	           		<option value="" <c:if test="${mockservice.requestInspectorName eq ''}">selected="selected"</c:if>>[select]</option>
 	           		<c:forEach var="riItem" items="${requestInspectorList}">
-	                        <option value="${riItem.class.name}" <c:if test="${mockservice.requestInspectorName eq riItem.class.name}">selected="selected"</c:if>>${riItem.class.name}</option>
+	                        <option value="${riItem}" <c:if test="${mockservice.requestInspectorName eq riItem}">selected="selected"</c:if>>${riItem}</option>
 	                </c:forEach>
 	           </select>
+	           </div>
 	           <div class="tinyfieldset"><strong>Optional.</strong> Assign a request inspector to this service. For more on this, read the <a href="<c:url value="/help#inspector"/>">help</a> section.</div>
                                 
 	    </fieldset>

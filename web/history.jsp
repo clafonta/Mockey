@@ -96,6 +96,14 @@ $(document).ready(function() {
 		});
 	});
 
+    $('.viewRequestInspectionLink').each( function() {
+        $(this).click( function() {
+            var requestId = this.id.split("_")[1];  
+            $('#viewRequestInspectionBlock_'+requestId).toggle();
+            
+        });
+    });
+    
 	$('.viewFulfilledRequestLink').each( function() {
         $(this).click( function() {
             var requestId = this.id.split("_")[1];  
@@ -206,6 +214,16 @@ $(document).ready(function() {
                    </c:url>  
                    <div style="text-align:right;  position: relative;font-size:80%;" class="<c:if test="${request.comment ne null}">selected</c:if>">
                      
+                     <c:if test="${!empty request.requestInspectionResult.resultMessageList}">
+                     <div id="viewRequestInspectionBlock_${request.id}" class="alert_message" style="display:none;">
+                     <ul>
+                      <c:forEach var="reqResultMsg" items="${request.requestInspectionResult.resultMessageList}"> 
+                        <li>${reqResultMsg}</li>
+                      </c:forEach>
+                      </ul>
+                     </div>
+                     <a href="#" id="viewRequestInspection_${request.id}" class="viewRequestInspectionLink" onclick="return false;" style="color:red;">error</a> |
+                     </c:if>
                      <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a>
                      <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;" style="display:none;">hide</a> |    
                      <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">flag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">unflag</span></a>

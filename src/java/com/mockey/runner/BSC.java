@@ -22,27 +22,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-package com.mockey.model;
+package com.mockey.runner;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.log4j.Logger;
-
-public class SampleRequestInspector implements IRequestInspector {
-	private static Logger logger = Logger.getLogger(SampleRequestInspector.class);
-
-	@Override
-	public void analyze(HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		String hello = request.getParameter("hello");
-		if(hello!=null){
-			System.out.println("Hello " + hello);
-			logger.debug("Success; got a value for parameter 'hello': " + hello);
-		}else {
-			System.out.println("Hello " + hello);
-			logger.error("Expected a parameter value for 'hello'");
-		}
-
-	}
+/**
+ * Refers to Boot Strap Contants. 
+ * @author chadlafontaine
+ *
+ */
+public interface BSC {
+	public static final String PLUGINPATH = "pluginPath";
+	public static final String TRANSIENT = "transientState";
+	public static final String FILTERTAG = "filterTag";
+	public static final String FILE = "file";
+	public static final String INIT = "init";
+	public static final String TYPE = "type";
+	public static final String ACTION = "action";
+	public static final String URL = "url";
 
 }
