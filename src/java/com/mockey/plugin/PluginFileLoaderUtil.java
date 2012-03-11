@@ -121,7 +121,7 @@ public class PluginFileLoaderUtil {
 			}
 			return (String[]) loadedClasses.toArray(new String[loadedClasses.size()]);
 		} catch (Exception e) {
-
+			logger.error("Plugin loader: unable to parse/load jar of name: " + jarFileName  , e);
 		}
 		return null;
 	}
@@ -147,7 +147,7 @@ public class PluginFileLoaderUtil {
 				String cleanName = tempClass[0].replace("/", ".").replace('\\', '.');
 				Class clazz = (Class) Class.forName(cleanName);
 				Class interFace = Class.forName(interfaceName);
-
+				logger.debug("Plugin: processing " + cleanName );
 				boolean match = !clazz.isInterface() && !clazz.isEnum() && interFace.isAssignableFrom(clazz);
 
 				if (match) {
@@ -157,7 +157,7 @@ public class PluginFileLoaderUtil {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Unable to process entry with name '" + name + "' -- here's the error:" + e);
+			logger.error("Unable to process entry with name '" + name + "' -- here's the error:" + e,e);
 		}
 		return classThatImplementsRequestInspector;
 	}

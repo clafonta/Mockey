@@ -45,6 +45,7 @@ import com.mockey.model.Service;
 public class PluginStore {
 	private static Logger logger = Logger.getLogger(PluginStore.class);
 	private static PluginStore pluginStoreInstance = new PluginStore();
+	private static final String MOCKEY_PLUGIN_DIR = "mockey_plugin";
 	private List<String> reqInspectorClassNameList = new ArrayList<String>();
 
 	/**
@@ -133,13 +134,13 @@ public class PluginStore {
 			cs = ClassLoader.getSystemClassLoader().loadClass(className).getConstructor();
 			instance = (IRequestInspector) cs.newInstance();
 		} catch (Exception e) {
-			
+
 			logger.error("Unable to create an instance of a class w/ name " + className, e);
 		}
 
 		return instance;
 	}
-	
+
 	/**
 	 * 
 	 * @param className
@@ -150,21 +151,22 @@ public class PluginStore {
 		Constructor<?> cs;
 		IRequestInspector instance = null;
 		try {
-			Class theClass  = Class.forName(className);
-			instance = (IRequestInspector)theClass.newInstance();
+			Class theClass = Class.forName(className);
+			instance = (IRequestInspector) theClass.newInstance();
 		} catch (Exception e) {
-			
+
 			logger.error("Unable to create an instance of a class w/ name " + className, e);
 		}
 
 		return instance;
 	}
-	
-	
 
 	/**
 	 * 
 	 * @param filePath
+	 *            - can be a File (a jar filled with your plugins) or a
+	 *            Directory, where Mockey will try to iterate through all found
+	 *            sub files.
 	 * @throws IOException
 	 */
 	public void initializeOrUpdateStore(String filePath) {
@@ -178,28 +180,44 @@ public class PluginStore {
 
 		for (String fItem : fileList) {
 
-			File jarFile = new File(fItem);
+			if (fItem.endsWith(".jar")) {
+				File jarFile = new File(fItem);
 
-			try {
-				// Step 1. Load jar File
-				PluginFileLoaderUtil.addFile(jarFile);
-				// Step 2. Get list of class names that implement
-				// IRequestInspector
-				String[] validRequestInspectors = PluginFileLoaderUtil.getListOfClassesThatImplementIRequestInspector(
-						filePath, IRequestInspector.class.getName());
-				if (validRequestInspectors != null) {
-					for (String reqInspectImplName : validRequestInspectors) {
-						this.saveOrUpdateIReqInspectorImplClassName(reqInspectImplName);
+				try {
+					// Step 1. Load jar File
+					PluginFileLoaderUtil.addFile(jarFile);
+					// Step 2. Get list of class names that implement
+					// IRequestInspector
+					String[] validRequestInspectors = PluginFileLoaderUtil
+							.getListOfClassesThatImplementIRequestInspector(filePath, IRequestInspector.class.getName());
+					if (validRequestInspectors != null) {
+						for (String reqInspectImplName : validRequestInspectors) {
+							this.saveOrUpdateIReqInspectorImplClassName(reqInspectImplName);
+						}
 					}
-				}
 
-			} catch (IOException e) {
-				logger.error("Unable to add file with name: " + fItem, e);
+				} catch (IOException e) {
+					logger.error("PluginStore: Unable to add plugin file: " + jarFile.getAbsolutePath(), e);
+					
+				}
 			}
 		}
 	}
 
+	/**
+	 * Looks to the default plug-in directory location to initialize this store
+	 */
 	public void initializeOrUpdateStore() {
-		initializeOrUpdateStore("mockey_plugin");
+		File pluginDir = new File(MOCKEY_PLUGIN_DIR);
+		if (pluginDir.exists() && pluginDir.isDirectory()) {
+			logger.debug("Mockey plugin directory is here:" + pluginDir.getAbsolutePath());
+		} else {
+			boolean success = pluginDir.mkdir();
+			if (!success) {
+				logger.error("Unable to create or access the Mockey plugin directory located here: "
+						+ pluginDir.getAbsolutePath());
+			}
+		}
+		initializeOrUpdateStore(MOCKEY_PLUGIN_DIR);
 	}
 }
