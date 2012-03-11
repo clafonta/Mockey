@@ -63,7 +63,7 @@ public class JettyRunner {
 		jsap.registerParameter(new FlaggedOption(BSC.URL, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'u', BSC.URL,
 				"URL to a mockey-definitions file to initialize Mockey"));
 
-		jsap.registerParameter(new FlaggedOption(BSC.PLUGINPATH, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'j',
+		jsap.registerParameter(new FlaggedOption(BSC.PLUGINPATH, JSAP.STRING_PARSER, BSC.PLUGINDIR, JSAP.NOT_REQUIRED, 'j',
 				BSC.PLUGINPATH, "Path to plugin Jar file or directory containing one or more Jar files."));
 
 		jsap.registerParameter(new FlaggedOption(BSC.TRANSIENT, JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',

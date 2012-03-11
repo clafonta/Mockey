@@ -74,9 +74,17 @@ public class PluginFileLoaderUtil {
 	 * @throws IOException
 	 */
 	public static void addFile(File f) throws IOException {
-		
+
+		if (f.isDirectory()) {
+			for (String childFileName : f.list()) {
+				File childFile = new File(f.getAbsolutePath()
+						+ System.getProperty("file.separator") + childFileName);
+				addURL(childFile.toURI().toURL());
+			}
+		} else {
 			addURL(f.toURI().toURL());
-		
+		}
+
 	}// end method
 
 	/**
@@ -87,7 +95,8 @@ public class PluginFileLoaderUtil {
 	 * @throws IOException
 	 */
 	private static void addURL(URL u) throws IOException {
-		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader
+				.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		try {
 			Method method = sysclass.getDeclaredMethod("addURL", parameters);
@@ -95,9 +104,30 @@ public class PluginFileLoaderUtil {
 			method.invoke(sysloader, new Object[] { u });
 		} catch (Throwable t) {
 			t.printStackTrace();
-			throw new IOException("Error, could not add URL to system classloader");
+			throw new IOException(
+					"Error, could not add URL to system classloader");
 		}// end try catch
 	}// end method
+
+	public static List<String> getListOfClassesThatImplementIRequestInspector(
+			File file) {
+		List<String> clazzList = new ArrayList<String>();
+		if (file.isDirectory()) {
+			for (String childFileName : file.list()) {
+				File childFile = new File(file.getAbsolutePath()
+						+ System.getProperty("file.separator") + childFileName);
+				List<String> subChildClassList = getListOfClassesThatImplementIRequestInspector(
+						childFile, IRequestInspector.class.getName());
+				for (String x : subChildClassList) {
+					clazzList.add(x);
+				}
+			}
+		} else {
+			clazzList = getListOfClassesThatImplementIRequestInspector(file,
+					IRequestInspector.class.getName());
+		}
+		return clazzList;
+	}
 
 	/**
 	 * 
@@ -107,11 +137,12 @@ public class PluginFileLoaderUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String[] getListOfClassesThatImplementIRequestInspector(String jarFileName, String interfaceName) {
+	private static List<String> getListOfClassesThatImplementIRequestInspector(
+			File file, String interfaceName) {
 
 		try {
 			List<String> loadedClasses = new ArrayList<String>();
-			JarFile jarFile = new JarFile(jarFileName);
+			JarFile jarFile = new JarFile(file);
 			Enumeration<JarEntry> enumeration = jarFile.entries();
 			while (enumeration.hasMoreElements()) {
 				String x = process(enumeration.nextElement(), interfaceName);
@@ -119,9 +150,10 @@ public class PluginFileLoaderUtil {
 					loadedClasses.add(x);
 				}
 			}
-			return (String[]) loadedClasses.toArray(new String[loadedClasses.size()]);
+			return loadedClasses;
 		} catch (Exception e) {
-			logger.error("Plugin loader: unable to parse/load jar of name: " + jarFileName  , e);
+			logger.error("Plugin loader: unable to parse/load jar of name: "
+					+ file.getAbsolutePath(), e);
 		}
 		return null;
 	}
@@ -144,21 +176,31 @@ public class PluginFileLoaderUtil {
 			long compressedSize = entry.getCompressedSize();
 			// System.out.println(name + "\t" + size + "\t" + compressedSize);
 			if (tempClass.length >= 1 && name.endsWith(".class")) {
-				String cleanName = tempClass[0].replace("/", ".").replace('\\', '.');
+				String cleanName = tempClass[0].replace("/", ".").replace('\\',
+						'.');
 				Class clazz = (Class) Class.forName(cleanName);
 				Class interFace = Class.forName(interfaceName);
-				logger.debug("Plugin: processing " + cleanName );
-				boolean match = !clazz.isInterface() && !clazz.isEnum() && interFace.isAssignableFrom(clazz);
+				logger.debug("Plugin: processing " + cleanName);
+				boolean match = !clazz.isInterface() && !clazz.isEnum()
+						&& interFace.isAssignableFrom(clazz);
 
 				if (match) {
+					logger.debug("Plugin: valid implementation of  "
+							+ interfaceName + ": "
+							+ cleanName);
 					classThatImplementsRequestInspector = cleanName;
 
 				}
 			}
 
+		} catch (java.lang.NoClassDefFoundError ncdfe) {
+			logger.error("Plugin: missing class? Or could already be loaded.",
+					ncdfe);
 		} catch (Exception e) {
-			logger.error("Unable to process entry with name '" + name + "' -- here's the error:" + e,e);
+			logger.error("Unable to process entry with name '" + name
+					+ "' -- here's the error:" + e, e);
 		}
 		return classThatImplementsRequestInspector;
 	}
+
 }

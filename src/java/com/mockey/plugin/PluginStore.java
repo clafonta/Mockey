@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.Service;
+import com.mockey.runner.BSC;
 
 /**
  * Manages plugins.
@@ -45,7 +46,6 @@ import com.mockey.model.Service;
 public class PluginStore {
 	private static Logger logger = Logger.getLogger(PluginStore.class);
 	private static PluginStore pluginStoreInstance = new PluginStore();
-	private static final String MOCKEY_PLUGIN_DIR = "mockey_plugin";
 	private List<String> reqInspectorClassNameList = new ArrayList<String>();
 
 	/**
@@ -59,7 +59,8 @@ public class PluginStore {
 
 	private PluginStore() {
 		// We initialize the store with one Example/Sample implementation.
-		this.saveOrUpdateIReqInspectorImplClassName(SampleRequestInspector.class.getName());
+		this.saveOrUpdateIReqInspectorImplClassName(SampleRequestInspector.class
+				.getName());
 	}
 
 	/**
@@ -93,28 +94,36 @@ public class PluginStore {
 	 * @return
 	 * @see com.mockey.model.Service
 	 */
-	public RequestInspectionResult processRequestInspectors(Service service, HttpServletRequest request) {
+	public RequestInspectionResult processRequestInspectors(Service service,
+			HttpServletRequest request) {
 
 		RequestInspectionResult result = new RequestInspectionResult();
 
 		// Global inspectors
 		for (String item : this.getRequestInspectorImplClassNameList()) {
 			try {
-				IRequestInspector iri = (IRequestInspector) this.createInspectorInstance(item);
+				IRequestInspector iri = (IRequestInspector) this
+						.createInspectorInstance(item);
 				// Run if the Request inspector is global (applicable to all
 				// services) OR if this particular service is associated to a
 				// specific inspector.
 				if (iri != null) {
-					if (iri.isGlobal() || iri.getClass().getCanonicalName().equals(service.getRequestInspectorName())) {
+					if (iri.isGlobal()
+							|| iri.getClass().getCanonicalName()
+									.equals(service.getRequestInspectorName())) {
 
 						iri.analyze(request);
-						result.addResultMessage(iri.getPostAnalyzeResultMessage());
+						result.addResultMessage(iri
+								.getPostAnalyzeResultMessage());
 					}
 				}
 
 			} catch (Exception e) {
-				logger.error("Unable to instantiate a class that implements " + IRequestInspector.class.getName()
-						+ " with this name: " + service.getRequestInspectorName(), e);
+				logger.error(
+						"Unable to instantiate a class that implements "
+								+ IRequestInspector.class.getName()
+								+ " with this name: "
+								+ service.getRequestInspectorName(), e);
 			}
 		}
 		return result;
@@ -131,11 +140,13 @@ public class PluginStore {
 		Constructor<?> cs;
 		IRequestInspector instance = null;
 		try {
-			cs = ClassLoader.getSystemClassLoader().loadClass(className).getConstructor();
+			cs = ClassLoader.getSystemClassLoader().loadClass(className)
+					.getConstructor();
 			instance = (IRequestInspector) cs.newInstance();
 		} catch (Exception e) {
 
-			logger.error("Unable to create an instance of a class w/ name " + className, e);
+			logger.error("Unable to create an instance of a class w/ name "
+					+ className, e);
 		}
 
 		return instance;
@@ -155,7 +166,8 @@ public class PluginStore {
 			instance = (IRequestInspector) theClass.newInstance();
 		} catch (Exception e) {
 
-			logger.error("Unable to create an instance of a class w/ name " + className, e);
+			logger.error("Unable to create an instance of a class w/ name "
+					+ className, e);
 		}
 
 		return instance;
@@ -170,47 +182,57 @@ public class PluginStore {
 	 * @throws IOException
 	 */
 	public void initializeOrUpdateStore(String filePath) {
+
+		
 		File x = new File(filePath);
-		String[] fileList = null;
+
 		if (x.isDirectory()) {
-			fileList = x.list();
+			String parentPath = x.getAbsolutePath()
+					+ System.getProperty("file.separator");
+			for (String childFileName : x.list()) {
+				File childFile = new File(parentPath + childFileName);
+				logger.debug("Plugin : reading file " + childFile.getAbsolutePath());
+				initializeOrUpdateStore(childFile);
+			}
+
 		} else {
-			fileList = new String[] { filePath };
+			initializeOrUpdateStore(x);
 		}
 
-		for (String fItem : fileList) {
+	}
 
-			if (fItem.endsWith(".jar")) {
-				File jarFile = new File(fItem);
+	private void initializeOrUpdateStore(File jarFile) {
 
-				try {
-					// Step 1. Load jar File
-					PluginFileLoaderUtil.addFile(jarFile);
-					// Step 2. Get list of class names that implement
-					// IRequestInspector
-					String[] validRequestInspectors = PluginFileLoaderUtil
-							.getListOfClassesThatImplementIRequestInspector(filePath, IRequestInspector.class.getName());
-					if (validRequestInspectors != null) {
-						for (String reqInspectImplName : validRequestInspectors) {
-							this.saveOrUpdateIReqInspectorImplClassName(reqInspectImplName);
-						}
-					}
-
-				} catch (IOException e) {
-					logger.error("PluginStore: Unable to add plugin file: " + jarFile.getAbsolutePath(), e);
-					
+		try {
+			// Step 1. Load jar File
+			PluginFileLoaderUtil.addFile(jarFile);
+			// Step 2. Get list of class names that implement
+			// IRequestInspector
+			List<String> validRequestInspectors = PluginFileLoaderUtil
+					.getListOfClassesThatImplementIRequestInspector(jarFile);
+			if (validRequestInspectors != null) {
+				for (String reqInspectImplName : validRequestInspectors) {
+					this.saveOrUpdateIReqInspectorImplClassName(reqInspectImplName);
 				}
 			}
+
+		} catch (IOException e) {
+			logger.error(
+					"PluginStore: Unable to add plugin file: "
+							+ jarFile.getAbsolutePath(), e);
+
 		}
+
 	}
 
 	/**
 	 * Looks to the default plug-in directory location to initialize this store
 	 */
 	public void initializeOrUpdateStore() {
-		File pluginDir = new File(MOCKEY_PLUGIN_DIR);
+		File pluginDir = new File(BSC.PLUGINDIR);
 		if (pluginDir.exists() && pluginDir.isDirectory()) {
-			logger.debug("Mockey plugin directory is here:" + pluginDir.getAbsolutePath());
+			logger.debug("Mockey plugin directory is here:"
+					+ pluginDir.getAbsolutePath());
 		} else {
 			boolean success = pluginDir.mkdir();
 			if (!success) {
@@ -218,6 +240,6 @@ public class PluginStore {
 						+ pluginDir.getAbsolutePath());
 			}
 		}
-		initializeOrUpdateStore(MOCKEY_PLUGIN_DIR);
+		initializeOrUpdateStore(pluginDir);
 	}
 }

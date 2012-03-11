@@ -84,7 +84,7 @@ public class HomeServlet extends HttpServlet {
 
 		// Load up request inspectors
 		PluginStore.getInstance().initializeOrUpdateStore();
-		
+
 		// *****************************
 		// THIS SERVICE API DESCRIPTION CONTRACT
 		// *****************************
@@ -106,25 +106,32 @@ public class HomeServlet extends HttpServlet {
 			// Parameter - 'action'
 			ApiDocAttribute reqAttributeAction = new ApiDocAttribute();
 			reqAttributeAction.setFieldName(BSC.ACTION);
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE,
-					"Delete all configurations, history, settings, etc., and start with a clean Mockey. "));
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(BSC.INIT,
-					"Will delete everything and configure Mockey with the defined file. "));
+			reqAttributeAction
+					.addFieldValues(new ApiDocFieldValue(
+							API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE,
+							"Delete all configurations, history, settings, etc., and start with a clean Mockey. "));
+			reqAttributeAction
+					.addFieldValues(new ApiDocFieldValue(BSC.INIT,
+							"Will delete everything and configure Mockey with the defined file. "));
 			apiDocRequest.addAttribute(reqAttributeAction);
 
 			// Parameter - 'file'
 			ApiDocAttribute reqAttributeFile = new ApiDocAttribute();
 			reqAttributeFile.setFieldName(BSC.FILE);
-			reqAttributeFile.addFieldValues(new ApiDocFieldValue("[string]",
-					"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
-			reqAttributeFile.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
+			reqAttributeFile
+					.addFieldValues(new ApiDocFieldValue(
+							"[string]",
+							"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
+			reqAttributeFile
+					.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
 			apiDocRequest.addAttribute(reqAttributeFile);
 
 			// Parameter - 'type'
 			ApiDocAttribute reqAttributeType = new ApiDocAttribute();
 			reqAttributeType.setFieldName(BSC.TYPE);
 			reqAttributeType
-					.addFieldValues(new ApiDocFieldValue("json",
+					.addFieldValues(new ApiDocFieldValue(
+							"json",
 							"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
 			apiDocRequest.addAttribute(reqAttributeType);
 			apiDocService.setApiRequest(apiDocRequest);
@@ -132,8 +139,8 @@ public class HomeServlet extends HttpServlet {
 			// Parameter - 'transientState'
 			ApiDocAttribute reqAttributeState = new ApiDocAttribute();
 			reqAttributeState.setFieldName(BSC.TRANSIENT);
-			reqAttributeState
-					.addFieldValues(new ApiDocFieldValue("boolean", "Read only mode? Also known as transient."));
+			reqAttributeState.addFieldValues(new ApiDocFieldValue("boolean",
+					"Read only mode? Also known as transient."));
 			apiDocRequest.addAttribute(reqAttributeState);
 			apiDocService.setApiRequest(apiDocRequest);
 
@@ -159,7 +166,8 @@ public class HomeServlet extends HttpServlet {
 			// Response attribute 'file'
 			ApiDocAttribute resAttributeFile = new ApiDocAttribute();
 			resAttributeFile.setFieldName(BSC.FILE);
-			resAttributeFile.setFieldDescription("Name of file used to initialize Mockey.");
+			resAttributeFile
+					.setFieldDescription("Name of file used to initialize Mockey.");
 			apiResponse.addAttribute(resAttributeFile);
 
 			// Response attribute 'success'
@@ -180,7 +188,8 @@ public class HomeServlet extends HttpServlet {
 		}
 	}
 
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
 		String action = req.getParameter(BSC.ACTION);
 		String type = req.getParameter(BSC.TYPE);
@@ -197,8 +206,8 @@ public class HomeServlet extends HttpServlet {
 			// ************* PLUGIN - BEGIN
 			String pluginPath = req.getParameter(BSC.PLUGINPATH);
 			if (pluginPath != null) {
-				PluginStore.getInstance().initializeOrUpdateStore(pluginPath);			
-			}else {
+				PluginStore.getInstance().initializeOrUpdateStore(pluginPath);
+			} else {
 				PluginStore.getInstance().initializeOrUpdateStore();
 			}
 
@@ -230,37 +239,46 @@ public class HomeServlet extends HttpServlet {
 					if (f.exists()) {
 						fstream = new FileInputStream(f);
 					} else {
-						logger.info("Filename '" + fileName + "' does not exist. doing nothing.");
-						jsonResultObject.put(FAIL, fileName + " does not exist. doing nothing.");
+						logger.info("Filename '" + fileName
+								+ "' does not exist. doing nothing.");
+						jsonResultObject.put(FAIL, fileName
+								+ " does not exist. doing nothing.");
 					}
 				}
 
 				if (fstream != null) {
 
-					BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
+					BufferedReader br = new BufferedReader(
+							new InputStreamReader(fstream,
+									Charset.forName(HTTP.UTF_8)));
 					StringBuffer inputString = new StringBuffer();
 					// Read File Line By Line
 					String strLine = null;
 					// READ FIRST
 					while ((strLine = br.readLine()) != null) {
 						// Print the content on the console
-						inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
+						inputString.append(new String(strLine
+								.getBytes(HTTP.UTF_8)));
 					}
 					// DELETE SECOND
 					store.deleteEverything();
 					MockeyXmlFileManager reader = new MockeyXmlFileManager();
 
-					reader.loadConfigurationWithXmlDef(inputString.toString(), null);
+					reader.loadConfigurationWithXmlDef(inputString.toString(),
+							null);
 					logger.info("Loaded definitions from " + fileName);
-					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
+					jsonResultObject.put(SUCCESS, "Loaded definitions from "
+							+ fileName);
 					jsonResultObject.put(BSC.FILE, fileName);
 				}
 			} catch (Exception e) {
 
-				logger.debug("Unable to load service definitions with name: '" + fileName + "' or URL: " + fileUrl, e);
+				logger.debug("Unable to load service definitions with name: '"
+						+ fileName + "' or URL: " + fileUrl, e);
 				try {
-					jsonResultObject.put(FAIL, "Unable to load service definitions with filename: '" + fileName
-							+ "' or URL: " + fileUrl);
+					jsonResultObject.put(FAIL,
+							"Unable to load service definitions with filename: '"
+									+ fileName + "' or URL: " + fileUrl);
 				} catch (Exception ef) {
 					logger.error("Unable to produce a JSON response.", e);
 				}
@@ -306,7 +324,8 @@ public class HomeServlet extends HttpServlet {
 				JSONObject jsonResponseObject = new JSONObject();
 				JSONObject jsonObject = new JSONObject();
 				try {
-					jsonObject.put(SUCCESS, "All is deleted. You have a clean slate. Enjoy.");
+					jsonObject.put(SUCCESS,
+							"All is deleted. You have a clean slate. Enjoy.");
 					jsonResponseObject.put("result", jsonObject);
 				} catch (JSONException e) {
 					logger.error("Unable to produce a JSON result.", e);
@@ -323,13 +342,16 @@ public class HomeServlet extends HttpServlet {
 
 		String filterTagArg = store.getFilterTag();
 		FilterHelper filterHelper = new FilterHelper();
-		List<Service> filteredServiceList = filterHelper.getFilteredServices(filterTagArg, store);
+		List<Service> filteredServiceList = filterHelper.getFilteredServices(
+				filterTagArg, store);
 
 		ConflictHelper conflictHelper = new ConflictHelper();
-		ConflictInfo conflictInfo = conflictHelper.getConflictInfo(filteredServiceList);
+		ConflictInfo conflictInfo = conflictHelper
+				.getConflictInfo(filteredServiceList);
 		req.setAttribute("services", filteredServiceList);
 		req.setAttribute("conflictInfo", conflictInfo);
-		req.setAttribute("plans", filterHelper.getFilteredServicePlans(filterTagArg, store));
+		req.setAttribute("plans",
+				filterHelper.getFilteredServicePlans(filterTagArg, store));
 		req.setAttribute("filterTag", filterTagArg);
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
