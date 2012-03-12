@@ -145,7 +145,7 @@ public class PluginFileLoaderUtil {
 			JarFile jarFile = new JarFile(file);
 			Enumeration<JarEntry> enumeration = jarFile.entries();
 			while (enumeration.hasMoreElements()) {
-				String x = process(enumeration.nextElement(), interfaceName);
+				String x = process(enumeration.nextElement());
 				if (x != null) {
 					loadedClasses.add(x);
 				}
@@ -165,7 +165,7 @@ public class PluginFileLoaderUtil {
 	 * @see com.mockey.plugin.IRequestInspector
 	 */
 	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
-	private static String process(JarEntry entry, String interfaceName) {
+	private static String process(JarEntry entry) {
 
 		String classThatImplementsRequestInspector = null;
 		String name = entry.getName();
@@ -178,15 +178,13 @@ public class PluginFileLoaderUtil {
 			if (tempClass.length >= 1 && name.endsWith(".class")) {
 				String cleanName = tempClass[0].replace("/", ".").replace('\\',
 						'.');
+				Object x = new org.codehaus.jackson.JsonParseException("", null);
 				Class clazz = (Class) Class.forName(cleanName);
-				Class interFace = Class.forName(interfaceName);
-				logger.debug("Plugin: processing " + cleanName);
-				boolean match = !clazz.isInterface() && !clazz.isEnum()
-						&& interFace.isAssignableFrom(clazz);
-
+				boolean match = (!clazz.isInterface() && clazz
+						.isAssignableFrom(IRequestInspector.class));
 				if (match) {
 					logger.debug("Plugin: valid implementation of  "
-							+ interfaceName + ": "
+							+ IRequestInspector.class.getName() + ": "
 							+ cleanName);
 					classThatImplementsRequestInspector = cleanName;
 
@@ -194,6 +192,26 @@ public class PluginFileLoaderUtil {
 			}
 
 		} catch (java.lang.NoClassDefFoundError ncdfe) {
+			logger.error("CLASSPATH: " + System.getProperty("java.classpath"));
+			System.out.println("java.classpath="
+					+ System.getProperty("java.classpath"));
+			// the classpath
+			System.out.println("java.class.path="
+					+ System.getProperty("java.class.path"));
+
+			// extension directories whose jars are included on the classpath
+			System.out.println("java.ext.dirs="
+					+ System.getProperty("java.ext.dirs"));
+
+			// low level classpath, includes system jars
+			System.out.println("java.library.path="
+					+ System.getProperty("java.library.path"));
+
+			// character to separate (not terminate!) entries on the classpath,
+			// ; for Windows : for unix.
+			System.out.println("path.separator="
+					+ System.getProperty("path.separator"));
+
 			logger.error("Plugin: missing class? Or could already be loaded.",
 					ncdfe);
 		} catch (Exception e) {
