@@ -61,6 +61,7 @@ public class PluginStore {
 		// We initialize the store with one Example/Sample implementation.
 		this.saveOrUpdateIReqInspectorImplClassName(SampleRequestInspector.class
 				.getName());
+		//this.saveOrUpdateIReqInspectorImplClassName(AnalyticsAnalyzer.class.getName());
 	}
 
 	/**
@@ -159,10 +160,10 @@ public class PluginStore {
 	 *         <code>IRequestInspector</code>, otherwise returns null.
 	 */
 	public IRequestInspector createInspectorInstance(String className) {
-		Constructor<?> cs;
+		
 		IRequestInspector instance = null;
 		try {
-			Class theClass = Class.forName(className);
+			Class<?> theClass = Class.forName(className);
 			instance = (IRequestInspector) theClass.newInstance();
 		} catch (Exception e) {
 

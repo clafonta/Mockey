@@ -77,8 +77,7 @@ public class PluginFileLoaderUtil {
 
 		if (f.isDirectory()) {
 			for (String childFileName : f.list()) {
-				File childFile = new File(f.getAbsolutePath()
-						+ System.getProperty("file.separator") + childFileName);
+				File childFile = new File(f.getAbsolutePath() + System.getProperty("file.separator") + childFileName);
 				addURL(childFile.toURI().toURL());
 			}
 		} else {
@@ -95,8 +94,7 @@ public class PluginFileLoaderUtil {
 	 * @throws IOException
 	 */
 	private static void addURL(URL u) throws IOException {
-		URLClassLoader sysloader = (URLClassLoader) ClassLoader
-				.getSystemClassLoader();
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		try {
 			Method method = sysclass.getDeclaredMethod("addURL", parameters);
@@ -104,27 +102,23 @@ public class PluginFileLoaderUtil {
 			method.invoke(sysloader, new Object[] { u });
 		} catch (Throwable t) {
 			t.printStackTrace();
-			throw new IOException(
-					"Error, could not add URL to system classloader");
+			throw new IOException("Error, could not add URL to system classloader");
 		}// end try catch
 	}// end method
 
-	public static List<String> getListOfClassesThatImplementIRequestInspector(
-			File file) {
+	public static List<String> getListOfClassesThatImplementIRequestInspector(File file) {
 		List<String> clazzList = new ArrayList<String>();
 		if (file.isDirectory()) {
 			for (String childFileName : file.list()) {
-				File childFile = new File(file.getAbsolutePath()
-						+ System.getProperty("file.separator") + childFileName);
-				List<String> subChildClassList = getListOfClassesThatImplementIRequestInspector(
-						childFile, IRequestInspector.class.getName());
+				File childFile = new File(file.getAbsolutePath() + System.getProperty("file.separator") + childFileName);
+				List<String> subChildClassList = getListOfClassesThatImplementIRequestInspector(childFile,
+						IRequestInspector.class.getName());
 				for (String x : subChildClassList) {
 					clazzList.add(x);
 				}
 			}
 		} else {
-			clazzList = getListOfClassesThatImplementIRequestInspector(file,
-					IRequestInspector.class.getName());
+			clazzList = getListOfClassesThatImplementIRequestInspector(file, IRequestInspector.class.getName());
 		}
 		return clazzList;
 	}
@@ -137,25 +131,29 @@ public class PluginFileLoaderUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	private static List<String> getListOfClassesThatImplementIRequestInspector(
-			File file, String interfaceName) {
+	private static List<String> getListOfClassesThatImplementIRequestInspector(File file, String interfaceName) {
+		List<String> loadedClasses = new ArrayList<String>();
+		if (file != null && file.isFile()) {
+			String jarFileName = file.getName();
+			if (jarFileName.endsWith(".zip") || jarFileName.endsWith(".jar")) {
+				try {
 
-		try {
-			List<String> loadedClasses = new ArrayList<String>();
-			JarFile jarFile = new JarFile(file);
-			Enumeration<JarEntry> enumeration = jarFile.entries();
-			while (enumeration.hasMoreElements()) {
-				String x = process(enumeration.nextElement());
-				if (x != null) {
-					loadedClasses.add(x);
+					JarFile jarFile = new JarFile(file);
+					Enumeration<JarEntry> enumeration = jarFile.entries();
+					while (enumeration.hasMoreElements()) {
+						String x = process(enumeration.nextElement());
+						if (x != null) {
+							loadedClasses.add(x);
+						}
+					}
+					return loadedClasses;
+				} catch (Exception e) {
+					logger.error("Plugin loader: unable to parse/load jar of name: " + file.getAbsolutePath(), e);
 				}
 			}
-			return loadedClasses;
-		} catch (Exception e) {
-			logger.error("Plugin loader: unable to parse/load jar of name: "
-					+ file.getAbsolutePath(), e);
+
 		}
-		return null;
+		return loadedClasses;
 	}
 
 	/**
@@ -176,15 +174,12 @@ public class PluginFileLoaderUtil {
 			long compressedSize = entry.getCompressedSize();
 			// System.out.println(name + "\t" + size + "\t" + compressedSize);
 			if (tempClass.length >= 1 && name.endsWith(".class")) {
-				String cleanName = tempClass[0].replace("/", ".").replace('\\',
-						'.');
-				Object x = new org.codehaus.jackson.JsonParseException("", null);
+				String cleanName = tempClass[0].replace("/", ".").replace('\\', '.');
+				System.out.println("Plugin: trying to instantiate => " +cleanName);
 				Class clazz = (Class) Class.forName(cleanName);
-				boolean match = (!clazz.isInterface() && clazz
-						.isAssignableFrom(IRequestInspector.class));
+				boolean match = (!clazz.isInterface() && clazz.isAssignableFrom(IRequestInspector.class));
 				if (match) {
-					logger.debug("Plugin: valid implementation of  "
-							+ IRequestInspector.class.getName() + ": "
+					logger.debug("Plugin: valid implementation of  " + IRequestInspector.class.getName() + ": "
 							+ cleanName);
 					classThatImplementsRequestInspector = cleanName;
 
@@ -192,31 +187,24 @@ public class PluginFileLoaderUtil {
 			}
 
 		} catch (java.lang.NoClassDefFoundError ncdfe) {
-			logger.error("CLASSPATH: " + System.getProperty("java.classpath"));
-			System.out.println("java.classpath="
-					+ System.getProperty("java.classpath"));
+			
+			System.out.println("java.classpath=" + System.getProperty("java.classpath"));
 			// the classpath
-			System.out.println("java.class.path="
-					+ System.getProperty("java.class.path"));
+			System.out.println("java.class.path=" + System.getProperty("java.class.path"));
 
 			// extension directories whose jars are included on the classpath
-			System.out.println("java.ext.dirs="
-					+ System.getProperty("java.ext.dirs"));
+			System.out.println("java.ext.dirs=" + System.getProperty("java.ext.dirs"));
 
 			// low level classpath, includes system jars
-			System.out.println("java.library.path="
-					+ System.getProperty("java.library.path"));
+			System.out.println("java.library.path=" + System.getProperty("java.library.path"));
 
 			// character to separate (not terminate!) entries on the classpath,
 			// ; for Windows : for unix.
-			System.out.println("path.separator="
-					+ System.getProperty("path.separator"));
+			System.out.println("path.separator=" + System.getProperty("path.separator"));
 
-			logger.error("Plugin: missing class? Or could already be loaded.",
-					ncdfe);
+			logger.error("Plugin: missing class? Or could already be loaded.", ncdfe);
 		} catch (Exception e) {
-			logger.error("Unable to process entry with name '" + name
-					+ "' -- here's the error:" + e, e);
+			logger.error("Unable to process entry with name '" + name + "' -- here's the error:" + e, e);
 		}
 		return classThatImplementsRequestInspector;
 	}
