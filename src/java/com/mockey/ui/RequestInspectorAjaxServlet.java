@@ -58,8 +58,8 @@ public class RequestInspectorAjaxServlet extends HttpServlet {
 		JSONObject jsonObject = new JSONObject();
 		JSONArray array = new JSONArray();
 		try {
-			for (String item : PluginStore.getInstance().getRequestInspectorImplClassNameList()) {
-				array.put(item);
+			for (Class<?> item : PluginStore.getInstance().getRequestInspectorImplClassList()) {
+				array.put(item.getName());
 			}
 			jsonObject.putOpt("request_inspectors", array);
 

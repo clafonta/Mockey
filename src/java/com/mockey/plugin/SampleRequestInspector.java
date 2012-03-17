@@ -24,29 +24,44 @@
  */
 package com.mockey.plugin;
 
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.mockey.plugin.IRequestInspector;
+
 /**
  * This is a sample implementation of the <code>IRequestInspector</code>
+ * 
  * @author chadlafontaine
- *
+ * 
  */
 public class SampleRequestInspector implements IRequestInspector {
 	private static Logger logger = Logger.getLogger(SampleRequestInspector.class);
-	
+
 	private final String FOOBAAR = "foobarKey";
 	private String errorMessage = null;
 
+	/**
+	 * Any time someone passes in a 'foobarKey' as a parameter, then this
+	 * inspector will build a message.
+	 */
 	public void analyze(HttpServletRequest request) {
 		if (request.getParameter(FOOBAAR) != null) {
-			this.errorMessage = "Howdy! This isn't a real error. This is here to show you that you can use Request Inspectors to validate incoming requests.";
+			this.errorMessage = "Howdy! This isn't a real error. "
+					+"This is here to show you that you can use Request Inspectors to validate incoming requests. "
+					+"You are seeing this message because the request parameter '"+FOOBAAR+"' was in the request.";
 			logger.error(this.errorMessage);
 		}
 
 	}
 
+	/**
+	 * 
+	 * @return true if the message is not null or empty, otherwise false
+	 * @see #getPostAnalyzeResultMessage()
+	 */
 	public boolean hasPostAnalyzeMessage() {
 		if (this.errorMessage != null) {
 			return true;
@@ -56,12 +71,19 @@ public class SampleRequestInspector implements IRequestInspector {
 
 	}
 
+	/**
+	 * @return String if a message is available, otherwise null
+	 */
 	public String getPostAnalyzeResultMessage() {
 		return this.errorMessage;
 	}
 
+	/**
+	 * Applicable to all incoming requests
+	 */
 	public boolean isGlobal() {
 		return true;
 	}
 
 }
+

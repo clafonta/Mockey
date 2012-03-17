@@ -63,9 +63,6 @@ public class JettyRunner {
 		jsap.registerParameter(new FlaggedOption(BSC.URL, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'u', BSC.URL,
 				"URL to a mockey-definitions file to initialize Mockey"));
 
-		jsap.registerParameter(new FlaggedOption(BSC.PLUGINPATH, JSAP.STRING_PARSER, BSC.PLUGINDIR, JSAP.NOT_REQUIRED, 'j',
-				BSC.PLUGINPATH, "Path to plugin Jar file or directory containing one or more Jar files."));
-
 		jsap.registerParameter(new FlaggedOption(BSC.TRANSIENT, JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',
 				BSC.TRANSIENT, "Read only mode if set to true, no updates are made to the file system."));
 
@@ -120,14 +117,11 @@ public class JettyRunner {
 		String file = String.valueOf(config.getString(BSC.FILE));
 		String url = String.valueOf(config.getString(BSC.URL));
 		String filterTag = config.getString(BSC.FILTERTAG);
-		String plugginPath = String.valueOf(config.getString(BSC.PLUGINPATH));
 		String fTagParam = "";
 		if (filterTag != null) {
 			fTagParam = "&" + BSC.FILTERTAG + "=" + URLEncoder.encode(filterTag, "UTF-8");
 		}
-		if (plugginPath != null) {
-			fTagParam = fTagParam + "&" + BSC.PLUGINPATH + "=" + URLEncoder.encode(plugginPath, "UTF-8");
-		}
+ 
 		// Startup displays a big message and URL redirects after x seconds.
 		// Snazzy.
 		String initUrl = HOMEURL;

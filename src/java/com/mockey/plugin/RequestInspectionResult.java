@@ -37,6 +37,10 @@ import java.util.List;
 public class RequestInspectionResult {
 	private List<String> resultMessageList = new ArrayList<String>();
 
+	/**
+	 * 
+	 * @return - true if a result message is available, false otherwise.
+	 */
 	public boolean hasResultMessages() {
 		if (this.resultMessageList != null && this.resultMessageList.size() > 0) {
 			return true;
@@ -46,11 +50,21 @@ public class RequestInspectionResult {
 
 	}
 
+	/**
+	 * 
+	 * @return non-null list, could be empty.
+	 * @see #hasResultMessages()
+	 */
 	public List<String> getResultMessageList() {
 		return resultMessageList;
 	}
 
-	public void addResultMessage(String resultMessage) {
+	
+	/**
+	 * 
+	 * @param resultMessage 
+	 */
+	void addResultMessage(String resultMessage) {
 		if (resultMessage != null && resultMessage.trim().length() > 0 && !this.resultMessageList.contains(resultMessage)) {
 			this.resultMessageList.add(resultMessage);
 		}

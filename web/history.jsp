@@ -222,7 +222,7 @@ $(document).ready(function() {
                       </c:forEach>
                       </ul>
                      </div>
-                     <a href="#" id="viewRequestInspection_${request.id}" class="viewRequestInspectionLink" onclick="return false;" style="color:red;">error</a> |
+                     <a href="#" id="viewRequestInspection_${request.id}" class="viewRequestInspectionLink" onclick="return false;" style="color:red;">info</a> |
                      </c:if>
                      <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a>
                      <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;" style="display:none;">hide</a> |    

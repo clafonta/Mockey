@@ -39,7 +39,7 @@ import com.mockey.storage.xml.MockeyXmlFileManager;
 public class StartUpServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -6466436642921760561L;
-	//private static Logger logger = Logger.getLogger(StartUpServlet.class);
+	// private static Logger logger = Logger.getLogger(StartUpServlet.class);
 	private static final String SYSTEM_PROPERTY_KEY_DEBUG_FILE = "pathToMockeyDebugFile";
 	public static final String MOCKEY_DEBUG = "mockeyDebugFile.log";
 	private static File debugFile = null;
@@ -51,16 +51,16 @@ public class StartUpServlet extends HttpServlet {
 	 * @see org.apache.log4j.RollingFileAppender
 	 */
 	public static File getDebugFile() {
-		
-		if (debugFile==null || !debugFile.exists()) {
+
+		if (debugFile == null || !debugFile.exists()) {
 			// ***************
 			// JETTY & TOMCAT compatible
-			// Not context 
+			// Not context
 			// ***************
 			try {
 				debugFile = new File(MOCKEY_DEBUG);
 				debugFile.createNewFile();
-				String abPath =  getDebugFile().getAbsolutePath();
+				String abPath = getDebugFile().getAbsolutePath();
 				System.out.println("Created debug file " + abPath);
 				System.setProperty(SYSTEM_PROPERTY_KEY_DEBUG_FILE, abPath);
 
@@ -70,9 +70,10 @@ public class StartUpServlet extends HttpServlet {
 		}
 		return debugFile;
 	}
+
 	public void init() throws ServletException {
 
-		//Init
+		// Init
 		getDebugFile();
 
 		try {
@@ -86,14 +87,14 @@ public class StartUpServlet extends HttpServlet {
 			MockeyXmlFileManager reader = new MockeyXmlFileManager();
 			reader.loadConfiguration();
 
-		}
-		catch (FileNotFoundException fnf) {
-			
-			System.out.println("File used to initialize Mockey not found. It's OK; one will be created. ");
-			
-		}
-		catch (Exception e) {
-			//logger.error("StartUpServlet:init()", e);
+		} catch (FileNotFoundException fnf) {
+
+			System.out.println("File used to initialize Mockey not found. "
+					+ "It's OK; one will be created if Mockey is not in 'memory-mode-only' "
+					+ "meaning you have to tell Mockey to 'write-to-file' via the web browser interface. ");
+
+		} catch (Exception e) {
+			// logger.error("StartUpServlet:init()", e);
 			e.printStackTrace();
 		}
 	}

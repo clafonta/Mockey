@@ -24,8 +24,6 @@
  */
 package com.mockey.plugin;
 
-import java.util.List;
-
 import org.testng.annotations.Test;
 
 @Test
@@ -35,32 +33,36 @@ public class TestPluginStore {
 	public void testRequestInspector() {
 		PluginStore store = PluginStore.getInstance();
 
-		List<String> list = store.getRequestInspectorImplClassNameList();
-//		assert (list.size() == 2) : "Expected list size 2 but was " + list.size();
-//
-//		assert ("com.mockey.plugin.SampleRequestInspector".equals(list.get(0))) : "Expected to see 'com.mockey.plugin.SampleRequestInspector' but got: "
-//				+ list.get(0);
-		
+		// List<String> list = store.getRequestInspectorImplClassNameList();
+		// assert (list.size() == 2) : "Expected list size 2 but was " +
+		// list.size();
+		//
+		// assert
+		// ("com.mockey.plugin.SampleRequestInspector".equals(list.get(0))) :
+		// "Expected to see 'com.mockey.plugin.SampleRequestInspector' but got: "
+		// + list.get(0);
+
 	}
-	
+
 	@Test
 	public void testForDuplicateRequestInspectorClassNames() {
 		PluginStore store = PluginStore.getInstance();
-		 
-		store.saveOrUpdateIReqInspectorImplClassName(SampleRequestInspector.class.getName());
-		
-		
-//		List<String> list = store.getRequestInspectorImplClassNameList();
-//		assert (list.size() == 2) : "Expected list size 2 but was " + list.size();
+
+		// store.saveOrUpdateIReqInspectorImplClassName(SampleRequestInspector.class);
+
+		// List<String> list = store.getRequestInspectorImplClassNameList();
+		// assert (list.size() == 2) : "Expected list size 2 but was " +
+		// list.size();
 	}
-	
+
 	@Test
 	public void testInstanceCreator() {
 		PluginStore store = PluginStore.getInstance();
-		IRequestInspector inspector = store.createInspectorInstance("com.mockey.plugin.SampleRequestInspector");
-		
-//		assert (inspector!=null) : "Expected instansiation of a class but got " + inspector;
-	}
 
+//		IRequestInspector inspector = store
+//				.createInspectorInstanceByClassName("com.mockey.plugin.SampleRequestInspector");
+//
+//		assert (inspector != null) : "Expected instansiation of a class but got " + inspector;
+	}
 
 }

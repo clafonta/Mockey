@@ -22,10 +22,12 @@
 		        <li>&#187; <a href="#url_injection">URL Injection</a></li>
 		        <li>&#187; <a href="#merge_services">Merge Services</a></li>
 		        <li>&#187; <a href="#initialization">Initialization</a></li>
-		        <li>&#187; <a href="#error_handling">Error Handling</a></li>		        
+		        <li>&#187; <a href="#error_handling">Error Handling</a></li>	
+		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
+		        <li>&#187; <a href="#url_recommendations">URL Config Recommendations</a></li>	        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
 		        <li>&#187; <a href="#inspector">Request Inspector</a></li>
-		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
+		        
 		    </ul>
 	    </div>
 	    <div style="">
@@ -349,7 +351,7 @@
     </div>
     <div class="help_section_zebra">
         <a href="#url_recommendations" name="url_recommendations"></a>
-	    <h2>URL Mapping Config Recommendations</h2>
+	    <h2>URL Config Recommendations</h2>
 		<p>
 		    If your application points to 1 or more services like this:
 		    <ul>     
@@ -383,28 +385,22 @@
 	    <a href="#inspector" name="inspector"></a>
         <h2>Request Inspector</h2>
         <p>
-        You can create your own Service request inspectors to help validate incoming requests. Here's how to create your own request inspectors:
-        <br />
-        <br />
-        <strong>Step 1.</strong> Implement this class and jar it up.
-        	<pre class="tiny">
-// implement this class
-package com.mockey.model;
-import javax.servlet.http.HttpServletRequest;
-
-public interface IRequestInspector {
-
-	public void analyze(HttpServletRequest request);
-} 
-			</pre> 
-		<br />
-		<br />
-		<strong>Step 2.</strong> Upon start up of Mockey, pass in your jar file with your class(es) and dependencies. See <i>"java -jar Mockey.jar --help"</i> for details. 
-		<br />
-		<br />
-		<strong>Step 3.</strong> After start up, Mockey should have your implementation listed as an option in your Service definition creation form. 
-		If you did things right, you should see your output in the logs files. 
-		
+        You can create your own Service request inspectors to help validate or provide helpful information for incoming
+        service requests. <i>What exactly is a request inspector?</i> It's a Java implementation that evaluates the incoming 
+        <strong>javax.servlet.http.HttpServletRequest</strong> for request parameters, body, headers, whatever, and then provides helpful
+        messages to display to the QA or Developer using Mockey. To learn how to create a request inspector of your own, 
+        you'll need to do a fresh code pull from <a href="https://github.com/clafonta/Mockey">GitHub/Mockey</a> and 
+        checkout the <strong>[MOCKEY_HOME]\plugin\README.txt</strong> for help. 
+        </p>
+        <p>If you want to see a request inspector in action, then do the following: 
+        <ul>
+        <li>Step 1. Create a Service and a Service Scenario. Look at above documentation for help on this.  </li>
+        <li>Step 2. Be sure your service returns a response. Check out the <a href="<c:url value="/history"/>">History</a> after you call your service. </li>
+        <li>Step 3. Now, call your service again but this time, append "<i>?foobarKey=true</i>" to your mock service URL. </li>
+        <li>Step 4. Again, check out the history via <a href="<c:url value="/history"/>">History</a>. You'll notice a 
+        new 'info' message appended to your history artifact letting you know that there was a request inspector 
+        who's only job is to look for 'foobarKey' as a parameter key for each and every incoming request to Mockey. </li>        
+        </ul>
         </p>
     </div>
 	<div class="help_section">

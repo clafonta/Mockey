@@ -45,10 +45,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import com.mockey.ServiceValidator;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
+import com.mockey.plugin.IRequestInspector;
 import com.mockey.plugin.PluginStore;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -60,6 +62,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static final Boolean TRANSIENT_STATE = new Boolean(true);
 	private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+	private static Logger logger = Logger.getLogger(ServiceSetupServlet.class);
 
 	/**
 	 * 
@@ -157,7 +160,7 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		req.setAttribute("mockservice", service);
 
-		req.setAttribute("requestInspectorList", PluginStore.getInstance().getRequestInspectorImplClassNameList());
+		req.setAttribute("requestInspectorList", PluginStore.getInstance().getRequestInspectorImplClassList());
 		RequestDispatcher dispatch = req.getRequestDispatcher("/service_setup.jsp");
 		dispatch.forward(req, resp);
 	}
@@ -248,12 +251,18 @@ public class ServiceSetupServlet extends HttpServlet {
 			 * OPTIONAL See if we can create an instance of a request inspector.
 			 * If yes, then set the service to the name.
 			 */
-			Object requestInspector = PluginStore.getInstance().createInspectorInstance(classNameForRequestInspector);
-			if (requestInspector != null) {
-				service.setRequestInspectorName(classNameForRequestInspector);
-			} else {
-				service.setRequestInspectorName("");
+			try {
+				Class<?> clazz = Class.forName(classNameForRequestInspector);
+				if (!clazz.isInterface() && IRequestInspector.class.isAssignableFrom(clazz)) {
+					service.setRequestInspectorName(classNameForRequestInspector);
+				} else {
+					service.setRequestInspectorName("");
+				}
+
+			} catch (ClassNotFoundException t) {
+				logger.error("Service setup: unable to find class '" + classNameForRequestInspector + "'", t);
 			}
+
 		}
 
 		// DESCRIPTION - optional
