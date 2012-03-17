@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project name="SampleIRequestInspector" default="compile" basedir="." >
+	<!-- =================================================================== -->
+	<!-- Base global properties for this build                                                                               -->
+	<!-- =================================================================== -->
+	<property environment="env"/>
+	<property name="src.dir" location="src"/>
+	<property name="test.src.dir" value="src-test" />
+	<!-- Ext is the location of the Mockey.jar that this build file needs.   -->
+	<property name="ext.dir" value="ext"/>
+	<property name="lib.dir" value="lib"/>
+	<property name="build.dir" location="build"/>
+	<property name="dist.dir" location="dist"/>
+	<property name="version.num" value="1.3"/>
+	<property name="classes.dir" location="${build.dir}/classes"/>
+	<property name="test.classes.dir" value="${build.dir}/test/classes" />
+	<property name="test.report.dir" value="${build.dir}/report"/>
+	<path id="standard.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="${ext.dir}">
+		            <include name="**/*.jar"/>
+		</fileset>
+		<pathelement location="${classes.dir}"/>
+	</path>
+
+	<!-- Creates the build directories. -->
+	<target name="prepare">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+	</target>
+	<!-- =================================================================== -->
+	<!-- Basic compile.                                                                                                                -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="prepare" description="Compiles all Java code">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" deprecation="on" classpathref="standard.classpath" debug="on"/>
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Remove all files created by the compile and tomcat-deploy target-->
+	<target name="clean">
+		<delete dir="bin"/>
+		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Jars up file for distribution                                       -->
+	<!-- =================================================================== -->
+	<target name="dist" depends="clean, build, create-jar" description="Builds a Jar file">
+		<echo message="Success! "/>
+	</target>
+	<target name="build" depends="compile" description="Build the whole app and test it" />
+	<target name="create-jar">
+		<mkdir dir="build/jar" />
+		<jar destfile="dist/${ant.project.name}.jar">
+			<fileset dir="${classes.dir}" />
+			<fileset dir="${lib.dir}">
+				<include name="*" />
+			</fileset>
+		</jar>
+	</target>
+</project>
