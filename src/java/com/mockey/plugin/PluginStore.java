@@ -173,6 +173,10 @@ public class PluginStore {
 						if (o == null) {
 							throw new Exception("Class not available");
 						}
+					} catch(NoClassDefFoundError ncdfe){
+						// By Design: gobbling up this error to reduce the
+						// non-needed noise upon startup. If there is a real
+						// issue, then it will bubble up somewhere else.
 					} catch (Exception e) {
 						// Explicitly load classes from packages that have
 						// package-info
