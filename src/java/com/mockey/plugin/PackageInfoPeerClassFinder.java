@@ -33,6 +33,7 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
 
+
 /**
  * This class is used to search for all classes that exist in a package (i.e.
  * name-space) with a package-info.class as a peer for the purpose of
@@ -60,7 +61,7 @@ class PackageInfoPeerClassFinder {
 		List<PackageInfo> packageInfoSet = new ArrayList<PackageInfo>();
 		List<String> visitedClasses = new ArrayList<String>();
 		File jarFile = new File("Mockey.jar");
-		
+
 		if (jarFile.exists()) {
 
 			// STEP 1: go through all classes.
@@ -87,17 +88,25 @@ class PackageInfoPeerClassFinder {
 					}
 				}
 			}
-		}else {
-			Package p = Package.getPackage("com.mockey.plugin");
-			if(p!=null){
-				PackageInfo pi = new PackageInfo(p.getName());
-				pi.addClassNameToPackage(SampleRequestInspector.class.getName());
-				packageInfoSet.add(pi);
-			}else {
-				logger.debug("Wow, due to lazy class loading we don't see " + SampleRequestInspector.class.getName());
+		} else {
+			
+			String[] packageListToLoad = new String[] { "com.mockey.plugin",  };
+			for (String pName : packageListToLoad) {
+				Package p = Package.getPackage(pName);
+
+				if (p != null) {
+					PackageInfo pi = new PackageInfo(p.getName());
+					pi.addClassNameToPackage(SampleRequestInspector.class.getName());
+		
+					packageInfoSet.add(pi);
+				} else {
+					logger.debug("Wow, due to lazy class loading we don't see " 
+							+ SampleRequestInspector.class.getName());
+				}
 			}
 		}
-
+		
+		
 		return packageInfoSet;
 	}
 

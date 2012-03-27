@@ -192,7 +192,7 @@ public class PluginStore {
 					Package packageItem = Package.getPackage(pi.getName());
 					if (null != packageItem.getAnnotation(MockeyRequestInspector.class)) {
 						Class<?> x = doesThisImplementIRequestInspector(className);
-						if (x != null) {
+						if (x != null && !this.reqInspectorClassNameList.contains(x)) {
 							this.reqInspectorClassNameList.add(x);
 							logger.debug("Plugin added: " + className);
 						}

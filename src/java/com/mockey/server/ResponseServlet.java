@@ -76,12 +76,6 @@ public class ResponseServlet extends HttpServlet {
 	public void service(HttpServletRequest originalHttpReqFromClient, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
-
-		logger.info(request.getHeaderInfo());
-		logger.info(request.getParameterInfo());
-		logger.info(request.getCookieInfoAsString());
-
 		String originalHttpReqURI = originalHttpReqFromClient.getRequestURI();
 
 		String contextRoot = originalHttpReqFromClient.getContextPath();
@@ -92,7 +86,12 @@ public class ResponseServlet extends HttpServlet {
 		Url serviceUrl = new Url(originalHttpReqURI);
 		Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
 
-		// ************************************
+		// ************************************************************************
+		// STEP #1) Inspectors must be done BEFORE you process the original
+		// ************************************************************************
+		// request, otherwise, POST body data will be lost if being retrieved
+		// via 'getParameter'.
+
 		// BEGIN - REQUEST INSPECTORS
 		// Check for Global
 		PluginStore pluginStore = PluginStore.getInstance();
@@ -100,11 +99,12 @@ public class ResponseServlet extends HttpServlet {
 				originalHttpReqFromClient);
 
 		// END INSPECTORS
-		// ************************************
+		// ************************************************************************
+		// STEP #2) Process your original request.
+		// ************************************************************************
+		RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
 		Url urlToExecute = service.getDefaultRealUrl();
-
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
-
 		ResponseFromService response = service.execute(request, urlToExecute);
 		logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr(), inspectionMessage);
 

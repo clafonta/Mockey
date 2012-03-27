@@ -82,12 +82,11 @@ public class HomeServlet extends HttpServlet {
 	 */
 	public void init() throws ServletException {
 
+		
 		// Load up plugin store with at least one Sample inspectors
 		PluginStore pluginStore = PluginStore.getInstance();
 		pluginStore.initializeOrUpdateStore();
 		
-		// EXAMPLE
-		//this.saveOrUpdateIReqInspectorImplClassName(AnalyticsAnalyzer.class.getName());
 		
 		// *****************************
 		// THIS SERVICE API DESCRIPTION CONTRACT
