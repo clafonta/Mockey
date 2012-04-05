@@ -1,11 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
+<%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
 <script>
 $(document).ready( function() {
 	// SCENARIO CREATION JAVASCRIPT
     $("#dialog-create-scenario").dialog({
         resizable: true,
-        height:500,
+        height:700,
         width:700,
         modal: true,
         autoOpen: false
@@ -15,8 +17,9 @@ $(document).ready( function() {
         responsemsg = $("#scenario_response"),
         universal_error_scenario = $('#universal_error_scenario'),
         tag = $('#tag'),
+        http_response_status_code = $('#http_response_status_code');
         error_scenario = $('#error_scenario'),
-        allFields = $([]).add(name).add(match).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag),
+        allFields = $([]).add(name).add(match).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag).add(http_response_status_code),
         tips = $(".validateTips");  
     
     function updateTips(t) {
@@ -61,6 +64,7 @@ $(document).ready( function() {
             $('#scenario_match').val('');
             $('#scenario_response').val(''); 
             $('#tag').val(''); 
+            $('#http_response_status_code').val('200');
             $('#universal_error_scenario').attr('checked', false);
             $('#error_scenario').attr('checked', false);
             $('#dialog-create-scenario').dialog('open');
@@ -73,6 +77,7 @@ $(document).ready( function() {
                            if (bValid) {
                                $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), matchStringArg: match.val(),
                                     responseMessage: responsemsg.val(), 
+                                    httpResponseStatusCode: http_response_status_code.val(),
                                     universalErrorScenario: universal_error_scenario.is(':checked'), 
                                     errorScenario: error_scenario.is(':checked')  } ,function(data){
                                         
@@ -108,6 +113,7 @@ $(document).ready( function() {
                     $('#scenario_response').val(data.response); 
                     $('#error_scenario').attr('checked', data.scenarioErrorFlag);
                     $('#universal_error_scenario').attr('checked', data.universalScenarioErrorFlag);
+                    $('#http_response_status_code').val(data.httpResponseStatusCode);
                     $('#dialog-create-scenario').dialog('open');
                     $('#dialog-create-scenario').dialog({
                         buttons: {
@@ -117,7 +123,7 @@ $(document).ready( function() {
                                bValid = bValid && checkLength(name,"scenario name",3,1000);
                                if (bValid) {
                                    $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId,  tag: tag.val(), matchStringArg: match.val(),
-                                        responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.is(':checked'), 
+                                        responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.is(':checked'), httpResponseStatusCode: http_response_status_code.val(),
                                         errorScenario: error_scenario.is(':checked')  } ,function(data){
                                                console.log(data);
                                               
@@ -172,7 +178,7 @@ $(document).ready( function() {
                        bValid = bValid && checkLength(name,"scenario name",3,1000);
                        if (bValid) {
                            $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), matchStringArg: match.val(),
-                                responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.val(), 
+                                responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.val(), httpResponseStatusCode: http_response_status_code.val(),
                                     errorScenario: error_scenario.val()  } ,function(data){
                                     
                                 }, 'json' );  
@@ -203,6 +209,14 @@ $(document).ready( function() {
         <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
         <label for="scenario_match">Tag(s)</label> [optional]
         <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" title="" />
+        <label for="http_response_status_code">HTTP Response status</label>
+        <div style="padding:1em 0 1em 0">
+        <select class="text ui-widget-content ui-corner-all" id="http_response_status_code" name="http_response_status_code" >
+        <c:forEach var="httpRespCode" items="${httpRespCodeList}"  varStatus="status">
+         <option class="text ui-widget-content" value="<c:out value="${httpRespCode.code}" />"><mockey:slug text="${httpRespCode.text}" maxLength="90"/></option>
+        </c:forEach>
+        </select>
+        </div>
         <div class="tinyfieldset childform" style="margin-bottom: 1em;">
                 <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="true">Universal Error Response</input>
                 <br />

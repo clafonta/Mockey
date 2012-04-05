@@ -473,6 +473,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 
 		if (scenario != null) {
 			response.setBody(scenario.getResponseMessage());
+			response.setHttpResponseStatusCode(scenario.getHttpResponseStatusCode());
 			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 		} else {
 			response.setBody("NO SCENARIO SELECTED");
@@ -499,6 +500,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		List<Scenario> scenarios = this.getScenarios();
 		Iterator<Scenario> iter = scenarios.iterator();
 		String messageMatchFound = null;
+		int httpResponseStatus = -1;
 		while (iter.hasNext()) {
 			Scenario scenario = iter.next();
 			logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + rawRequestData);
@@ -509,6 +511,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			if ((indexValue > -1)) {
 				logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
 				messageMatchFound = scenario.getResponseMessage();
+				httpResponseStatus = scenario.getHttpResponseStatusCode();
 				break;
 			}
 		}
@@ -535,6 +538,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		}
 		response.setRequestUrl(realServiceUrl);
 		response.setBody(messageMatchFound);
+		response.setHttpResponseStatusCode(httpResponseStatus);
 		return response;
 	}
 

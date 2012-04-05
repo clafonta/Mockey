@@ -27,6 +27,8 @@
  */
 package com.mockey.model;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * A Scenario is a specific response from a Service.
  * 
@@ -45,7 +47,7 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	private String requestMessage = "";
 	private String responseMessage = "";
 	private String matchStringArg = "";
-
+	private int httpResponseStatusCode = HttpServletResponse.SC_OK;
 	public String getScenarioName() {
 		return scenarioName;
 	}
@@ -84,6 +86,7 @@ public class Scenario extends StatusCheck implements PersistableItem {
 		sb.append("Match string : " + this.getMatchStringArg() + "\n");
 		sb.append("Request msg  : " + this.getRequestMessage() + "\n");
 		sb.append("Response msg : " + this.getResponseMessage() + "\n");
+		//sb.append("Response code: " + this. + "\n");
 		sb.append("Tag          : " + this.getTag() + "\n");
 		sb.append("Last visit   : " + this.getLastVisitSimple() + "\n");
 		return sb.toString();
@@ -146,6 +149,14 @@ public class Scenario extends StatusCheck implements PersistableItem {
 			match = true;
 		}
 		return match;
+	}
+
+	public int getHttpResponseStatusCode() {
+		return httpResponseStatusCode;
+	}
+
+	public void setHttpResponseStatusCode(int httpResponseStatusCode) {
+		this.httpResponseStatusCode = httpResponseStatusCode;
 	}
 
 }

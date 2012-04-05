@@ -55,6 +55,7 @@ import com.mockey.model.ApiDocRequest;
 import com.mockey.model.ApiDocResponse;
 import com.mockey.model.ApiDocService;
 import com.mockey.model.ConflictInfo;
+import com.mockey.model.HttpStatusCodeStore;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
 import com.mockey.plugin.PluginStore;
@@ -324,7 +325,7 @@ public class HomeServlet extends HttpServlet {
 		req.setAttribute("conflictInfo", conflictInfo);
 		req.setAttribute("plans", filterHelper.getFilteredServicePlans(filterTagArg, store));
 		req.setAttribute("filterTag", filterTagArg);
-
+		req.setAttribute("httpRespCodeList", HttpStatusCodeStore.getInstance().getCodeEntryList());
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 		dispatch.forward(req, resp);
 	}

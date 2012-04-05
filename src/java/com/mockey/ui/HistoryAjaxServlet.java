@@ -76,7 +76,7 @@ public class HistoryAjaxServlet extends HttpServlet {
             jsonObject.put("requestCookies", ""+fCRequest.getClientRequestCookies());
             jsonObject.put("responseCookies", ""+fCRequest.getClientResponseCookies());
 
-            jsonObject.put("responseStatus", ""+fCRequest.getResponseMessage().getStatusLine());
+            jsonObject.put("responseStatus", ""+fCRequest.getResponseMessage().getHttpResponseStatusCode());
             jsonObject.put("responseHeader", ""+fCRequest.getResponseMessage().getHeaderInfo());
             jsonObject.put("responseBody", ""+fCRequest.getResponseMessage().getBody());
 

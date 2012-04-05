@@ -126,14 +126,15 @@ public class ResponseServlet extends HttpServlet {
 		resp.setCharacterEncoding(charSet); // "UTF-8");
 		resp.setContentType(service.getHttpContentType());
 		if (!(service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY)) {
+
 			resp.setContentType(service.getHttpContentType());
 			byte[] myCharSetBytes = response.getBody().getBytes(charSet);
 			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
 			resp.getOutputStream().flush();
 		} else {
-			if (response.getStatusLine() != null) {
-				resp.setStatus(response.getStatusLine().getStatusCode());
-			}
+
+			resp.setStatus(response.getHttpResponseStatusCode());
+
 			response.writeToOutput(resp);
 		}
 	}

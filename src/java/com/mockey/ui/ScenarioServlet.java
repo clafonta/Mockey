@@ -119,6 +119,16 @@ public class ScenarioServlet extends HttpServlet {
 			scenario.setTag(req.getParameter("tag"));
 		}
 		
+		if (req.getParameter("httpResponseStatusCode") != null) {
+			try {
+				String v = req.getParameter("httpResponseStatusCode");
+				int statusCodeVal = Integer.parseInt(v);
+				scenario.setHttpResponseStatusCode(statusCodeVal);
+			}catch(Exception e){
+				
+			}
+		}
+		
 		if (req.getParameter("responseMessage") != null) {
 			scenario.setResponseMessage(req.getParameter("responseMessage"));
 		}

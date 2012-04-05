@@ -111,7 +111,7 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("<p>Status</p>");
             returnHTML.append("<p>");
             returnHTML.append("    <textarea class=\"resizable\" name=\"responseStatus\" rows=\"1\" >"
-                    + fCRequest.getResponseMessage().getStatusLine() + "</textarea>");
+                    + fCRequest.getResponseMessage().getHttpResponseStatusCode() + "</textarea>");
             returnHTML.append("</p>");
             returnHTML.append("<p>Header</p>");
             returnHTML.append("<p>");
