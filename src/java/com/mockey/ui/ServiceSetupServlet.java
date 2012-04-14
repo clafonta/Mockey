@@ -246,7 +246,7 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		}
 		String classNameForRequestInspector = req.getParameter("requestInspectorName");
-		if (classNameForRequestInspector != null) {
+		if (classNameForRequestInspector != null && classNameForRequestInspector.trim().length() > 0 ) {
 			/**
 			 * OPTIONAL See if we can create an instance of a request inspector.
 			 * If yes, then set the service to the name.

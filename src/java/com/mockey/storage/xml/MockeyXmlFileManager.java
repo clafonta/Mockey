@@ -183,25 +183,7 @@ public class MockeyXmlFileManager {
 			mergeResults.addAdditionMsg("Proxy settings set.");
 		}
 
-		// STEP #3. UNIVERSAL RESPONSE SETTINGS
-		if (store.getUniversalErrorScenario() != null
-				&& mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
-			mergeResults
-					.addConflictMsg("Universal error message already defined with name '"
-							+ store.getUniversalErrorScenario()
-									.getScenarioName() + "'");
-		} else if (store.getUniversalErrorScenario() == null
-				&& mockServiceStoreTemporary.getUniversalErrorScenario() != null) {
-
-			store.setUniversalErrorScenarioId(mockServiceStoreTemporary
-					.getUniversalErrorScenario().getId());
-			store.setUniversalErrorServiceId(mockServiceStoreTemporary
-					.getUniversalErrorScenario().getServiceId());
-			mergeResults.addAdditionMsg("Universal error response defined.");
-
-		}
-
-		// STEP #4. BUILD SERVICE REFERENCES
+		// STEP #3. BUILD SERVICE REFERENCES
 		// Why is this needed?
 		// We are adding _new_ services into the Store, and that means that the
 		// store's state is always changing. We need references as a saved
@@ -236,10 +218,29 @@ public class MockeyXmlFileManager {
 		}
 		addServicesToStore(mergeResults, serviceListFromRefs, tagArguments);
 
-		// STEP #5. MERGE SERVICES AND SCENARIOS
+		// STEP #4. MERGE SERVICES AND SCENARIOS
 		// Since this gets complicated, logic was moved to it's own method.
 		mergeResults = addServicesToStore(mergeResults,
 				mockServiceStoreTemporary.getServices(), tagArguments);
+
+		// STEP #5. UNIVERSAL RESPONSE SETTINGS
+		// Important: usage of the temporary-store's Scenario reference
+		// information is used to set the primary in-memory store. The primary
+		// store has all the information and the TEMP store only needs to pass
+		// the references, e.g. Service 1, Scenario 2.
+		if (store.getUniversalErrorScenario() != null
+				&& mockServiceStoreTemporary.getUniversalErrorScenarioRef() != null) {
+			mergeResults
+					.addConflictMsg("Universal error message already defined with name '"
+							+ store.getUniversalErrorScenario()
+									.getScenarioName() + "'");
+		} else if (store.getUniversalErrorScenario() == null
+				&& mockServiceStoreTemporary.getUniversalErrorScenarioRef() != null) {
+			store.setUniversalErrorScenarioRef(mockServiceStoreTemporary
+					.getUniversalErrorScenarioRef());
+			mergeResults.addAdditionMsg("Universal error response defined.");
+
+		}
 
 		// STEP #6. MERGE SERVICE PLANS
 		for (ServicePlan servicePlan : mockServiceStoreTemporary
@@ -312,10 +313,10 @@ public class MockeyXmlFileManager {
 									+ inMemoryServiceBean.getServiceName()
 									+ "' ");
 
-				} 
+				}
 			}
 			if (!existingService) {
-				// YES, no in-store matching Name. 
+				// YES, no in-store matching Name.
 				// We null ID, to not write-over on any in-store
 				// services with same ID
 				uploadedServiceBean.setId(null);
@@ -331,10 +332,9 @@ public class MockeyXmlFileManager {
 
 				// Save to the IN-MEMORY STORE
 				store.saveOrUpdateService(uploadedServiceBean);
-				mergeResults
-						.addAdditionMsg("Uploaded Service '"
-								+ uploadedServiceBean.getServiceName()
-								+ "' created with scenarios.");
+				mergeResults.addAdditionMsg("Uploaded Service '"
+						+ uploadedServiceBean.getServiceName()
+						+ "' created with scenarios.");
 
 			} else {
 				// We have an existing Service
@@ -449,7 +449,7 @@ public class MockeyXmlFileManager {
 			for (Url uploadedUrl : uploadedService.getRealServiceUrls()) {
 				inMemoryService.saveOrUpdateRealServiceUrl(uploadedUrl);
 			}
-			// ********************* REAL URLS - END   *******************
+			// ********************* REAL URLS - END *******************
 			store.saveOrUpdateService(inMemoryService);
 
 		}

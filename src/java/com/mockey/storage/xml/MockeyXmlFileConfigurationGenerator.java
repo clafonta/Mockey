@@ -116,6 +116,9 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 					getSafeForXmlOutputString("" + mockServiceBean.getHttpContentType()));
 			serviceElement.setAttribute("default_scenario_id",
 					getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId())));
+			serviceElement.setAttribute("error_scenario_id",
+					getSafeForXmlOutputString("" + (mockServiceBean.getErrorScenarioId())));
+			
 			serviceElement.setAttribute("service_response_type",
 					getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
 			serviceElement.setAttribute("default_real_url_index",

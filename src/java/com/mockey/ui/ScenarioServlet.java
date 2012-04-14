@@ -41,6 +41,7 @@ import org.json.JSONObject;
 
 import com.mockey.ScenarioValidator;
 import com.mockey.model.Scenario;
+import com.mockey.model.ScenarioRef;
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -50,7 +51,8 @@ public class ScenarioServlet extends HttpServlet {
 	private static final long serialVersionUID = -5920793024759540668L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
 		// A Service is needed to associate the
 		// scenario to.
@@ -68,7 +70,8 @@ public class ScenarioServlet extends HttpServlet {
 		Service service = store.getServiceById(serviceId);
 
 		// DELETE scenario logic
-		if (req.getParameter("deleteScenario") != null && serviceId != null && scenarioId != null) {
+		if (req.getParameter("deleteScenario") != null && serviceId != null
+				&& scenarioId != null) {
 			try {
 
 				service.deleteScenario(scenarioId);
@@ -87,7 +90,7 @@ public class ScenarioServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			out.println(result.toString());
 			out.flush();
 			out.close();
@@ -96,7 +99,8 @@ public class ScenarioServlet extends HttpServlet {
 
 		Scenario scenario = null;
 		try {
-			scenario = service.getScenario(new Long(req.getParameter("scenarioId")));
+			scenario = service.getScenario(new Long(req
+					.getParameter("scenarioId")));
 		} catch (Exception e) {
 			//
 		}
@@ -111,24 +115,25 @@ public class ScenarioServlet extends HttpServlet {
 		String scenarioName = req.getParameter("scenarioName");
 		if (scenarioName == null || scenarioName.trim().length() == 0) {
 			// Let's be nice and make up a name.
-			scenarioName = "Scenario for " + service.getServiceName() + "(name auto-generated)";
+			scenarioName = "Scenario for " + service.getServiceName()
+					+ "(name auto-generated)";
 		}
 		scenario.setScenarioName(scenarioName);
 
 		if (req.getParameter("tag") != null) {
 			scenario.setTag(req.getParameter("tag"));
 		}
-		
+
 		if (req.getParameter("httpResponseStatusCode") != null) {
 			try {
 				String v = req.getParameter("httpResponseStatusCode");
 				int statusCodeVal = Integer.parseInt(v);
 				scenario.setHttpResponseStatusCode(statusCodeVal);
-			}catch(Exception e){
-				
+			} catch (Exception e) {
+
 			}
 		}
-		
+
 		if (req.getParameter("responseMessage") != null) {
 			scenario.setResponseMessage(req.getParameter("responseMessage"));
 		}
@@ -149,7 +154,7 @@ public class ScenarioServlet extends HttpServlet {
 			// Make this the default 'error response' scenario
 			// for the service
 			String v = req.getParameter("errorScenario");
-			if ( v != null && "true".equalsIgnoreCase(v.trim())) {
+			if (v != null && "true".equalsIgnoreCase(v.trim())) {
 				service.setErrorScenarioId(scenario.getId());
 			} else if (service.getErrorScenarioId() == scenario.getId()) {
 				service.setErrorScenarioId(null);
@@ -159,13 +164,12 @@ public class ScenarioServlet extends HttpServlet {
 			// for all services defined in Mockey.
 			v = req.getParameter("universalErrorScenario");
 			if (v != null && "true".equalsIgnoreCase(v.trim())) {
-				store.setUniversalErrorScenarioId(scenario.getId());
-				store.setUniversalErrorServiceId(serviceId);
+				ScenarioRef scenarioRef = new ScenarioRef(scenario.getId(),
+						scenario.getServiceId());
+				store.setUniversalErrorScenarioRef(scenarioRef);
 
-			} else if (store.getUniversalErrorScenarioId() != null
-					&& store.getUniversalErrorScenarioId() == scenario.getId()) {
-				store.setUniversalErrorScenarioId(null);
-				store.setUniversalErrorServiceId(null);
+			} else if (store.getUniversalErrorScenario() != null) {
+				store.setUniversalErrorScenarioRef(null);
 			}
 
 			store.saveOrUpdateService(service);

@@ -90,7 +90,7 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 			if (universalError != null) {
 				try {
 					if (serviceId.equals(universalError.getServiceId())
-							&& universalError.getServiceId().equals(new Long(scenarioIdAsString))) {
+							&& universalError.getId().equals(new Long(scenarioIdAsString))) {
 						universalErrorFlag = true;
 					}
 				} catch (Exception ae) {

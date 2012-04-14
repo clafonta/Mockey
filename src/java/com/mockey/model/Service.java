@@ -345,7 +345,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public Scenario getErrorScenario() {
 		// FIND SERVICE ERROR, IF EXIST.
 		for (Scenario scenario : this.getScenarios()) {
-			if (scenario.getId() == this.getErrorScenarioId()) {
+			if (scenario.getId().equals(this.getErrorScenarioId())) {
 				return scenario;
 			}
 		}

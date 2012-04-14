@@ -35,6 +35,7 @@ import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.PlanItem;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
+import com.mockey.model.ScenarioRef;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
 import com.mockey.model.ServiceRef;
@@ -55,7 +56,8 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
 	}
 
-	public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId) {
+	public FulfilledClientRequest getFulfilledClientRequestsById(
+			Long fulfilledClientRequestId) {
 		return null;
 	}
 
@@ -88,7 +90,8 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		ServicePlan servicePlan = new ServicePlan();
 		servicePlan.setId(new Long(1));
 		servicePlan.setName("happy path");
-		servicePlan.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ");
+		servicePlan
+				.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ");
 		PlanItem planItem = new PlanItem();
 		planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
 
@@ -181,15 +184,12 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		return null;
 	}
 
-	public void setUniversalErrorScenarioId(Long scenarioId) {
+	public void setUniversalErrorScenarioRef(Scenario scenario) {
 
 	}
 
-	public void setUniversalErrorServiceId(Long serviceId) {
-
-	}
-
-	public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest requestResponseX) {
+	public void saveOrUpdateFulfilledClientRequest(
+			FulfilledClientRequest requestResponseX) {
 
 	}
 
@@ -207,17 +207,20 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		return null;
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
+	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(
+			Long serviceId) {
 
 		return null;
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(
+			String ip) {
 
 		return null;
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(
+			String ip, Long serviceId) {
 
 		return null;
 	}
@@ -226,7 +229,8 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
 	}
 
-	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
+	public void deleteFulfilledClientRequestsFromIPForService(String ip,
+			Long serviceId) {
 
 	}
 
@@ -234,12 +238,14 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequest(List<String> filterArguments) {
+	public List<FulfilledClientRequest> getFulfilledClientRequest(
+			List<String> filterArguments) {
 
 		return null;
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments) {
+	public List<FulfilledClientRequest> getFulfilledClientRequest(
+			Collection<String> filterArguments) {
 
 		return null;
 	}
@@ -322,9 +328,12 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		return null;
 	}
 
+	public ScenarioRef getUniversalErrorScenarioRef() {
+		return null;
+	}
+
 	public void deleteTagFromStore(String tag) {
 		// TODO Auto-generated method stub
-
 	}
 
 	public String getFilterTag() {
@@ -356,9 +365,14 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		return null;
 	}
 
-
 	public IRequestInspector getRequestInspectorByClass(Class<?> clazz) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setUniversalErrorScenarioRef(ScenarioRef scenario) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -33,11 +33,11 @@ import java.util.List;
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
+import com.mockey.model.ScenarioRef;
 import com.mockey.model.Service;
 import com.mockey.model.ServicePlan;
 import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
-import com.mockey.plugin.IRequestInspector;
 
 /**
  * How Mockey stores itself.
@@ -91,19 +91,15 @@ public interface IMockeyStorage {
 
 	public void deleteServicePlan(ServicePlan servicePlan);
 
+	public ScenarioRef getUniversalErrorScenarioRef();
+	
 	public Scenario getUniversalErrorScenario();
 
 	public Long getUniversalTwistInfoId();
 
 	public void setUniversalTwistInfoId(Long twistInfoId);
 
-	public void setUniversalErrorServiceId(Long serviceId);
-
-	public void setUniversalErrorScenarioId(Long scenarioId);
-
-	public Long getUniversalErrorServiceId();
-
-	public Long getUniversalErrorScenarioId();
+	public void setUniversalErrorScenarioRef(ScenarioRef scenario);
 
 	public ProxyServerModel getProxy();
 

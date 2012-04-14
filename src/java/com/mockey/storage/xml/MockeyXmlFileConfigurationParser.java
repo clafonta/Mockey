@@ -76,6 +76,7 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addObjectCreate(ROOT, InMemoryMockeyStorage.class);
 
 		fullSetDigester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");
+																			   
 		fullSetDigester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");
 		fullSetDigester.addSetProperties(ROOT, "universal_twist_info_id", "universalTwistInfoId");
 
@@ -101,6 +102,9 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "url", "url");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "tag", "tag");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "last_visit", "lastVisit");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "error_scenario_id", "errorScenarioId");
+		
+		
 
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "proxyurl", "realServiceUrlByString");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "default_real_url_index", "defaultRealUrlIndex");
