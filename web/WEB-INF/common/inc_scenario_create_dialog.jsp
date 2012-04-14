@@ -54,6 +54,13 @@ $(document).ready( function() {
         }
 
     }
+    $('#toggleMoreOptionsDisplay').click ( function() {
+    	$('#moreOptionsDisplay').toggle();
+    	$('#showOptionsText').toggle();
+        $('#hideOptionsText').toggle();    	
+        return false;
+    });
+    
     $('.createScenarioLink').each( function() {
         $(this).click( function() {
             var serviceId = this.id.split("_")[1];
@@ -199,35 +206,37 @@ $(document).ready( function() {
 
 <div id="dialog-create-scenario" title="Service Scenario">
     <p class="validateTips"></p>
-    <div class="info_message">This scenario belongs to the service called: <strong id="service-name-for-scenario"></strong></div>
+    This scenario belongs to the service called: 
+    <h2><strong id="service-name-for-scenario"></strong></h2>
     <p>
     <fieldset>
         
         <label for="scenario_name">Scenario name (required)</label>
         <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
-        <label for="scenario_match">Match argument</label>
-        <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
-        <label for="scenario_match">Tag(s)</label> [optional]
-        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" title="" />
-        <label for="http_response_status_code">HTTP Response status</label>
-        <div style="padding:1em 0 1em 0">
-        <select class="text ui-widget-content ui-corner-all" id="http_response_status_code" name="http_response_status_code" >
-        <c:forEach var="httpRespCode" items="${httpRespCodeList}"  varStatus="status">
-         <option class="text ui-widget-content" value="<c:out value="${httpRespCode.code}" />"><mockey:slug text="${httpRespCode.text}" maxLength="90"/></option>
-        </c:forEach>
-        </select>
-        </div>
-        <div class="tinyfieldset childform" style="margin-bottom: 1em;">
-                <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="true">Universal Error Response</input>
-                <br />
-                <input type="checkbox" name="error_scenario" id="error_scenario" value="true">Service Scenario Error Response</input>
-                <div id="" style="" class="tinyfieldset info_message">
-                If these checkboxes are checked, then it tells Mockey how to handle errors. For more information, see  
-                <a style="color:blue;" href="<c:url value="/help#error_handling"/>">here</a>
-                </div>
-        </div>
+        
         <label for="scenario_response">Response content</label>
-        <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
+        <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="20"></textarea>
+        <p><a href="#" id="toggleMoreOptionsDisplay"><span id="showOptionsText">Show More Options</span> <span id="hideOptionsText" style="display:none;">Hide Options</span></a></p>
+        <div id="moreOptionsDisplay"  style="display:none;" class="childform">
+            <p class="tinyfieldset info_message">For information on these input fields, please read the <a href="<c:url value="/help#scenario"/>">Help</a> section.</p>
+	        <label for="scenario_match">Match argument</label>
+	        <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
+	        <label for="scenario_match">Tag(s)</label> [optional]
+	        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" title="" />
+	        <label for="http_response_status_code">HTTP Response status</label>
+	        <div style="padding:1em 0 1em 0">
+	        <select class="text ui-widget-content ui-corner-all" id="http_response_status_code" name="http_response_status_code" >
+	        <c:forEach var="httpRespCode" items="${httpRespCodeList}"  varStatus="status">
+	         <option class="text ui-widget-content" value="<c:out value="${httpRespCode.code}" />"><mockey:slug text="${httpRespCode.text}" maxLength="90"/></option>
+	        </c:forEach>
+	        </select>
+	        </div>
+	        <div style="margin-bottom: 1em;">
+	                <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="true">Universal Error Response</input>
+	                <br />
+	                <input type="checkbox" name="error_scenario" id="error_scenario" value="true">Service Scenario Error Response</input>
+	        </div>
+        </div>
     </fieldset> 
     </p>
 </div>

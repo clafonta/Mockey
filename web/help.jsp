@@ -22,12 +22,10 @@
 		        <li>&#187; <a href="#url_injection">URL Injection</a></li>
 		        <li>&#187; <a href="#merge_services">Merge Services</a></li>
 		        <li>&#187; <a href="#initialization">Initialization</a></li>
-		        <li>&#187; <a href="#error_handling">Error Handling</a></li>	
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		        <li>&#187; <a href="#url_recommendations">URL Config Recommendations</a></li>	        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
-		        <li>&#187; <a href="#inspector">Request Inspector</a></li>
-		        
+		        <li>&#187; <a href="#inspector">Request Inspector</a></li>    
 		    </ul>
 	    </div>
 	    <div style="">
@@ -41,7 +39,7 @@
         <a href="#transient" name="transient"></a>
         <h2>Transient</h2>
         <p>
-        If Mockey is in transient mode (<a href="<c:url value="/configuration/info"/>">transient_state=true</a>), then 
+        The <i>transient</i> setting toggles Mockey's state between <strong>In Memory Only</strong> or <strong>Writing to File</strong>. If Mockey is in transient mode (<a href="<c:url value="/configuration/info"/>">transient_state=true</a>), then 
         configuration changes are in-memory <b>only</b> and not persisted to the file system. This is good for people 
         or robots who want to play with Mockey settings and not infect any source files that were used to initialized 
         Mockey. If Mockey is not in transient mode (<a href="<c:url value="/configuration/info"/>">transient_state=false</a>), 
@@ -95,6 +93,7 @@
 	    </p>
     
 	    <p>
+	    <h3>Match Argument</h3>
 	    <i style="color:red;font-weight:bold;">Match Argument</i>? <i style="color:green;font-weight:bold;">Static</i> or <i style="color:orange;font-weight:bold;">Dynamic</i>? Setting your mock service to 
 		 <i>static</i> means your mock service will always return the same mock service scenario, no matter what the request is. Dynamic means, Mockey
 		  inspects the incoming request message for a specific <b>match argument</b>. If the incoming request message contains this string argument, then this service 
@@ -103,6 +102,42 @@
 		  You only need to define a match argument per service scenario for dynamic scenarios.
 	    </p>
 	    <p><img src="<c:url value="/images/dynamic_response.png" />" /></p>
+	    <p>
+	    <h3>Tags</h3>
+	    You can add 0 or more tags to a Scenario. Why is this good? Tags can be used for many things, some include but not limited to:
+	    <ul>
+	    <li>Tag scenarios to let people know what they are designed for, e.g.Android or iOS, mobile or non-mobile, July's Release, etc.</li>
+	    <li>Filter your view, e.g. "<i>I only want to see Scenarios and Services tagged for August.</i>"</li>
+	    </ul>
+	    </p>
+	    <p>
+	    <h3>HTTP Response Status</h3>
+	    By default, all things are set to HTTP 200 (OK) but this is here if you want to how your application handles 500, 404, 303s, etc. 
+	    </p>
+	    <a href="#error_handling" name="error_handling"></a>
+        <h2>Error Handling</h2>
+        When you create a <strong>Scenario</strong>, you'll see two checkboxes. Here's what they do:
+        <h4>&#187; Service Scenario Error Response</h4>
+        <p>
+        If a service scenario is flagged as a 'Service Error Response', it will be returned by Mockey if an error occurs 
+        when calling the service. An error can be caused by a timeout from calling a real service or inability 
+        to parse data. 
+        </p>
+        
+        <h4>&#187; Universal Error Response</h4>
+        <p>
+        If a service scenario is flagged as a 'Universal Error Response', it will be returned by Mockey if an error occurs 
+        when calling a service <i>and</i> a scenario is not defined as a <i>Service Scenario Error Response</i>. The purpose of this 
+        feature is to provide one place to define a universal error message, without the need to create an error
+        scenario for each service. <b>Note:</b> Only one scenario out of all services can be flagged as universal. 
+        </p>
+        <p class="alert_message" style="position:relative;">
+          <img style="float:right;" height="30px" src="<c:url value="/images/skull_and_crossbones.png"/>" />
+          <b>Warning:</b> use with caution. If you flag a valid looking Scenario as your universal error or 
+          service error, you'll see valid data, unknowing of the mysteries and real errors 
+        that are working against you. This can lead to trouble. 
+        </p>
+	    
     </div>
     <div class="help_section">
 	    <a href="#twisting" name="twisting"></a>
@@ -313,31 +348,6 @@
       </p>
     </div>
     <div class="help_section_zebra">
-        <a href="#error_handling" name="error_handling"></a>
-        <h2>Error Handling</h2>
-        When you create a <strong>Scenario</strong>, you'll see two checkboxes. Here's what they do:
-        <h4>&#187; Service Scenario Error Response</h4>
-        <p>
-        If a service scenario is flagged as a 'Service Error Response', it will be returned by Mockey if an error occurs 
-        when calling the service. An error can be caused by a timeout from calling a real service or inability 
-        to parse data. 
-        </p>
-        
-        <h4>&#187; Universal Error Response</h4>
-        <p>
-        If a service scenario is flagged as a 'Universal Error Response', it will be returned by Mockey if an error occurs 
-        when calling a service <i>and</i> a scenario is not defined as a <i>Service Scenario Error Response</i>. The purpose of this 
-        feature is to provide one place to define a universal error message, without the need to create an error
-        scenario for each service. <b>Note:</b> Only one scenario out of all services can be flagged as universal. 
-        </p>
-        <p class="alert_message" style="position:relative;">
-          <img style="float:right;" height="30px" src="<c:url value="/images/skull_and_crossbones.png"/>" />
-          <b>Warning:</b> use with caution. If you flag a valid looking Scenario as your universal error or 
-          service error, you'll see valid data, unknowing of the mysteries and real errors 
-        that are working against you. This can lead to trouble. 
-        </p>
-    </div>
-    <div class="help_section">
 	    <a href="#good_things_to_test" name="good_things_to_test"></a>
 	    <h2>Good Things to Test</h2>
 	    <p>
@@ -349,7 +359,7 @@
 		    </ul>      
 	    </p>
     </div>
-    <div class="help_section_zebra">
+    <div class="help_section">
         <a href="#url_recommendations" name="url_recommendations"></a>
 	    <h2>URL Config Recommendations</h2>
 		<p>
@@ -373,7 +383,7 @@
 		    just define DEV_BASE_URL as an empty string. 
 	    </p>
 	</div>
-	<div class="help_section">
+	<div class="help_section_zebra">
 	    <a href="#robots" name="robots"></a>
 	
         <h2>Robots</h2>
@@ -381,7 +391,7 @@
         Mockey is not only for Humans. Robots can use it too. See <a href="service_api">here</a>.
         </p>
     </div>
-    <div class="help_section_zebra">
+    <div class="help_section">
 	    <a href="#inspector" name="inspector"></a>
         <h2>Request Inspector</h2>
         <p>
@@ -403,7 +413,7 @@
         </ul>
         </p>
     </div>
-	<div class="help_section">
+	<div class="help_section_zebra">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

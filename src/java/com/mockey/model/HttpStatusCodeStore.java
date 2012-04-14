@@ -73,7 +73,7 @@ public class HttpStatusCodeStore {
 		this.add(HttpServletResponse.SC_HTTP_VERSION_NOT_SUPPORTED 
 		, "505:the server does not support or refuses to support the HTTP protocol version that was used in the request message.");
 		this.add(HttpServletResponse.SC_INTERNAL_SERVER_ERROR 
-		, "500) indicating an error inside the HTTP server which prevented it from fulfilling the request.");
+		, "500:indicating an error inside the HTTP server which prevented it from fulfilling the request.");
 		this.add(HttpServletResponse.SC_LENGTH_REQUIRED 
 		, "411:the request cannot be handled without a defined Content-Length.");
 		this.add(HttpServletResponse.SC_METHOD_NOT_ALLOWED 
