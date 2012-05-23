@@ -123,7 +123,6 @@ public class ServiceDefinitionInfoServlet extends HttpServlet {
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE,
 						ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY);
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, "500");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE, "text/html;charset=utf-8");
 				JSONObject jsonScenarioObject = new JSONObject();
 				jsonScenarioObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID, 1);
 				jsonScenarioObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME, "Some scenario name");
@@ -184,8 +183,6 @@ public class ServiceDefinitionInfoServlet extends HttpServlet {
 						.getServiceResponseTypeAsString());
 				jsonServiceObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, tempService.getHangTime());
 				jsonServiceObject.put(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME, tempService.getRequestInspectorName());
-				jsonServiceObject.put(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE, tempService
-						.getHttpContentType());
 				for (Scenario tempScenario : tempService.getScenarios()) {
 					JSONObject jsonScenarioObject = new JSONObject();
 					jsonScenarioObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID, tempScenario.getId());

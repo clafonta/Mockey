@@ -27,6 +27,9 @@
  */
 package com.mockey.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -47,7 +50,9 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	private String requestMessage = "";
 	private String responseMessage = "";
 	private String matchStringArg = "";
+	private String responseHeader = "Accept-Language: en-US | Accept: text/plain";
 	private int httpResponseStatusCode = HttpServletResponse.SC_OK;
+
 	public String getScenarioName() {
 		return scenarioName;
 	}
@@ -86,7 +91,7 @@ public class Scenario extends StatusCheck implements PersistableItem {
 		sb.append("Match string : " + this.getMatchStringArg() + "\n");
 		sb.append("Request msg  : " + this.getRequestMessage() + "\n");
 		sb.append("Response msg : " + this.getResponseMessage() + "\n");
-		//sb.append("Response code: " + this. + "\n");
+		// sb.append("Response code: " + this. + "\n");
 		sb.append("Tag          : " + this.getTag() + "\n");
 		sb.append("Last visit   : " + this.getLastVisitSimple() + "\n");
 		return sb.toString();
@@ -159,4 +164,41 @@ public class Scenario extends StatusCheck implements PersistableItem {
 		this.httpResponseStatusCode = httpResponseStatusCode;
 	}
 
+	public void setResponseHeader(String responseHeader) {
+		this.responseHeader = responseHeader;
+	}
+
+	public String getResponseHeader() {
+		return this.responseHeader;
+	}
+
+	/**
+	 * Helper class to parse the header response into key value pairs.
+	 * 
+	 * @return
+	 */
+	public Map<String, String> getHeaderInfoHelper() {
+		Map<String, String> m = new HashMap<String,String>();
+		
+		String[] args = this.responseHeader.split("\\|");
+		
+		for(String k: args){
+			int beginIndex = k.indexOf(":");
+			if(beginIndex>-1){
+				String key = k.substring(0, beginIndex);
+				String val = k.substring(beginIndex+1);
+				m.put(key.trim(), val.trim());
+			}
+		}
+		return m;
+	}
+	public static void main(String[] args){
+		Scenario sce = new Scenario();
+		sce.setResponseHeader("Content-Type: text/html; charset=utf-8 | Cache-Control: max-age=3600");
+		Map<String, String> m = sce.getHeaderInfoHelper();
+		for(String k: m.keySet()){
+			System.out.println(k +":"+ m.get(k));
+		}
+		
+	}
 }

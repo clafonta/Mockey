@@ -46,12 +46,12 @@
 			        hangtime = $("#hang_time"),
 			        requestInspectorName = $("#request_inspector_name"),
 			        tag = $('#tag'),
-			        lastVisit = $("#last_visit"),
-			        serviceContentType = $("#service_http_content_type");
+			        lastVisit = $("#last_visit");
+			        
 			 
 			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(), tag: tag.val(),
-				   'realServiceUrl[]':  realServiceUrlValues, url: url.val(), httpContentType: serviceContentType.val(),
-				   lastVisit: lastVisit.val(), requestInspectorName: requestInspectorName.val(), hangTime: hangtime.val() } ,function(data){
+				   'realServiceUrl[]':  realServiceUrlValues, url: url.val(), lastVisit: lastVisit.val(), 
+				   requestInspectorName: requestInspectorName.val(), hangTime: hangtime.val() } ,function(data){
 					   
 					   if (data.result.redirect){
 						   window.location.replace(data.result.redirect);
@@ -161,24 +161,7 @@
                 <div>
                 <input type="text" id="last_visit" title="mm/dd/yyyy" class="text ui-corner-all ui-widget-content" style="width:250px;" name="lastvisit" maxlength="20" size="30px" value="<mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/>" />
                 </div>                                
-                <div class="tinyfieldset">The last time this service was called.</div>
-                <hr>
-                <label>HTTP header definition:</label>
-                <div>
-	            <select style="width:400px;" id="service_http_content_type" name="httpContentType">
-	                        <option value="" <c:if test="${mockservice.httpContentType eq ''}">selected="selected"</c:if>>[select]</option>
-                            <option value="text/xml;" <c:if test="${mockservice.httpContentType eq 'text/xml;'}">selected="selected"</c:if>>text/xml;</option>
-                            <option value="text/plain;" <c:if test="${mockservice.httpContentType eq 'text/plain;'}">selected="selected"</c:if>>text/plain;</option>
-                            <option value="text/css;" <c:if test="${mockservice.httpContentType eq 'text/css;'}">selected="selected"</c:if>>text/css;</option>
-                            <option value="application/json;" <c:if test="${mockservice.httpContentType eq 'application/json;'}">selected="selected"</c:if>>application/json;</option>
-                            <option value="application/json;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'application/json;charset=utf-8'}">selected="selected"</c:if>>application/json;charset=utf-8</option>
-                            <option value="text/html;charset=utf-8" <c:if test="${mockservice.httpContentType eq 'text/html;charset=utf-8'}">selected="selected"</c:if>>text/html;charset=utf-8</option>
-                            <option value="text/html; charset=ISO-8859-1" <c:if test="${mockservice.httpContentType eq 'text/html; charset=ISO-8859-1'}">selected="selected"</c:if>>text/html; charset=ISO-8859-1</option>
-                            <!-- <option value="other" <c:if test="${mockservice.httpContentType eq 'other'}">selected="selected"</c:if>>other</option>  -->
-                          </select>
-               </div>
-	           <div class="tinyfieldset">For example: <span style="font-style: italic;">text/xml; utf-8</span>, <span
-                                style="font-style: italic;">application/json;</span>, etc. </div>
+                <div class="tinyfieldset">The last time this service was called.</div>                
                <hr>
                <label>Request inspector:</label>
                <div>

@@ -134,6 +134,14 @@ public class ScenarioServlet extends HttpServlet {
 			}
 		}
 
+		if (req.getParameter("responseHeader") != null) {
+			String responseHeader = req.getParameter("responseHeader");
+			if(responseHeader!=null){
+				scenario.setResponseHeader(responseHeader);
+			}
+			
+		}
+
 		if (req.getParameter("responseMessage") != null) {
 			scenario.setResponseMessage(req.getParameter("responseMessage"));
 		}

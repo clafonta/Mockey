@@ -161,7 +161,6 @@ public class ServiceConfigurationServlet extends HttpServlet {
 						ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY);
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, "500");
 				jsonResultObject.put(ServiceConfigurationAPI.API_TRANSIENT_STATE, "true");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE, "application/json");
 				jsonResponseObject.put("result", jsonResultObject);
 				apiResponse.setExample(jsonResponseObject.toString());
 			} catch (Exception e) {
@@ -209,7 +208,6 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		String scenarioId = req.getParameter(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID);
 		String scenarioName = req.getParameter(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME);
 		String requestInspectorName = req.getParameter(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME);
-		String httpContentType = req.getParameter(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE);
 		String serviceResponseType = req.getParameter(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
 		String defaultUrlIndex = req.getParameter("defaultUrlIndex");
 		String transientState = req.getParameter(ServiceConfigurationAPI.API_TRANSIENT_STATE);
@@ -264,13 +262,6 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		}
 
 		try {
-			if (httpContentType != null) {
-				service.setHttpContentType(httpContentType);
-			}
-		} catch (Exception e) {
-			log.debug("Updating service without a 'hang time' value");
-		}
-		try {
 			if (scenarioId != null) {
 				service.setDefaultScenarioId(new Long(scenarioId));
 			} else {
@@ -300,7 +291,6 @@ public class ServiceConfigurationServlet extends HttpServlet {
 						.getServiceResponseTypeAsString());
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, service.getHangTime());
 				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME, service.getRequestInspectorName());
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE, service.getHttpContentType());
 				jsonResponseObject.put("result", jsonResultObject);
 			} else {
 				
@@ -311,7 +301,6 @@ public class ServiceConfigurationServlet extends HttpServlet {
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME + ":"+ requestInspectorName);
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID + ":" + scenarioId + " ");
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME + ":" + scenarioName + " ");
-				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_CONTENT_TYPE + ":" + httpContentType + " ");
 				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE + ":" + serviceResponseType + " ");
 				outputInfo.append("defaultUrlIndex" + ":" + defaultUrlIndex + " ");
 				outputInfo.append(ServiceConfigurationAPI.API_TRANSIENT_STATE + ":" + transientState + " ");

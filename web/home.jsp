@@ -620,19 +620,9 @@ $(document).ready( function() {
 	                                </div>
                                    </div>
                                  </div>
-                                 
-								
                                  <div class="not-top border-top" style="padding-top:1em;">
 			                       <strong>Hang time (milliseconds):</strong> ${mockservice.hangTime} <mockey-tag:editServiceLink serviceId="${mockservice.id}"/>
 	                             </div>
-	                             <div>
-			                       <strong>Content type:</strong>   
-	                    			<c:choose>
-	                    			<c:when test="${!empty mockservice.httpContentType}">${mockservice.httpContentType}</c:when>
-	                    			<c:otherwise><span style="color:red;">not set</span></c:otherwise>
-	                    			</c:choose>
-			                     </div>
-			                     
                               </div>
                               </div>
                               </c:forEach>

@@ -32,10 +32,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 import org.json.JSONObject;
 
 import com.mockey.ClientExecuteProxy;
@@ -64,7 +67,6 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	private Long defaultScenarioId;
 	private int defaultRealUrlIndex = 0;
 	private Long errorScenarioId;
-	private String httpContentType = "text/html;charset=utf-8";
 	private int hangTime = 0;
 	private String requestInspectorName;
 	private OrderedMap<Scenario> scenarios = new OrderedMap<Scenario>();
@@ -198,13 +200,6 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		this.saveOrUpdateRealServiceUrl(new Url(realServiceUrl));
 	}
 
-	public String getHttpContentType() {
-		return httpContentType;
-	}
-
-	public void setHttpContentType(String httpContentType) {
-		this.httpContentType = httpContentType;
-	}
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -220,7 +215,6 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		}
 
 		sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
-		sb.append("HTTP Content:").append(this.getHttpContentType()).append("\n");
 		sb.append("Hang time:");
 		sb.append(this.getHangTime());
 		sb.append("\n");
@@ -475,6 +469,14 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			response.setBody(scenario.getResponseMessage());
 			response.setHttpResponseStatusCode(scenario.getHttpResponseStatusCode());
 			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+			
+			Map<String,String> headerInfo = scenario.getHeaderInfoHelper();
+			List<Header> headerList = new ArrayList<Header>();
+			for(String k: headerInfo.keySet()){
+				headerList.add(new BasicHeader(k,headerInfo.get(k)));
+			}
+			response.setHeaders(headerList.toArray(new Header[headerList.size()]));
+			
 		} else {
 			response.setBody("NO SCENARIO SELECTED");
 		}

@@ -112,8 +112,6 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
 			serviceElement.setAttribute("tag", getSafeForXmlOutputString(mockServiceBean.getTag()));
 			serviceElement.setAttribute("last_visit", getSafeForXmlOutputString("" + mockServiceBean.getLastVisit()));
-			serviceElement.setAttribute("http_content_type",
-					getSafeForXmlOutputString("" + mockServiceBean.getHttpContentType()));
 			serviceElement.setAttribute("default_scenario_id",
 					getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId())));
 			serviceElement.setAttribute("error_scenario_id",
@@ -143,17 +141,26 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				scenarioElement.setAttribute("last_visit", getSafeForXmlOutputString("" + scenario.getLastVisit()));
 				scenarioElement.setAttribute("http_resp_status_code",
 						getSafeForXmlOutputString("" + scenario.getHttpResponseStatusCode()));
+				
 				Element scenarioMatchStringElement = document.createElement("scenario_match");
 				CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
 						.getMatchStringArg()));
 				scenarioMatchStringElement.appendChild(cdataMatchElement);
 				scenarioElement.appendChild(scenarioMatchStringElement);
 
+				//responseHeader
 				Element scenarioResponseElement = document.createElement("scenario_response");
 				CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario
 						.getResponseMessage()));
 				scenarioResponseElement.appendChild(cdataResponseElement);
 				scenarioElement.appendChild(scenarioResponseElement);
+				
+				Element scenarioResponseHeaderElement = document.createElement("scenario_response_header");
+				CDATASection cdataResponseHeaderElement = document.createCDATASection(getSafeForXmlOutputString(scenario
+						.getResponseHeader()));
+				scenarioResponseHeaderElement.appendChild(cdataResponseHeaderElement);
+				scenarioElement.appendChild(scenarioResponseHeaderElement);
+				
 				serviceElement.appendChild(scenarioElement);
 			}
 		}

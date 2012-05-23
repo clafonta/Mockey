@@ -68,6 +68,7 @@ public class MockeyXmlFileConfigurationParser {
 	private final static String SCENARIO_MATCH = ROOT_SERVICE_SCENARIO + "/scenario_match";
 	private final static String SCENARIO_REQUEST = ROOT_SERVICE_SCENARIO + "/scenario_request";
 	private final static String SCENARIO_RESPONSE = ROOT_SERVICE_SCENARIO + "/scenario_response";
+	private final static String SCENARIO_RESPONSE_HEADER = ROOT_SERVICE_SCENARIO + "/scenario_response_header";
 	private static Digester fullSetDigester = null;
 	static {
 		MockeyXmlFileConfigurationParser.fullSetDigester = new Digester();
@@ -96,7 +97,6 @@ public class MockeyXmlFileConfigurationParser {
 
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "name", "serviceName");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "description", "description");
-		fullSetDigester.addSetProperties(ROOT_SERVICE, "http_content_type", "httpContentType");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "request_inspector_name", "requestInspectorName");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "hang_time", "hangTime");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "url", "url");
@@ -125,6 +125,8 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
+		fullSetDigester.addBeanPropertySetter(SCENARIO_RESPONSE_HEADER, "responseHeader");
+		
 		
 		fullSetDigester.addSetNext(ROOT_SERVICE_SCENARIO, "saveOrUpdateScenario");
 

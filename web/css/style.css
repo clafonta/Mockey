@@ -422,10 +422,12 @@ div.not-top {margin-top:2em;}
  padding:2px 5px;
  background-color:#FFFBF2;
 }
+
 /* EDIT SCENARIO FORM */
 .edit-scenario-name-label, .edit-scenario-match-label, .edit-scenario-response-label {font-weight:bold; font-size:1.0em;}
 .edit-scenario-name-value, .edit-scenario-match-value {margin:0.8em 0; padding:0.4em; width:95%; }
 .edit-scenario-response-value {display:block;margin-bottom:0pt;width:100%; font-size:0.2em;height: 300px;font-family: Courier New, monospace;font-weight:100; font-stretch: ultra-condensed;}
+.edit-scenario-header {width:250px;}
 .noborder_textarea {border:none; width:100%; height:100px;overflow: auto;}
 .intro_txt {
 font-family: Georgia, serif;
@@ -526,7 +528,7 @@ border-width: 0;
 padding: 2px;
 }
 
-            
+          
 .thumbnail:hover span{ /*CSS for enlarged image on hover*/
 visibility: visible;
 top: 0;

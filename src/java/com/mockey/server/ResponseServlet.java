@@ -30,14 +30,13 @@ package com.mockey.server;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.protocol.HTTP;
+import org.apache.http.Header;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;
@@ -118,77 +117,18 @@ public class ResponseServlet extends HttpServlet {
 			// Or not.
 		}
 
-		// TODO:
-		// return all headers and cookies to allow setup of
-		// services and/or scenarios copied/created from History.
-		final String charSet = getServiceCharSet(service);
-
-		resp.setCharacterEncoding(charSet); // "UTF-8");
-		resp.setContentType(service.getHttpContentType());
 		if (!(service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY)) {
-
-			resp.setContentType(service.getHttpContentType());
-			byte[] myCharSetBytes = response.getBody().getBytes(charSet);
+			for(Header h: response.getHeaders()){
+				resp.setHeader(h.getName(), h.getValue());	
+			}
+			byte[] myCharSetBytes = response.getBody().getBytes();
 			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
 			resp.getOutputStream().flush();
 		} else {
-
+			// HEADERS
 			resp.setStatus(response.getHttpResponseStatusCode());
-
 			response.writeToOutput(resp);
 		}
-	}
-
-	/**
-	 * Determines the proper CharSet for the given service and returns it. If
-	 * there is an issue or no charset is specified for the service, then the
-	 * default charset ISO-8859-1 is returned.
-	 * 
-	 * @param service
-	 * @return the charset for this service.
-	 */
-	private String getServiceCharSet(Service service) {
-		String charSet = HTTP.ISO_8859_1;
-
-		try {
-			// check content type for charset and try to use that if its
-			// there...
-			// example: "application/json;charset=utf-8" should use the charset
-			// "utf-8"
-			if (service.getHttpContentType() != null) {
-				final String contentTypeLower = service.getHttpContentType().toLowerCase();
-				int charsetIndex = contentTypeLower.indexOf("charset=");
-
-				if (charsetIndex >= 0) {
-					charSet = contentTypeLower.substring(charsetIndex + "charset=".length());
-
-					// content-type can have multiple attributes so we make sure
-					// that if there
-					// are multiple we trim off any that follow the charset
-					int trailingSemiColonIdx = charSet.indexOf(';');
-					if (trailingSemiColonIdx > 0) {
-						charSet = charSet.substring(0, trailingSemiColonIdx);
-					}
-
-					// kill trailing white space if any
-					charSet = charSet.trim();
-
-					// make sure it is a valid charset before returning it (note
-					// charSet
-					// names are case insensitive so using the lowercase version
-					// is OK)
-					Charset.forName(charSet);
-				}
-			}
-		} catch (Exception e) {
-			// malformed content types or unsupported charsets will end up here
-			// not much we can do other than default to the regular charset
-			charSet = HTTP.ISO_8859_1;
-			logger.info("Unable to use charset for service \"" + service.getServiceName() + "\" from content-type \""
-					+ service.getHttpContentType() + "\". Defaulting to ISO-8859-1.", e);
-		}
-
-		return charSet;
 	}
 
 	private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response,

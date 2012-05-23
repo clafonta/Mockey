@@ -275,11 +275,6 @@ public class ServiceSetupServlet extends HttpServlet {
 			service.setUrl(req.getParameter("url"));
 		}
 
-		// CONTENT TYPE - optional
-		if (req.getParameter("httpContentType") != null) {
-			service.setHttpContentType(req.getParameter("httpContentType"));
-		}
-
 		Map<String, String> errorMap = ServiceValidator.validate(service);
 
 		if ((errorMap != null) && (errorMap.size() == 0)) {

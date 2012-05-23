@@ -41,10 +41,4 @@ public interface ServiceConfigurationAPI {
 	public static final String API_SERVICE_RESPONSE_TYPE_VALUE_DYNAMIC = "dynamic";
 	public static final String API_SERVICE_HANGTIME = "hangTime";
 	public static final String API_SERVICE_REQUEST_INSPECTOR_NAME = "requestInspectorName";
-	public static final String API_SERVICE_CONTENT_TYPE = "httpContentType";
-	
-
-
-
-
 }

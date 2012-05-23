@@ -2,6 +2,7 @@ package com.mockey.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.testng.annotations.Test;
 
@@ -66,5 +67,13 @@ public class ScenarioTest {
 		
 		assert (!scenario1.hasSameNameAndResponse(scenario2)) : "Scenarios should NOT be the same (match == false)";
 
+	}
+	
+	@Test 
+	public void testdHeaderValue() {
+		Scenario scenario1 = new Scenario();
+		scenario1.setResponseHeader("Content-Type: text/html; charset=utf-8 | Cache-Control: max-age=3600");
+		Map<String, String> m = scenario1.getHeaderInfoHelper();
+		assert (m.get("Content-Type").equals("text/html; charset=utf-8")) : "Expecting 'text/html; charset=utf-8' but got " + m.get("Content-Type");
 	}
 }
