@@ -57,7 +57,9 @@ $(document).ready( function() {
     <h2>
 	Image Depot
 	</h2>
-    <i>"Why is this here?"</i> The image depot helps serve up images when you're offline or you need to test different image sizes in your app. 
+	<p>
+    <i>"Why is this here?"</i> The image depot helps serve up images when you're offline or you need to test different image sizes in your app.
+    </p> 
     <c:choose>
         
         <c:when test="${not empty imageList}">
@@ -96,7 +98,7 @@ $(document).ready( function() {
         
         </c:when>
         <c:otherwise>
-        <p class="help_info">No files here.</p>
+        <p class="conflict_message">No images/files here.</p>
         </c:otherwise>
     </c:choose>
 	    <div id="file-uploader-yeah">       

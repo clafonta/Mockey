@@ -1,0 +1,102 @@
+@font-face {
+	font-family: 'IcoMoon';
+	src: url('IcoMoon.eot');
+	src: url('IcoMoon.eot?#iefix') format('embedded-opentype'),
+		url('IcoMoon.svg#IcoMoon') format('svg'),
+		url('IcoMoon.woff') format('woff'),
+		url('IcoMoon.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+	font-family: 'IcoMoon';
+	content: attr(data-icon);
+	speak: none;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+[class^="icon-"]:before, [class*=" icon-"]:before {
+	font-family: 'IcoMoon';
+	font-style: normal;
+	speak: none;
+}
+.icon-home:before {
+	content: "\0048";
+}
+.icon-pencil:before {
+	content: "\0045";
+}
+.icon-search:before {
+	content: "\0046";
+}
+.icon-remove:before {
+	content: "\0054";
+}
+.icon-cancel:before {
+	content: "\0026";
+}
+.icon-info:before {
+	content: "\0027";
+}
+.icon-help:before {
+	content: "\0028";
+}
+.icon-arrow-up:before {
+	content: "\0029";
+}
+.icon-arrow-right:before {
+	content: "\002a";
+}
+.icon-arrow-down:before {
+	content: "\002b";
+}
+.icon-arrow-left:before {
+	content: "\002c";
+}
+.icon-mobile:before {
+	content: "\002d";
+}
+.icon-cancel-2:before {
+	content: "\002e";
+}
+.icon-download:before {
+	content: "\0022";
+}
+.icon-upload:before {
+	content: "\0023";
+}
+.icon-wrench:before {
+	content: "\0024";
+}
+.icon-tab:before {
+	content: "\0025";
+}
+.icon-picture:before {
+	content: "\002f";
+}
+.icon-power:before {
+	content: "\0030";
+}
+.icon-plus:before {
+	content: "\0031";
+}
+.icon-enter:before {
+	content: "\0032";
+}
+.icon-cog:before {
+	content: "\0033";
+}
+.icon-backspace:before {
+	content: "\0034";
+}
+.icon-backspace-2:before {
+	content: "\0035";
+}
+.icon-tab-2:before {
+	content: "\0036";
+}
+.icon-glasses:before {
+	content: "\0037";
+}

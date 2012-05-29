@@ -473,7 +473,7 @@ $(document).ready( function() {
 				                                <span style="float:right;">
 				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a>
 				                                </span>
-				                                <div class="count-box">${status.count}</div>
+				                                
 				                                
 												<div style="margin-bottom:0.5em;">
 												 <mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
@@ -490,7 +490,7 @@ $(document).ready( function() {
 						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>
 						                          </c:if>
 						                        </div>
-												<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>					
+												<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>	
 											</div>
 								    	</c:forEach>
 								    	
@@ -584,7 +584,7 @@ $(document).ready( function() {
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status"  >
 		                                    <div class="service-detail-scenario-list-item">
-		                                    <div class="count-box" style="margin-left:-5px;margin-top:-2px;">${status.count}</div>
+		                                    
 		                                    <div style="padding-top: 0.5em;" id="service-scenario-info_${scenario.id}_${mockservice.id}">
 		                                      <c:choose>
 		                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
@@ -596,11 +596,10 @@ $(document).ready( function() {
 		                                          <c:set var="on_class" value="hide" />
 		                                        </c:otherwise>
 		                                      </c:choose>
-		                                      
+		                                      <span style="float:right;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
 		                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
 		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
 		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="60"/></a>
-		                                      <span> <a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
 		                                    </div>
 		                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
 		                                    </div>

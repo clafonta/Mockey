@@ -21,4 +21,6 @@ ${scenario.lastVisitSimple}</span>
 			${tagArg}
 		</span>	  
 </c:forEach>
+<p class="count-box">Service ID: ${serviceId}, Scenario ID: ${scenario.id} </p>  
+
 </div>

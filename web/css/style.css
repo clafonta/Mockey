@@ -142,7 +142,7 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .info_message a {text-decoration: underline;}
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;}
-.count-box {border: thin solid #bdbdbd; background: #EF959E; margin-left:-0.8em; margin-top:-0.6em; margin-bottom:0.5em; padding:0.1em;color:#FFFFFF; width:18px; font-size:10px; text-align:center;}
+.count-box { margin-top: 0.5em;  padding:0.1em; font-size:10px; text-align:left;}
 .tag_word_group {
     line-height:18px;
     padding-top:5px;
@@ -304,7 +304,7 @@ div.grippie {background:#EEEEEE url(../images/grippie.png) no-repeat scroll cent
 .destination_selected{background-color:#68FA7E;}
 .hide { display:none;}
 .show { display:block;} 
-.remove_grey {padding: 0 0.5em 0 0.2em; color:#C0C0C0;text-decoration:none;font-size:80%;margin-bottom:02em;}
+.remove_grey {padding: 0 0.5em 0 0.2em; color:#444;text-decoration:none;font-size:80%;margin-bottom:02em;}
 .remove_grey:hover{color:#FF0000;}
 label, input { display:inline; }
 label {font-weight:500;}

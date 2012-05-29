@@ -50,7 +50,8 @@ public class FileViewServlet extends HttpServlet {
 		File image = fileManager.getImageFile(fileName);
 
 		// Get the MIME type of the image
-		String mimeType = sc.getMimeType(fileName);
+		// Hack: looks like getMimeType in Tomcat 6.0xx doesn't like uppercase .PNG!
+		String mimeType = sc.getMimeType(fileName.toLowerCase());
 		if (mimeType == null) {
 			sc.log("Could not get MIME type of " + image.getName());
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

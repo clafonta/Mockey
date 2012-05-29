@@ -19,4 +19,5 @@ ${service.lastVisitSimple}</span>
 			${tagArg}
 		</span>	  
 </c:forEach>
+<p class="count-box">Service ID: ${service.id}</p>  
 </div>

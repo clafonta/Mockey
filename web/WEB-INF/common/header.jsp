@@ -12,6 +12,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/jquery-ui-1.8.1.custom/css/flick/jquery-ui-1.8.1.custom.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/javascript/fileuploader/fileuploader.css" />" />
+<link rel="stylesheet" type="text/css" href="<c:url value="/icomoon/style.css" />" />
 <%
 // Only for DEV. This polls every few seconds and will refressh this page's CSS
 //<script type="text/javascript" src="<c:url value="/javascript/cssrefresh.js" />"></script>
@@ -284,19 +285,19 @@ $(document).ready(function() {
 				href="<c:url value="/home" />">Services  <span class="sf-sub-indicator"> &#187;</span></a>
 				<ul>
 					<li <c:if test="${currentTab == 'setup'}">class="current"</c:if>><a title="Service Setup - create new service"
-						href="<c:url value="/setup" />">Create a Service</a></li>
+						href="<c:url value="/setup" />"><i aria-hidden="true" class="icon-plus"></i>&nbsp;Create a Service</a></li>
 					<li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
 					<a title="Merge - combine services" href="<c:url value="/merge" />"
-						style="">Merge Services</a></li>
+						style=""><i aria-hidden="true" class="icon-tab-2"></i>&nbsp;Merge Services</a></li>
 					<li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
 	                <a title="Real URL injecting" href="<c:url value="/inject" />"
-	                    style="">URL Injection</a></li>
+	                    style=""><i aria-hidden="true" class="icon-enter"></i>&nbsp;URL Injection</a></li>
 					<li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
 	                <a title="Twisting" href="<c:url value="/twisting/setup" />"
-	                    style="">Twisting</a></li>
+	                    style=""><i aria-hidden="true" class="icon-tab"></i>&nbsp;Twisting</a></li>
 	                <li <c:if test="${currentTab == 'filesysteminfo'}">class="current"</c:if>>
 	                <a title="Image Depot" href="<c:url value="/filesysteminfo" />"
-	                    style="">Image Depot</a></li>   
+	                    style=""><i aria-hidden="true" class="icon-picture"></i>&nbsp;Image Depot</a></li>   
 				</ul>
 			</li>
 			<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
@@ -307,13 +308,18 @@ $(document).ready(function() {
 				<a href="<c:url value="/proxy/settings" />">
 				Proxy</a></li>
 			<li><a id="flush" href="#">Flush</a></li>
-	        <li class="<c:if test="${currentTab == 'help'}">current</c:if>"><a
-	            href="<c:url value="/help" />">Help  <span class="sf-sub-indicator"> &#187;</span></a>
+	        <li class="<c:if test="${currentTab == 'help'}">current</c:if>">
+	        <a href="<c:url value="/help" />">Help  <span class="sf-sub-indicator"> &#187;</span></a>
 	            <ul>
 	                <li <c:if test="${currentTab == 'api'}">class="current"</c:if>><a title="Configuration API"
-	                    href="<c:url value="/service_api" />">Configuration API</a></li>
+	                    href="<c:url value="/service_api" />"><i aria-hidden="true" class="icon-cog"></i>&nbsp;Configuration API</a></li>
 	                <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="Debug Console"
-                        href="<c:url value="/console" />">Debug Console</a></li>
+                        href="<c:url value="/console" />"><i aria-hidden="true" class="icon-glasses"></i>&nbsp;Debug Console</a></li>
+                    <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="View for feature phones"
+                        href="<c:url value="/mobi" />">
+                        <i aria-hidden="true" class="icon-mobile"></i>&nbsp;Mobile
+                        </a>
+                        </li>
 	            </ul>
 	        </li>
 		</ul>
