@@ -10,3 +10,5 @@ p{margin: 0.5em; padding: 1px;}
 a{color: #00F;text-decoration:underline}
 div#container{width:380px;}
 div{margin-top: 1px }
+.hide { display:none;}
+.show { display:block;} 

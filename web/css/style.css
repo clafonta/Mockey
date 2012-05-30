@@ -451,6 +451,7 @@ line-height: 1.4em;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   border-radius: 4px;
+  font-weight:bolder;
 }
 .hhButtonGreen img {
     border:none;
@@ -470,7 +471,7 @@ line-height: 1.4em;
 }
 .hhButtonRed {
   background-color: #E80C24;
-  color: #FFFFFF;
+  color: #BDBDBD;
 }
 
 .hhButton:hover, .hhButtonGreen:hover, .hhButtonRed:hover, .hhButtonBlue:hover {

@@ -471,7 +471,7 @@ $(document).ready( function() {
 				                             	</c:url>
 				                             	
 				                                <span style="float:right;">
-				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#">x</a>
+				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#"><i aria-hidden="true" class="icon-backspace"></i></a>
 				                                </span>
 				                                
 				                                
@@ -506,7 +506,7 @@ $(document).ready( function() {
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
 			                                <div id="plan_${plan.id}" class="parentform" >
-			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#">x</a></span>
+			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#"><i aria-hidden="true" class="icon-backspace"></i></a></span>
 			                                
 			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
 			                                <mockey-tag:statusCheckByServicePlan servicePlan="${plan}"/>
@@ -583,25 +583,24 @@ $(document).ready( function() {
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status"  >
-		                                    <div class="service-detail-scenario-list-item">
-		                                    
-		                                    <div style="padding-top: 0.5em;" id="service-scenario-info_${scenario.id}_${mockservice.id}">
-		                                      <c:choose>
-		                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
-		                                          <c:set var="off_class" value="hide" />
-		                                          <c:set var="on_class" value="" />
-		                                        </c:when>
-		                                        <c:otherwise>
-		                                          <c:set var="off_class" value="" />
-		                                          <c:set var="on_class" value="hide" />
-		                                        </c:otherwise>
-		                                      </c:choose>
-		                                      <span style="float:right;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey">x</a> </span>
-		                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
-		                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
-		                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="60"/></a>
-		                                    </div>
-		                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
+		                                    <div class="service-detail-scenario-list-item" id="service-scenario-info_${scenario.id}_${mockservice.id}">
+			                                    <span style="float:right;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-backspace"></i></a> </span>
+			                                    <div style="padding-top: 0.5em;">
+			                                      <c:choose>
+			                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
+			                                          <c:set var="off_class" value="hide" />
+			                                          <c:set var="on_class" value="" />
+			                                        </c:when>
+			                                        <c:otherwise>
+			                                          <c:set var="off_class" value="" />
+			                                          <c:set var="on_class" value="hide" />
+			                                        </c:otherwise>
+			                                      </c:choose>
+			                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
+			                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
+			                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="60"/></a>
+			                                    </div>
+			                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
 		                                    </div>
 		                                  </c:forEach>
 		                                  </c:when>

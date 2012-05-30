@@ -66,10 +66,10 @@ public class MobiServlet extends HttpServlet {
             list.add(store.getServiceById(id));
             req.setAttribute("services", list);
         }else {
-            req.setAttribute("services", store.getServices());
+            req.setAttribute("services", Util.orderAlphabeticallyByServiceName(store.getServices()));
             
         }
-        req.setAttribute("allservices", store.getServices());
+        req.setAttribute("allservices", Util.orderAlphabeticallyByServiceName(store.getServices()));
         RequestDispatcher dispatch = req.getRequestDispatcher("mobi.jsp");
         dispatch.forward(req, resp);
     }
@@ -100,10 +100,10 @@ public class MobiServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            req.setAttribute("services", store.getServices());
+            req.setAttribute("services", Util.orderAlphabeticallyByServiceName(store.getServices()));
         }
-       
-        req.setAttribute("allservices", store.getServices());
+        
+        req.setAttribute("allservices", Util.orderAlphabeticallyByServiceName(store.getServices()));
         RequestDispatcher dispatch = req.getRequestDispatcher("mobi.jsp");
         dispatch.forward(req, resp);
         
