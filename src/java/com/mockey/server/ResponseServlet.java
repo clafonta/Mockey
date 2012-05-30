@@ -72,14 +72,15 @@ public class ResponseServlet extends HttpServlet {
 	 * @see com.mockey.model.Service#getRequestInspectorName()
 	 */
 	@SuppressWarnings("static-access")
-	public void service(HttpServletRequest originalHttpReqFromClient, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void service(HttpServletRequest originalHttpReqFromClient,
+			HttpServletResponse resp) throws ServletException, IOException {
 
 		String originalHttpReqURI = originalHttpReqFromClient.getRequestURI();
 
 		String contextRoot = originalHttpReqFromClient.getContextPath();
 		if (originalHttpReqURI.startsWith(contextRoot)) {
-			originalHttpReqURI = originalHttpReqURI.substring(contextRoot.length(), originalHttpReqURI.length());
+			originalHttpReqURI = originalHttpReqURI.substring(
+					contextRoot.length(), originalHttpReqURI.length());
 		}
 
 		Url serviceUrl = new Url(originalHttpReqURI);
@@ -94,18 +95,20 @@ public class ResponseServlet extends HttpServlet {
 		// BEGIN - REQUEST INSPECTORS
 		// Check for Global
 		PluginStore pluginStore = PluginStore.getInstance();
-		RequestInspectionResult inspectionMessage = pluginStore.processRequestInspectors(service,
-				originalHttpReqFromClient);
+		RequestInspectionResult inspectionMessage = pluginStore
+				.processRequestInspectors(service, originalHttpReqFromClient);
 
 		// END INSPECTORS
 		// ************************************************************************
 		// STEP #2) Process your original request.
 		// ************************************************************************
-		RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
+		RequestFromClient request = new RequestFromClient(
+				originalHttpReqFromClient);
 		Url urlToExecute = service.getDefaultRealUrl();
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
 		ResponseFromService response = service.execute(request, urlToExecute);
-		logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr(), inspectionMessage);
+		logRequestAsFulfilled(service, request, response,
+				originalHttpReqFromClient.getRemoteAddr(), inspectionMessage);
 
 		try {
 			// Wait for a X hang time seconds.
@@ -118,8 +121,10 @@ public class ResponseServlet extends HttpServlet {
 		}
 
 		if (!(service.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY)) {
-			for(Header h: response.getHeaders()){
-				resp.setHeader(h.getName(), h.getValue());	
+			if (response.getHeaders() != null) {
+				for (Header h : response.getHeaders()) {
+					resp.setHeader(h.getName(), h.getValue());
+				}
 			}
 			byte[] myCharSetBytes = response.getBody().getBytes();
 			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
@@ -131,10 +136,13 @@ public class ResponseServlet extends HttpServlet {
 		}
 	}
 
-	private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response,
-			String ip, RequestInspectionResult inspectionResult) throws UnsupportedEncodingException {
+	private void logRequestAsFulfilled(Service service,
+			RequestFromClient request, ResponseFromService response, String ip,
+			RequestInspectionResult inspectionResult)
+			throws UnsupportedEncodingException {
 		FulfilledClientRequest fcr = new FulfilledClientRequest();
-		fcr.setRawRequest((response.getRequestUrl() != null) ? response.getRequestUrl().toString() : "");
+		fcr.setRawRequest((response.getRequestUrl() != null) ? response
+				.getRequestUrl().toString() : "");
 		fcr.setRequestorIP(ip);
 		fcr.setServiceId(service.getId());
 		fcr.setServiceName(service.getServiceName());
@@ -147,7 +155,8 @@ public class ResponseServlet extends HttpServlet {
 
 		fcr.setServiceResponseType(service.getServiceResponseType());
 		if (response.getOriginalRequestUrlBeforeTwisting() != null) {
-			fcr.setOriginalUrlBeforeTwisting(response.getOriginalRequestUrlBeforeTwisting().toString());
+			fcr.setOriginalUrlBeforeTwisting(response
+					.getOriginalRequestUrlBeforeTwisting().toString());
 		}
 		fcr.setRequestInspectionResult(inspectionResult);
 		store.saveOrUpdateFulfilledClientRequest(fcr);

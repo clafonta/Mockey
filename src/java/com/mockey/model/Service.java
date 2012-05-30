@@ -514,6 +514,13 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 				logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
 				messageMatchFound = scenario.getResponseMessage();
 				httpResponseStatus = scenario.getHttpResponseStatusCode();
+				// SET HEADERS
+				Map<String,String> headerInfo = scenario.getHeaderInfoHelper();
+				List<Header> headerList = new ArrayList<Header>();
+				for(String k: headerInfo.keySet()){
+					headerList.add(new BasicHeader(k,headerInfo.get(k)));
+				}
+				response.setHeaders(headerList.toArray(new Header[headerList.size()]));
 				break;
 			}
 		}
