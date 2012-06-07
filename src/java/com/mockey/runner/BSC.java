@@ -39,5 +39,6 @@ public interface BSC {
 	public static final String TYPE = "type";
 	public static final String ACTION = "action";
 	public static final String URL = "url";
+	public static final String HEADLESS = "headless";
 
 }

@@ -28,9 +28,14 @@
 package com.mockey.runner;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Properties;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -69,6 +74,10 @@ public class JettyRunner {
 		jsap.registerParameter(new FlaggedOption(BSC.FILTERTAG, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'F',
 				BSC.FILTERTAG,
 				"Filter tag for services and scenarios, useful for 'only use information with this tag'. "));
+
+		jsap.registerParameter(new FlaggedOption(BSC.HEADLESS, JSAP.BOOLEAN_PARSER, "false", JSAP.NOT_REQUIRED, 'H',
+				BSC.HEADLESS,
+				"Headless flag. Default is 'false'. Set to 'true' if you do not want Mockey to spawn a browser thread upon startup."));
 
 		// parse the command line options
 		JSAPResult config = jsap.parse(args);
@@ -118,10 +127,11 @@ public class JettyRunner {
 		String url = String.valueOf(config.getString(BSC.URL));
 		String filterTag = config.getString(BSC.FILTERTAG);
 		String fTagParam = "";
+		boolean headless = config.getBoolean(BSC.HEADLESS);
 		if (filterTag != null) {
 			fTagParam = "&" + BSC.FILTERTAG + "=" + URLEncoder.encode(filterTag, "UTF-8");
 		}
- 
+
 		// Startup displays a big message and URL redirects after x seconds.
 		// Snazzy.
 		String initUrl = HOMEURL;
@@ -142,9 +152,22 @@ public class JettyRunner {
 
 		}
 
-		new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();
-
-		server.join();
+		if (!headless) {
+			new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();
+			server.join();
+		}else {
+			initializeMockey(new URL("http://127.0.0.1"+":"+String.valueOf(port)+initUrl));
+		}
+	}
+	
+	// Initialize
+	private static void initializeMockey(URL initUrl) throws Exception {
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+	    HttpGet httpget = new HttpGet(initUrl.toString());
+	    HttpResponse response = httpclient.execute(httpget);
+	    HttpEntity entity = response.getEntity();
+	    System.out.println("Initialized mockey with request: " + initUrl.toString());
+	    System.out.println("Response: "+ entity.getContent());
 	}
 
 }
