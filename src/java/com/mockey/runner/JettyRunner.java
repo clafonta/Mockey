@@ -41,11 +41,13 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.SimpleJSAP;
+import com.martiansoftware.jsap.Switch;
 import com.mockey.storage.xml.MockeyXmlFileManager;
 import com.mockey.ui.StartUpServlet;
 
 public class JettyRunner {
 	private static final String ARG_PORT = "port";
+	private static final String ARG_QUIET = "quiet";
 	private static final String HOMEURL = "/home";
 
 	public static void main(String[] args) throws Exception {
@@ -69,6 +71,7 @@ public class JettyRunner {
 		jsap.registerParameter(new FlaggedOption(BSC.FILTERTAG, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'F',
 				BSC.FILTERTAG,
 				"Filter tag for services and scenarios, useful for 'only use information with this tag'. "));
+		jsap.registerParameter(new Switch(ARG_QUIET, 'q', "quiet", "Runs in quiet mode and does not loads the browser"));
 
 		// parse the command line options
 		JSAPResult config = jsap.parse(args);
@@ -81,9 +84,12 @@ public class JettyRunner {
 		// Construct the new arguments for jetty-runner
 		int port = config.getInt(ARG_PORT);
 		boolean transientState = true;
+		// We can add more things to the quite mode. For now we are just not launching browser
+		boolean isQuiteMode = false;
 
 		try {
 			transientState = config.getBoolean(BSC.TRANSIENT);
+			isQuiteMode = config.getBoolean(ARG_QUIET);
 		} catch (Exception e) {
 			//
 		}
@@ -142,7 +148,10 @@ public class JettyRunner {
 
 		}
 
-		new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();
+		// If in quiet mode we don't launch the browser
+ 		if(!isQuiteMode) {
+ 			new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();
+ 		}
 
 		server.join();
 	}
