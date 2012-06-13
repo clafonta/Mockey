@@ -148,6 +148,25 @@ public class ResponseFromService {
 	}
 
 	/**
+	 * Returns the {@link Header} object based on the header name. The look up
+	 * is case-sensitive
+	 * 
+	 * @param headerName
+	 *            The string name of the header to look for
+	 * @return Returns the {@link Header} object for a given header name if
+	 *         found else 'null'.
+	 */
+	public Header getHeader(String headerName) {
+		if (headers != null) {
+			for (Header header : headers) {
+				if (header.getName().equals(headerName))
+					return header;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * 
 	 * @return - pretty print header information.
 	 */
