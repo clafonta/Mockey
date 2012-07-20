@@ -1,13 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
-<%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
 <script>
 $(document).ready( function() {
 	// SCENARIO CREATION JAVASCRIPT
     $("#dialog-create-scenario").dialog({
         resizable: true,
-        height:700,
+        height:500,
         width:700,
         modal: true,
         autoOpen: false
@@ -16,11 +14,9 @@ $(document).ready( function() {
         match = $("#scenario_match"),
         responsemsg = $("#scenario_response"),
         universal_error_scenario = $('#universal_error_scenario'),
-        scenario_response_header = $('#scenario_response_header'),
         tag = $('#tag'),
-        http_response_status_code = $('#http_response_status_code');
         error_scenario = $('#error_scenario'),
-        allFields = $([]).add(name).add(match).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag).add(http_response_status_code).add(scenario_response_header),
+        allFields = $([]).add(name).add(match).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag),
         tips = $(".validateTips");  
     
     function updateTips(t) {
@@ -55,13 +51,6 @@ $(document).ready( function() {
         }
 
     }
-    $('#toggleMoreOptionsDisplay').click ( function() {
-    	$('#moreOptionsDisplay').toggle();
-    	$('#showOptionsText').toggle();
-        $('#hideOptionsText').toggle();    	
-        return false;
-    });
-    
     $('.createScenarioLink').each( function() {
         $(this).click( function() {
             var serviceId = this.id.split("_")[1];
@@ -71,9 +60,7 @@ $(document).ready( function() {
             $('#scenario_name').val('');
             $('#scenario_match').val('');
             $('#scenario_response').val(''); 
-            $('#scenario_response_header').val('');
             $('#tag').val(''); 
-            $('#http_response_status_code').val('200');
             $('#universal_error_scenario').attr('checked', false);
             $('#error_scenario').attr('checked', false);
             $('#dialog-create-scenario').dialog('open');
@@ -85,13 +72,11 @@ $(document).ready( function() {
                            bValid = bValid && checkLength(name,"scenario name",3,1000);
                            if (bValid) {
                                $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), matchStringArg: match.val(),
-                                    responseMessage: responsemsg.val(), responseHeader: scenario_response_header.val(),
-                                    httpResponseStatusCode: http_response_status_code.val(),
+                                    responseMessage: responsemsg.val(), 
                                     universalErrorScenario: universal_error_scenario.is(':checked'), 
                                     errorScenario: error_scenario.is(':checked')  } ,function(data){
                                         
                                     }, 'json' );  
-
 			       // delay closing dialog to allow service call to run
                                setTimeout(function() {
 				   $(this).dialog('close');
@@ -108,7 +93,7 @@ $(document).ready( function() {
               return false;
             });
         });
-    
+
     $('.viewServiceScenarioLink').each( function() {
         $(this).click( function() {
             var scenarioId = this.id.split("_")[1];
@@ -123,11 +108,9 @@ $(document).ready( function() {
                     $('#scenario_name').val(data.name);
                     $('#scenario_match').val(data.match);
                     $('#tag').val(data.tag);
-                    $('#scenario_response_header').val(data.responseHeader);
                     $('#scenario_response').val(data.response); 
                     $('#error_scenario').attr('checked', data.scenarioErrorFlag);
                     $('#universal_error_scenario').attr('checked', data.universalScenarioErrorFlag);
-                    $('#http_response_status_code').val(data.httpResponseStatusCode);
                     $('#dialog-create-scenario').dialog('open');
                     $('#dialog-create-scenario').dialog({
                         buttons: {
@@ -136,9 +119,8 @@ $(document).ready( function() {
                                allFields.removeClass('ui-state-error');
                                bValid = bValid && checkLength(name,"scenario name",3,1000);
                                if (bValid) {
-                                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId,  tag: tag.val(), 
-                                        matchStringArg: match.val(), responseHeader: scenario_response_header.val(), responseMessage: responsemsg.val(), 
-                                        universalErrorScenario: universal_error_scenario.is(':checked'), httpResponseStatusCode: http_response_status_code.val(),
+                                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId,  tag: tag.val(), matchStringArg: match.val(),
+                                        responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.is(':checked'), 
                                         errorScenario: error_scenario.is(':checked')  } ,function(data){
                                                console.log(data);
                                               
@@ -192,9 +174,8 @@ $(document).ready( function() {
                        allFields.removeClass('ui-state-error');
                        bValid = bValid && checkLength(name,"scenario name",3,1000);
                        if (bValid) {
-                           $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), 
-                                matchStringArg: match.val(), responseHeader: scenario_response_header.val(), responseMessage: responsemsg.val(), 
-                                universalErrorScenario: universal_error_scenario.val(), httpResponseStatusCode: http_response_status_code.val(),
+                           $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), matchStringArg: match.val(),
+                                responseMessage: responsemsg.val(), universalErrorScenario: universal_error_scenario.val(), 
                                     errorScenario: error_scenario.val()  } ,function(data){
                                     
                                 }, 'json' );  
@@ -215,55 +196,27 @@ $(document).ready( function() {
 
 <div id="dialog-create-scenario" title="Service Scenario">
     <p class="validateTips"></p>
-    This scenario belongs to the service called: 
-    <h2><strong id="service-name-for-scenario"></strong></h2>
+    <div class="info_message">This scenario belongs to the service called: <strong id="service-name-for-scenario"></strong></div>
     <p>
     <fieldset>
+        
         <label for="scenario_name">Scenario name (required)</label>
         <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
-        <label for="scenario_response">Response content</label>
-        <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="20"></textarea>
-        <p><a href="#" id="toggleMoreOptionsDisplay"><span id="showOptionsText">Show More Options</span> <span id="hideOptionsText" style="display:none;">Hide Options</span></a></p>
-        <div id="moreOptionsDisplay"  style="display:none;" class="childform">
-            <p class="tinyfieldset info_message">For information on these input fields, please read the <a href="<c:url value="/help#scenario"/>">Help</a> section.</p>
-	        <label for="scenario_match">Match argument</label>
-	        <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
-	        <label for="scenario_match">Tag(s)</label> [optional]
-	        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" title="" />
-	        <label for="http_response_status_code">HTTP Response status</label>
-	        <div style="padding:1em 0 1em 0">
-	        <select class="text ui-widget-content ui-corner-all" id="http_response_status_code" name="http_response_status_code" >
-	        <c:forEach var="httpRespCode" items="${httpRespCodeList}"  varStatus="status">
-	         <option class="text ui-widget-content" value="<c:out value="${httpRespCode.code}" />"><mockey:slug text="${httpRespCode.text}" maxLength="90"/></option>
-	        </c:forEach>
-	        </select>
-	        </div>	        
-		    <div>
-			    <label for="scenario_header_name">HTTP Header Fields</label> [optional]
-			    <p class="tiny info_message">
-			    	<strong>Note:</strong> 
-			    	Field name and value pairs are pipe '|' delimited. Mockey will parse this input and set things accordingly. Example:
-			    	<br />
-				    <span style="margin-left:50px;" class="code_text">Content-Type: text/html; charset=utf-8 <strong>|</strong> Cache-Control: max-age=3600</span><br />... will result in:
-				    <br />
-				    <span style="margin-left:50px;" class="code_text">
-				    Content-Type: text/html;
-				    </span>
-				    <span style="margin-left:50px;" class="code_text">
-				    <br />
-				    Cache-Control:  max-age=3600
-				   	</span>
-				   	<br /><br />
-			   		For more information, see: <a href="http://en.wikipedia.org/wiki/List_of_HTTP_header_fields">http://en.wikipedia.org/wiki/List_of_HTTP_header_fields</a>
-			   	</p>
-			    <textarea name="scenario_response_header" style"padding-top:5px;" id="scenario_response_header" class="text ui-widget-content ui-corner-all resizable" rows="5"></textarea>
-	        </div>
-	        <div style="margin-bottom: 1em; margin-top:2em;">
-	                <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="true">Universal Error Response</input>
-	                <br />
-	                <input type="checkbox" name="error_scenario" id="error_scenario" value="true">Service Scenario Error Response</input>
-	        </div>
+        <label for="scenario_match">Match argument</label>
+        <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
+        <label for="scenario_match">Tag(s)</label> [optional]
+        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" title="" />
+        <div class="tinyfieldset childform" style="margin-bottom: 1em;">
+                <input type="checkbox" name="universal_error_scenario" id="universal_error_scenario" value="true">Universal Error Response</input>
+                <br />
+                <input type="checkbox" name="error_scenario" id="error_scenario" value="true">Service Scenario Error Response</input>
+                <div id="" style="" class="tinyfieldset info_message">
+                If these checkboxes are checked, then it tells Mockey how to handle errors. For more information, see  
+                <a style="color:blue;" href="<c:url value="/help#error_handling"/>">here</a>
+                </div>
         </div>
+        <label for="scenario_response">Response content</label>
+        <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="10"></textarea>
     </fieldset> 
     </p>
 </div>
