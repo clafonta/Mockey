@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-
+import org.apache.http.StatusLine;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
@@ -60,7 +60,7 @@ public class ResponseFromService {
 	private String errorMsg;
 	private Header[] headers;
 	private List<Cookie> cookieList = new ArrayList<Cookie>();
-	private int httpResponseStatusCode;
+	private StatusLine statusLine;
 	private Url originalRequestUrlBeforeTwisting;
 	private Url requestUrl;
 
@@ -78,7 +78,7 @@ public class ResponseFromService {
 	public ResponseFromService(HttpResponse rsp) {
 		HttpEntity entity = rsp.getEntity();
 
-		setHttpResponseStatusCode(rsp.getStatusLine().getStatusCode());
+		setStatusLine(rsp.getStatusLine());
 		headers = rsp.getAllHeaders();
 		setHeaders(headers);
 
@@ -162,12 +162,12 @@ public class ResponseFromService {
 		return sb.toString();
 	}
 
-	public void setHttpResponseStatusCode(int statusCode) {
-		this.httpResponseStatusCode = statusCode;
+	public void setStatusLine(StatusLine statusLine) {
+		this.statusLine = statusLine;
 	}
 
-	public int getHttpResponseStatusCode() {
-		return this.httpResponseStatusCode;
+	public StatusLine getStatusLine() {
+		return statusLine;
 	}
 	
 	private void setCookiesFromHeader(Header[] headers){
