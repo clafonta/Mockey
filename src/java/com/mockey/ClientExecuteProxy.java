@@ -43,6 +43,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -65,8 +66,11 @@ import com.mockey.model.Url;
  */
 public class ClientExecuteProxy {
 
-	// Static cookie store for sessions
-	private static CookieStore cookieStore = null;
+	/**
+	 * Shared, thread-safe cookie store needed to support sticky
+	 * session over multiple client proxy executions.
+	 */
+	private static CookieStore cookieStore = new BasicCookieStore();
 	private Log log = LogFactory.getLog(ClientExecuteProxy.class);
 
 	/**
@@ -78,12 +82,8 @@ public class ClientExecuteProxy {
 		return new ClientExecuteProxy();
 	}
 
-	/**
-	 * Cookie store can be null, otherwise it is needed to support sticky
-	 * session over multiple client proxy executions.
-	 */
 	public static void resetStickySession() {
-		ClientExecuteProxy.cookieStore = null;
+		ClientExecuteProxy.cookieStore.clear();
 	}
 
 	private ClientExecuteProxy() {
@@ -154,20 +154,8 @@ public class ClientExecuteProxy {
 //			}
 //		});
 
-		CookieStore cookieStore = httpclient.getCookieStore();
-		for (Cookie httpClientCookie : request.getHttpClientCookies()) {
-			// HACK:
-			// httpClientCookie.getValue();
-			cookieStore.addCookie(httpClientCookie);
-		}
-		// httpclient.setCookieStore(cookieStore);
-
-		if (ClientExecuteProxy.cookieStore == null) {
-			ClientExecuteProxy.cookieStore = httpclient.getCookieStore();
-
-		} else {
-			httpclient.setCookieStore(ClientExecuteProxy.cookieStore);
-		}
+		// Use shared cookie store
+                httpclient.setCookieStore(ClientExecuteProxy.cookieStore);
 
 		StringBuffer requestCookieInfo = new StringBuffer();
 		// Show what cookies are in the store .
