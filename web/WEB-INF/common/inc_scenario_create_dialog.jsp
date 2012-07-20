@@ -77,11 +77,11 @@ $(document).ready( function() {
                                     errorScenario: error_scenario.is(':checked')  } ,function(data){
                                         
                                     }, 'json' );  
-			       // delay closing dialog to allow service call to run
+                               // delay closing dialog to allow service call to run
                                setTimeout(function() {
-				   $(this).dialog('close');
-                               	   document.location="<c:url value="/home" />?serviceId="+ serviceId;
-			       }, 500);
+                                   $(this).dialog('close');
+                                   document.location="<c:url value="/home" />?serviceId="+ serviceId;
+                               }, 500);
                            }
                       }, 
                       Cancel: function(){
