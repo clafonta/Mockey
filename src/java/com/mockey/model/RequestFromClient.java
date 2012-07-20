@@ -47,11 +47,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
@@ -74,7 +76,7 @@ public class RequestFromClient {
 	 * </pre>
 	 * 
 	 */
-	public static final String[] HEADERS_TO_IGNORE = { "content-length", "host", "accept-encoding" };
+	public static final String[] HEADERS_TO_IGNORE = { "content-length", "host", "accept-encoding" , "cookie"};
 
 	private Log log = LogFactory.getLog(RequestFromClient.class);
 	private List<Cookie> httpClientCookies = new ArrayList<Cookie>();
@@ -146,6 +148,18 @@ public class RequestFromClient {
 				}
 			}
 		}
+
+		/*
+		 * If the port is the default one for the scheme,
+		 * force HttpClient to not set it in the Host header.
+		 * By default, HttpClient always specifies the port in
+		 * the Host header, even if it's the default one -
+		 * e.g., "Host: www.amazon.com:443". Some web servers do
+		 * not like that.
+ 		 */
+                if (url.isDefaultPort()) {
+			request.getParams().setParameter(ClientPNames.VIRTUAL_HOST, new HttpHost(url.getHost()));
+                }
 
 		return request;
 	}
@@ -269,6 +283,7 @@ public class RequestFromClient {
 				if (cpath == null) {
 					cpath = rawRequest.getContextPath();
 				}
+				log.info("Cookie from client: " + c.getName() + " = " + c.getValue());
 				BasicClientCookie basicClientCookie = new BasicClientCookie(c.getName(), c.getValue());
 				basicClientCookie.setDomain(domain);
 				if (c.getMaxAge() > -1) {
@@ -287,13 +302,16 @@ public class RequestFromClient {
 
 		try {
 			InputStream is = rawRequest.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			byte[] buffer = new byte[1024];
 			StringBuilder sb = new StringBuilder();
 
-			String line = null;
 			try {
-				while ((line = reader.readLine()) != null) {
-					sb.append(line + "\n");
+				for (;;) {
+					int bytesRead = is.read(buffer);
+					if (bytesRead == -1) {
+						break;
+					}
+					sb.append(new String(buffer, 0, bytesRead));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
