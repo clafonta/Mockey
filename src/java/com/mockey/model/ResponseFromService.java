@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
+
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
@@ -60,7 +60,7 @@ public class ResponseFromService {
 	private String errorMsg;
 	private Header[] headers;
 	private List<Cookie> cookieList = new ArrayList<Cookie>();
-	private StatusLine statusLine;
+	private int httpResponseStatusCode;
 	private Url originalRequestUrlBeforeTwisting;
 	private Url requestUrl;
 
@@ -78,7 +78,7 @@ public class ResponseFromService {
 	public ResponseFromService(HttpResponse rsp) {
 		HttpEntity entity = rsp.getEntity();
 
-		setStatusLine(rsp.getStatusLine());
+		setHttpResponseStatusCode(rsp.getStatusLine().getStatusCode());
 		headers = rsp.getAllHeaders();
 		setHeaders(headers);
 
@@ -87,7 +87,7 @@ public class ResponseFromService {
 			try {
 				setBody(EntityUtils.toString(entity));
 			} catch (IOException e) {
-				throw new IllegalStateException("Unable to parse resonse", e);
+				throw new IllegalStateException("Unable to parse response", e);
 			}
 			setValid(true);
 		}
@@ -162,12 +162,12 @@ public class ResponseFromService {
 		return sb.toString();
 	}
 
-	public void setStatusLine(StatusLine statusLine) {
-		this.statusLine = statusLine;
+	public void setHttpResponseStatusCode(int statusCode) {
+		this.httpResponseStatusCode = statusCode;
 	}
 
-	public StatusLine getStatusLine() {
-		return statusLine;
+	public int getHttpResponseStatusCode() {
+		return this.httpResponseStatusCode;
 	}
 	
 	private void setCookiesFromHeader(Header[] headers){
@@ -178,20 +178,22 @@ public class ResponseFromService {
 	            // Parse cookie
 	            String[] fields = headerValue.split(";\\s*");
 
-	            //String cookieValue = fields[0];
-	            //String expires = null;
+	            String expires = null;
 	            String path = null;
 	            String domain = null;
 	            boolean secure = false;
+				boolean httpOnly = false;
 
 	            // Parse each field
 	            for (int j=1; j<fields.length; j++) {
 	                if ("secure".equalsIgnoreCase(fields[j])) {
 	                    secure = true;
+	                } else if ("httpOnly".equalsIgnoreCase(fields[j])) {
+	                    httpOnly = true;
 	                } else if (fields[j].indexOf('=') > 0) {
 	                    String[] f = fields[j].split("=");
 	                    if ("expires".equalsIgnoreCase(f[0])) {
-	                        //expires = f[1];
+	                        expires = f[1];
 	                    } else if ("domain".equalsIgnoreCase(f[0])) {
 	                        domain = f[1];
 	                    } else if ("path".equalsIgnoreCase(f[0])) {
@@ -199,13 +201,27 @@ public class ResponseFromService {
 	                    }
 	                }
 	            }
+
 	            String[] cookieParts = headerValue.split("=", 2);
 				String cookieBody = cookieParts[1];
 				String[] cookieBodyParts = cookieBody.split("; ");
 				Cookie cookie = new Cookie(cookieParts[0], cookieBodyParts[0]);
-				cookie.setDomain(domain);
-				cookie.setPath(path);
-				cookie.setSecure(secure);
+
+// Mockey currently manages cookies on behalf of the client.
+// There should be no need for the client to view the cookies.
+// For now, we only forward cookie name and value to the client.
+// If the need arises to forward additional cookie attributes,
+// uncomment and revisit the code below.
+//
+//				if (path != null) {
+//					cookie.setPath(path);
+//				}
+//				if (domain != null) {
+//					cookie.setDomain(domain);
+//				}
+//				cookie.setSecure(secure);
+//				cookie.setHttpOnly(httpOnly);
+//
 //				if(expires!=null){
 //				Date expiresTime = null;
 //				try {
@@ -217,6 +233,7 @@ public class ResponseFromService {
 //					log.error("Unable to calculate maxAge with expiration date "+expiresTime, e);
 //				}
 //				}
+
 				this.cookieList.add(cookie);
 	        }
 		
@@ -242,10 +259,15 @@ public class ResponseFromService {
 			}
 		}
 		
-		// For cookie information we already extracted from initialization.
-		for(Cookie cookie: this.cookieList){
-			resp.addCookie(cookie);
+		/*
+		 * HttpServletResponse adds double quotes to cookie values that
+		 * contain special characters. That throws off certain clients.
+		 * Therefore, build the Set-Cookie headers manually.
+		 */
+		for (String setCookieHeaderValue: buildSetCookieHeaderValues()) {
+			resp.addHeader("Set-Cookie", setCookieHeaderValue);
 		}
+
 		if (body != null) {
 			byte[] myISO88591asBytes = body.getBytes(HTTP.ISO_8859_1);
 			new PrintStream(resp.getOutputStream()).write(myISO88591asBytes);
@@ -255,6 +277,38 @@ public class ResponseFromService {
 			out.println(body);
 		}
 
+	}
+
+	private String[] buildSetCookieHeaderValues() {
+		String[] result = new String[cookieList.size()];
+		int idx = 0;
+		for(Cookie cookie: this.cookieList){
+			StringBuilder sb = new StringBuilder();
+			sb.append(cookie.getName() + "=" + cookie.getValue());
+			if (cookie.getDomain() != null) {
+				sb.append("; domain=");
+				sb.append(cookie.getDomain());
+			}
+			if (cookie.getPath() != null) {
+				sb.append("; path=");
+				sb.append(cookie.getPath());
+			}
+			if (cookie.getSecure()) {
+				sb.append("; secure");
+			}
+			// TODO: upgrade to Server 3.0
+			/*
+			if (cookie.isHttpOnly()) {
+				sb.append("; httpOnly");
+			}
+			*/
+			if (cookie.getMaxAge() >= 0) {
+				sb.append("; max-age=");
+				sb.append(cookie.getMaxAge());
+			}
+			result[idx++] = sb.toString();
+		}
+		return result;
 	}
 
 	private boolean ignoreHeader(String name) {
@@ -285,7 +339,7 @@ public class ResponseFromService {
 	public String getResponseCookiesAsString() {
 		StringBuffer responseCookies = new StringBuffer();
 		for(Cookie cookie: this.cookieList){
-			responseCookies.append(String.format("Cookie--->\n\n %s = %s ", cookie.getName(), cookie.getValue()));
+			responseCookies.append(String.format("Cookie---> %s = %s\n", cookie.getName(), cookie.getValue()));
 		}
 		return responseCookies.toString();
 	}
