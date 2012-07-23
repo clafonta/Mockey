@@ -91,8 +91,11 @@ $(document).ready( function() {
                                     errorScenario: error_scenario.is(':checked')  } ,function(data){
                                         
                                     }, 'json' );  
-                               $(this).dialog('close');              
-                               document.location="<c:url value="/home" />?serviceId="+ serviceId;
+                               // delay closing dialog to allow service call to run
+                               setTimeout(function() {
+                                   $(this).dialog('close');
+                                   document.location="<c:url value="/home" />?serviceId="+ serviceId;
+                               }, 500);
                            }
                       }, 
                       Cancel: function(){
@@ -170,9 +173,8 @@ $(document).ready( function() {
             success: function(data) {
               serviceId = data.serviceId;
               serviceName = data.serviceName;
-              tag = data.tag;
               $('#service-name-for-scenario').text(serviceName);
-              $('#tag').text(tag);
+              $('#tag').val('');
               $('#scenario_name').val('Give this a name');
               $('#scenario_match').val('');
               $('#scenario_response').val(data.responseBody); 
@@ -194,8 +196,10 @@ $(document).ready( function() {
                                     errorScenario: error_scenario.val()  } ,function(data){
                                     
                                 }, 'json' );  
-                           $(this).dialog('close');              
-                           document.location="<c:url value="/home" />?serviceId="+ serviceId;
+                           setTimeout(function() {                           
+                               $(this).dialog('close');              
+                               document.location="<c:url value="/home" />?serviceId="+ serviceId;
+                           }, 500);                       
                        }
                   }, 
                   Cancel: function(){
