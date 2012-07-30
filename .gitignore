@@ -1,4 +1,22 @@
-*.class
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Editor generated files #
+##########################
 .classpath
 .project
+.*.swp
+Session.vim
+Sessionx.vim
+
+# Output files #
+################
 bin/*
+*.class
+build/
+dist/
+web/WEB-INF/classes/

@@ -30,6 +30,7 @@ package com.mockey.server;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.io.File;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -48,6 +49,7 @@ import com.mockey.plugin.PluginStore;
 import com.mockey.plugin.RequestInspectionResult;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
+import com.mockey.storage.file.FileSystemManager;
 
 /**
  * Responsible for serving mock responses. Based on configuration, returns
@@ -126,9 +128,56 @@ public class ResponseServlet extends HttpServlet {
 					resp.setHeader(h.getName(), h.getValue());
 				}
 			}
-			byte[] myCharSetBytes = response.getBody().getBytes();
+			byte[] myCharSetBytes = null;
+			String body = response.getBody();
+			
+			// TODO: Post processing starts
+			// Have to improve the logic by adding support response processing
+			// That approach will have a plugin like system where every response
+			// can be processed prior to sending back to the client. For now, I
+			// just added a hack which looks for 'Mockey-Post-Method' in the
+			// headers and if found look for the value which corresponds to the
+			// post processing method. And based on the method do special
+			// processing. In this specific case, it just look for
+			// 'loadImageFile' and if found then it used the body of the msg as
+			// the file name of the image which should be passed as binary data.
+			// NOTE: I have to add this quick hack sinse we need this feature
+			// really urgently.
+			// NOTE: This code will drastically change after I implement the
+			// full post processing mechanism
+			
+			// Usage: To use this hack. Just create a mockey scenario and add a
+			// header 'Mockey-Post-Method'. The value will be the post processor
+			// method name to be called. As of now, it only support
+			// 'loadImageFile'. This method expects file name to be the content
+			// of the body. Example:
+			// Mockey-Post-Method: loadImageFile
+			//
+			//
+			// imageFileName.png
+
+			Header mockeyPostHeader = response.getHeader("Mockey-Post-Method");
+
+			if (mockeyPostHeader != null) {
+				String postValue = mockeyPostHeader.getValue();
+				logger.debug("Found the post processing header with : " + postValue);
+				logger.debug("Post process body: " + response.getBody());
+
+				// TODO Need to support user files which are not image files like zip, tar etc.
+				if (postValue.equalsIgnoreCase("loadImageFile")) {
+					String fileName = response.getBody();
+					FileSystemManager fsm = new FileSystemManager();
+					File imageFile = fsm.getImageFile(fileName);
+					logger.debug("Creaing image");
+					myCharSetBytes = fsm.getBytesFromFile(imageFile);
+				}
+			} else {
+				myCharSetBytes = response.getBody().getBytes();
+			}
+
 			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
 			resp.getOutputStream().flush();
+			// TODO: Post processing ends
 		} else {
 			// HEADERS
 			resp.setStatus(response.getHttpResponseStatusCode());
