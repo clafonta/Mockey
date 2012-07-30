@@ -84,15 +84,14 @@ $(document).ready( function() {
                            allFields.removeClass('ui-state-error');
                            bValid = bValid && checkLength(name,"scenario name",3,1000);
                            if (bValid) {
-                               $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), matchStringArg: match.val(),
+                               $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag:$('input[name=tag]').val(), matchStringArg: match.val(),
                                     responseMessage: responsemsg.val(), responseHeader: scenario_response_header.val(),
                                     httpResponseStatusCode: http_response_status_code.val(),
                                     universalErrorScenario: universal_error_scenario.is(':checked'), 
                                     errorScenario: error_scenario.is(':checked')  } ,function(data){
-                                        
+                                       $(this).dialog('close');
+                                       document.location="<c:url value="/home" />?serviceId="+ serviceId;
                                     }, 'json' );  
-                               $(this).dialog('close');              
-                               document.location="<c:url value="/home" />?serviceId="+ serviceId;
                            }
                       }, 
                       Cancel: function(){
@@ -132,15 +131,13 @@ $(document).ready( function() {
                                allFields.removeClass('ui-state-error');
                                bValid = bValid && checkLength(name,"scenario name",3,1000);
                                if (bValid) {
-                                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId,  tag: tag.val(), 
+                                   $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId,  tag: $('input[name=tag]').val(),
                                         matchStringArg: match.val(), responseHeader: scenario_response_header.val(), responseMessage: responsemsg.val(), 
                                         universalErrorScenario: universal_error_scenario.is(':checked'), httpResponseStatusCode: http_response_status_code.val(),
                                         errorScenario: error_scenario.is(':checked')  } ,function(data){
-                                               console.log(data);
-                                              
+                                            $('#view-scenario_'+scenarioId+'_' +serviceId).fadeOut(function(){ $(this).text(name.val()).fadeIn() });
+                                            $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
                                         }, 'json' );  
-                                   $('#view-scenario_'+scenarioId+'_' +serviceId).fadeOut(function(){ $(this).text(name.val()).fadeIn() });
-                                   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
                                    return false;
                                    
                                }
@@ -188,14 +185,13 @@ $(document).ready( function() {
                        allFields.removeClass('ui-state-error');
                        bValid = bValid && checkLength(name,"scenario name",3,1000);
                        if (bValid) {
-                           $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), 
+                           $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: $('input[name=tag]').val(),
                                 matchStringArg: match.val(), responseHeader: scenario_response_header.val(), responseMessage: responsemsg.val(), 
                                 universalErrorScenario: universal_error_scenario.val(), httpResponseStatusCode: http_response_status_code.val(),
                                     errorScenario: error_scenario.val()  } ,function(data){
-                                    
+                                   $(this).dialog('close');
+                                   document.location="<c:url value="/home" />?serviceId="+ serviceId;
                                 }, 'json' );  
-                           $(this).dialog('close');              
-                           document.location="<c:url value="/home" />?serviceId="+ serviceId;
                        }
                   }, 
                   Cancel: function(){
