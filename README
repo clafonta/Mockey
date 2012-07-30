@@ -21,3 +21,16 @@ What is Mockey not good at?
  * Transport protocols other than HTTP, e.g. FTP. 
  * Complicated conversations e.g. if X, then call this database, else if Y, call 'rake FOO', else kick-off-Maven. 
  * Solving everything
+
+Getting Started - Quick
+====================
+
+ * run "ant dist"
+ * cd dist
+ * java -jar Mockey.jar -t false 
+
+This will start mockey, fire up your browser pointing at the defaults (port 8080, /home)
+ 
+ * java -jar Mockey.jar --help
+
+Will show you the options and their defaults.
