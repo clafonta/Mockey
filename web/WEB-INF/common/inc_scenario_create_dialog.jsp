@@ -88,14 +88,11 @@ $(document).ready( function() {
                                     responseMessage: responsemsg.val(), responseHeader: scenario_response_header.val(),
                                     httpResponseStatusCode: http_response_status_code.val(),
                                     universalErrorScenario: universal_error_scenario.is(':checked'), 
-                                    errorScenario: error_scenario.is(':checked')  } ,function(data){
-                                        
+                                    errorScenario: error_scenario.is(':checked')  } ,
+                                    function(data){
+                                        $(this).dialog('close');
+                                        document.location="<c:url value="/home" />?serviceId="+ serviceId;
                                     }, 'json' );  
-                               // delay closing dialog to allow service call to run
-                               setTimeout(function() {
-                                   $(this).dialog('close');
-                                   document.location="<c:url value="/home" />?serviceId="+ serviceId;
-                               }, 500);
                            }
                       }, 
                       Cancel: function(){
@@ -193,13 +190,11 @@ $(document).ready( function() {
                            $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), 
                                 matchStringArg: match.val(), responseHeader: scenario_response_header.val(), responseMessage: responsemsg.val(), 
                                 universalErrorScenario: universal_error_scenario.val(), httpResponseStatusCode: http_response_status_code.val(),
-                                    errorScenario: error_scenario.val()  } ,function(data){
-                                    
+                                    errorScenario: error_scenario.val()  } ,
+                                function(data){
+                                    $(this).dialog('close');
+                                    document.location="<c:url value="/home" />?serviceId="+ serviceId;
                                 }, 'json' );  
-                           setTimeout(function() {                           
-                               $(this).dialog('close');              
-                               document.location="<c:url value="/home" />?serviceId="+ serviceId;
-                           }, 500);                       
                        }
                   }, 
                   Cancel: function(){
