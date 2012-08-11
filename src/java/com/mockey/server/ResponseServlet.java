@@ -126,6 +126,7 @@ public class ResponseServlet extends HttpServlet {
 					resp.setHeader(h.getName(), h.getValue());
 				}
 			}
+			resp.setStatus(response.getHttpResponseStatusCode());
 			byte[] myCharSetBytes = response.getBody().getBytes();
 			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
 			resp.getOutputStream().flush();
