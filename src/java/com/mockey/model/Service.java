@@ -537,6 +537,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			}
 			if (u != null) {
 				messageMatchFound = u.getResponseMessage();
+				httpResponseStatus = u.getHttpResponseStatusCode();
 			} else {
 				messageMatchFound = "Ouch, no love for you! Why? Well, it could be that this service setting "
 						+ "is set to Dynamic but there is no found matching scenario, nor is there a default "
