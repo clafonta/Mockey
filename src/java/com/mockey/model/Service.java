@@ -28,6 +28,7 @@
 package com.mockey.model;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -497,7 +498,12 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			// uhm.
 			logger.debug("Unable to extract content from request", e);
 		}
-		String rawRequestData = rawRequestDataBuffer.toString();
+		String rawRequestData = "";
+		try {
+			rawRequestData = URLDecoder.decode(rawRequestDataBuffer.toString(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Unable to URL un-encode (or decode) the following: \n " + rawRequestDataBuffer.toString(), e);
+		}
 		ResponseFromService response = new ResponseFromService();
 		List<Scenario> scenarios = this.getScenarios();
 		Iterator<Scenario> iter = scenarios.iterator();
