@@ -175,6 +175,7 @@ $(document).ready( function() {
               $('#scenario_name').val('Give this a name');
               $('#scenario_match').val('');
               $('#scenario_response').val(data.responseBody); 
+              $('#scenario_response_header').val(data.responseHeader);
             }
         });
         

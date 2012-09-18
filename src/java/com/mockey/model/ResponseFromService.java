@@ -156,7 +156,10 @@ public class ResponseFromService {
 		if (headers != null) {
 			for (int i = 0; i < headers.length; i++) {
 				Header header = headers[i];
-				sb.append(header.getName() + "=" + header.getValue() + "\n");
+				sb.append(header.getName() + ":" + header.getValue());
+				if((i+1)<headers.length){
+					sb.append("|\n");
+				}
 			}
 		}
 		return sb.toString();

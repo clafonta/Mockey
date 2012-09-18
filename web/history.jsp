@@ -277,6 +277,7 @@ $(document).ready(function() {
                                             <li><a href="#resp-tabs-1_${request.id}">Status</a></li>
                                         </ul>
                                         <div id="resp-tabs-2_${request.id}">
+                                           <p style="color:red;">Note: header key values are pipe ("|") delimited by Mockey for readability. </p>
                                            <textarea class="noborder_textarea resizable" id="responseHeader_${request.id}"  name="requestHeader" rows="5" cols="50"></textarea>
                                         </div>
                                         <div id="resp-tabs-5_${request.id}">

@@ -67,8 +67,8 @@ import com.mockey.model.Url;
 public class ClientExecuteProxy {
 
 	/**
-	 * Shared, thread-safe cookie store needed to support sticky
-	 * session over multiple client proxy executions.
+	 * Shared, thread-safe cookie store needed to support sticky session over
+	 * multiple client proxy executions.
 	 */
 	private static CookieStore cookieStore = new BasicCookieStore();
 	private Log log = LogFactory.getLog(ClientExecuteProxy.class);
@@ -99,8 +99,10 @@ public class ClientExecuteProxy {
 	 * @return
 	 * @throws ClientExecuteProxyException
 	 */
-	public ResponseFromService execute(TwistInfo twistInfo, ProxyServerModel proxyServer, Url realServiceUrl,
-			boolean allowRedirectFollow, RequestFromClient request) throws ClientExecuteProxyException {
+	public ResponseFromService execute(TwistInfo twistInfo,
+			ProxyServerModel proxyServer, Url realServiceUrl,
+			boolean allowRedirectFollow, RequestFromClient request)
+			throws ClientExecuteProxyException {
 		log.info("Request: " + String.valueOf(realServiceUrl));
 
 		// general setup
@@ -108,8 +110,10 @@ public class ClientExecuteProxy {
 
 		// Register the "http" and "https" protocol schemes, they are
 		// required by the default operator to look up socket factories.
-		supportedSchemes.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
-		supportedSchemes.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
+		supportedSchemes.register(new Scheme("http", 80, PlainSocketFactory
+				.getSocketFactory()));
+		supportedSchemes.register(new Scheme("https", 443, SSLSocketFactory
+				.getSocketFactory()));
 
 		// prepare parameters
 		HttpParams params = new BasicHttpParams();
@@ -117,22 +121,26 @@ public class ClientExecuteProxy {
 		HttpProtocolParams.setContentCharset(params, HTTP.ISO_8859_1);
 		HttpProtocolParams.setUseExpectContinue(params, false);
 
-		ClientConnectionManager ccm = new ThreadSafeClientConnManager(supportedSchemes);
+		ClientConnectionManager ccm = new ThreadSafeClientConnManager(
+				supportedSchemes);
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, params);
 
 		if (!allowRedirectFollow) {
 			// Do NOT allow for 302 REDIRECT
 			httpclient.setRedirectStrategy(new DefaultRedirectStrategy() {
-				public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context) {
+				public boolean isRedirected(HttpRequest request,
+						HttpResponse response, HttpContext context) {
 					boolean isRedirect = false;
 					try {
-						isRedirect = super.isRedirected(request, response, context);
+						isRedirect = super.isRedirected(request, response,
+								context);
 					} catch (ProtocolException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					if (!isRedirect) {
-						int responseCode = response.getStatusLine().getStatusCode();
+						int responseCode = response.getStatusLine()
+								.getStatusCode();
 						if (responseCode == 301 || responseCode == 302) {
 							return true;
 						}
@@ -146,16 +154,18 @@ public class ClientExecuteProxy {
 		}
 
 		// Prevent CACHE, 304 not modified
-//		httpclient.addRequestInterceptor(new HttpRequestInterceptor() {
-//			public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
-//				
-//				request.setHeader("If-modified-Since", "Fri, 13 May 2006 23:54:18 GMT");
-//
-//			}
-//		});
+		// httpclient.addRequestInterceptor(new HttpRequestInterceptor() {
+		// public void process(final HttpRequest request, final HttpContext
+		// context) throws HttpException, IOException {
+		//
+		// request.setHeader("If-modified-Since",
+		// "Fri, 13 May 2006 23:54:18 GMT");
+		//
+		// }
+		// });
 
 		// Use shared cookie store
-                httpclient.setCookieStore(ClientExecuteProxy.cookieStore);
+		httpclient.setCookieStore(ClientExecuteProxy.cookieStore);
 
 		StringBuffer requestCookieInfo = new StringBuffer();
 		// Show what cookies are in the store .
@@ -167,9 +177,10 @@ public class ClientExecuteProxy {
 
 		if (proxyServer.isProxyEnabled()) {
 			// make sure to use a proxy that supports CONNECT
-			httpclient.getCredentialsProvider()
-					.setCredentials(proxyServer.getAuthScope(), proxyServer.getCredentials());
-			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyServer.getHttpHost());
+			httpclient.getCredentialsProvider().setCredentials(
+					proxyServer.getAuthScope(), proxyServer.getCredentials());
+			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
+					proxyServer.getHttpHost());
 		}
 
 		// TWISTING
@@ -185,19 +196,23 @@ public class ClientExecuteProxy {
 
 		ResponseFromService responseMessage = null;
 		try {
-			HttpHost htttphost = new HttpHost(realServiceUrl.getHost(), realServiceUrl.getPort(), realServiceUrl
-					.getScheme());
+			HttpHost htttphost = new HttpHost(realServiceUrl.getHost(),
+					realServiceUrl.getPort(), realServiceUrl.getScheme());
 
-			HttpResponse response = httpclient.execute(htttphost, request.postToRealServer(realServiceUrl));
+			HttpResponse response = httpclient.execute(htttphost,
+					request.postToRealServer(realServiceUrl));
 			if (response.getStatusLine().getStatusCode() == 302) {
-				log.debug("FYI: 302 redirect occuring from " + realServiceUrl.getFullUrl());
+				log.debug("FYI: 302 redirect occuring from "
+						+ realServiceUrl.getFullUrl());
 			}
 			responseMessage = new ResponseFromService(response);
-			responseMessage.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
+			responseMessage
+					.setOriginalRequestUrlBeforeTwisting(originalRequestUrlBeforeTwisting);
 			responseMessage.setRequestUrl(realServiceUrl);
 		} catch (Exception e) {
 			log.error(e);
-			throw new ClientExecuteProxyException("Unable to retrieve a response. ", realServiceUrl, e);
+			throw new ClientExecuteProxyException(
+					"Unable to retrieve a response. ", realServiceUrl, e);
 		} finally {
 			// When HttpClient instance is no longer needed,
 			// shut down the connection manager to ensure
