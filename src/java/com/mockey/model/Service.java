@@ -579,6 +579,10 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public List<Url> getRealServiceUrls() {
 		return realServiceUrlList;
 	}
+	
+	public void clearRealServiceUrls() {
+		realServiceUrlList = new ArrayList<Url>();
+	}
 
 
 	/**

@@ -231,6 +231,47 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return service;
 	}
 
+	public Service duplicateService(Service service) {
+		Service newService = new Service();
+		newService.setHangTime(service.getHangTime());
+		newService.setHttpMethod(service.getHttpMethod());
+		newService.setServiceName(service.getServiceName());
+		newService.setServiceResponseTypeByString(service
+				.getServiceResponseTypeAsString());
+		newService.setDefaultRealUrlIndex(service.getDefaultRealUrlIndex());
+		newService.setUrl(service.getUrl());
+		// We don't do this because the Default scenario ID is not guaranteed to
+		// be the same as the duplicate items are created.
+		// newService.setDefaultScenarioId(service.getDefaultScenarioId());
+		newService.setDescription(service.getDescription());
+		// Meta data
+		for (Url url : service.getRealServiceUrls()) {
+			newService.saveOrUpdateRealServiceUrl(url);
+
+		}
+		// Why save, and save again below?
+		// - The first save gets a Service ID created.
+		// - Scenario's refer to the Service ID
+		newService = this.saveOrUpdateService(newService);
+		// Now add scenarios
+		for (Scenario scenario : service.getScenarios()) {
+			Scenario newScenario = new Scenario();
+			newScenario.setHttpResponseStatusCode(scenario
+					.getHttpResponseStatusCode());
+			newScenario.setMatchStringArg(scenario.getMatchStringArg());
+			newScenario.setResponseHeader(scenario.getResponseHeader());
+			newScenario.setResponseMessage(scenario.getResponseMessage());
+			newScenario.setScenarioName(scenario.getScenarioName());
+			newScenario.setTag(scenario.getTag());
+
+			newService.saveOrUpdateScenario(newScenario);
+
+		}
+		// Save AGAIN.
+		newService = this.saveOrUpdateService(newService);
+		return newService;
+	}
+
 	public Service saveOrUpdateService(Service mockServiceBean) {
 		// System.out.println("XXXXXXXXXXXXX Saving Service. Name is: " +
 		// mockServiceBean.getServiceName());
@@ -335,11 +376,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return (ServicePlan) item;
 
 	}
-	
-	public ScenarioRef getUniversalErrorScenarioRef(){
-		ScenarioRef scenarioRef = null; //new ScenarioRef();
-		if(this.universalErrorScenarioId!=null && this.universalErrorServiceId!=null){
-			scenarioRef = new ScenarioRef(this.universalErrorScenarioId,this.universalErrorServiceId);
+
+	public ScenarioRef getUniversalErrorScenarioRef() {
+		ScenarioRef scenarioRef = null; // new ScenarioRef();
+		if (this.universalErrorScenarioId != null
+				&& this.universalErrorServiceId != null) {
+			scenarioRef = new ScenarioRef(this.universalErrorScenarioId,
+					this.universalErrorServiceId);
 		}
 		return scenarioRef;
 	}
@@ -352,8 +395,6 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 		return error;
 	}
-	
-	
 
 	public void setUniversalErrorScenarioRef(ScenarioRef scenarioRef) {
 
@@ -361,7 +402,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			this.universalErrorServiceId = scenarioRef.getServiceId();
 			this.universalErrorScenarioId = scenarioRef.getId();
 			this.writeMemoryToFile();
-		}else {
+		} else {
 			this.universalErrorServiceId = null;
 			this.universalErrorScenarioId = null;
 			this.writeMemoryToFile();
@@ -656,15 +697,15 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		this.writeMemoryToFile();
 	}
 
-//	public Long getUniversalErrorScenarioId() {
-//
-//		return this.univeralErrorScenarioId;
-//	}
-//
-//	public Long getUniversalErrorServiceId() {
-//
-//		return this.univeralErrorServiceId;
-//	}
+	// public Long getUniversalErrorScenarioId() {
+	//
+	// return this.univeralErrorScenarioId;
+	// }
+	//
+	// public Long getUniversalErrorServiceId() {
+	//
+	// return this.univeralErrorServiceId;
+	// }
 
 	public List<ServiceRef> getServiceRefs() {
 		return this.serviceRefStore.getOrderedList();

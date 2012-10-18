@@ -11,7 +11,8 @@
 if(conflictInfo.hasConflictFlag(service)){
    
    %>
-   | <a href="#" id="conflict-link_${service.id}" style="color:red;" class="tiny toggle-conflict-link" onclick="return false;">Conflict</a>
+   <p class="tiny" style="margin-top:0.8em;">
+    <i aria-hidden="true" class="icon-info"></i> <a href="#" id="conflict-link_${service.id}" style="color:red;" class="tiny toggle-conflict-link" onclick="return false;">Conflict</a>
    
    <div class="tooltip alert_message" id="conflict-info_${service.id}">
    
@@ -26,13 +27,13 @@ if(conflictInfo.hasConflictFlag(service)){
    		<ul>
    		<%
    		for(String issue : conflict.getConflictMessageList()){
-   		  %><li><%= issue %></li><%
+   		  %><li class="tiny"><%= issue %></li><%
    		}
    		%></ul><%
    }
    %>
    </div>
-   
+   </p>
    
    <%
 }

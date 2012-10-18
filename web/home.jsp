@@ -152,6 +152,26 @@ $(document).ready( function() {
 	          return false;
             });
         });
+    
+     $('.tiny_service_duplicate').each( function() {
+        $(this).click( function() {
+            var serviceId = this.id.split("_")[1];
+            $('#dialog-duplicate-service-confirm').dialog('open');
+	            $('#dialog-duplicate-service-confirm').dialog({
+	                buttons: {
+	                  "Duplicate service": function() {
+	            	      document.location="<c:url value="/setup" />?duplicateService=yes&serviceId="+ serviceId;
+	                  }, 
+	                  Cancel: function(){
+		                  $(this).dialog('close');
+	                  }
+	                }
+	          }); 
+	          $('#dialog-delete-service-confirm').dialog({height: 200 });
+			      
+	          return false;
+            });
+        });
 
     
     
@@ -359,6 +379,7 @@ $(document).ready( function() {
     $('#dialog-delete-scenario-confirm').dialog({autoOpen: false, minHeight: 250, width: 300, height: 120, modal: false, resizable: false });
     $("#dialog-create-plan").dialog({minHeight: 350, height:350, width: 500,  modal: false, autoOpen: false, resizable: true });
     $("#dialog-delete-service-confirm").dialog({ resizable: false, height: 120, modal: false, autoOpen: false });
+    $("#dialog-duplicate-service-confirm").dialog({ resizable: false, height: 120, modal: false, autoOpen: false });
     $("#dialog-tag-manage").dialog({ resizable: false, height: 420, minHeight: 450, modal: true, autoOpen: false });
     $('.hideServiceScenarioLink').each( function() {
         $(this).click( function() {
@@ -471,7 +492,8 @@ $(document).ready( function() {
 				                             	</c:url>
 				                             	
 				                                <span style="float:right;">
-				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#"><i aria-hidden="true" class="icon-backspace"></i></a>
+				                                
+				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#"><i aria-hidden="true" class="icon-cancel"></i></a>
 				                                </span>
 				                                
 				                                
@@ -483,9 +505,10 @@ $(document).ready( function() {
 				                                  <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
 				                                  <span class="toggle_button tiny">
 												      <a class="service-view-master-link" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>">view</a> |
-												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a>
-												      <mockey-tag:conflictFlag service="${mockservice}" conflictInfo="${conflictInfo}"/>
+												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> | 
+												      <a class="tiny_service_duplicate" id="duplicateServiceLink_<c:out value="${mockservice.id}"/>" title="Duplicate this service" href="#">dup'</a>
 												  </span>
+												  <mockey-tag:conflictFlag service="${mockservice}" conflictInfo="${conflictInfo}"/>
 												  <c:if test="${empty mockservice.scenarios}">
 						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>
 						                          </c:if>
@@ -584,7 +607,7 @@ $(document).ready( function() {
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status"  >
 		                                    <div class="service-detail-scenario-list-item" id="service-scenario-info_${scenario.id}_${mockservice.id}">
-			                                    <span style="float:right;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-backspace"></i></a> </span>
+			                                    <span style="float:right;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-cancel"></i></a> </span>
 			                                    <div style="padding-top: 0.5em;">
 			                                      <c:choose>
 			                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
@@ -638,6 +661,9 @@ $(document).ready( function() {
                 </div>
                 <div id="dialog-delete-service-confirm" title="Delete Service">
                     <p>Are you sure you want to delete this Service?</p>
+                </div>
+                 <div id="dialog-duplicate-service-confirm" title="Duplicate Service">
+                    <p>Are you sure you want to duplicate this Service? You'll have a chance to rename it.</p>
                 </div>
                 <div id="dialog-delete-scenario-confirm" title="Delete Service Scenario">
                     <p>Are you sure you want to delete this Scenario?</p>

@@ -142,6 +142,7 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
 .info_message a {text-decoration: underline;}
 .info_message strong {color:#FF0084;}
 .info_message ul {list-style-position: inside;}
+.alert_message ul {list-style-type: none; padding: 0px; margin: 0px;}
 .count-box { margin-top: 0.5em;  padding:0.1em; font-size:10px; text-align:left;}
 .tag_word_group {
     line-height:18px;

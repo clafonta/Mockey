@@ -375,4 +375,10 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public Service duplicateService(Service service) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

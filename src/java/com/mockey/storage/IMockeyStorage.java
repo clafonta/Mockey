@@ -72,8 +72,10 @@ public interface IMockeyStorage {
 	public List<Long> getServiceIds();
 
 	public List<Service> getServices();
-
+	
 	public Service saveOrUpdateService(Service service);
+	
+	public Service duplicateService(Service service);
 
 	public void deleteService(Service service);
 

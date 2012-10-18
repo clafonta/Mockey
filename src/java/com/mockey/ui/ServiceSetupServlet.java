@@ -125,6 +125,12 @@ public class ServiceSetupServlet extends HttpServlet {
 			String contextRoot = req.getContextPath();
 			resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));
 			return;
+		}else if (req.getParameter("duplicateService") != null && serviceId != null) {
+			Service service = store.getServiceById(serviceId);
+			Service duplicateService = store.duplicateService(service);
+			String contextRoot = req.getContextPath();
+			resp.sendRedirect(Url.getContextAwarePath("setup?serviceId="+duplicateService.getId(), contextRoot));
+			return;
 		}
 
 		super.service(req, resp);
@@ -206,7 +212,12 @@ public class ServiceSetupServlet extends HttpServlet {
 				}
 
 			}
-
+			// Before we ADD new URLS, let's start with a clean list. 
+			// Why? In case the user removes the URL within the form, 
+			// then it will be an 'empty' value.
+			service.clearRealServiceUrls();
+			
+			// Now we add.
 			for (Url urlItem : newUrlList) {
 				service.saveOrUpdateRealServiceUrl(urlItem);
 			}
