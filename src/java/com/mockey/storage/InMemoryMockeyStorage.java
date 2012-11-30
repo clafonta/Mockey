@@ -212,10 +212,31 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return service;
 	}
 
+	/**
+	 * This will return a Service with a matching URL, will be aware of
+	 * RESTful consumption, and check for Filters too. 
+	 * 
+	 * Example:
+	 * <pre>
+	 * url    = http://www.service.com/person/ID
+	 * altUrl = http://www.service.com/
+	 * 
+	 * MATCH! because url starts with altUrl.
+	 * </pre>
+	 * 
+	 * 
+	 * @param url - Incoming URL being request. 
+	 * @param altUrl - To compare the incoming URL.
+	 * @param serviceTmp - handle to filter tags. 
+	 * @return
+	 */
 	private Service getMatchServiceBasedOnUrl(String url, Url altUrl,
 			Service serviceTmp) {
 		Service service = null;
-		if (url.trim().equalsIgnoreCase(altUrl.getFullUrl().trim())) {
+
+		// Why 'starsWith'? To support RESTful services.
+		if (url.toLowerCase().trim()
+				.startsWith(altUrl.getFullUrl().trim().toLowerCase())) {
 			// We have a URL match. Check for Filter if
 			// available.
 			if (this.getFilterTag().length() == 0

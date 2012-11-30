@@ -139,6 +139,10 @@
 	            <div class="tinyfieldset">You can make up a new but unique <i>mock</i> URL to map to the real URL(s). Your mock URL will look like this: 
 	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />"/>
 	               </div>
+	               <p class="info_message">
+	               <b>NOTE:</b> This has <strong>RESTful</strong> support. If you define your mock URL as <span class="code_text">http://www.someservice.com/list</span>, then an application requesting <span class="code_text">http://www.someservice.com/list/person/id</span>
+	            	   will be mapped to this service. 
+	               </p>
 	            </div>
 	            <div id="invalidUrl" style="display:none;color:red;"><span>Note:</span> </div>
 	            <hr>
