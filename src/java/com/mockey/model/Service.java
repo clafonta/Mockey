@@ -35,6 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,7 +57,8 @@ import com.mockey.ui.Util;
  * @author chad.lafontaine
  * 
  */
-public class Service extends StatusCheck implements PersistableItem, ExecutableService {
+public class Service extends StatusCheck implements PersistableItem,
+		ExecutableService {
 
 	public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
 	public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
@@ -74,13 +77,13 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 	private String httpMethod = "GET";
 	private String url = "";
-	
+
 	private List<FulfilledClientRequest> fulfilledRequests;
 	private List<Url> realServiceUrlList = new ArrayList<Url>();
 	private boolean allowRedirectFollow = true;
 	private static Log logger = LogFactory.getLog(Service.class);
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-	
+
 	public List<FulfilledClientRequest> getFulfilledRequests() {
 		return fulfilledRequests;
 	}
@@ -104,19 +107,19 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	}
 
 	public Long getDefaultScenarioId() {
-		
+
 		return this.defaultScenarioId;
 	}
-	
+
 	/**
-	 *
+	 * 
 	 * @return null if no default scenario defined, otherwise, returns name
 	 */
-	public String getDefaultScenarioName(){
+	public String getDefaultScenarioName() {
 		Scenario s = this.getScenario(this.defaultScenarioId);
-		if(s!=null){
+		if (s != null) {
 			return s.getScenarioName();
-		}else {
+		} else {
 			return null;
 		}
 	}
@@ -137,7 +140,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public void setDefaultScenarioByName(String scenarioName) {
 		if (scenarioName != null) {
 			for (Scenario scenario : this.scenarios.getOrderedList()) {
-				if (scenarioName.trim().equalsIgnoreCase((scenario.getScenarioName().trim()))) {
+				if (scenarioName.trim().equalsIgnoreCase(
+						(scenario.getScenarioName().trim()))) {
 					this.setDefaultScenarioId(scenario.getId());
 					break;
 				}
@@ -172,7 +176,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	}
 
 	public List<Scenario> getScenarios() {
-		return Util.orderAlphabeticallyByScenarioName(scenarios.getOrderedList());
+		return Util.orderAlphabeticallyByScenarioName(scenarios
+				.getOrderedList());
 	}
 
 	public Scenario getScenario(Long scenarioId) {
@@ -201,12 +206,12 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		this.saveOrUpdateRealServiceUrl(new Url(realServiceUrl));
 	}
 
-
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Service name:").append(this.getServiceName()).append("\n");
 		sb.append("Real URL(s):\n");
-		if (this.realServiceUrlList != null && !this.realServiceUrlList.isEmpty()) {
+		if (this.realServiceUrlList != null
+				&& !this.realServiceUrlList.isEmpty()) {
 			Iterator<Url> iter = this.realServiceUrlList.iterator();
 			while (iter.hasNext()) {
 				sb.append(iter.next() + "\n");
@@ -215,7 +220,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			sb.append("(no real urls defined for this service)\n");
 		}
 
-		sb.append("Default scenario ID:").append(this.getDefaultScenarioId()).append("\n");
+		sb.append("Default scenario ID:").append(this.getDefaultScenarioId())
+				.append("\n");
 		sb.append("Hang time:");
 		sb.append(this.getHangTime());
 		sb.append("\n");
@@ -254,7 +260,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	 *            default to PROXY.
 	 */
 	public void setServiceResponseType(int serviceResponseType) {
-		if (serviceResponseType == 1 || serviceResponseType == 0 || serviceResponseType == 2) {
+		if (serviceResponseType == 1 || serviceResponseType == 0
+				|| serviceResponseType == 2) {
 			this.serviceResponseType = serviceResponseType;
 		} else {
 			this.serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
@@ -269,18 +276,18 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	private void validateDefaultScenarioId() {
 		boolean valid = false;
 		List<Scenario> orderedList = this.scenarios.getOrderedList();
-		
-		for(Scenario s: orderedList){
-	
-			if(s.getId().equals(this.getDefaultScenarioId()) ) {
+
+		for (Scenario s : orderedList) {
+
+			if (s.getId().equals(this.getDefaultScenarioId())) {
 				valid = true;
 				break;
 			}
 		}
-		if(!valid){
-			if(this.scenarios.getOrderedList().size() > 0){
+		if (!valid) {
+			if (this.scenarios.getOrderedList().size() > 0) {
 				this.setDefaultScenarioId(orderedList.get(0).getId());
-			}else {
+			} else {
 				// Reset
 				this.setDefaultScenarioId(null);
 			}
@@ -296,11 +303,14 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	 */
 	public void setServiceResponseTypeByString(String arg) {
 		if (arg != null) {
-			if ("proxy".trim().equalsIgnoreCase(arg.trim()) || "0".equalsIgnoreCase(arg.trim())) {
+			if ("proxy".trim().equalsIgnoreCase(arg.trim())
+					|| "0".equalsIgnoreCase(arg.trim())) {
 				setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
-			} else if ("static".trim().equalsIgnoreCase(arg.trim()) || "1".equalsIgnoreCase(arg.trim())) {
+			} else if ("static".trim().equalsIgnoreCase(arg.trim())
+					|| "1".equalsIgnoreCase(arg.trim())) {
 				setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO);
-			} else if ("dynamic".trim().equalsIgnoreCase(arg.trim()) || "2".equalsIgnoreCase(arg.trim())) {
+			} else if ("dynamic".trim().equalsIgnoreCase(arg.trim())
+					|| "2".equalsIgnoreCase(arg.trim())) {
 				setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO);
 			}
 		}
@@ -314,19 +324,19 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			return serviceResponseType;
 		}
 	}
-	
-	public String getServiceResponseTypeAsString(){
+
+	public String getServiceResponseTypeAsString() {
 		int x = getServiceResponseType();
-		if(x == Service.SERVICE_RESPONSE_TYPE_PROXY){
+		if (x == Service.SERVICE_RESPONSE_TYPE_PROXY) {
 			return "proxy";
-		}else if(x == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO){
+		} else if (x == Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO) {
 			return "static";
-		}else if(x == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO){
-			return "dynamic";			
-		}else {
+		} else if (x == Service.SERVICE_RESPONSE_TYPE_DYNAMIC_SCENARIO) {
+			return "dynamic";
+		} else {
 			return "";
 		}
-		
+
 	}
 
 	public void setErrorScenarioId(Long errorScenarioId) {
@@ -366,7 +376,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	 * The core method to execute the request as either a Proxy, Dynamic, or
 	 * Static Scenario.
 	 */
-	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl) {
+	public ResponseFromService execute(RequestFromClient request,
+			Url realServiceUrl) {
 		this.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 		ResponseFromService response = null;
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
@@ -379,7 +390,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		return response;
 	}
 
-	private ResponseFromService proxyTheRequest(RequestFromClient request, Url realServiceUrl) {
+	private ResponseFromService proxyTheRequest(RequestFromClient request,
+			Url realServiceUrl) {
 
 		logger.debug("proxying a moxie.");
 		// If proxy on, then
@@ -397,16 +409,19 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		// we do the following:
 		ProxyServerModel proxyServer = store.getProxy();
 
-		ClientExecuteProxy clientExecuteProxy = ClientExecuteProxy.getClientExecuteProxyInstance();
+		ClientExecuteProxy clientExecuteProxy = ClientExecuteProxy
+				.getClientExecuteProxyInstance();
 		ResponseFromService response = null;
 
 		// If Twisting is on, then
 		// 1)
 		try {
 			logger.debug("Initiating request through proxy");
-			TwistInfo twistInfo = store.getTwistInfoById(store.getUniversalTwistInfoId());
-			
-			response = clientExecuteProxy.execute(twistInfo, proxyServer, realServiceUrl, allowRedirectFollow, request);
+			TwistInfo twistInfo = store.getTwistInfoById(store
+					.getUniversalTwistInfoId());
+
+			response = clientExecuteProxy.execute(twistInfo, proxyServer,
+					realServiceUrl, allowRedirectFollow, request);
 
 		} catch (ClientExecuteProxyException e) {
 			// We're here for various reasons.
@@ -431,15 +446,20 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 							.put("fail",
 									"We encountered an error. Here's some information to help point out what may have gone wrong.");
 					if (proxyServer != null && proxyServer.isProxyEnabled()) {
-						if (proxyServer.getProxyHost() != null && proxyServer.getProxyHost().trim().length() > 0) {
-							jsonResponseObject.put("proxyInfo", "Internet proxy settings are ENABLED pointing to -->"
-									+ proxyServer.getProxyHost() + "<-- ");
-						} else {
+						if (proxyServer.getProxyHost() != null
+								&& proxyServer.getProxyHost().trim().length() > 0) {
 							jsonResponseObject.put("proxyInfo",
-									"Internet proxy settings are ENABLED but Internet Proxy Server value is EMPTY.");
+									"Internet proxy settings are ENABLED pointing to -->"
+											+ proxyServer.getProxyHost()
+											+ "<-- ");
+						} else {
+							jsonResponseObject
+									.put("proxyInfo",
+											"Internet proxy settings are ENABLED but Internet Proxy Server value is EMPTY.");
 						}
 					} else {
-						jsonResponseObject.put("proxyInfo", "Proxy settings are NOT ENABLED. ");
+						jsonResponseObject.put("proxyInfo",
+								"Proxy settings are NOT ENABLED. ");
 					}
 					msg.append(jsonResponseObject.toString());
 				} catch (Exception ae) {
@@ -463,21 +483,23 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		// 2) Based on scenario selected.
 		//
 		Scenario scenario = this.getScenario(this.getDefaultScenarioId());
-		
+
 		ResponseFromService response = new ResponseFromService();
 
 		if (scenario != null) {
 			response.setBody(scenario.getResponseMessage());
-			response.setHttpResponseStatusCode(scenario.getHttpResponseStatusCode());
-			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
-			
-			Map<String,String> headerInfo = scenario.getHeaderInfoHelper();
+			response.setHttpResponseStatusCode(scenario
+					.getHttpResponseStatusCode());
+			scenario.setLastVisit(new Long(Calendar.getInstance()
+					.getTimeInMillis()));
+
+			Map<String, String> headerInfo = scenario.getHeaderInfoHelper();
 			List<Header> headerList = new ArrayList<Header>();
-			for(String k: headerInfo.keySet()){
-				headerList.add(new BasicHeader(k,headerInfo.get(k)));
+			for (String k : headerInfo.keySet()) {
+				headerList.add(new BasicHeader(k, headerInfo.get(k)));
 			}
 			response.setHeaders(headerList.toArray(new Header[headerList.size()]));
-			
+
 		} else {
 			response.setBody("NO SCENARIO SELECTED");
 		}
@@ -485,8 +507,15 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		return response;
 	}
 
-	private ResponseFromService executeDynamicScenario(RequestFromClient request, Url realServiceUrl) {
+	private ResponseFromService executeDynamicScenario(
+			RequestFromClient request, Url realServiceUrl) {
 
+		// To make things a little easy, we will
+		// concatenate request Parameters and Body (if one was posted)
+		// into 1 long String argument, and then evaluate for
+		// the existence of a match string argument.
+
+		// STEP 1. "Build the request String to evaluate"
 		logger.debug("mockeying a dynamic scenario.");
 		StringBuffer rawRequestDataBuffer = new StringBuffer();
 		try {
@@ -495,15 +524,20 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 				rawRequestDataBuffer.append(request.getBodyInfo());
 			}
 		} catch (UnsupportedEncodingException e) {
-			// uhm.
+
 			logger.debug("Unable to extract content from request", e);
 		}
 		String rawRequestData = "";
 		try {
-			rawRequestData = URLDecoder.decode(rawRequestDataBuffer.toString(), "UTF-8");
+			rawRequestData = URLDecoder.decode(rawRequestDataBuffer.toString(),
+					"UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			logger.error("Unable to URL un-encode (or decode) the following: \n " + rawRequestDataBuffer.toString(), e);
+			logger.error(
+					"Unable to URL un-encode (or decode) the following: \n "
+							+ rawRequestDataBuffer.toString(), e);
 		}
+
+		// STEP 2. "We iterate through each Service Scenario and evaluate"
 		ResponseFromService response = new ResponseFromService();
 		List<Scenario> scenarios = this.getScenarios();
 		Iterator<Scenario> iter = scenarios.iterator();
@@ -511,22 +545,36 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		int httpResponseStatus = -1;
 		while (iter.hasNext()) {
 			Scenario scenario = iter.next();
-			logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + rawRequestData);
+			logger.debug("Checking: '" + scenario.getMatchStringArg()
+					+ "' in Scenario message: \n" + rawRequestData);
 			int indexValue = -1;
+
 			if (scenario.hasMatchArgument()) {
-				indexValue = rawRequestData.indexOf(scenario.getMatchStringArg());
+				if (scenario.isMatchStringArgRegexFlag()) {
+					Pattern pattern = Pattern.compile(scenario
+							.getMatchStringArg());
+					Matcher matcher = pattern.matcher(rawRequestData);
+					if (matcher.find()) {
+						indexValue = 1; // True, there's a match.
+					}
+				} else {
+					indexValue = rawRequestData.indexOf(scenario
+							.getMatchStringArg());
+				}
 			}
 			if ((indexValue > -1)) {
-				logger.debug("FOUND - matching '" + scenario.getMatchStringArg() + "' ");
+				logger.debug("FOUND - matching '"
+						+ scenario.getMatchStringArg() + "' ");
 				messageMatchFound = scenario.getResponseMessage();
 				httpResponseStatus = scenario.getHttpResponseStatusCode();
 				// SET HEADERS
-				Map<String,String> headerInfo = scenario.getHeaderInfoHelper();
+				Map<String, String> headerInfo = scenario.getHeaderInfoHelper();
 				List<Header> headerList = new ArrayList<Header>();
-				for(String k: headerInfo.keySet()){
-					headerList.add(new BasicHeader(k,headerInfo.get(k)));
+				for (String k : headerInfo.keySet()) {
+					headerList.add(new BasicHeader(k, headerInfo.get(k)));
 				}
-				response.setHeaders(headerList.toArray(new Header[headerList.size()]));
+				response.setHeaders(headerList.toArray(new Header[headerList
+						.size()]));
 				break;
 			}
 		}
@@ -545,7 +593,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 				messageMatchFound = u.getResponseMessage();
 				httpResponseStatus = u.getHttpResponseStatusCode();
 			} else {
-				messageMatchFound = "Ouch, no love for you! Why? Well, it could be that this service setting "
+				messageMatchFound = "Yikes, no love for you! Why? Well, it could be that this service setting "
 						+ "is set to Dynamic but there is no found matching scenario, nor is there a default "
 						+ "service-scenario-error defined, nor is there a universal-scenario-error defined "
 						+ "for this incoming request. In otherwords, Mockey doesn't know what to do.";
@@ -579,11 +627,10 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public List<Url> getRealServiceUrls() {
 		return realServiceUrlList;
 	}
-	
+
 	public void clearRealServiceUrls() {
 		realServiceUrlList = new ArrayList<Url>();
 	}
-
 
 	/**
 	 * 
@@ -618,7 +665,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public Url getFirstMatchingRealServiceUrl(Service otherService) {
 
 		Url matchUrl = null;
-		if (this.realServiceUrlList != null && otherService != null && !otherService.getRealServiceUrls().isEmpty()) {
+		if (this.realServiceUrlList != null && otherService != null
+				&& !otherService.getRealServiceUrls().isEmpty()) {
 
 			for (Url otherUrl : otherService.getRealServiceUrls()) {
 				if (this.hasRealServiceUrl(otherUrl)) {
@@ -634,7 +682,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		boolean has = false;
 		try {
 			for (Url urlTmp : this.realServiceUrlList) {
-				if (urlTmp.getFullUrl().trim().equalsIgnoreCase(url.getFullUrl())) {
+				if (urlTmp.getFullUrl().trim()
+						.equalsIgnoreCase(url.getFullUrl())) {
 					has = true;
 					break;
 				}
@@ -709,21 +758,21 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	public Boolean getTransientState() {
 		return transientState;
 	}
-	
-	public boolean hasTag(String tag){
+
+	public boolean hasTag(String tag) {
 		boolean has = super.hasTag(tag);
-		if(!has){
+		if (!has) {
 			// Check scenarios...
-			for(Scenario s: this.getScenarios()){
+			for (Scenario s : this.getScenarios()) {
 				has = s.hasTag(tag);
-				if(has){
+				if (has) {
 					break;
 				}
 			}
 		}
 		return has;
 	}
-	
+
 	public String getRequestInspectorName() {
 		return requestInspectorName;
 	}

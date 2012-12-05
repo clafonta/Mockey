@@ -23,12 +23,12 @@ $(document).ready( function() {
 	</div>
 	</p>
 	<h1>Import</h1>
-	<p>Import your service definition(s) here. Import will try to <i>merge</i> services already defined with services defined in your import file. If you're not sure about this, 
+	<p>Import your Mockey service definition XML file from a local file directory or from a URL. Import will try to <i>merge</i> services already defined with services defined in your import file. If you're not sure about this, 
 	you should <a href="">Export</a> your service definitions first. If things go bad for you, then you can 
 	<strong>Flush</strong> and re-import your saved definitions file.</p>
 	<p class="tiny">
 		<strong>Why Tags?</strong>
-		Each tag will be applied to each service and scenario. This can be useful when merging different files and you want to keep track on the when and where things came from.
+		Each tag will be applied to each Service, Scenario, and Plan. This can be useful when merging different files and you want to keep track on the when and where things came from.
 	</p>
 
 	<div id="tabs" class="tiny" style="margin-left: 10%; margin-right: 10%;">

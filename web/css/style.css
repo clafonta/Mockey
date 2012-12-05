@@ -34,6 +34,7 @@ form#child {
 	margin: 0em;
 	border: none;
 }
+
 div.childform {
     padding: 0.2em 0.6em;
     font-size: 90%;
@@ -46,6 +47,7 @@ div.parentform, div.parentformselected, div.centerform {
 	-moz-border-radius: 0.2em;
 	-webkit-border-radius: 0.2em;
 }
+
 div.parentform, div.childform {
 	border: thin solid #bdbdbd;
 }

@@ -94,12 +94,13 @@
     
 	    <p>
 	    <h3>Match Argument</h3>
-	    <i style="color:red;font-weight:bold;">Match Argument</i>? <i style="color:green;font-weight:bold;">Static</i> or <i style="color:orange;font-weight:bold;">Dynamic</i>? Setting your mock service to 
-		 <i>static</i> means your mock service will always return the same mock service scenario, no matter what the request is. Dynamic means, Mockey
-		  inspects the incoming request message for a specific <b>match argument</b>. If the incoming request message contains this string argument, then this service 
+	     Setting your mock service to 
+		 <strong>Static</strong> means your mock service will always return the same mock service scenario, no matter what the request is. <strong>Dynamic</strong> means, Mockey
+		  inspects the incoming request message for a specific <b>match argument</b>. If the incoming request message contains this match argument (either <i>string</i> or satisfies the <i>regular expression</i>), 
+		  then this service 
 		  scenario's response message will be the response. If more than one scenario is defined with this matching argument, then the first matched 
 		  scenario's response message will be returned. If no scenario is found with a matching argument, a plain text error message will display.
-		  You only need to define a match argument per service scenario for dynamic scenarios.
+		  You only need to define a match argument per service scenario for <u>dynamic</u> scenarios, and does not apply to static or proxy.
 	    </p>
 	    <p><img src="<c:url value="/images/dynamic_response.png" />" /></p>
 	    <p>

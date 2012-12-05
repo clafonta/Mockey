@@ -143,6 +143,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 						getSafeForXmlOutputString("" + scenario.getHttpResponseStatusCode()));
 				
 				Element scenarioMatchStringElement = document.createElement("scenario_match");
+				scenarioMatchStringElement.setAttribute("scenario_match_regex_flag", Boolean.toString(scenario.isMatchStringArgRegexFlag()));
 				CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
 						.getMatchStringArg()));
 				scenarioMatchStringElement.appendChild(cdataMatchElement);
@@ -270,6 +271,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		return document;
 	}
 
+	
 	private String getSafeForXmlOutputString(String arg) {
 		if (arg != null) {
 			return arg.trim();

@@ -50,6 +50,7 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	private String requestMessage = "";
 	private String responseMessage = "";
 	private String matchStringArg = "";
+	private boolean matchStringArgRegexFlag = false;
 	private String responseHeader = "Accept-Language: en-US | Accept: text/plain";
 	private int httpResponseStatusCode = HttpServletResponse.SC_OK;
 
@@ -201,4 +202,14 @@ public class Scenario extends StatusCheck implements PersistableItem {
 		}
 		
 	}
+
+	public boolean isMatchStringArgRegexFlag() {
+		return matchStringArgRegexFlag;
+	}
+
+	public void setMatchStringArgRegexFlag(boolean matchStringArgRegexFlag) {
+		this.matchStringArgRegexFlag = matchStringArgRegexFlag;
+	}
+
+	
 }

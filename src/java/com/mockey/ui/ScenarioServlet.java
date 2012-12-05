@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,6 +51,7 @@ public class ScenarioServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -5920793024759540668L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
+	private Logger logger = Logger.getLogger(ScenarioServlet.class);
 
 	public void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -136,10 +138,10 @@ public class ScenarioServlet extends HttpServlet {
 
 		if (req.getParameter("responseHeader") != null) {
 			String responseHeader = req.getParameter("responseHeader");
-			if(responseHeader!=null){
+			if (responseHeader != null) {
 				scenario.setResponseHeader(responseHeader);
 			}
-			
+
 		}
 
 		if (req.getParameter("responseMessage") != null) {
@@ -147,6 +149,19 @@ public class ScenarioServlet extends HttpServlet {
 		}
 		if (req.getParameter("matchStringArg") != null) {
 			scenario.setMatchStringArg(req.getParameter("matchStringArg"));
+		}
+		
+		
+		String matchArgAsRegexBoolVal = req.getParameter("matchStringArgRegexFlag");
+		if (matchArgAsRegexBoolVal != null) {
+			try {
+				scenario.setMatchStringArgRegexFlag(
+						Boolean.parseBoolean(matchArgAsRegexBoolVal));
+			} catch (Exception t) {
+				logger.error(
+						"Unable to parse the Scenario match-to-be-used-as-a-regex flag, which should be 'true' or 'false' but was  "
+								+ matchArgAsRegexBoolVal, t);
+			}
 		}
 
 		// VALIDATION

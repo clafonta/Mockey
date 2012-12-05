@@ -431,7 +431,7 @@ $(document).ready( function() {
         <div id="dialog-tag-manage" title="Tag Helper">
             <p><strong>WARNING:</strong>
             This will remove tag(s) from each Service, Scenario, and Service Plan. 
-            <input type="text" name="filter-tag" id="filter-tag" title="Enter tag(s) here" class="text ui-widget-content ui-corner-all" />
+            <input type="text" name="filter-tag" id="filter-tag" title="Enter tag(s) here" class=" text ui-widget-content ui-corner-all" />
             <ul class="button-list">
             <li><a href="#" class="hhButtonRed" style="color:#FFFFFF;" id="delete-tag-button">Remove tag(s) from all things.</a></li>
             </ul>
