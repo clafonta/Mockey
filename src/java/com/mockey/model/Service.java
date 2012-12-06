@@ -73,6 +73,8 @@ public class Service extends StatusCheck implements PersistableItem,
 	private Long errorScenarioId;
 	private int hangTime = 0;
 	private String requestInspectorName;
+	private String requestInspectorJsonRules = "";
+	private boolean requestInspectorJsonRulesEnableFlag = false;
 	private OrderedMap<Scenario> scenarios = new OrderedMap<Scenario>();
 	private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 	private String httpMethod = "GET";
@@ -773,11 +775,56 @@ public class Service extends StatusCheck implements PersistableItem,
 		return has;
 	}
 
+	/**
+	 * 
+	 * @return the Class Name of the Java class responsible for validation of
+	 *         all incoming requests.
+	 * @see com.mockey.plugin.IRequestInspector
+	 */
 	public String getRequestInspectorName() {
 		return requestInspectorName;
 	}
 
 	public void setRequestInspectorName(String requestInspectorName) {
 		this.requestInspectorName = requestInspectorName;
+	}
+
+	/**
+	 * 
+	 * @return request inspection/validation rules defined in JSON format.
+	 */
+	public String getRequestInspectorJsonRules() {
+
+		return requestInspectorJsonRules;
+	}
+
+	/**
+	 * 
+	 * @param requestInspectorJsonRules
+	 *            can be null or empty or invalid JSON format to be able display
+	 *            to customers invalid input. Validation will be done elsewhere.
+	 *            If not null, argument will be trimmed prior to being set.
+	 */
+	public void setRequestInspectorJsonRules(String _requestInspectorJsonRules) {
+		if (_requestInspectorJsonRules != null) {
+			this.requestInspectorJsonRules = _requestInspectorJsonRules;
+		} else {
+
+			this.requestInspectorJsonRules = _requestInspectorJsonRules;
+		}
+	}
+
+	/**
+	 * 
+	 * @return true if the request inspector's JSON rules should be processed
+	 *         per request.
+	 */
+	public boolean isRequestInspectorJsonRulesEnableFlag() {
+		return requestInspectorJsonRulesEnableFlag;
+	}
+
+	public void setRequestInspectorJsonRulesEnableFlag(
+			boolean requestInspectorJsonRulesEnableFlag) {
+		this.requestInspectorJsonRulesEnableFlag = requestInspectorJsonRulesEnableFlag;
 	}
 }

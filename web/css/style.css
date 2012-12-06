@@ -18,6 +18,7 @@ img {border:0;}
 .highlight_pos{color: #06F;}
 .logo_link {   color: #303030;    text-decoration: none;  font-weight:100; font-size: 2em;  font-family: sans-serif;
 }
+
 strong, b {
 font-weight: 600;
 }
@@ -310,7 +311,7 @@ div.grippie {background:#EEEEEE url(../images/grippie.png) no-repeat scroll cent
 .remove_grey {padding: 0 0.5em 0 0.2em; color:#444;text-decoration:none;font-size:80%;margin-bottom:02em;}
 .remove_grey:hover{color:#FF0000;}
 label, input { display:inline; }
-label {font-weight:500;}
+label {font-weight:600;}
 input.text  {
 margin: 0.8em 0 0.8em 0;
 padding:0.4em;

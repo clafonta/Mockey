@@ -30,6 +30,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 
 import com.mockey.model.Service;
 
@@ -79,29 +80,54 @@ public class PluginStore {
 	 * @return
 	 * @see com.mockey.model.Service
 	 */
-	public RequestInspectionResult processRequestInspectors(Service service, HttpServletRequest request) {
+	public RequestInspectionResult processRequestInspectors(Service service,
+			HttpServletRequest request) {
 
 		RequestInspectionResult result = new RequestInspectionResult();
 
-		// Global inspectors
+		// Global Java inspectors
 		for (Class<?> item : this.getRequestInspectorImplClassList()) {
 			try {
-				IRequestInspector iri = (IRequestInspector) this.createInspectorInstance(item);
+				IRequestInspector iri = (IRequestInspector) this
+						.createInspectorInstance(item);
 				// Run if the Request inspector is global (applicable to all
 				// services) OR if this particular service is associated to a
 				// specific inspector.
 				if (iri != null) {
-					if (iri.isGlobal() || iri.getClass().getCanonicalName().equals(service.getRequestInspectorName())) {
+					if (iri.isGlobal()
+							|| iri.getClass().getCanonicalName()
+									.equals(service.getRequestInspectorName())) {
 
 						iri.analyze(request);
-						result.addResultMessage(iri.getPostAnalyzeResultMessage());
+						result.addResultMessage(iri
+								.getPostAnalyzeResultMessage());
 					}
 				}
 
 			} catch (Exception e) {
-				logger.error("Unable to instantiate a class that implements " + IRequestInspector.class.getName()
-						+ " with this name: " + service.getRequestInspectorName(), e);
+				logger.error(
+						"Unable to instantiate a class that implements "
+								+ IRequestInspector.class.getName()
+								+ " with this name: "
+								+ service.getRequestInspectorName(), e);
 			}
+		}
+
+		// JSON Inspectors
+		if (service.isRequestInspectorJsonRulesEnableFlag()) {
+			
+			try {
+				RequestInspectorDefinedByJson jsonRulesInspector = new RequestInspectorDefinedByJson(
+						service.getRequestInspectorJsonRules());
+				jsonRulesInspector.analyze(request);
+				result.addResultMessage(jsonRulesInspector.getPostAnalyzeResultMessage());
+			} catch (JSONException e) {
+				String msg = "Unable to parse JSON rules from service: " + service.getServiceName();
+				result.addResultMessage(msg);
+				logger.debug(msg, e);
+			}
+			
+
 		}
 		return result;
 
@@ -118,19 +144,24 @@ public class PluginStore {
 		try {
 			try {
 				Class<?> xx = Class.forName(className);
-				if (!xx.isInterface() && IRequestInspector.class.isAssignableFrom(xx)) {
+				if (!xx.isInterface()
+						&& IRequestInspector.class.isAssignableFrom(xx)) {
 					return xx;
 				}
 			} catch (ClassNotFoundException e) {
-				Class<?> xx = ClassLoader.getSystemClassLoader().loadClass(className);
-				if (!xx.isInterface() && IRequestInspector.class.isAssignableFrom(xx)) {
+				Class<?> xx = ClassLoader.getSystemClassLoader().loadClass(
+						className);
+				if (!xx.isInterface()
+						&& IRequestInspector.class.isAssignableFrom(xx)) {
 					return xx;
 				}
 			}
 		} catch (java.lang.NoClassDefFoundError classDefNotFound) {
-			logger.debug("Unable to create class: " + className + "; reason: java.lang.NoClassDefFoundError");
+			logger.debug("Unable to create class: " + className
+					+ "; reason: java.lang.NoClassDefFoundError");
 		} catch (Exception e) {
-			logger.error("Unable to create an instance of a class w/ name " + className, e);
+			logger.error("Unable to create an instance of a class w/ name "
+					+ className, e);
 		}
 
 		return null;
@@ -146,12 +177,14 @@ public class PluginStore {
 
 		IRequestInspector instance = null;
 		try {
-			if (!clazz.isInterface() && IRequestInspector.class.isAssignableFrom(clazz)) {
+			if (!clazz.isInterface()
+					&& IRequestInspector.class.isAssignableFrom(clazz)) {
 				instance = (IRequestInspector) clazz.newInstance();
 			}
 		} catch (Exception e) {
 
-			logger.error("Unable to create an instance of a class w/ name " + clazz.getName(), e);
+			logger.error("Unable to create an instance of a class w/ name "
+					+ clazz.getName(), e);
 		}
 
 		return instance;
@@ -163,7 +196,8 @@ public class PluginStore {
 	public void initializeOrUpdateStore() {
 
 		try {
-			List<PackageInfo> list = PackageInfoPeerClassFinder.findPackageInfo();
+			List<PackageInfo> list = PackageInfoPeerClassFinder
+					.findPackageInfo();
 			for (PackageInfo pi : list) {
 				for (String className : pi.getClassList()) {
 
@@ -173,7 +207,7 @@ public class PluginStore {
 						if (o == null) {
 							throw new Exception("Class not available");
 						}
-					} catch(NoClassDefFoundError ncdfe){
+					} catch (NoClassDefFoundError ncdfe) {
 						// By Design: gobbling up this error to reduce the
 						// non-needed noise upon startup. If there is a real
 						// issue, then it will bubble up somewhere else.
@@ -181,7 +215,8 @@ public class PluginStore {
 						// Explicitly load classes from packages that have
 						// package-info
 						try {
-							ClassLoader.getSystemClassLoader().loadClass(className);
+							ClassLoader.getSystemClassLoader().loadClass(
+									className);
 						} catch (java.lang.NoClassDefFoundError ncdfe) {
 							// By Design: gobbling up this error to reduce the
 							// non-needed noise upon startup. If there is a real
@@ -190,9 +225,11 @@ public class PluginStore {
 					}
 
 					Package packageItem = Package.getPackage(pi.getName());
-					if (null != packageItem.getAnnotation(MockeyRequestInspector.class)) {
+					if (null != packageItem
+							.getAnnotation(MockeyRequestInspector.class)) {
 						Class<?> x = doesThisImplementIRequestInspector(className);
-						if (x != null && !this.reqInspectorClassNameList.contains(x)) {
+						if (x != null
+								&& !this.reqInspectorClassNameList.contains(x)) {
 							this.reqInspectorClassNameList.add(x);
 							logger.debug("Plugin added: " + className);
 						}

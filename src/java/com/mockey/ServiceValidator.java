@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.mockey.model.Service;
 import com.mockey.model.Url;
@@ -62,6 +64,18 @@ public class ServiceValidator {
 				|| (ms.getServiceName().trim().length() > 250)) {
 			errorMap.put("serviceName", "Service name must not be empty or greater than 250 chars.");
 		}
+		
+		// Validate JSON format. 
+		if(ms.getRequestInspectorJsonRules() !=null && ms.getRequestInspectorJsonRules().trim().length()>0)
+		try {
+			new JSONObject(ms.getRequestInspectorJsonRules());
+			
+		} catch (JSONException e1) {
+			errorMap.put("requestInspectorJsonRules", "Invalid JSON format. ");
+			logger.debug("Invalid JSON format for rules " + e1.getMessage());
+			
+		}
+		
 
 		// This validation is important
 		// for bad URL checking, but
@@ -122,4 +136,5 @@ public class ServiceValidator {
 
 		return errorMap;
 	}
+	
 }

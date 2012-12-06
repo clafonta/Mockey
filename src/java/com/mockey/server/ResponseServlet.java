@@ -87,7 +87,7 @@ public class ResponseServlet extends HttpServlet {
 		Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
 
 		// ************************************************************************
-		// STEP #1) Inspectors must be done BEFORE you process the original
+		// STEP #1a) JAVA and JSON implemented Inspectors must be done BEFORE you process the original
 		// ************************************************************************
 		// request, otherwise, POST body data will be lost if being retrieved
 		// via 'getParameter'.

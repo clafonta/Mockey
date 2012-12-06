@@ -25,7 +25,8 @@
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		        <li>&#187; <a href="#url_recommendations">URL Config Recommendations</a></li>	        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
-		        <li>&#187; <a href="#inspector">Request Inspector</a></li>    
+		        <li>&#187; <a href="#inspector_in_json">Request Inspector in JSON</a></li>   
+		        <li>&#187; <a href="#inspector_in_java">Request Inspector in Java</a></li>    
 		    </ul>
 	    </div>
 	    <div style="">
@@ -393,8 +394,34 @@
         </p>
     </div>
     <div class="help_section">
-	    <a href="#inspector" name="inspector"></a>
-        <h2>Request Inspector</h2>
+	    <a href="#inspector_in_json" name="inspector_in_json"></a>
+        <h2>Request Inspector In JSON</h2>
+        <pre class="code" style="font-size:0.9em;">{ 
+   'parameters': [
+        { 'key' : 'key name', 
+          'value-rule': 'arg',
+          'value-rule-type': 'regex'}
+   ]
+}</pre>
+        <p>
+        <table class="simple">
+        <thead>
+        <tr><th>KEY</th><th>DESCRIPTION</th></tr>
+          </thead>
+        <tbody>
+        <tr><td>key</td><td>The name of the parameter value</td></tr>
+        <tr><td>value-rule</td><td>Can be a string or regex value. </td></tr>
+        <tr><td>value-rule-type</td><td>Valid values are 'regex' or 'string'. If 'regex', the the 'value-rule' will 
+        be applied to the VALUE of the key.</td></tr>
+          </tbody>
+        
+        </table>
+        </p>
+        
+    </div>
+    <div class="help_section_zebra">
+	    <a href="#inspector_in_java" name="inspector_in_java"></a>
+        <h2>Request Inspector In Java</h2>
         <p>
         You can create your own Service request inspectors to help validate or provide helpful information for incoming
         service requests. <i>What exactly is a request inspector?</i> It's a Java implementation that evaluates the incoming 
@@ -414,7 +441,7 @@
         </ul>
         </p>
     </div>
-	<div class="help_section_zebra">
+	<div class="help_section">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

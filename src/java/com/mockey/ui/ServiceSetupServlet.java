@@ -61,6 +61,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static final Boolean TRANSIENT_STATE = new Boolean(true);
+	private static final String DATE_FORMAT = "MM/dd/yyyy";
 	private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 	private static Logger logger = Logger.getLogger(ServiceSetupServlet.class);
 
@@ -240,8 +241,20 @@ public class ServiceSetupServlet extends HttpServlet {
 		if (req.getParameter("tag") != null) {
 			service.setTag(req.getParameter("tag"));
 		}
-
-		// Last visist
+		
+		// REQUEST INSPECTION rules in JSON format. - optional
+		if(req.getParameter("requestInspectorJsonRules")!=null){
+			service.setRequestInspectorJsonRules(req.getParameter("requestInspectorJsonRules").trim());
+		}
+		// REQUEST INSPECTION enable flag  - optional
+		if(req.getParameter("requestInspectorJsonRulesEnableFlag")!=null) {
+			try {
+				service.setRequestInspectorJsonRulesEnableFlag(new Boolean(req.getParameter("requestInspectorJsonRulesEnableFlag")).booleanValue());
+			}catch(Exception e){
+				logger.error("Json Rule Enable flag has an invalid format.", e);
+			}
+		}
+		// Last visit
 		if (req.getParameter("lastVisit") != null) {
 			try {
 				String lastvisit = req.getParameter("lastVisit");
@@ -252,7 +265,7 @@ public class ServiceSetupServlet extends HttpServlet {
 					service.setLastVisit(null);
 				}
 			} catch (Exception e) {
-
+				logger.error("Last visit has an invalid format. Should be "+DATE_FORMAT, e);
 			}
 
 		}

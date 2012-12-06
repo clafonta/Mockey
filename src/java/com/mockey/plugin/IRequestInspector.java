@@ -32,7 +32,9 @@ import javax.servlet.http.HttpServletRequest;
  * be applied to each incoming request mapped to a Service. What is the purpose
  * of this? This is designed to inform developers and QA whether or not their
  * service requests is missing important information, e.g. a session token,
- * cookie information, etc.
+ * cookie information, etc. 
+ * 
+ * This is designed for complex Request validation. 
  * 
  * @see com.mockey.model.Service#getRequestInspectorName()
  * @see com.mockey.storage.IMockeyStorage#getRequestInspectorByClassName(String)
