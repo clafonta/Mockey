@@ -410,8 +410,8 @@
           </thead>
         <tbody>
         <tr><td>key</td><td>The name of the parameter value</td></tr>
-        <tr><td>value-rule</td><td>Can be a string or regex value. </td></tr>
-        <tr><td>value-rule-type</td><td>Valid values are 'regex' or 'string'. If 'regex', the the 'value-rule' will 
+        <tr><td>value_rule_arg</td><td>Can be a string or regex value. </td></tr>
+        <tr><td>value_rule_type</td><td>Valid values are 'string_required', 'regex_optional', or 'regex_required'. If 'regex_required', the key value must be present and meet the regular expression defined by 'value_rule_arg'.
         be applied to the VALUE of the key.</td></tr>
           </tbody>
         
