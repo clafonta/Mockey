@@ -396,23 +396,67 @@
     <div class="help_section">
 	    <a href="#inspector_in_json" name="inspector_in_json"></a>
         <h2>Request Inspector In JSON</h2>
-        <pre class="code" style="font-size:0.9em;">{ 
-   'parameters': [
-        { 'key' : 'key name', 
-          'value-rule': 'arg',
-          'value-rule-type': 'regex'}
-   ]
-}</pre>
+		<div>Mockey has some hooks for you to evaluate incoming requests to help flag potential errors. A JSON formatted input definition
+			is used here, and it works as follows:
+			<ul>
+				<li>Request is made to Mockey. 
+					</li>
+				<li>Mockey finds the appropriate mock Service. If request validation is <b>enabled</b>, then Mockey will scan
+					the incoming request with your defined rules.  
+					</li>
+				<li>If errors/issues are found, then they will be logged and viewable in the <a href="<c:url value="/history"/>">History</a> page. 
+					</li>	
+				</ul>
+			</div>
+			<div>Let's do this by example: 
+				</div>
+        <pre class="code" style="font-size:0.9em;">
+	// EXAMPLE
+	{
+	    "parameters": [
+	        {
+	            "key": "ticker",
+	            "desc": "A value must be provided with the 'ticker' parameter, and it must contain the letter 'g'. Providing 'GOOG' is valid, but 'FB' will flag an error.",
+	            "value_rule_arg": "g",
+	            "value_rule_type": "string_required"
+	        },
+	        {
+	            "key": "date",
+	            "desc": "Optional date value, but if provided, must satisfy mm/DD/yyyy format.",
+	            "value_rule_arg": "^(((0[1-9]|[12]\\d|3[01])\\/(0[13578]|1[02])\\/((19|[2-9]\\d)\\d{2}))|((0[1-9]|[12]\\d|30)\\/(0[13456789]|1[012])\\/((19|[2-9]\\d)\\d{2}))|((0[1-9]|1\\d|2[0-8])\\/02\\/((19|[2-9]\\d)\\d{2}))|(29\\/02\\/((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$",
+	            "value_rule_type": "regex_optional"
+	        }
+	    ],
+	    "headers": [
+	        {
+	            "key": "page_id",
+	            "desc": "A page_id value MUST be provided, any non-empty string value.",
+	            "value_rule_arg": "",
+	            "value_rule_type": "string_required"
+	        }
+	    ]
+	}
+</pre>
+
         <p>
-        <table class="simple">
+        <table class="api">
         <thead>
         <tr><th>KEY</th><th>DESCRIPTION</th></tr>
           </thead>
         <tbody>
-        <tr><td>key</td><td>The name of the parameter value</td></tr>
-        <tr><td>value_rule_arg</td><td>Can be a string or regex value. </td></tr>
-        <tr><td>value_rule_type</td><td>Valid values are 'string_required', 'regex_optional', or 'regex_required'. If 'regex_required', the key value must be present and meet the regular expression defined by 'value_rule_arg'.
-        be applied to the VALUE of the key.</td></tr>
+        <tr><td>key</td><td><strong>Required.</strong> The name of the parameter value</td></tr>
+        <tr><td>desc</td><td><strong>Optional.</strong> A short description of what you're trying to accomplish. This message will display in the History page if the error occurs to inform the user what's wrong. </td></tr>
+        <tr><td>value_rule_arg</td><td>Can be a string or regex' value. </td></tr>
+        <tr><td>value_rule_type</td><td>Tells Mockey <i>how</i> to evaluate the key-value pair. Valid values are
+	<ul>
+		<li><b>string_required</b>: Case insensitive. The string or character must be present in the non-empty-VALUE associated to the parameter (or header) KEY. 
+			You could use a REGEX here, but for those who just want a simple text search, you can use this instead
+			of dealing with the complexities of regular-<i>confusing?</i>-expressions. </li>
+		<li><b>regex_optional</b>: if a non-empty string value is provided, then it MUST satisfy the regex' definition ('value_rule_arg')</li>
+		<li><b>regex_required</b>: the key value must be present and meet the regular expression defined by 'value_rule_arg'.</li>
+		</ul>
+		
+		</td></tr>
           </tbody>
         
         </table>
