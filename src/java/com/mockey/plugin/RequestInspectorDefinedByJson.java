@@ -176,7 +176,15 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 						.getString(VALUE_RULE_TYPE);
 				String[] values = keyValues.get(key);
 
-				if ((InspectorRuleType.REGEX_OPTIONAL
+				if (InspectorRuleType.REGEX_REQUIRED
+						.equalsString(valueRuleType) && values == null) {
+					String errorMsgRequired = type
+							+ " with key '"
+							+ key
+							+ "' requires a value but is 'null'. Rule argument is '"
+							+ valueRuleArg + "'. " + desc;
+					this.errors.put(key, errorMsgRequired);
+				} else if ((InspectorRuleType.REGEX_OPTIONAL
 						.equalsString(valueRuleType) && values != null)
 						|| (InspectorRuleType.REGEX_REQUIRED
 								.equalsString(valueRuleType))) {
@@ -211,7 +219,6 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 					boolean found = false;
 					if (values != null) {
 						for (String value : values) {
-
 							if (value != null
 									&& value.toLowerCase()
 											.trim()
@@ -219,11 +226,12 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 													valueRuleArg.toLowerCase()
 															.trim()) > -1) {
 								found = true;
+								break;
 							}
 						}
-						if (!found) {
-							this.errors.put(key, errorMsg);
-						}
+					}
+					if (!found) {
+						this.errors.put(key, errorMsg);
 					}
 
 				}

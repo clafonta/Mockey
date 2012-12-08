@@ -423,7 +423,7 @@
 	        {
 	            "key": "date",
 	            "desc": "Optional date value, but if provided, must satisfy mm/DD/yyyy format.",
-	            "value_rule_arg": "^(((0[1-9]|[12]\\d|3[01])\\/(0[13578]|1[02])\\/((19|[2-9]\\d)\\d{2}))|((0[1-9]|[12]\\d|30)\\/(0[13456789]|1[012])\\/((19|[2-9]\\d)\\d{2}))|((0[1-9]|1\\d|2[0-8])\\/02\\/((19|[2-9]\\d)\\d{2}))|(29\\/02\\/((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$",
+	            "value_rule_arg": "^(1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2}$",
 	            "value_rule_type": "regex_optional"
 	        }
 	    ],
@@ -439,6 +439,8 @@
 </pre>
 
         <p>
+	    The JSON rules API supports an array of Rules for 'parameters' and 'headers'. Each rule includes the following:
+		
         <table class="api">
         <thead>
         <tr><th>KEY</th><th>DESCRIPTION</th></tr>
