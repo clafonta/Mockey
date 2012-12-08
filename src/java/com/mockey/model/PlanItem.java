@@ -37,26 +37,13 @@ package com.mockey.model;
  * 
  */
 public class PlanItem {
-    private Long serviceId;
-    private Long scenarioId;
+	
+	private String serviceName;
+	private String scenarioName;
+    
     private int hangTime;
     private int serviceResponseType;
 
-    public Long getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(Long serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public Long getScenarioId() {
-        return scenarioId;
-    }
-
-    public void setScenarioId(Long scenarioId) {
-        this.scenarioId = scenarioId;
-    }
 
     public void setServiceResponseType(int serviceResponseType) {
         this.serviceResponseType = serviceResponseType;
@@ -73,5 +60,21 @@ public class PlanItem {
     public int getHangTime() {
         return hangTime;
     }
+
+	public String getScenarioName() {
+		return scenarioName;
+	}
+
+	public void setScenarioName(String scenarioName) {
+		this.scenarioName = scenarioName;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
 
 }

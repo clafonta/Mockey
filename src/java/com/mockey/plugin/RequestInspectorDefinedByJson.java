@@ -138,7 +138,6 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		while (enumNames.hasMoreElements()) {
 			String paramKey = enumNames.nextElement();
 			String[] parameterValues = request.getParameterValues(paramKey);
-			StringBuffer sb = new StringBuffer();
 			valueMap.put(paramKey, parameterValues);
 		}
 		analyze(PARAMETERS, valueMap);
@@ -175,20 +174,18 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 				String valueRuleType = keyValueRuleArg
 						.getString(VALUE_RULE_TYPE);
 				String[] values = keyValues.get(key);
+				
 
-				if (InspectorRuleType.REGEX_REQUIRED
-						.equalsString(valueRuleType) && values == null) {
+				if (InspectorRuleType.REGEX_REQUIRED.equalsString(valueRuleType) && values==null) {
 					String errorMsgRequired = type
 							+ " with key '"
 							+ key
-							+ "' requires a value but is 'null'. Rule argument is '"
-							+ valueRuleArg + "'. " + desc;
+							+ "' requires a non-null value. " + desc;
 					this.errors.put(key, errorMsgRequired);
-				} else if ((InspectorRuleType.REGEX_OPTIONAL
-						.equalsString(valueRuleType) && values != null)
-						|| (InspectorRuleType.REGEX_REQUIRED
-								.equalsString(valueRuleType))) {
-
+				}
+				else if ((InspectorRuleType.REGEX_OPTIONAL.equalsString(valueRuleType) && values!=null)
+						|| (InspectorRuleType.REGEX_REQUIRED.equalsString(valueRuleType) && values!=null) ){
+					
 					for (String value : values) {
 						String errorMsgRequired = type
 								+ " with key '"
@@ -264,8 +261,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	}
 
 	public static void main(String[] args) {
-		String valueRuleArg = "^(1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2}$";
-		String value = " 10/23/1972";
+		String valueRuleArg = "^((1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2})?$";
+		String value = "10/23/1972";
 		try {
 
 			Pattern pattern = Pattern.compile(valueRuleArg);

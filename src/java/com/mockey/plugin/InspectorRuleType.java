@@ -50,7 +50,8 @@ package com.mockey.plugin;
 
 public enum InspectorRuleType {
 	STRING_REQUIRED("string_required"), REGEX_REQUIRED(
-			"regex_required"), REGEX_OPTIONAL("regex_optional");
+			"regex_required"), REGEX_OPTIONAL(
+					"regex_optional");
 	private String value;
 
 	private InspectorRuleType(String value) {

@@ -148,8 +148,8 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetNext(ROOT_PLAN, "saveOrUpdateServicePlan");
 		fullSetDigester.addObjectCreate(ROOT_PLAN_ITEM, PlanItem.class);
 		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "hang_time", "hangTime");
-		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "service_id", "serviceId");
-		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "scenario_id", "scenarioId");
+		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "service_name", "serviceName");
+		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "scenario_name", "scenarioName");
 		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "service_response_type", "serviceResponseType");
 		fullSetDigester.addSetNext(ROOT_PLAN_ITEM, "addPlanItem");
 

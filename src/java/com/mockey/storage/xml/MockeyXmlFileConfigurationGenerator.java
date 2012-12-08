@@ -248,8 +248,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				for (PlanItem pi : servicePlan.getPlanItemList()) {
 					Element planItemElement = document.createElement("plan_item");
 					planItemElement.setAttribute("hang_time", "" + pi.getHangTime());
-					planItemElement.setAttribute("service_id", "" + pi.getServiceId());
-					planItemElement.setAttribute("scenario_id", "" + pi.getScenarioId());
+					planItemElement.setAttribute("service_name",  getSafeForXmlOutputString(pi.getServiceName()));
+					planItemElement.setAttribute("scenario_name",  getSafeForXmlOutputString(pi.getScenarioName()));
 					planItemElement.setAttribute("service_response_type", "" + pi.getServiceResponseType());
 
 					servicePlanElement.appendChild(planItemElement);

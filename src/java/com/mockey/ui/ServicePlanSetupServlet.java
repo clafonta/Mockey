@@ -405,8 +405,9 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 
 			PlanItem planItem = new PlanItem();
 			planItem.setHangTime(service.getHangTime());
-			planItem.setServiceId(service.getId());
-			planItem.setScenarioId(service.getDefaultScenarioId());
+			planItem.setServiceName(service.getServiceName());
+			
+			planItem.setScenarioName(service.getDefaultScenarioName());
 			planItem.setServiceResponseType(service.getServiceResponseType());
 			planItemList.add(planItem);
 
@@ -422,11 +423,11 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 			servicePlan = new ServicePlan();
 		}
 		for (PlanItem planItem : servicePlan.getPlanItemList()) {
-			Service service = store.getServiceById(planItem.getServiceId());
+			Service service = store.getServiceByName(planItem.getServiceName());
 
 			if (service != null) {
 				service.setHangTime(planItem.getHangTime());
-				service.setDefaultScenarioId(planItem.getScenarioId());
+				service.setDefaultScenarioByName(planItem.getScenarioName());
 				service.setServiceResponseType(planItem
 						.getServiceResponseType());
 				store.saveOrUpdateService(service);

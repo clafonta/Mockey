@@ -365,7 +365,7 @@ public class Service extends StatusCheck implements PersistableItem,
 		Boolean isReferenced = false;
 		for (ServicePlan plan : StorageRegistry.MockeyStorage.getServicePlans()) {
 			for (PlanItem planItem : plan.getPlanItemList()) {
-				if (planItem.getServiceId().equals(this.getId())) {
+				if (planItem.getServiceName().equals(this.getServiceName())) {
 					isReferenced = true;
 					break;
 				}

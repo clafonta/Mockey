@@ -423,8 +423,8 @@
 	        {
 	            "key": "date",
 	            "desc": "Optional date value, but if provided, must satisfy mm/DD/yyyy format.",
-	            "value_rule_arg": "^(1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2}$",
-	            "value_rule_type": "regex_optional"
+	            "value_rule_arg": "^((1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2})?$",
+	            "value_rule_type": "regex_required"
 	        }
 	    ],
 	    "headers": [
@@ -448,14 +448,14 @@
         <tbody>
         <tr><td>key</td><td><strong>Required.</strong> The name of the parameter value</td></tr>
         <tr><td>desc</td><td><strong>Optional.</strong> A short description of what you're trying to accomplish. This message will display in the History page if the error occurs to inform the user what's wrong. </td></tr>
-        <tr><td>value_rule_arg</td><td>Can be a string or regex' value. </td></tr>
+        <tr><td>value_rule_arg</td><td>Can be an empty string, character, non-empty string or string representing a regex' value. </td></tr>
         <tr><td>value_rule_type</td><td>Tells Mockey <i>how</i> to evaluate the key-value pair. Valid values are
 	<ul>
 		<li><b>string_required</b>: Case insensitive. The string or character must be present in the non-empty-VALUE associated to the parameter (or header) KEY. 
-			You could use a REGEX here, but for those who just want a simple text search, you can use this instead
+			You could use a REGEX here, like <span class="code_text">^(?!\s*$).+</span>, but for those who just want a simple character or text search, you can use this instead
 			of dealing with the complexities of regular-<i>confusing?</i>-expressions. </li>
-		<li><b>regex_optional</b>: if a non-empty string value is provided, then it MUST satisfy the regex' definition ('value_rule_arg')</li>
-		<li><b>regex_required</b>: the key value must be present and meet the regular expression defined by 'value_rule_arg'.</li>
+		<li><b>regex_required</b>: A non-null value must be provided and satisfy the regex' definition ('value_rule_arg')</li>
+		<li><b>regex_optional</b>: Optional, but if non-null, then it must satisfy the regex' definition ('value_rule_arg')</li>
 		</ul>
 		
 		</td></tr>

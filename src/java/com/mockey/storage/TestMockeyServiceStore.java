@@ -86,40 +86,30 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 	}
 
 	public List<ServicePlan> getServicePlans() {
+		
+		String SERVICENAME_A = "happy path";
+		String SCENARIO_A = "123";
+		String SCENARIO_B = "456";
 		List<ServicePlan> planList = new ArrayList<ServicePlan>();
 		ServicePlan servicePlan = new ServicePlan();
 		servicePlan.setId(new Long(1));
-		servicePlan.setName("happy path");
+		servicePlan.setName(SERVICENAME_A);
 		servicePlan
 				.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ");
 		PlanItem planItem = new PlanItem();
 		planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
-
-		planItem.setScenarioId(new Long(123));
-		planItem.setServiceId(new Long(234));
+		planItem.setScenarioName(SCENARIO_A);
+		planItem.setServiceName(SERVICENAME_A);
 		servicePlan.addPlanItem(planItem);
+		
 		planItem = new PlanItem();
 		planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
-		planItem.setScenarioId(new Long(98));
-		planItem.setServiceId(new Long(97877));
+		planItem.setScenarioName(SCENARIO_B);
+		planItem.setServiceName(SERVICENAME_A);
 		servicePlan.addPlanItem(planItem);
 		planList.add(servicePlan);
 
-		servicePlan = new ServicePlan();
-		servicePlan.setId(new Long(2));
-		servicePlan.setName("trial and tribulation");
-		servicePlan.setDescription("battle of beetles in bottles");
-		planItem = new PlanItem();
-		planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO);
-		planItem.setScenarioId(new Long(1));
-		planItem.setServiceId(new Long(2));
-		servicePlan.addPlanItem(planItem);
-		planItem = new PlanItem();
-		planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_STATIC_SCENARIO);
-		planItem.setScenarioId(new Long(3));
-		planItem.setServiceId(new Long(4));
-		servicePlan.addPlanItem(planItem);
-		planList.add(servicePlan);
+		
 		return planList;
 	}
 
