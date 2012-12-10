@@ -6,6 +6,7 @@
 <head>
 <title>Mockey - <c:out value="${requestScope.pageTitle}"/></title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="cache-control" content="none;">
 <link rel="shortcut icon" href="<c:url value="/images/favicon.ico" />">
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/hoverbox.css" />" media="screen, projection" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/superfish.css" />" />

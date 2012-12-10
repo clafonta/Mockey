@@ -574,14 +574,14 @@ $(document).ready( function() {
                                 
                                  <div class="service" width="350px;">
                                     
-                                   <div class="service-label">Service name: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
+                                   <div class="service-label"><label>Service name:</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div class="service-value big"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></div>
                                    <mockey-tag:statusCheckByService service="${mockservice}" view="detail"/>
-                                   <div class="service-label border-top">Mock URL: <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
+                                   <div class="service-label border-top"><label>Mock URL:</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
                                    <div class="service-def-spacer"></div>
                                    
-                                   <div class="service-label not-top border-top">Real URL(s): <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
+                                   <div class="service-label not-top border-top"><label>Real URL(s):</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <c:forEach var="realUrl" items="${mockservice.realServiceUrls}" varStatus="status" >
 								       <p><a class="tiny" href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></p>
 								   </c:forEach>
@@ -590,7 +590,7 @@ $(document).ready( function() {
                                    <div class="info_message">No real URLS defined.</div>
                                    </c:if>
                                    
-                                   <div class="service-label border-top">This service is set to:</div>
+                                   <div class="service-label border-top"><label>This service is set to:</label></div>
                                    <div class="service-value big">
                                    	<span class="hide<c:if test="${mockservice.serviceResponseType eq 2}"> show</c:if>" id="dynamicScenario_${mockservice.id}">Dynamic</span>
 							       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 0}"> show</c:if>" id="proxyScenario_${mockservice.id}">Proxy</span>
@@ -598,7 +598,7 @@ $(document).ready( function() {
                                    </div>
                                    <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
                                    
-                                   <div class="service-label border-top" style="margin-top:1em;">Select a static scenario:
+                                   <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario:</label>
                                    <span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
                                    <div >

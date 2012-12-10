@@ -560,8 +560,9 @@ public class Service extends StatusCheck implements PersistableItem,
 						indexValue = 1; // True, there's a match.
 					}
 				} else {
-					indexValue = rawRequestData.indexOf(scenario
-							.getMatchStringArg());
+					// Case insensitive
+					indexValue = rawRequestData.toLowerCase().indexOf(scenario
+							.getMatchStringArg().toLowerCase());
 				}
 			}
 			if ((indexValue > -1)) {

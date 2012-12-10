@@ -3,7 +3,7 @@
  * interactions over HTTP, with a focus on testing web services, 
  * specifically web applications that consume XML, JSON, and HTML.
  *  
- * Copyright (C) 2009-2010  Authors:
+ * Copyright (C) 2009-2013  Authors:
  * 
  * chad.lafontaine (chad.lafontaine AT gmail DOT com)
  * 
@@ -48,13 +48,17 @@
  */
 package com.mockey.plugin;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,7 +66,8 @@ import org.json.JSONObject;
 
 /**
  * Given a JSON string containing rules to validate the HTTP request, this will
- * provide results
+ * provide the logic to inspect and validate HTTP request and build an
+ * informative message for results.
  * 
  * <pre>
  *  	{
@@ -97,18 +102,17 @@ import org.json.JSONObject;
 public class RequestInspectorDefinedByJson implements IRequestInspector {
 
 	public static final String PARAMETERS = "parameters";
-	public static final String HEADER = "headers";
-	public static final String RULE_DESC = "desc";
-	public static final String RULE_KEY = "key";
-	public static final String VALUE_RULE_ARG = "value_rule_arg";
-	public static final String VALUE_RULE_TYPE = "value_rule_type";
+	public static final String HEADERS = "headers";
+
 	private JSONObject json = null;
-	private Map<String, String> errors = new HashMap<String, String>();
+	private Logger logger = Logger
+			.getLogger(RequestInspectorDefinedByJson.class);
+	private Map<String, List<String>> errorMapByKey = new HashMap<String, List<String>>();
 
 	/**
 	 * 
 	 * @param json
-	 *            - request inspection rules.
+	 *            - request inspection rules
 	 * @throws JSONException
 	 */
 	public RequestInspectorDefinedByJson(String json) throws JSONException {
@@ -151,105 +155,106 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 			String paramKey = enumNames.nextElement();
 			valueMap.put(paramKey, new String[] { request.getHeader(paramKey) });
 		}
-		analyze(HEADER, valueMap);
+		analyze(HEADERS, valueMap);
 
 	}
 
+	/**
+	 * Based on type, method will extra validation rules and evaluate the
+	 * keyValues mapping.
+	 * 
+	 * @param type
+	 *            - Valid values are HEADERS or PARAMETERS
+	 * @param keyValues
+	 *            - An array of possible values associated to a key
+	 * @see #HEADERS
+	 * @see #PARAMETERS
+	 */
 	private void analyze(String type, Map<String, String[]> keyValues) {
 
 		// Validate parameters.
 		try {
 
-			// FOR PARAMETERs
+			// FOR PARAMETERs and HEADERs
 			JSONArray parameterArray = this.json.getJSONArray(type);
 
 			for (int i = 0; i < parameterArray.length(); i++) {
-				JSONObject keyValueRuleArg = parameterArray.getJSONObject(i);
-				String desc = keyValueRuleArg.getString(RULE_DESC);
-				if (desc == null) {
-					desc = "";
-				}
-				String key = keyValueRuleArg.getString(RULE_KEY);
-				String valueRuleArg = keyValueRuleArg.getString(VALUE_RULE_ARG);
-				String valueRuleType = keyValueRuleArg
-						.getString(VALUE_RULE_TYPE);
-				String[] values = keyValues.get(key);
-				
+				JSONObject jsonRule = parameterArray.getJSONObject(i);
 
-				if (InspectorRuleType.REGEX_REQUIRED.equalsString(valueRuleType) && values==null) {
-					String errorMsgRequired = type
-							+ " with key '"
-							+ key
-							+ "' requires a non-null value. " + desc;
-					this.errors.put(key, errorMsgRequired);
-				}
-				else if ((InspectorRuleType.REGEX_OPTIONAL.equalsString(valueRuleType) && values!=null)
-						|| (InspectorRuleType.REGEX_REQUIRED.equalsString(valueRuleType) && values!=null) ){
-					
-					for (String value : values) {
-						String errorMsgRequired = type
-								+ " with key '"
-								+ key
-								+ "' does not validate against the regular expression '"
-								+ valueRuleArg + "' with value +'" + value
-								+ "'. " + desc;
-						try {
+				try {
+					RequestRule requestRule = new RequestRule(jsonRule);
 
-							Pattern pattern = Pattern.compile(valueRuleArg);
-							Matcher matcher = pattern.matcher(value);
-							if (!matcher.find()) {
-								this.errors.put(key, errorMsgRequired);
-							}
-						} catch (Exception e) {
-							this.errors.put(key, errorMsgRequired);
-						}
+					String[] values = keyValues.get(requestRule.getKey());
+					if (requestRule.evaluate(values)) {
+						addErrorMessage(type, requestRule);
 					}
 
-				} else if (InspectorRuleType.STRING_REQUIRED
-						.equalsString(valueRuleType)) {
-
-					String errorMsg = type
-							+ " with key '"
-							+ key
-							+ "' must contain a non-empty string value and contain string/character '"
-							+ valueRuleArg + "'. " + desc;
-					boolean found = false;
-					if (values != null) {
-						for (String value : values) {
-							if (value != null
-									&& value.toLowerCase()
-											.trim()
-											.indexOf(
-													valueRuleArg.toLowerCase()
-															.trim()) > -1) {
-								found = true;
-								break;
-							}
-						}
-					}
-					if (!found) {
-						this.errors.put(key, errorMsg);
-					}
-
+				} catch (RequestRuleException e) {
+					addErrorMessage(type, "Invalid JSON rule setup. " + e.getMessage());
 				}
 
 			}
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			this.errors.put("Invalid JSON",
-					"You have invalid JSON defined request validation rules: "
-							+ e.getMessage());
+
+			// Not necessarily an error. Could be missing
+			logger.debug(
+					"Request Inspection JSON rules does not have rule defined for '"
+							+ type + "'", e);
 		}
 
 	}
 
-	@Override
+	/**
+	 * 
+	 * @param type
+	 * @param error
+	 */
+	private void addErrorMessage(String type, RequestRule requestRule) {
+		List<String> errorListByKeyType = this.errorMapByKey.get(type);
+		if (errorListByKeyType == null) {
+			errorListByKeyType = new ArrayList<String>();
+		}
+		
+		// Build 
+		StringBuilder sb = new StringBuilder();
+		sb.append(type);
+		sb.append(" '" + requestRule.getKey() + "' has issues. " );
+		for (String issue : requestRule.getIssues()) {
+			sb.append(issue+ " ");
+		}
+		errorListByKeyType.add(sb.toString()+ " RULE DESC: " + requestRule.getDesc());
+		this.errorMapByKey.put(type, errorListByKeyType);
+	}
+	/**
+	 * 
+	 * @param type
+	 * @param error
+	 */
+	private void addErrorMessage(String type, String msg) {
+		List<String> errorListByKeyType = this.errorMapByKey.get(type);
+		if (errorListByKeyType == null) {
+			errorListByKeyType = new ArrayList<String>();
+		}
+		errorListByKeyType.add(msg);
+		this.errorMapByKey.put(type, errorListByKeyType);
+	}
+
+	/**
+	 * If errors exists, this method will build 1 long string representation of
+	 * all broken rules, inserting a counter i.e. 1, 2, 3, etc. in front of each
+	 * message.
+	 * 
+	 * @return the result of the validate rules, can be an empty string, but
+	 *         never null.
+	 */
 	public String getPostAnalyzeResultMessage() {
 		StringBuffer sb = new StringBuffer();
 		int i = 1;
-		for (String key : this.errors.keySet()) {
-			sb.append(i++ + ") " + this.errors.get(key) + " \n");
+		for (String key : this.errorMapByKey.keySet()) {
+			for (String value : this.errorMapByKey.get(key)) {
+				sb.append(i++ + ") " + value + " \n");
+			}
 		}
 		return sb.toString();
 	}
