@@ -99,7 +99,7 @@ $(document).ready(function() {
 	});
 
 	$('#reset-sticky-session').click( function() {
-		$('#reset-session-confirm').dialog({width: 400, height:200, resizable:true});
+		$('#reset-session-confirm').dialog({width: 400, height:200, modal: true, resizable:true});
 		$('#reset-session-confirm').dialog('open');
 		$('#reset-session-confirm').dialog({
             buttons: {

@@ -103,7 +103,7 @@
 		  scenario's response message will be returned. If no scenario is found with a matching argument, a plain text error message will display.
 		  You only need to define a match argument per service scenario for <u>dynamic</u> scenarios, and does not apply to static or proxy.
 	    </p>
-	    <p><img src="<c:url value="/images/dynamic_response.png" />" /></p>
+	    <p style="text-align:center;"><img src="<c:url value="/images/dynamic_response.png" />" /></p>
 	    <p>
 	    <h3>Tags</h3>
 	    You can add 0 or more tags to a Scenario. Why is this good? Tags can be used for many things, some include but not limited to:
@@ -114,7 +114,8 @@
 	    </p>
 	    <p>
 	    <h3>HTTP Response Status</h3>
-	    By default, all things are set to HTTP 200 (OK) but this is here if you want to how your application handles 500, 404, 303s, etc. 
+	    By default, all things are set to HTTP 200 (OK) but feel free to change this 
+	    if you need to test how your application handles 500, 404, 303s, etc. 
 	    </p>
 	    <a href="#error_handling" name="error_handling"></a>
         <h2>Error Handling</h2>

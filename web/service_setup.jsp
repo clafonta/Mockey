@@ -125,7 +125,7 @@
 	    	<c:url value="/home" var="returnToServiceUrl"/>
 	    </c:otherwise>
     </c:choose>
-    <span style="" class="hhButtonGreen"><a href="${returnToServiceUrl}">
+    <span style="" class="hhButton"><a href="${returnToServiceUrl}">
    
         <i aria-hidden="true" class="icon-arrow-left"></i>
         &nbsp;Return to main page
@@ -177,13 +177,11 @@
                 <div>
                 <input type="text" id="last_visit" title="mm/dd/yyyy" class="text ui-corner-all ui-widget-content" style="width:250px;" name="lastvisit" maxlength="20" size="30px" value="<mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/>" />
                 </div>                                
-                <div class="tinyfieldset"><strong>Purely informational.</strong> The last time this service was called.</div>                
+                <div class="tinyfieldset"><i>Purely informational.</i> The last time this service was called.</div>                
                <hr>
                <label>Request Inspector Rules in JSON</label>
                <div style="margin-bottom:5px; margin-top:10px;">
-               <textarea name="request_inspector_json_rules" id="request_inspector_json_rules" class="text ui-widget-content ui-corner-all resizable" rows="8">
-               <c:out value="${mockservice.requestInspectorJsonRules}"/>
-               </textarea>
+               <textarea name="request_inspector_json_rules" id="request_inspector_json_rules" class="text ui-widget-content ui-corner-all resizable" rows="8"><c:out value="${mockservice.requestInspectorJsonRules}"/></textarea>
                </div>
                <input type="checkbox" name="request_inspector_json_rules_enable_flag" id="request_inspector_json_rules_enable_flag" value="true" <c:if test="${mockservice.requestInspectorJsonRulesEnableFlag}">checked</c:if> />
 			   Check this box to enable the validation of the JSON rules (if provided)

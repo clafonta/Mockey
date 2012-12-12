@@ -92,7 +92,7 @@ public class ServiceMergeServlet extends HttpServlet {
 		}
 		Long serviceIdMergeSource = null;
 		Long serviceIdMergeDestination = null;
-		ServiceMergeResults mergeResults = null;
+		ServiceMergeResults mergeResults = new ServiceMergeResults();
 		Map<String, String> responseMap = new HashMap<String, String>();
 		try {
 			for (int i = 0; i < serviceMergeIdList.length; i++) {

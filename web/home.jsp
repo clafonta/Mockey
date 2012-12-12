@@ -79,6 +79,7 @@ $(document).ready( function() {
 	$('.delete-plan').each( function() {
 		$(this).click( function() {
 			var planId = this.id.split("_")[1];
+			$('#dialog-delete-service-plan-confirm').dialog({height: 200, modal: true });
 			$('#dialog-delete-service-plan-confirm').dialog('open');
             $('#dialog-delete-service-plan-confirm').dialog({
                 buttons: {
@@ -96,9 +97,7 @@ $(document).ready( function() {
                       $(this).dialog('close');
                   }
                 }
-          }); 
-          $('#dialog-delete-service-plan-confirm').dialog({height: 200 });
-            
+          });   
           return false;
 		});
 	});
@@ -136,8 +135,10 @@ $(document).ready( function() {
     $('.tiny_service_delete').each( function() {
         $(this).click( function() {
             var serviceId = this.id.split("_")[1];
+            $('#dialog-delete-service-confirm').dialog({modal: true, height: 200 });
             $('#dialog-delete-service-confirm').dialog('open');
 	            $('#dialog-delete-service-confirm').dialog({
+	                
 	                buttons: {
 	                  "Delete service": function() {
 	            	      document.location="<c:url value="/setup" />?deleteService=yes&serviceId="+ serviceId;
@@ -146,9 +147,7 @@ $(document).ready( function() {
 		                  $(this).dialog('close');
 	                  }
 	                }
-	          }); 
-	          $('#dialog-delete-service-confirm').dialog({height: 200 });
-			      
+	          });     
 	          return false;
             });
         });
@@ -156,6 +155,7 @@ $(document).ready( function() {
      $('.tiny_service_duplicate').each( function() {
         $(this).click( function() {
             var serviceId = this.id.split("_")[1];
+            $('#dialog-duplicate-service-confirm').dialog({height: 200, modal: true });
             $('#dialog-duplicate-service-confirm').dialog('open');
 	            $('#dialog-duplicate-service-confirm').dialog({
 	                buttons: {
@@ -166,9 +166,7 @@ $(document).ready( function() {
 		                  $(this).dialog('close');
 	                  }
 	                }
-	          }); 
-	          $('#dialog-delete-service-confirm').dialog({height: 200 });
-			      
+	          });  
 	          return false;
             });
         });
@@ -179,6 +177,7 @@ $(document).ready( function() {
         $(this).click( function() {
         	var scenarioId = this.id.split("_")[1];
             var serviceId = this.id.split("_")[2];
+            $('#dialog-delete-scenario-confirm').dialog({height: 200, modal: true });
             $('#dialog-delete-scenario-confirm').dialog('open');
                 $('#dialog-delete-scenario-confirm').dialog({
                     buttons: {
@@ -197,8 +196,6 @@ $(document).ready( function() {
                       }
                     }
               }); 
-              $('#dialog-delete-scenario-confirm').dialog({height: 200 });
-                
               return false;
             });
         });
@@ -529,7 +526,7 @@ $(document).ready( function() {
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
 			                                <div id="plan_${plan.id}" class="parentform" >
-			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#"><i aria-hidden="true" class="icon-backspace"></i></a></span>
+			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#"><i aria-hidden="true" class="icon-cancel"></i></a></span>
 			                                
 			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
 			                                <mockey-tag:statusCheckByServicePlan servicePlan="${plan}"/>
