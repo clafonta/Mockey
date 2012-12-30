@@ -49,20 +49,18 @@
 package com.mockey.plugin;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.mockey.model.RequestFromClient;
 
 /**
  * Given a JSON string containing rules to validate the HTTP request, this will
@@ -92,6 +90,13 @@ import org.json.JSONObject;
  * 	            "value_rule_arg": "",
  * 	            "value_rule_type": "string_required"
  * 	        }
+ * 	    ],
+ *      "body": [
+ * 	        {
+ * 	            "desc": "The text 'username' is required to be present in the POST body.",
+ * 	            "value_rule_arg": "username",
+ * 	            "value_rule_type": "string_required"
+ * 	        }
  * 	    ]
  * 	}
  * </pre>
@@ -101,8 +106,7 @@ import org.json.JSONObject;
  */
 public class RequestInspectorDefinedByJson implements IRequestInspector {
 
-	public static final String PARAMETERS = "parameters";
-	public static final String HEADERS = "headers";
+	
 
 	private JSONObject json = null;
 	private Logger logger = Logger
@@ -128,34 +132,30 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	 * @param request
 	 *            - HTTP request to analyze.
 	 */
-	public void analyze(HttpServletRequest request) {
+	public void analyze(RequestFromClient request) {
 
 		// Since we apply the same evaluation logic to parameters and headers,
 		// we'll move the key-value pairs into a Map, and process the rules
-		// accordintly.
+		// accordingly.
 
 		// *************
 		// Parameters
 		// *************
-		Map<String, String[]> valueMap = new HashMap<String, String[]>();
-		Enumeration<String> enumNames = request.getParameterNames();
-		while (enumNames.hasMoreElements()) {
-			String paramKey = enumNames.nextElement();
-			String[] parameterValues = request.getParameterValues(paramKey);
-			valueMap.put(paramKey, parameterValues);
-		}
-		analyze(PARAMETERS, valueMap);
+		analyze(RequestRuleType.RULE_TYPE_FOR_PARAMETERS, request.getParameters());
 
 		// *************
 		// Headers
 		// *************
-		enumNames = request.getHeaderNames();
-		valueMap = new HashMap<String, String[]>();
-		while (enumNames.hasMoreElements()) {
-			String paramKey = enumNames.nextElement();
-			valueMap.put(paramKey, new String[] { request.getHeader(paramKey) });
+		analyze(RequestRuleType.RULE_TYPE_FOR_HEADERS, request.getHeaderInfoAsMap());
+
+		// *************
+		// RULE_FOR_BODY ??
+		// *************
+		Map<String, String[]> postBodyMap = new HashMap<String, String[]>();
+		if (request.hasPostBody()) {
+			postBodyMap.put(RequestRuleType.RULE_TYPE_FOR_BODY.toString(), new String[] {request.getBodyInfo()});
 		}
-		analyze(HEADERS, valueMap);
+		analyze(RequestRuleType.RULE_TYPE_FOR_BODY, postBodyMap);
 
 	}
 
@@ -164,33 +164,42 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	 * keyValues mapping.
 	 * 
 	 * @param type
-	 *            - Valid values are HEADERS or PARAMETERS
+	 *            - Valid values are RULE_FOR_HEADERS or RULE_FOR_PARAMETERS
 	 * @param keyValues
 	 *            - An array of possible values associated to a key
-	 * @see #HEADERS
-	 * @see #PARAMETERS
+	 * @see #RULE_FOR_HEADERS
+	 * @see #RULE_FOR_PARAMETERS
 	 */
-	private void analyze(String type, Map<String, String[]> keyValues) {
+	private void analyze(RequestRuleType ruleType, Map<String, String[]> keyValues) {
 
 		// Validate parameters.
 		try {
 
 			// FOR PARAMETERs and HEADERs
-			JSONArray parameterArray = this.json.getJSONArray(type);
+			JSONArray parameterArray = this.json.getJSONArray(ruleType.toString());
 
 			for (int i = 0; i < parameterArray.length(); i++) {
 				JSONObject jsonRule = parameterArray.getJSONObject(i);
 
 				try {
-					RequestRule requestRule = new RequestRule(jsonRule);
+					RequestRule requestRule = new RequestRule(jsonRule, ruleType);
 
-					String[] values = keyValues.get(requestRule.getKey());
-					if (requestRule.evaluate(values)) {
-						addErrorMessage(type, requestRule);
+					if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType)) {
+						String[] values = keyValues.get(RequestRuleType.RULE_TYPE_FOR_BODY.toString());
+						if (requestRule.evaluate(values)) {
+							addErrorMessage(ruleType.toString(), requestRule);
+						}
+					} else {
+
+						String[] values = keyValues.get(requestRule.getKey());
+						if (requestRule.evaluate(values)) {
+							addErrorMessage(ruleType.toString(), requestRule);
+						}
 					}
 
 				} catch (RequestRuleException e) {
-					addErrorMessage(type, "Invalid JSON rule setup. " + e.getMessage());
+					addErrorMessage(ruleType.toString(),
+							"Invalid JSON rule setup. " + e.getMessage());
 				}
 
 			}
@@ -200,7 +209,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 			// Not necessarily an error. Could be missing
 			logger.debug(
 					"Request Inspection JSON rules does not have rule defined for '"
-							+ type + "'", e);
+							+ ruleType.toString() + "'", e);
 		}
 
 	}
@@ -215,17 +224,21 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		if (errorListByKeyType == null) {
 			errorListByKeyType = new ArrayList<String>();
 		}
-		
-		// Build 
+
+		// Build
 		StringBuilder sb = new StringBuilder();
-		sb.append(type);
-		sb.append(" '" + requestRule.getKey() + "' has issues. " );
-		for (String issue : requestRule.getIssues()) {
-			sb.append(issue+ " ");
+		sb.append("ISSUE: Rule of type '"+type+"'. ");
+		if(!RequestRuleType.RULE_TYPE_FOR_BODY.toString().equals(type)){
+			sb.append(" Belonging to key name of '"+ requestRule.getKey()+ "'. " );
 		}
-		errorListByKeyType.add(sb.toString()+ " RULE DESC: " + requestRule.getDesc());
+		for (String issue : requestRule.getIssues()) {
+			sb.append(issue + " ");
+		}
+		errorListByKeyType.add(sb.toString() + " RULE DESC: "
+				+ requestRule.getDesc());
 		this.errorMapByKey.put(type, errorListByKeyType);
 	}
+
 	/**
 	 * 
 	 * @param type

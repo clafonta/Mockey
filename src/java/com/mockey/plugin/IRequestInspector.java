@@ -24,7 +24,7 @@
  */
 package com.mockey.plugin;
 
-import javax.servlet.http.HttpServletRequest;
+import com.mockey.model.RequestFromClient;
 
 /**
  * Used to inspect an incoming request to Mockey. This implementation can be
@@ -50,7 +50,7 @@ public interface IRequestInspector {
 	 * 
 	 * @param request
 	 */
-	public void analyze(HttpServletRequest request);
+	public void analyze(RequestFromClient request);
 
 	/**
 	 * 

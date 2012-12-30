@@ -391,6 +391,7 @@ public class Service extends StatusCheck implements PersistableItem,
 		}
 		return response;
 	}
+	
 
 	private ResponseFromService proxyTheRequest(RequestFromClient request,
 			Url realServiceUrl) {
@@ -570,7 +571,7 @@ public class Service extends StatusCheck implements PersistableItem,
 						+ scenario.getMatchStringArg() + "' ");
 				messageMatchFound = scenario.getResponseMessage();
 				httpResponseStatus = scenario.getHttpResponseStatusCode();
-				// SET HEADERS
+				// SET RULE_FOR_HEADERS
 				Map<String, String> headerInfo = scenario.getHeaderInfoHelper();
 				List<Header> headerList = new ArrayList<Header>();
 				for (String k : headerInfo.keySet()) {

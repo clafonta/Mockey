@@ -27,11 +27,10 @@ package com.mockey.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
+import com.mockey.model.RequestFromClient;
 import com.mockey.model.Service;
 
 /**
@@ -81,7 +80,7 @@ public class PluginStore {
 	 * @see com.mockey.model.Service
 	 */
 	public RequestInspectionResult processRequestInspectors(Service service,
-			HttpServletRequest request) {
+			RequestFromClient request) {
 
 		RequestInspectionResult result = new RequestInspectionResult();
 

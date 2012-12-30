@@ -213,7 +213,6 @@ public class RequestFromClient {
 		return requestMsg.toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void parseRequestHeaders(HttpServletRequest rawRequest) {
 
 		// Put header information coming from client.
@@ -224,7 +223,7 @@ public class RequestFromClient {
 			// Let's ignore some headers
 			if (this.shouldIncludeHeader(name)) {
 				List<String> values = new ArrayList<String>();
-				Enumeration eValues = rawRequest.getHeaders(name);
+				Enumeration<String> eValues = rawRequest.getHeaders(name);
 
 				while (eValues.hasMoreElements()) {
 					String value = (String) eValues.nextElement();
@@ -328,7 +327,6 @@ public class RequestFromClient {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	private void parseParameters(HttpServletRequest rawRequest) {
 		parameters = rawRequest.getParameterMap();
 	}
@@ -347,6 +345,22 @@ public class RequestFromClient {
 			}
 		}
 		return buf.toString();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<String, String[]> getHeaderInfoAsMap() {
+		
+		Map<String, String[]> headerMap = new HashMap<String, String[]>();
+		
+		for (String headerName : headers.keySet()) {
+			List<String> arg = headers.get(headerName);
+			headerMap.put(headerName, arg.toArray( new String[arg.size()]));
+			
+		}
+		return headerMap;
 	}
 
 	public String getMethod() {
@@ -429,7 +443,7 @@ public class RequestFromClient {
 		builder.append(getCookieInfoAsString());
 		builder.append("--------- Parameters ------------ \n");
 		builder.append(getParameterInfo());
-		builder.append("-------- Post BODY --------------\n");
+		builder.append("-------- Post RULE_FOR_BODY --------------\n");
 		builder.append(getBodyInfo());
 		return builder.toString();
 	}

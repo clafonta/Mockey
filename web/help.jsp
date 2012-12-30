@@ -413,30 +413,37 @@
 				</div>
         <pre class="code" style="font-size:0.9em;">
 	// EXAMPLE
-	{
-	    "parameters": [
-	        {
-	            "key": "ticker",
-	            "desc": "A value must be provided with the 'ticker' parameter, and it must contain the letter 'g'. Providing 'GOOG' is valid, but 'FB' will flag an error.",
-	            "value_rule_arg": "g",
-	            "value_rule_type": "string_required"
-	        },
-	        {
-	            "key": "date",
-	            "desc": "Optional date value, but if provided, must satisfy mm/DD/yyyy format.",
-	            "value_rule_arg": "^((1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2})?$",
-	            "value_rule_type": "regex_required"
-	        }
-	    ],
-	    "headers": [
-	        {
-	            "key": "page_id",
-	            "desc": "A page_id value MUST be provided, any non-empty string value.",
-	            "value_rule_arg": "",
-	            "value_rule_type": "string_required"
-	        }
-	    ]
-	}
+{
+    "parameters": [
+        {
+            "key": "ticker",
+            "desc": "A value must be provided with the 'ticker' parameter, and it must contain the letter 'g'. Providing 'GOOG' is valid, but 'FB' will flag an error.",
+            "value_rule_arg": "g",
+            "value_rule_type": "string_required"
+        },
+        {
+            "key": "date",
+            "desc": "Optional date value, but if provided, must satisfy mm/DD/yyyy format.",
+            "value_rule_arg": "^((1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2})?$",
+            "value_rule_type": "regex_required"
+        }
+    ],
+    "headers": [
+        {
+            "key": "page_id",
+            "desc": "A page_id value MUST be provided, any non-empty string value.",
+            "value_rule_arg": "",
+            "value_rule_type": "string_required"
+        }
+    ],
+    "body": [
+        {
+            "desc": "The text 'username' is required to be present in the POST body.",
+            "value_rule_arg": "username",
+            "value_rule_type": "string_required"
+        }
+    ]
+}
 </pre>
 
         <p>
@@ -447,7 +454,7 @@
         <tr><th>KEY</th><th>DESCRIPTION</th></tr>
           </thead>
         <tbody>
-        <tr><td>key</td><td><strong>Required.</strong> The name of the parameter value</td></tr>
+        <tr><td>key</td><td><strong>Required</strong> for type 'headers' and 'parameters'. The name of the parameter-key or header-key that needs a value. <strong>Ignored</strong> for type 'body'.</td></tr>
         <tr><td>desc</td><td><strong>Optional.</strong> A short description of what you're trying to accomplish. This message will display in the History page if the error occurs to inform the user what's wrong. </td></tr>
         <tr><td>value_rule_arg</td><td>Can be an empty string, character, non-empty string or string representing a regex' value. </td></tr>
         <tr><td>value_rule_type</td><td>Tells Mockey <i>how</i> to evaluate the key-value pair. Valid values are

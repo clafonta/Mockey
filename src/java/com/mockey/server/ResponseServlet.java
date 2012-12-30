@@ -85,25 +85,20 @@ public class ResponseServlet extends HttpServlet {
 
 		Url serviceUrl = new Url(originalHttpReqURI);
 		Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
-
 		// ************************************************************************
-		// STEP #1a) JAVA and JSON implemented Inspectors must be done BEFORE you process the original
-		// ************************************************************************
-		// request, otherwise, POST body data will be lost if being retrieved
-		// via 'getParameter'.
-
-		// BEGIN - REQUEST INSPECTORS
-		// Check for Global
-		PluginStore pluginStore = PluginStore.getInstance();
-		RequestInspectionResult inspectionMessage = pluginStore
-				.processRequestInspectors(service, originalHttpReqFromClient);
-
-		// END INSPECTORS
-		// ************************************************************************
-		// STEP #2) Process your original request.
+		// STEP #1) Process your original request.
 		// ************************************************************************
 		RequestFromClient request = new RequestFromClient(
 				originalHttpReqFromClient);
+
+		// ************************************************************************
+		// STEP #2) JAVA and JSON implemented Inspectors
+		// ************************************************************************
+
+		PluginStore pluginStore = PluginStore.getInstance();
+		RequestInspectionResult inspectionMessage = pluginStore
+				.processRequestInspectors(service, request);
+
 		Url urlToExecute = service.getDefaultRealUrl();
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
 		ResponseFromService response = service.execute(request, urlToExecute);
@@ -131,7 +126,7 @@ public class ResponseServlet extends HttpServlet {
 			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
 			resp.getOutputStream().flush();
 		} else {
-			// HEADERS
+			// RULE_FOR_HEADERS
 			resp.setStatus(response.getHttpResponseStatusCode());
 			response.writeToOutput(resp);
 		}

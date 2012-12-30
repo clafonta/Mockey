@@ -25,11 +25,11 @@
 package com.mockey.plugin;
 
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.mockey.plugin.IRequestInspector;
+import com.mockey.model.RequestFromClient;
 
 /**
  * This is a sample implementation of the <code>IRequestInspector</code>
@@ -47,8 +47,9 @@ public class SampleRequestInspector implements IRequestInspector {
 	 * Any time someone passes in a 'foobarKey' as a parameter, then this
 	 * inspector will build a message.
 	 */
-	public void analyze(HttpServletRequest request) {
-		if (request.getParameter(FOOBAAR) != null) {
+	public void analyze(RequestFromClient request) {
+		Map<String, String[]> parametersAsMap = request.getParameters();
+		if (parametersAsMap.get(FOOBAAR) != null) {
 			this.errorMessage = "Howdy! This isn't a real error. "
 					+"This is here to show you that you can use Request Inspectors to validate incoming requests. "
 					+"You are seeing this message because the request parameter '"+FOOBAAR+"' was in the request.";

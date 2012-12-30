@@ -146,7 +146,7 @@ $(document).ready(function() {
     $("#dialog-clear-history-confirm").dialog({
         resizable: false,
         height:120,
-        modal: false,
+        modal: true,
         autoOpen: false
     });
         

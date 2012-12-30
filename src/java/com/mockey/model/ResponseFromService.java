@@ -44,6 +44,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
+import com.mockey.plugin.RequestInspectionResult;
+
 /**
  * Wrapper with print and helper functions for a HTTP response message.
  * 
@@ -63,6 +65,7 @@ public class ResponseFromService {
 	private int httpResponseStatusCode;
 	private Url originalRequestUrlBeforeTwisting;
 	private Url requestUrl;
+	private RequestInspectionResult requestInspectionResult;
 
 	/**
 	 * Empty constructor
@@ -345,6 +348,14 @@ public class ResponseFromService {
 			responseCookies.append(String.format("Cookie---> %s = %s\n", cookie.getName(), cookie.getValue()));
 		}
 		return responseCookies.toString();
+	}
+
+	public RequestInspectionResult getRequestInspectionResult() {
+		return requestInspectionResult;
+	}
+
+	public void setRequestInspectionResult(RequestInspectionResult requestInspectionResult) {
+		this.requestInspectionResult = requestInspectionResult;
 	}
 
 }

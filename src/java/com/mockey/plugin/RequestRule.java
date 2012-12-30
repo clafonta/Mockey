@@ -44,9 +44,14 @@ public class RequestRule {
 	private String rule = "";
 	private String ruleType = "";
 
-	public RequestRule(JSONObject json) throws RequestRuleException {
+	public RequestRule(JSONObject json, RequestRuleType ruleType)
+			throws RequestRuleException {
 		this.desc = getRuleValFromRule(RULE_DESC, json, false);
-		this.key = getRuleValFromRule(RULE_KEY, json, true);
+		if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType)) {
+			this.key = getRuleValFromRule(RULE_KEY, json, false);
+		} else {
+			this.key = getRuleValFromRule(RULE_KEY, json, true);
+		}
 		this.rule = getRuleValFromRule(VALUE_RULE_ARG, json, true);
 		this.ruleType = getRuleValFromRule(VALUE_RULE_TYPE, json, true);
 	}
@@ -146,20 +151,20 @@ public class RequestRule {
 		return hasIssues();
 
 	}
-	
+
 	/**
 	 * 
 	 * @return true if this rule has issues
 	 */
-	public boolean hasIssues(){
+	public boolean hasIssues() {
 		if (this.issueList.size() > 0) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
-	public List<String> getIssues(){
+
+	public List<String> getIssues() {
 		return this.issueList;
 	}
 
