@@ -119,9 +119,13 @@ $(document).ready( function() {
 	$('.save-plan').each( function() {
         $(this).click( function() {
             var planId = this.id.split("_")[1];
-            var servicePlanName = $('input[name=servicePlanName_'+planId+']').val()
-            
-            $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', plan_id: planId, service_plan_name: servicePlanName, type: 'json' } ,function(data){
+            var servicePlanName = $('input[name=servicePlanName_'+planId+']').val();
+			var serviceIds = new Array();
+			    $.each($('input:checkbox[name=service_plan_include_checkbox]:checked'), function() {
+			    	serviceIds.push($(this).val());
+			       
+			    });
+            $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', plan_id: planId, service_plan_name: servicePlanName, type: 'json', 'service_ids[]': serviceIds} ,function(data){
                   
                    if(data.result.success){
                        $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
@@ -511,6 +515,10 @@ $(document).ready( function() {
 						                          </c:if>
 						                        </div>
 												<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>	
+												<div class="tiny" style="font-size: 10px;">
+												Check the box to include this service in a "Save As Plan".  
+												<input type="checkbox" name="service_plan_include_checkbox" value="${mockservice.id}" />
+												</div>
 											</div>
 								    	</c:forEach>
 								    	

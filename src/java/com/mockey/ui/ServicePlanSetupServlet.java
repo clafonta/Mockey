@@ -338,6 +338,9 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 				if (servicePlan == null) {
 					servicePlan = new ServicePlan();
 				}
+
+				String[] serviceIds = req.getParameterValues("service_ids[]");
+
 				// ***************************
 				// LET'S PREVENT EMPTY PLAN NAMES
 				// ***************************
@@ -363,7 +366,8 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 				// ***************************
 				// SAVE/UPDATE THE PLAN
 				// ***************************
-				ServicePlan savedServicePlan = createOrUpdatePlan(servicePlan);
+				ServicePlan savedServicePlan = createOrUpdatePlan(servicePlan,
+						serviceIds);
 
 				// ***************************
 				// SAVE/UPDATE THE PLAN
@@ -399,21 +403,36 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 		}
 	}
 
-	private ServicePlan createOrUpdatePlan(ServicePlan servicePlan) {
+	/**
+	 * 
+	 * @param servicePlan
+	 * @param serviceIdArray
+	 *            list of Service IDs that will be included in the plan.
+	 * @return
+	 */
+	private ServicePlan createOrUpdatePlan(ServicePlan servicePlan,
+			String[] serviceIdArray) {
 		List<PlanItem> planItemList = new ArrayList<PlanItem>();
-		for (Service service : store.getServices()) {
+		if (serviceIdArray != null) {
+			for (String serviceId : serviceIdArray) {
 
-			PlanItem planItem = new PlanItem();
-			planItem.setHangTime(service.getHangTime());
-			planItem.setServiceName(service.getServiceName());
-			
-			planItem.setScenarioName(service.getDefaultScenarioName());
-			planItem.setServiceResponseType(service.getServiceResponseType());
-			planItemList.add(planItem);
+				Service service = store.getServiceById(new Long(serviceId));
 
+				PlanItem planItem = new PlanItem();
+				planItem.setHangTime(service.getHangTime());
+				planItem.setServiceName(service.getServiceName());
+
+				planItem.setScenarioName(service.getDefaultScenarioName());
+				planItem.setServiceResponseType(service
+						.getServiceResponseType());
+				planItemList.add(planItem);
+
+			}
 		}
 		servicePlan.setPlanItemList(planItemList);
-		servicePlan.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+		servicePlan.setLastVisit(new Long(Calendar.getInstance()
+				.getTimeInMillis()));
+
 		return store.saveOrUpdateServicePlan(servicePlan);
 
 	}
@@ -423,6 +442,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 			servicePlan = new ServicePlan();
 		}
 		for (PlanItem planItem : servicePlan.getPlanItemList()) {
+			
 			Service service = store.getServiceByName(planItem.getServiceName());
 
 			if (service != null) {
@@ -433,9 +453,10 @@ public class ServicePlanSetupServlet extends HttpServlet implements
 				store.saveOrUpdateService(service);
 			}
 		}
-		// Why do we save the Plan here? 
+		// Why do we save the Plan here?
 		// To save the lastVisit time
-		servicePlan.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+		servicePlan.setLastVisit(new Long(Calendar.getInstance()
+				.getTimeInMillis()));
 		store.saveOrUpdateServicePlan(servicePlan);
 	}
 }
