@@ -425,7 +425,7 @@
             "key": "date",
             "desc": "Optional date value, but if provided, must satisfy mm/DD/yyyy format.",
             "value_rule_arg": "^((1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2})?$",
-            "value_rule_type": "regex_required"
+            "value_rule_type": "regex_optional"
         }
     ],
     "headers": [
