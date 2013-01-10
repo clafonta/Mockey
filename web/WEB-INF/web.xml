@@ -639,6 +639,15 @@
             /export/*
         </url-pattern>
     </servlet-mapping>
+	<filter>
+		<display-name>EnableCorsFilter</display-name>
+		<filter-name>EnableCorsFilter</filter-name>
+		<filter-class>com.mockey.server.EnableCorsFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>EnableCorsFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
     <welcome-file-list>
         <welcome-file>
             index.html
