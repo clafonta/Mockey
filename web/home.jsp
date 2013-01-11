@@ -108,7 +108,8 @@ $(document).ready( function() {
 			$.post('<c:url value="/plan/setup"/>', { action: 'set_plan', plan_id: planId, type: 'redirect' } ,function(data){
 				  
 				   if(data.result.success){
-					   document.location="<c:url value="/home" />"; 
+				       //Send the plan ID to highlight the Services included in the plan.
+					   document.location="<c:url value="/home" />?plan_id="+planId; 
 				    }
 			}, 'json' );
 			
@@ -492,6 +493,7 @@ $(document).ready( function() {
 				                                	<c:param name="serviceId" value="${mockservice.id}" />
 				                             	</c:url>
 				                             	
+				                             	
 				                                <span style="float:right;">
 				                                
 				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#"><i aria-hidden="true" class="icon-cancel"></i></a>
@@ -517,7 +519,7 @@ $(document).ready( function() {
 												<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>	
 												<div class="tiny" style="font-size: 10px;">
 												Check the box to include this service in a "Save As Plan".  
-												<input type="checkbox" name="service_plan_include_checkbox" value="${mockservice.id}" />
+												<input type="checkbox" name="service_plan_include_checkbox" value="${mockservice.id}" <mockey-tag:serviceInServicePlanFlag service="${mockservice}" servicePlan="${servicePlan}"/> />
 												</div>
 											</div>
 								    	</c:forEach>

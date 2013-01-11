@@ -30,7 +30,6 @@ package com.mockey.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * A Mock Service Plan is a set of desired scenarios. When selected, a plan will
  * enable a specific scenario per service. For example, a plan called 'Happy
@@ -48,18 +47,23 @@ public class ServicePlan extends StatusCheck implements PersistableItem {
 	private String description;
 	private Boolean transientState = new Boolean(false);
 	private List<PlanItem> planItemList = new ArrayList<PlanItem>();
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -71,18 +75,40 @@ public class ServicePlan extends StatusCheck implements PersistableItem {
 	public List<PlanItem> getPlanItemList() {
 		return planItemList;
 	}
-	
+
 	public void setPlanItemList(List<PlanItem> planItemList) {
 		this.planItemList = planItemList;
 	}
-	
-	public void addPlanItem(PlanItem planItem){
+
+	public void addPlanItem(PlanItem planItem) {
 		this.planItemList.add(planItem);
 	}
+
 	public void setTransientState(Boolean transientState) {
 		this.transientState = transientState;
 	}
+
 	public Boolean getTransientState() {
 		return transientState;
-	}	
+	}
+
+	/**
+	 * Helper method to check if this Service Plan manages a Service with a
+	 * matching name.
+	 * 
+	 * @return
+	 */
+	public boolean hasServiceWithMatchingName(String serviceName) {
+		boolean foundMatch = false;
+		for (PlanItem pi : this.getPlanItemList()) {
+			if (pi.getServiceName() != null
+					&& pi.getServiceName().equals(serviceName)) {
+				foundMatch = true;
+				break;
+			}
+
+		}
+		return foundMatch;
+
+	}
 }

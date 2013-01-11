@@ -11,8 +11,3 @@ Date time = new Date(new Long(lastVisit));
 %><%=formatter.format(time)%><%
 }
 %>
-
-
-
-
-

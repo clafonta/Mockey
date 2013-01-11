@@ -57,6 +57,7 @@ import com.mockey.model.ApiDocService;
 import com.mockey.model.ConflictInfo;
 import com.mockey.model.HttpStatusCodeStore;
 import com.mockey.model.Service;
+import com.mockey.model.ServicePlan;
 import com.mockey.model.Url;
 import com.mockey.plugin.PluginStore;
 import com.mockey.runner.BSC;
@@ -314,6 +315,20 @@ public class HomeServlet extends HttpServlet {
 				return;
 			}
 		}
+		// If a Service Plan ID was passed in, then we need to 
+		// highlight the Services (provide a visual cue) to the
+		// user for which Services are included in the plan. 
+		String servicePlanId = req.getParameter("plan_id");
+		if(servicePlanId!=null){
+			try{
+				ServicePlan sp = store.getServicePlanById(new Long(servicePlanId));
+				req.setAttribute("servicePlan", sp);
+				
+			}catch(Exception e){
+				logger.debug("Service Plan with ID '" + servicePlanId + "' does not exist.", e);
+			}
+		}
+		
 
 		String filterTagArg = store.getFilterTag();
 		FilterHelper filterHelper = new FilterHelper();
