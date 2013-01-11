@@ -26,7 +26,7 @@
 		        <li>&#187; <a href="#url_recommendations">URL Config Recommendations</a></li>	        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
 		        <li>&#187; <a href="#inspector_in_json">Request Inspector in JSON</a></li>   
-		        <li>&#187; <a href="#inspector_in_java">Request Inspector in Java</a></li>    
+		        <!-- <li>&#187; <a href="#inspector_in_java">Request Inspector in Java</a></li>   -->    
 		    </ul>
 	    </div>
 	    <div style="">
@@ -473,6 +473,7 @@
         </p>
         
     </div>
+    <!-- 
     <div class="help_section_zebra">
 	    <a href="#inspector_in_java" name="inspector_in_java"></a>
         <h2>Request Inspector In Java</h2>
@@ -495,7 +496,8 @@
         </ul>
         </p>
     </div>
-	<div class="help_section">
+     -->
+	<div class="help_section_zebra">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

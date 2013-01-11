@@ -114,18 +114,19 @@ public class PluginStore {
 
 		// JSON Inspectors
 		if (service.isRequestInspectorJsonRulesEnableFlag()) {
-			
+
 			try {
 				RequestInspectorDefinedByJson jsonRulesInspector = new RequestInspectorDefinedByJson(
 						service.getRequestInspectorJsonRules());
 				jsonRulesInspector.analyze(request);
-				result.addResultMessage(jsonRulesInspector.getPostAnalyzeResultMessage());
+				result.addResultMessage(jsonRulesInspector
+						.getPostAnalyzeResultMessage());
 			} catch (JSONException e) {
-				String msg = "Unable to parse JSON rules from service: " + service.getServiceName();
+				String msg = "Unable to parse JSON rules from service: "
+						+ service.getServiceName();
 				result.addResultMessage(msg);
 				logger.debug(msg, e);
 			}
-			
 
 		}
 		return result;
@@ -142,9 +143,11 @@ public class PluginStore {
 
 		try {
 			try {
+				// HACK:
 				Class<?> xx = Class.forName(className);
-				if (!xx.isInterface()
-						&& IRequestInspector.class.isAssignableFrom(xx)) {
+				if (!xx.getName().equalsIgnoreCase(
+						RequestInspectorDefinedByJson.class.getName()) && (!xx.isInterface()
+						&& IRequestInspector.class.isAssignableFrom(xx)) ) {
 					return xx;
 				}
 			} catch (ClassNotFoundException e) {
@@ -175,17 +178,21 @@ public class PluginStore {
 	private IRequestInspector createInspectorInstance(Class<?> clazz) {
 
 		IRequestInspector instance = null;
-		try {
-			if (!clazz.isInterface()
-					&& IRequestInspector.class.isAssignableFrom(clazz)) {
-				instance = (IRequestInspector) clazz.newInstance();
+		// HACK:
+		if (!clazz.getName().equalsIgnoreCase(
+				RequestInspectorDefinedByJson.class.getName())) {
+
+			try {
+				if (!clazz.isInterface()
+						&& IRequestInspector.class.isAssignableFrom(clazz)) {
+					instance = (IRequestInspector) clazz.newInstance();
+				}
+			} catch (Exception e) {
+
+				logger.error("Unable to create an instance of a class w/ name "
+						+ clazz.getName(), e);
 			}
-		} catch (Exception e) {
-
-			logger.error("Unable to create an instance of a class w/ name "
-					+ clazz.getName(), e);
 		}
-
 		return instance;
 	}
 

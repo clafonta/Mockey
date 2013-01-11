@@ -188,6 +188,7 @@
 			   <div class="tinyfieldset" style="margin-top:5px;"><strong>Optional.</strong> For more on this, read the <a href="<c:url value="/help#inspector_in_json"/>">help</a> section.
 	           </div>
                <hr>
+               <!-- 
                <label>Request Inspector Java Class Name</label>
                <div>
 	           <select style="width:400px;" id="request_inspector_name" name="requestInspectorName">
@@ -200,6 +201,7 @@
 	           <div class="tinyfieldset" style="margin-top:5px;"><strong>Optional.</strong> For those really complicated rules that are not easy to define in JSON, you can implement 
 	           your validation in Java. Assign your custom request inspector Java implementation to this service. For more on this, read the <a href="<c:url value="/help#inspector_in_java"/>">help</a> section.
 	           </div>
+	            -->
                                 
 	    </fieldset>
         <p align="right">
