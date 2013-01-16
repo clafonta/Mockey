@@ -391,7 +391,6 @@ public class Service extends StatusCheck implements PersistableItem,
 		}
 		return response;
 	}
-	
 
 	private ResponseFromService proxyTheRequest(RequestFromClient request,
 			Url realServiceUrl) {
@@ -541,17 +540,29 @@ public class Service extends StatusCheck implements PersistableItem,
 		}
 
 		// STEP 2. "We iterate through each Service Scenario and evaluate"
+		// A few things to note on this logic loop. Let's say the incoming
+		// request has 'ABC123' in the request and we have Scenario A with
+		// match argument '123' and Scenario B with match argument 'ABC123'.
+		// The goal is to return Scenario B, in this case because there's a
+		// match with 'ABC123'. Unfortunately, Scenario A works too, because
+		// 'ABC123' contains '123'. Which should be returned?
+		// In this particular case, we want to return Scenario B, because it
+		// has the-longest-string match value, i.e. 6 character match vs.
+		// 3 characters.
 		ResponseFromService response = new ResponseFromService();
 		List<Scenario> scenarios = this.getScenarios();
 		Iterator<Scenario> iter = scenarios.iterator();
 		String messageMatchFound = null;
 		int httpResponseStatus = -1;
+		int matchArgLength = -1;
+		Scenario bestMatchedScenario = null;
+		// We must visit ALL Scenarios, without any short circuits.
 		while (iter.hasNext()) {
 			Scenario scenario = iter.next();
 			logger.debug("Checking: '" + scenario.getMatchStringArg()
 					+ "' in Scenario message: \n" + rawRequestData);
 			int indexValue = -1;
-
+			int tempArgLength = -1;
 			if (scenario.hasMatchArgument()) {
 				if (scenario.isMatchStringArgRegexFlag()) {
 					Pattern pattern = Pattern.compile(scenario
@@ -562,27 +573,37 @@ public class Service extends StatusCheck implements PersistableItem,
 					}
 				} else {
 					// Case insensitive
-					indexValue = rawRequestData.toLowerCase().indexOf(scenario
-							.getMatchStringArg().toLowerCase());
+					tempArgLength = scenario.getMatchStringArg().trim()
+							.length();
+					indexValue = rawRequestData.toLowerCase().indexOf(
+							scenario.getMatchStringArg().toLowerCase());
 				}
 			}
-			if ((indexValue > -1)) {
-				logger.debug("FOUND - matching '"
-						+ scenario.getMatchStringArg() + "' ");
-				messageMatchFound = scenario.getResponseMessage();
-				httpResponseStatus = scenario.getHttpResponseStatusCode();
-				// SET RULE_FOR_HEADERS
-				Map<String, String> headerInfo = scenario.getHeaderInfoHelper();
-				List<Header> headerList = new ArrayList<Header>();
-				for (String k : headerInfo.keySet()) {
-					headerList.add(new BasicHeader(k, headerInfo.get(k)));
-				}
-				response.setHeaders(headerList.toArray(new Header[headerList
-						.size()]));
-				break;
+			// OK, we have found a match-argument that is in the REQUEST,
+			// via 'indexValue > -1' but is it the longest matching argument
+			// via 'tempArgLength > matchArgLength'?
+			if ((indexValue > -1) && tempArgLength > matchArgLength) {
+				matchArgLength = tempArgLength;
+				bestMatchedScenario = scenario;
 			}
 		}
-		// OK, no matches. Error handling is as follows:
+
+		if (bestMatchedScenario != null) {
+			logger.debug("FOUND - matching '"
+					+ bestMatchedScenario.getMatchStringArg() + "' ");
+			messageMatchFound = bestMatchedScenario.getResponseMessage();
+			httpResponseStatus = bestMatchedScenario
+					.getHttpResponseStatusCode();
+			// SET RULE_FOR_HEADERS
+			Map<String, String> headerInfo = bestMatchedScenario
+					.getHeaderInfoHelper();
+			List<Header> headerList = new ArrayList<Header>();
+			for (String k : headerInfo.keySet()) {
+				headerList.add(new BasicHeader(k, headerInfo.get(k)));
+			}
+			response.setHeaders(headerList.toArray(new Header[headerList.size()]));
+		}
+		// If we have no matches. Error handling is as follows:
 		// 1) Does service have a default service error defined? If yes, return
 		// message. If no...
 		// 2) Does Mockey have a universal error message defined? If yes,

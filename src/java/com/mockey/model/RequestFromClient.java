@@ -280,7 +280,8 @@ public class RequestFromClient {
 				if (cpath == null) {
 					cpath = rawRequest.getContextPath();
 				}
-				log.info("Cookie from client: " + c.getName() + " = " + c.getValue());
+				// Commented out; too much noise. 
+				//log.info("Cookie from client: " + c.getName() + " = " + c.getValue());
 				BasicClientCookie basicClientCookie = new BasicClientCookie(c.getName(), c.getValue());
 				basicClientCookie.setDomain(domain);
 				if (c.getMaxAge() > -1) {

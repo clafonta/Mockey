@@ -102,14 +102,22 @@
 		  scenario's response message will be the response. If more than one scenario is defined with this matching argument, then the first matched 
 		  scenario's response message will be returned. If no scenario is found with a matching argument, a plain text error message will display.
 		  You only need to define a match argument per service scenario for <u>dynamic</u> scenarios, and does not apply to static or proxy.
-	    </p>
+	    </p>	    
 	    <p style="text-align:center;"><img src="<c:url value="/images/dynamic_response.png" />" /></p>
+	    <p class="alert_message" style="position:relative;">
+	      <img style="float:right;" height="30px" src="<c:url value="/images/skull_and_crossbones.png"/>" />
+          <b>Beware:</b> Let's say you have <i>Scenario A</i> with match argument '123' and <i>Scenario B</i> with match argument 'ABC', and 
+          an incoming request with value 'ABC123'. Which scenario will be returned, A or B? There's no guarantee on what Mockey will respond 
+          with. Let's say in addition, you have a <i>Scenario C</i> with match argument 'ABC123' and the incoming request includes the argument
+          'ABC123'. Which scenario will be returned, A, B, or C, since all match-arguments are in the request? In this case, <i>Scenario C</i> 
+          will always be returned because it has the greatest length match argument, 6 characters versus 3 characters.  
+        </p>
 	    <p>
 	    <h3>Tags</h3>
 	    You can add 0 or more tags to a Scenario. Why is this good? Tags can be used for many things, some include but not limited to:
 	    <ul>
 	    <li>Tag scenarios to let people know what they are designed for, e.g.Android or iOS, mobile or non-mobile, July's Release, etc.</li>
-	    <li>Filter your view, e.g. "<i>I only want to see Scenarios and Services tagged for August.</i>"</li>
+	    <li>Filter your view, e.g. "<i>I only want to see Scenarios and Services tagged for testing the August release.</i>"</li>
 	    </ul>
 	    </p>
 	    <p>
