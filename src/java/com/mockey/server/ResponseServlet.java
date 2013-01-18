@@ -99,9 +99,9 @@ public class ResponseServlet extends HttpServlet {
 		RequestInspectionResult inspectionMessage = pluginStore
 				.processRequestInspectors(service, request);
 
-		Url urlToExecute = service.getDefaultRealUrl();
+		//Url urlToExecute = service.getDefaultRealUrl();
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
-		ResponseFromService response = service.execute(request, urlToExecute);
+		ResponseFromService response = service.execute(request, serviceUrl);
 		logRequestAsFulfilled(service, request, response,
 				originalHttpReqFromClient.getRemoteAddr(), inspectionMessage);
 

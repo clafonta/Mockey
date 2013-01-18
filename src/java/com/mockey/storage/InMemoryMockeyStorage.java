@@ -47,6 +47,8 @@ import com.mockey.model.ServicePlan;
 import com.mockey.model.ServiceRef;
 import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
+import com.mockey.model.UrlPatternMatchResult;
+import com.mockey.model.UrlUtil;
 import com.mockey.storage.xml.MockeyXmlFactory;
 import com.mockey.storage.xml.MockeyXmlFileManager;
 
@@ -142,12 +144,12 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	/**
 	 * This will only return a Service
 	 * 
-	 * @see #getFilterTag()
+	 * @see #getGlobalStateSystemFilterTag()
 	 */
 	public Service getServiceByUrl(String url) {
 
 		Service service = null;
-		String filterTag = this.getFilterTag();
+		String filterTag = this.getGlobalStateSystemFilterTag();
 		try {
 
 			// **************************************************
@@ -155,21 +157,12 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			// **************************************************
 
 			Iterator<Service> iter = getServices().iterator();
-			while (iter.hasNext() && service == null) {
+			while (iter.hasNext()) {
 				Service serviceTmp = iter.next();
-				if (service == null) {
-					// Real URL
-					List<Url> serviceUrlList = serviceTmp.getRealServiceUrls();
-					service = getMatchServiceBasedOnUrl(url,
-							new Url(serviceTmp.getUrl()), serviceTmp);
-					Iterator<Url> altUrlIter = serviceUrlList.iterator();
-					while (altUrlIter.hasNext() && service == null) {
-						Url altUrl = altUrlIter.next();
-						service = getMatchServiceBasedOnUrl(url, altUrl,
-								serviceTmp);
-					}
+				service = findServiceBasedOnUrlPattern(url, serviceTmp);
+				if(service!=null){
+					break;
 				}
-
 			}
 		} catch (Exception e) {
 			logger.error("Unable to retrieve service w/ url pattern: " + url, e);
@@ -184,7 +177,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 				&& filterTag.trim().length() > 0 && !service.hasTag(filterTag)) {
 			logger.debug("Found service with Service path: " + url
 					+ ", but DOES NOT have a matching tag filter of '"
-					+ filterTag + "', so Mocke is returning not-found.");
+					+ filterTag + "', so Mockey is returning not-found.");
 			service = null;
 		} else if (service != null) {
 			logger.debug("Found service with Service path: " + url
@@ -196,10 +189,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 
 		service = new Service();
-		Url newUrl = null;
-
 		try {
-			newUrl = new Url(Url.getSchemeHostPortPathFromURL(url));
+			Url newUrl = new Url(Url.getSchemeHostPortPathFromURL(url));
 			service.setUrl(newUrl.getFullUrl());
 			service.saveOrUpdateRealServiceUrl(newUrl);
 			store.saveOrUpdateService(service);
@@ -208,50 +199,60 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			logger.error("Unable to build a Service with URL '" + url + "'", e);
 		}
 
-		service.setTag(this.getFilterTag());
+		service.setTag(this.getGlobalStateSystemFilterTag());
 		return service;
 	}
 
 	/**
-	 * This will return a Service with a matching URL, will be aware of
-	 * RESTful consumption, and check for Filters too. 
+	 * This will return a Service with a matching URL pattern, a Service's
+	 * filter tags, and is RESTful aware
 	 * 
-	 * Example:
+	 * For example, we need to support the following:
+	 * 
 	 * <pre>
-	 * url    = http://www.service.com/person/ID
-	 * altUrl = http://www.service.com/
-	 * 
-	 * MATCH! because url starts with altUrl.
+	 * http://www.service.com/customers - returns a list of customers. 
+	 * http://www.service.com/customers/{ID} - returns a customer
+	 * http://www.service.com/customers/{ID}/subscription - returns a customer's subscriptions entity
 	 * </pre>
 	 * 
 	 * 
-	 * @param url - Incoming URL being request. 
-	 * @param altUrl - To compare the incoming URL.
-	 * @param serviceTmp - handle to filter tags. 
-	 * @return
+	 * @param url
+	 *            - Incoming URL being requested.
+	 * @param serviceToEvaluate
+	 *            service state to compare to the url
+	 * @return service if url pattern matches
 	 */
-	private Service getMatchServiceBasedOnUrl(String url, Url altUrl,
-			Service serviceTmp) {
-		Service service = null;
+	private Service findServiceBasedOnUrlPattern(String url,
+			Service serviceToEvaluate) {
+		Url fullUrl = new Url(serviceToEvaluate.getUrl());
+		UrlPatternMatchResult result = UrlUtil.evaluateUrlPattern(url,
+				fullUrl.getFullUrl());
 
-		// Why 'starsWith'? To support RESTful services.
-		if (url.toLowerCase().trim()
-				.startsWith(altUrl.getFullUrl().trim().toLowerCase())) {
-			// We have a URL match. Check for Filter if
-			// available.
-			if (this.getFilterTag().length() == 0
-					|| (this.getFilterTag().length() > 0 && serviceTmp
-							.hasTag(this.getFilterTag()))) {
-				service = serviceTmp;
-			} else {
-				// Matching URL but no matching Filter.
-				// Keep searching....
+		Service foundService = null;
+		if (!result.isMatchingUrlPattern()) {
+			// OK, not found based on primary Mock url.
+			// Let's look at secondary list of real URLs
+			List<Url> serviceUrlList = serviceToEvaluate.getRealServiceUrls();
+			Iterator<Url> altUrlIter = serviceUrlList.iterator();
+			while (altUrlIter.hasNext()) {
+				Url altUrl = altUrlIter.next();
+				result = UrlUtil.evaluateUrlPattern(url, altUrl.getFullUrl());
+				if (result.isMatchingUrlPattern()) {
+					foundService = serviceToEvaluate;
+					break;
+				}
 			}
-
+		} else {
+			foundService = serviceToEvaluate;
 		}
-		return service;
+		return foundService;
 	}
 
+	/**
+	 * Deep clone of a Service.
+	 * 
+	 * @param service
+	 */
 	public Service duplicateService(Service service) {
 		Service newService = new Service();
 		newService.setHangTime(service.getHangTime());
@@ -718,16 +719,6 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		this.writeMemoryToFile();
 	}
 
-	// public Long getUniversalErrorScenarioId() {
-	//
-	// return this.univeralErrorScenarioId;
-	// }
-	//
-	// public Long getUniversalErrorServiceId() {
-	//
-	// return this.univeralErrorServiceId;
-	// }
-
 	public List<ServiceRef> getServiceRefs() {
 		return this.serviceRefStore.getOrderedList();
 	}
@@ -776,7 +767,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	}
 
-	public String getFilterTag() {
+	public String getGlobalStateSystemFilterTag() {
 		if (this.globalFilterTag == null) {
 			this.globalFilterTag = "";
 		} else {
@@ -785,7 +776,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return this.globalFilterTag;
 	}
 
-	public void setFilterTag(String filterTag) {
+	public void setGlobalStateSystemFilterTag(String filterTag) {
 		if (filterTag == null) {
 			this.globalFilterTag = "";
 		} else {

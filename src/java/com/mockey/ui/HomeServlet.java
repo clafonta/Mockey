@@ -194,7 +194,7 @@ public class HomeServlet extends HttpServlet {
 		// ***********
 		String filterTagParameter = req.getParameter(BSC.FILTERTAG);
 		if (filterTagParameter != null) {
-			store.setFilterTag(filterTagParameter);
+			store.setGlobalStateSystemFilterTag(filterTagParameter);
 		}
 
 		if (action != null && "init".equals(action)) {
@@ -330,7 +330,7 @@ public class HomeServlet extends HttpServlet {
 		}
 		
 
-		String filterTagArg = store.getFilterTag();
+		String filterTagArg = store.getGlobalStateSystemFilterTag();
 		FilterHelper filterHelper = new FilterHelper();
 		List<Service> filteredServiceList = filterHelper.getFilteredServices(filterTagArg, store);
 

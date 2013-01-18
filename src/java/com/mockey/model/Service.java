@@ -516,10 +516,23 @@ public class Service extends StatusCheck implements PersistableItem,
 		// concatenate request Parameters and Body (if one was posted)
 		// into 1 long String argument, and then evaluate for
 		// the existence of a match string argument.
+		// In addition, if this Service's mock URL is a 
+		// RESTful pattern, then we'll also try to extract the 
+		// token ID from the 'realServiceUrl' based on this 
+		// service's pattern. 
 
 		// STEP 1. "Build the request String to evaluate"
 		logger.debug("mockeying a dynamic scenario.");
 		StringBuffer rawRequestDataBuffer = new StringBuffer();
+		
+		// Optional REST token from the URL
+		Url mockUrl = new Url(this.getUrl());
+		UrlPatternMatchResult requestResult = UrlUtil.evaluateUrlPattern(realServiceUrl.getFullUrl(), mockUrl.getFullUrl());
+		if(requestResult.hasTokenId()){
+			rawRequestDataBuffer.append(requestResult.getRestTokenId());
+		}
+		
+		// Optional parameters and body
 		try {
 			rawRequestDataBuffer.append(request.buildParameterRequest());
 			if (request.hasPostBody()) {
@@ -540,6 +553,9 @@ public class Service extends StatusCheck implements PersistableItem,
 		}
 
 		// STEP 2. "We iterate through each Service Scenario and evaluate"
+
+		// TOPIC: 'Scenario argument matching'
+		// ===================================
 		// A few things to note on this logic loop. Let's say the incoming
 		// request has 'ABC123' in the request and we have Scenario A with
 		// match argument '123' and Scenario B with match argument 'ABC123'.

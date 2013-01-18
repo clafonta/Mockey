@@ -147,8 +147,9 @@
 	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />"/>
 	               </div>
 	               <p class="info_message">
-	               <b>NOTE:</b> This has <strong>RESTful</strong> support. If you define your mock URL as <span class="code_text">http://www.someservice.com/list</span>, then an application requesting <span class="code_text">http://www.someservice.com/list/person/id</span>
-	            	   will be mapped to this service. 
+	               <b>NOTE:</b> This has some <strong>RESTful</strong> support. If you define your mock URL as <span class="code_text">http://www.someservice.com/customer/{TOKEN ID}</span> (with curly braces for token identifiers), 
+	               then an application requesting <span class="code_text">http://www.someservice.com/customer/123</span> will be mapped to this service. In fact, if you create
+	               a Scenario match argument with the appropriate token (in this example, '123'), then Scenario with match argument 123 will be returned. 
 	               </p>
 	            </div>
 	            <div id="invalidUrl" style="display:none;color:red;"><span>Note:</span> </div>

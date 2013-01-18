@@ -80,12 +80,12 @@ public class TagHelperServlet extends HttpServlet {
 			// PERFORM ACTION (OPTIONAL)
 			if ("filter_tag_on".equals(action)) {
 				// Redirect to Home and SET as session FILTER, your tags.
-				store.setFilterTag(tag);
+				store.setGlobalStateSystemFilterTag(tag);
 				
 				jsonObject.put("success", "Filter by tag is on.");
 			} else if ("filter_tag_off".equals(action)) {
 				// Redirect to Home and SET as session FILTER, your tags.
-				store.setFilterTag(null);
+				store.setGlobalStateSystemFilterTag(null);
 				jsonObject.put("success", "Filter by tag is off.");
 			} else if ("filter_status".equals(action)) {
 				// Redirect to Home and SET as session FILTER, your tags.
