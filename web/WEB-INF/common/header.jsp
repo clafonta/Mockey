@@ -29,6 +29,8 @@
 <script type="text/javascript" src="<c:url value="/javascript/hoverIntent.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/jquery.hint.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/fileuploader/fileuploader.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/beautify.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/beautify-html.js" />"></script>
 <script language="Javascript">
 <!---
 function decision(message, url){

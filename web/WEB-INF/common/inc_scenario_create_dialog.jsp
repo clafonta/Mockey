@@ -63,6 +63,20 @@ $(document).ready( function() {
         return false;
     });
     
+    $('#prettyPrintMyJson').click ( function() {
+        var txt = $('#scenario_response').val();
+    	var pTxt = js_beautify(txt);
+    	$('#scenario_response').val(pTxt);
+        return false;
+    });
+    
+    $('#prettyPrintMyHtml').click ( function() {
+        var txt = $('#scenario_response').val();
+    	var pTxt = style_html(txt);
+    	$('#scenario_response').val(pTxt);
+        return false;
+    });
+    
     $('.createScenarioLink').each( function() {
         $(this).click( function() {
             var serviceId = this.id.split("_")[1];
@@ -236,6 +250,9 @@ $(document).ready( function() {
         Required. Note: Scenarios will be listed alphabetically, so if you're going to use it often, label it accordingly. 
         <hr />
         <p style"padding-bottom:25px;">
+        <span style="float:right;">Pretty format: 
+        <a href="#" class="blue" id="prettyPrintMyHtml">HTML</a>
+        <a href="#" class="blue" id="prettyPrintMyJson">JSON</a></span>
         <label for="scenario_response"><strong>Response Content:</strong></label>
         </p>
         <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="20"></textarea>
