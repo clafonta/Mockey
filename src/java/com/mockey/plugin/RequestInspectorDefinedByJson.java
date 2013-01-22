@@ -112,7 +112,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	private Logger logger = Logger
 			.getLogger(RequestInspectorDefinedByJson.class);
 	private Map<String, List<String>> errorMapByKey = new HashMap<String, List<String>>();
-
+	private int ruleCount = 0;
 	/**
 	 * 
 	 * @param json
@@ -125,6 +125,14 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 
 	}
 
+	/**
+	 * 
+	 * @return the number of rules processed post analysis.
+	 */
+	public int getRuleCount(){
+		return this.ruleCount;
+	}
+	
 	/**
 	 * Will apply request inspection rules as defined in JSON, only looking at
 	 * parameters and headers, not Body.
@@ -180,7 +188,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 
 			for (int i = 0; i < parameterArray.length(); i++) {
 				JSONObject jsonRule = parameterArray.getJSONObject(i);
-
+				
+				this.ruleCount++;
 				try {
 					RequestRule requestRule = new RequestRule(jsonRule, ruleType);
 
@@ -209,7 +218,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 			// Not necessarily an error. Could be missing
 			logger.debug(
 					"Request Inspection JSON rules does not have rule defined for '"
-							+ ruleType.toString() + "'", e);
+							+ ruleType.toString() + "'");
 		}
 
 	}
@@ -253,6 +262,18 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		this.errorMapByKey.put(type, errorListByKeyType);
 	}
 
+	/**
+	 * Method should be called post analysis. 
+	 *  
+	 * @return true if one or more errors exist. 
+	 */
+	public boolean hasErrors() {
+		if(this.errorMapByKey.isEmpty()){
+			return false;
+		}else {
+			return true;
+		}
+	}
 	/**
 	 * If errors exists, this method will build 1 long string representation of
 	 * all broken rules, inserting a counter i.e. 1, 2, 3, etc. in front of each

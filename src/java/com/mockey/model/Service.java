@@ -35,18 +35,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mockey.ClientExecuteProxy;
 import com.mockey.ClientExecuteProxyException;
 import com.mockey.OrderedMap;
+import com.mockey.plugin.RequestInspectorDefinedByJson;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 import com.mockey.ui.Util;
@@ -516,22 +516,23 @@ public class Service extends StatusCheck implements PersistableItem,
 		// concatenate request Parameters and Body (if one was posted)
 		// into 1 long String argument, and then evaluate for
 		// the existence of a match string argument.
-		// In addition, if this Service's mock URL is a 
-		// RESTful pattern, then we'll also try to extract the 
-		// token ID from the 'realServiceUrl' based on this 
-		// service's pattern. 
+		// In addition, if this Service's mock URL is a
+		// RESTful pattern, then we'll also try to extract the
+		// token ID from the 'realServiceUrl' based on this
+		// service's pattern.
 
 		// STEP 1. "Build the request String to evaluate"
 		logger.debug("mockeying a dynamic scenario.");
 		StringBuffer rawRequestDataBuffer = new StringBuffer();
-		
+
 		// Optional REST token from the URL
 		Url mockUrl = new Url(this.getUrl());
-		UrlPatternMatchResult requestResult = UrlUtil.evaluateUrlPattern(realServiceUrl.getFullUrl(), mockUrl.getFullUrl());
-		if(requestResult.hasTokenId()){
+		UrlPatternMatchResult requestResult = UrlUtil.evaluateUrlPattern(
+				realServiceUrl.getFullUrl(), mockUrl.getFullUrl());
+		if (requestResult.hasTokenId()) {
 			rawRequestDataBuffer.append(requestResult.getRestTokenId());
 		}
-		
+
 		// Optional parameters and body
 		try {
 			rawRequestDataBuffer.append(request.buildParameterRequest());
@@ -581,12 +582,31 @@ public class Service extends StatusCheck implements PersistableItem,
 			int tempArgLength = -1;
 			if (scenario.hasMatchArgument()) {
 				if (scenario.isMatchStringArgRegexFlag()) {
-					Pattern pattern = Pattern.compile(scenario
-							.getMatchStringArg());
-					Matcher matcher = pattern.matcher(rawRequestData);
-					if (matcher.find()) {
-						indexValue = 1; // True, there's a match.
+
+					
+					try {
+						RequestInspectorDefinedByJson jsonRulesInspector = new RequestInspectorDefinedByJson(
+								scenario.getMatchStringArg());
+
+						jsonRulesInspector.analyze(request);
+						if (!jsonRulesInspector.hasErrors()) {
+							// No errors, so we have a match.
+							indexValue = 1;
+							// Capture the number of rules being processed
+							tempArgLength = jsonRulesInspector.getRuleCount();
+							
+						}else {
+							logger.debug("No match. Reason: " + jsonRulesInspector.getPostAnalyzeResultMessage());
+						}
+
+					} catch (JSONException e) {
+						String msg = "Unable to parse JSON rules from scenario: "
+								+ scenario.getScenarioName();
+						logger.debug(msg, e);
+						// Unable to interpret this, so we assume
+						// no match
 					}
+
 				} else {
 					// Case insensitive
 					tempArgLength = scenario.getMatchStringArg().trim()
@@ -733,20 +753,6 @@ public class Service extends StatusCheck implements PersistableItem,
 			// do nothing
 		}
 		return has;
-	}
-
-	public static void main(String[] args) {
-
-		Service a = new Service();
-		Service b = new Service();
-		Url aUrl = new Url("http://www.google.com");
-		Url cUrl = new Url("http://www.cnn.com");
-		Url bUrl = new Url("http://www.cnn.com");
-		a.saveOrUpdateRealServiceUrl(aUrl);
-		a.saveOrUpdateRealServiceUrl(cUrl);
-		b.saveOrUpdateRealServiceUrl(bUrl);
-		System.out.print("Answer: " + a.getFirstMatchingRealServiceUrl(b));
-
 	}
 
 	/**

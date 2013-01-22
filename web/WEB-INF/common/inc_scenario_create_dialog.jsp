@@ -63,6 +63,13 @@ $(document).ready( function() {
         return false;
     });
     
+    $('#prettyPrintMyJsonRules').click ( function() {
+        var txt = $('#scenario_match').val();
+    	var pTxt = js_beautify(txt);
+    	$('#scenario_match').val(pTxt);
+        return false;
+    });
+    
     $('#prettyPrintMyJson').click ( function() {
         var txt = $('#scenario_response').val();
     	var pTxt = js_beautify(txt);
@@ -260,10 +267,17 @@ $(document).ready( function() {
         <div id="moreOptionsDisplay"  style="display:none;">
             <p class="tinyfieldset info_message">For information on these input fields, please read the <a href="<c:url value="/help#scenario"/>"><strong>Help</strong></a> section.</p>
 	        <hr />
-	        <label for="scenario_match"><strong>Match Argument:</strong></label>
-	        <input type="text" name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all" />
-	        <input type="checkbox" name="scenario_match_regex_flag" id="scenario_match_regex_flag"  value="true" ></input> 
-	        Check the box if you want the match argument to be treated as a regular expression. 
+	        <p style"padding-bottom:25px;">
+			<span style="float:right;">Pretty format: 
+			<a href="#" class="blue" id="prettyPrintMyJsonRules">JSON</a></span>
+			<label for="scenario_match"><strong>Match Argument:</strong></label>
+			</p>
+	        <textarea  name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all resizable" rows="8"></textarea> 
+	        <p>
+	        <input type="checkbox" name="scenario_match_regex_flag" id="scenario_match_regex_flag"  value="true" ></input>
+	        Check the box if you want the match argument to be treated as <a href="<c:url value="/help#validation_rules_api"/>">JSON</a> rules. Leaving the box unchecked will
+	        result in a very basic text search.
+	        </p> 
 	        <hr />
 	        <label for="tag"><strong>Tag(s):</strong></label> 
 	        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" />

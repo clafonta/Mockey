@@ -25,7 +25,7 @@
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		        <li>&#187; <a href="#url_recommendations">URL Config Recommendations</a></li>	        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
-		        <li>&#187; <a href="#inspector_in_json">Request Inspector in JSON</a></li>   
+		        <li>&#187; <a href="#validation_rules_api">Validation Rules in JSON</a></li>   
 		        <!-- <li>&#187; <a href="#inspector_in_java">Request Inspector in Java</a></li>   -->    
 		    </ul>
 	    </div>
@@ -403,12 +403,18 @@
         </p>
     </div>
     <div class="help_section">
-	    <a href="#inspector_in_json" name="inspector_in_json"></a>
-        <h2>Request Inspector In JSON</h2>
-		<div>Mockey has some hooks for you to evaluate incoming requests to help flag potential errors. A JSON formatted input definition
-			is used here, and it works as follows:
+	    <a href="#validation_rules_api" name="validation_rules_api"></a>
+        <h2>Validation Rules in JSON</h2>
+		<div>Mockey has some hooks for you to evaluate incoming requests defined in a JSON formatted API. These rules can be applied to:
+		<ul>
+		  <li>A <strong>Service</strong> for request validation.</li>
+		  <li>A <strong>Scenario</strong> for matching incoming requests to the appropriate Scenario, when a Service is set to Dynamic.</li>
+		</ul>
+		
+		<h3>Service</h3>
+		<p>You can apply validation rules at a Service level to help flag potential errors and it works as follows:
 			<ul>
-				<li>Request is made to Mockey. 
+				<li>At a request is made to Mockey. 
 					</li>
 				<li>Mockey finds the appropriate mock Service. If request validation is <b>enabled</b>, then Mockey will scan
 					the incoming request with your defined rules.  
@@ -417,7 +423,7 @@
 					</li>	
 				</ul>
 			</div>
-			<div>Let's do this by example: 
+			<div>Here's an example definition: 
 				</div>
         <pre class="code" style="font-size:0.9em;">
 	// EXAMPLE
@@ -453,7 +459,52 @@
     ]
 }
 </pre>
+		</p>
+		
+		<h3>Scenario</h3>
+		<p>
+		When the JSON rules API are applied to a Scenario, they are processd only when the Scenario's parent Service is set to Dynamic. 
+		If the Service is set to Dynamic, and the Scenario has a <i>match</i> argument defined, then the incoming request will be evaluated. 
+		If the request satisfies the Scenario's matching argument or rules, then that Scenario is returned.     
+		<div>Here's an example definition: 
+				</div>
+        <pre class="code" style="font-size:0.9em;">
+	// EXAMPLE Service A
+{
+    "parameters": [
+        {
+            "key": "customer",
+            "value_rule_arg": "33",
+            "value_rule_type": "string_required"
+        },
+        {
+            "key": "invoice",
+            "value_rule_arg": "44",
+            "value_rule_type": "string_required"
+        }
+    ]
+}
+</pre>
+<pre class="code" style="font-size:0.9em;">
+	// EXAMPLE Service B
+{
+    "parameters": [
+        {
+            "key": "customer",
+            "value_rule_arg": "333",
+            "value_rule_type": "string_required"
+        },
+        {
+            "key": "invoice",
+            "value_rule_arg": "444",
+            "value_rule_type": "string_required"
+        }
+    ]
+}
+</pre>
 
+
+		</p>
         <p>
 	    The JSON rules API supports an array of Rules for 'parameters' and 'headers'. Each rule includes the following:
 		

@@ -186,7 +186,7 @@
                </div>
                <input type="checkbox" name="request_inspector_json_rules_enable_flag" id="request_inspector_json_rules_enable_flag" value="true" <c:if test="${mockservice.requestInspectorJsonRulesEnableFlag}">checked</c:if> />
 			   Check this box to enable the validation of the JSON rules (if provided)
-			   <div class="tinyfieldset" style="margin-top:5px;"><strong>Optional.</strong> For more on this, read the <a href="<c:url value="/help#inspector_in_json"/>">help</a> section.
+			   <div class="tinyfieldset" style="margin-top:5px;"><strong>Optional.</strong> For more on this, read the <a href="<c:url value="/help#validation_rules_api"/>">help</a> section.
 	           </div>
                <hr>
                <!-- 
