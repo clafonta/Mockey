@@ -25,7 +25,7 @@
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		        <li>&#187; <a href="#url_recommendations">URL Config Recommendations</a></li>	        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
-		        <li>&#187; <a href="#validation_rules_api">Validation Rules in JSON</a></li>   
+		        <li>&#187; <a href="#evaluation_rules_api">Evaluation Rules in JSON</a></li>   
 		        <!-- <li>&#187; <a href="#inspector_in_java">Request Inspector in Java</a></li>   -->    
 		    </ul>
 	    </div>
@@ -97,7 +97,8 @@
 	    <h3>Match Argument</h3>
 	     Setting your mock service to 
 		 <strong>Static</strong> means your mock service will always return the same mock service scenario, no matter what the request is. <strong>Dynamic</strong> means, Mockey
-		  inspects the incoming request message for a specific <b>match argument</b>. If the incoming request message contains this match argument (either <i>string</i> or satisfies the <i>regular expression</i>), 
+		  inspects the incoming request message for a specific <b>match argument</b>. If the incoming request message contains this match argument 
+		  (either <i>string</i> or satisfies the <i><a href="#evaluation_rules_api">Evaluation Rules in JSON</a></i>), 
 		  then this service 
 		  scenario's response message will be the response. If more than one scenario is defined with this matching argument, then the first matched 
 		  scenario's response message will be returned. If no scenario is found with a matching argument, a plain text error message will display.
@@ -403,8 +404,8 @@
         </p>
     </div>
     <div class="help_section">
-	    <a href="#validation_rules_api" name="validation_rules_api"></a>
-        <h2>Validation Rules in JSON</h2>
+	    <a href="#evaluation_rules_api" name="evaluation_rules_api"></a>
+        <h2>Evaluation Rules in JSON</h2>
 		<div>Mockey has some hooks for you to evaluate incoming requests defined in a JSON formatted API. These rules can be applied to:
 		<ul>
 		  <li>A <strong>Service</strong> for request validation.</li>
@@ -414,7 +415,7 @@
 		<h3>Service</h3>
 		<p>You can apply validation rules at a Service level to help flag potential errors and it works as follows:
 			<ul>
-				<li>At a request is made to Mockey. 
+				<li>A request is made to Mockey. 
 					</li>
 				<li>Mockey finds the appropriate mock Service. If request validation is <b>enabled</b>, then Mockey will scan
 					the incoming request with your defined rules.  
@@ -469,7 +470,7 @@
 		<div>Here's an example definition: 
 				</div>
         <pre class="code" style="font-size:0.9em;">
-	// EXAMPLE Service A
+	// EXAMPLE Service A with 'Scenario A' 
 {
     "parameters": [
         {
@@ -486,25 +487,26 @@
 }
 </pre>
 <pre class="code" style="font-size:0.9em;">
-	// EXAMPLE Service B
+	// EXAMPLE Service A with 'Scenario B'
 {
     "parameters": [
         {
             "key": "customer",
-            "value_rule_arg": "333",
+            "value_rule_arg": "111",
             "value_rule_type": "string_required"
         },
         {
             "key": "invoice",
-            "value_rule_arg": "444",
+            "value_rule_arg": "222",
             "value_rule_type": "string_required"
         }
     ]
 }
 </pre>
 
-
+Request <span class="code_text"> http://127.0.0.1:8080/service/customer?customer=333&invoice=444</span> will return Scenario B. 
 		</p>
+		<h3>Rules API</h3>
         <p>
 	    The JSON rules API supports an array of Rules for 'parameters' and 'headers'. Each rule includes the following:
 		

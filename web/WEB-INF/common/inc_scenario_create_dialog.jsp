@@ -275,7 +275,7 @@ $(document).ready( function() {
 	        <textarea  name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all resizable" rows="8"></textarea> 
 	        <p>
 	        <input type="checkbox" name="scenario_match_regex_flag" id="scenario_match_regex_flag"  value="true" ></input>
-	        Check the box if you want the match argument to be treated as <a href="<c:url value="/help#validation_rules_api"/>">JSON</a> rules. Leaving the box unchecked will
+	        Check the box if you want the match argument to be treated as <a href="<c:url value="/help#evaluation_rules_api"/>">JSON</a> rules. Leaving the box unchecked will
 	        result in a very basic text search.
 	        </p> 
 	        <hr />
