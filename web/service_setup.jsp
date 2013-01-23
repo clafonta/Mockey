@@ -138,11 +138,11 @@
         </c:if>
         <fieldset>
 				<label for="service_name">Service Name:</label>
-	            <input type="text" id="service_name" class="text ui-corner-all ui-widget-content" name="service_name" maxlength="1000" size="90%" value="<c:out value="${mockservice.serviceName}"/>" />
+	            <input type="text" id="service_name" placeholder="For example 'Customer Invoice Service'" class="text ui-corner-all ui-widget-content" name="service_name" maxlength="1000" size="90%" value="<c:out value="${mockservice.serviceName}"/>" />
 	            <div class="tinyfieldset">Use a self descriptive name. For example, if you were to use this for 'authentication' testing, then call it 'Authentication'.</div>
 	            <hr>
 	            <label for="service_url">Mock Service URL: </label>
-	            <input type="text" id="service_url" class="text ui-corner-all ui-widget-content" name="service_url" maxlength="1000" size="90%" value="<c:out value="${mockservice.url}"/>" />
+	            <input type="text" id="service_url" placeholder="For example: 'customer/{token}/invoice' or 'customer/list/invoice'" class="text ui-corner-all ui-widget-content" name="service_url" maxlength="1000" size="90%" value="<c:out value="${mockservice.url}"/>" />
 	            <div class="tinyfieldset">You can make up a new but unique <i>mock</i> URL to map to the real URL(s). Your mock URL will look like this: 
 	               <div><input id="mock-url-init" class="invisiblefield" value="<mockey:url value="${mockservice.url}" />"/><input id="mock-url" class="invisiblefield hide"  value="<mockey:url value="" />"/>
 	               </div>
@@ -150,6 +150,9 @@
 	               <b>NOTE:</b> This has some <strong>RESTful</strong> support. If you define your mock URL as <span class="code_text">http://www.someservice.com/customer/{TOKEN ID}</span> (with curly braces for token identifiers), 
 	               then an application requesting <span class="code_text">http://www.someservice.com/customer/123</span> will be mapped to this service. In fact, if you create
 	               a Scenario match argument with the appropriate token (in this example, '123'), then Scenario with match argument 123 will be returned. 
+	               <br />
+	               <br />
+	               See <a href="#evaluation_rules_api">Evaluation Rules in JSON</a> in the Help page for directions. 
 	               </p>
 	            </div>
 	            <div id="invalidUrl" style="display:none;color:red;"><span>Note:</span> </div>
@@ -160,7 +163,7 @@
 						<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="1000" size="90%" value="${realServiceUrl}" />
 					</c:forEach>
 				</div>
-				<input type="text" id="service_real_url" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="1000" size="90%" value="" />
+				<input type="text" id="service_real_url" placeholder="For example: 'http://www.reddit.com'" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="1000" size="90%" value="" />
 					<a title="Add row" id="add-row" href="#" style="color:red;text-decoration:none;font-size:1em;">+</a>
                 <div class="tinyfieldset">You'll need a real service URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</div>
                 <hr>
@@ -171,18 +174,18 @@
                 <div class="tinyfieldset">The delay time in milliseconds. Mockey will wait for this long before returning a response.</div>
                 <hr>
                 <label for="service_url">Tag(s):</label> 
-                <input type="text" id="tag" class="text ui-corner-all ui-widget-content" name="tag" maxlength="1000" size="90%" value="<c:out value="${mockservice.tag}"/>" />
+                <input type="text" id="tag" class="text ui-corner-all ui-widget-content" name="tag" placeholder="For example: stage iosMay"  maxlength="1000" size="90%" value="<c:out value="${mockservice.tag}"/>" />
                 <div class="tinyfieldset"><strong>Optional.</strong> Add 1 or more tags seperated with spaces. Tags can be useful for all kinds of things. Use it as meta-data for your services, plans, scenarios, etc.</div>
                 <hr>
                 <label for="service_url" class="strong">Last Visit:</label>
                 <div>
-                <input type="text" id="last_visit" title="mm/dd/yyyy" class="text ui-corner-all ui-widget-content" style="width:250px;" name="lastvisit" maxlength="20" size="30px" value="<mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/>" />
+                <input type="text" id="last_visit" placeholder="mm/dd/yyyy" class="text ui-corner-all ui-widget-content" style="width:250px;" name="lastvisit" maxlength="20" size="30px" value="<mockey-tag:prettyDate lastVisit="${mockservice.lastVisit}"/>" />
                 </div>                                
                 <div class="tinyfieldset"><i>Purely informational.</i> The last time this service was called.</div>                
                <hr>
-               <label>Request Inspector Rules in JSON</label>
+               <label>Evaluation Rules in JSON</label>
                <div style="margin-bottom:5px; margin-top:10px;">
-               <textarea name="request_inspector_json_rules" id="request_inspector_json_rules" class="text ui-widget-content ui-corner-all resizable" rows="8"><c:out value="${mockservice.requestInspectorJsonRules}"/></textarea>
+               <textarea name="request_inspector_json_rules" placeholder="See the Help section for directions. " id="request_inspector_json_rules" class="text ui-widget-content ui-corner-all resizable" rows="8"><c:out value="${mockservice.requestInspectorJsonRules}"/></textarea>
                </div>
                <input type="checkbox" name="request_inspector_json_rules_enable_flag" id="request_inspector_json_rules_enable_flag" value="true" <c:if test="${mockservice.requestInspectorJsonRulesEnableFlag}">checked</c:if> />
 			   Check this box to enable the validation of the JSON rules (if provided)

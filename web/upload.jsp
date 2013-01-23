@@ -39,14 +39,14 @@ $(document).ready( function() {
 	  	<div id="tabs-1">
 		  	<form style="border:none;"  action="<c:url value="/upload"/>" method="POST" enctype="multipart/form-data">
 		  	Local file<input class="text ui-corner-all ui-widget-content" type="file" name="file" size="50"/>
-		  	Tag it (Optional) <input title="Add tags here, seperated with spaces. Optional." class="blur text ui-corner-all ui-widget-content" type="test" name="taglist" size="50"/>
+		  	Tag it (Optional) <input placeholder="Add tags here, seperated with spaces. Optional." class="text ui-corner-all ui-widget-content" type="test" name="taglist" size="50"/>
 		  	<p align="right"><button id="upload-file" name="viaLocal">Upload local definitions file</button></p>
 		  	</form>
 	  	</div>
 	  	<div id="tabs-2">
 		  	<form style="border:none;" action="<c:url value="/upload"/>" method="POST">
-		  	URL<input class="text blur ui-corner-all ui-widget-content" type="text" name="url" title="Paste your URL here: http://localhost:8888/Mockey/export" size="50"/>
-		  	Tag it (Optional) <input title="Add tags here, seperated with spaces. Optional." class="blur text ui-corner-all ui-widget-content" type="test" name="taglist" size="50"/>
+		  	URL<input class="text ui-corner-all ui-widget-content" type="text" name="url" placeholder="Paste your URL here: http://localhost:8888/Mockey/export" size="50"/>
+		  	Tag it (Optional) <input placeholder="Add tags here, seperated with spaces. Optional." class="text ui-corner-all ui-widget-content" type="test" name="taglist" size="50"/>
 		  	<p align="right"><button id="upload-via-url" name="viaUrl">Upload definitions via URL</button></p>
 		  	</form>
 	  	</div>

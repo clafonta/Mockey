@@ -179,7 +179,7 @@ $(document).ready(function() {
     <form action="<c:url value="/history"/>" method="get">
     <p>
     
-    <input type="text" name="token" size="80" class="text ui-corner-all ui-widget-content"/>
+    <input type="text" name="token" size="80" placeholder="Enter 1 or more space seperated tags to filter the list to only the things with a matching tag." class="text ui-corner-all ui-widget-content"/>
     <button id="filter-button" >Add Filter</button>
     
     <c:if test="${!empty requests}">

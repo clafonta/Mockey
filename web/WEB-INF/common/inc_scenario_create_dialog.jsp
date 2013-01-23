@@ -250,7 +250,7 @@ $(document).ready( function() {
     <fieldset>
         <hr />
         <label for="scenario_name"><strong>Scenario Name:</strong></label>
-        <input type="text" name="scenario_name" id="scenario_name" class="text ui-widget-content ui-corner-all" />
+        <input type="text" name="scenario_name" placeholder="Provide a descriptive name." id="scenario_name" class="text ui-widget-content ui-corner-all" />
         <br />
         Required. Note: Scenarios will be listed alphabetically, so if you're going to use it often, label it accordingly. 
         <hr />
@@ -260,7 +260,7 @@ $(document).ready( function() {
         <a href="#" class="blue" id="prettyPrintMyJson">JSON</a></span>
         <label for="scenario_response"><strong>Response Content:</strong></label>
         </p>
-        <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="20"></textarea>
+        <textarea placeholder="Enter HTML, JSON, whatever." name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="20"></textarea>
         
         <div id="moreOptionsDisplay">
             <p class="tinyfieldset info_message">For information on these input fields, please read the <a href="<c:url value="/help#scenario"/>"><strong>Help</strong></a> section.</p>
@@ -270,7 +270,7 @@ $(document).ready( function() {
 			<a href="#" class="blue" id="prettyPrintMyJsonRules">JSON</a></span>
 			<label for="scenario_match"><strong>Match Argument:</strong></label>
 			</p>
-	        <textarea  name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all resizable" rows="8"></textarea> 
+	        <textarea  name="scenario_match" id="scenario_match" placeholder="Enter a text term for basic search e.g. 'abc' or use evaluation rules. See the help section for more information. " class="text ui-widget-content ui-corner-all resizable" rows="8"></textarea> 
 	        <p>
 	        <input type="checkbox" name="scenario_match_evaluation_rules_flag" id="scenario_match_evaluation_rules_flag"  value="true" ></input>
 	        Check the box if you want the match argument to be treated as <a href="<c:url value="/help#evaluation_rules_api"/>">evaluation</a> rules. Leaving the box unchecked will
@@ -278,9 +278,9 @@ $(document).ready( function() {
 	        </p> 
 	        <hr />
 	        <label for="tag"><strong>Tag(s):</strong></label> 
-	        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" />
+	        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" placeholder="Enter tags here." />
 	        <br />
-	        (Optional) Comma seperated tags. Examples 'release-123', 'qa', 'iphone', 'android'
+	        Optional. Comma seperated tags. Examples 'release-123', 'qa', 'iphone', 'android'
 	        <hr />
 	        <label for="http_response_status_code"><strong>HTTP Response Status:</strong></label>
 	        <div style="padding:1em 0 1em 0">

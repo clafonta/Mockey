@@ -47,9 +47,6 @@ $(document).ready( function() {
                            if (bValid) {
                         	   var servicePlanName = $('input[name=service_plan_name]').val();  
                         	   var servicePlanTag = $('input[name=service_plan_tag]').val();  
-                        	   if(servicePlanTag === $('input[name=service_plan_tag]').attr('title') ){
-                        	      servicePlanTag = '';
-                        	   }
                         	   $.post('<c:url value="/plan/setup"/>', { action: 'save_plan', service_plan_name: servicePlanName, service_plan_tag:servicePlanTag } ,function(data){
                                    if(data.result.success && data.result.planid){
                                        //$('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast'); 
@@ -403,9 +400,6 @@ $(document).ready( function() {
    
     $("#delete-tag-button").click( function() {
     	   var filterTag = $('#filter-tag').val();
-           if(filterTag === $('#filter-tag').attr('title')){
-              filterTag = '';
-           }
            $.post('<c:url value="/taghelp"/>', { action: 'delete_tag_from_store', tag: filterTag } ,function(data){
 					   //console.log(data);
 					   if(data.success){
@@ -422,7 +416,7 @@ $(document).ready( function() {
     <div id="filter_view_div">
     
 	<span class="basic_label">Filter services with tags:</span> 
-	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" title="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
+	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" placeholder="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
 	<a href="#" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
 	<a href="#" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
 	<a href="#" class="manageTagLink">Tag Helper</a>
@@ -433,7 +427,7 @@ $(document).ready( function() {
         <div id="dialog-tag-manage" title="Tag Helper">
             <p><strong>WARNING:</strong>
             This will remove tag(s) from each Service, Scenario, and Service Plan. 
-            <input type="text" name="filter-tag" id="filter-tag" title="Enter tag(s) here" class=" text ui-widget-content ui-corner-all" />
+            <input type="text" name="filter-tag" id="filter-tag" placeholder="Enter tag(s) here" class=" text ui-widget-content ui-corner-all" />
             <ul class="button-list">
             <li><a href="#" class="hhButtonRed" style="color:#FFFFFF;" id="delete-tag-button">Remove tag(s) from all things.</a></li>
             </ul>
@@ -445,9 +439,9 @@ $(document).ready( function() {
             <p>
             <fieldset>
                 <label for="service_plan_name">Service Plan name</label>
-                <input type="text" name="service_plan_name" id="service_plan_name" class="text ui-widget-content ui-corner-all" />
+                <input placeholder="Give a descriptive service plan name." type="text" name="service_plan_name" id="service_plan_name" class="text ui-widget-content ui-corner-all" />
                 <label for="service_plan_tag" class="blur">Tag(s) - <i>optional</i></label>
-                <input type="text" name="service_plan_tag" id="service_plan_tag" title="Optional tags here" class="text ui-widget-content ui-corner-all" />
+                <input type="text" name="service_plan_tag" id="service_plan_tag" placeholder="Optional tags here." class="text ui-widget-content ui-corner-all" />
             </fieldset> 
             </p>
         </div>

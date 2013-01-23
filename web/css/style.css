@@ -18,7 +18,14 @@ img {border:0;}
 .highlight_pos{color: #06F;}
 .logo_link {   color: #303030;    text-decoration: none;  font-weight:100; font-size: 2em;  font-family: sans-serif;
 }
-
+::-webkit-input-placeholder { color:#AAAAAA; font-weight:100; font-size: 1em;  font-family: sans-serif;}
+:-moz-placeholder { /* Firefox 18- */
+   color: #AAAAAA; font-weight:100; font-size: 1em;  font-family: sans-serif; 
+}
+::-moz-placeholder {  /* Firefox 19+ */
+   color: #AAAAAA;  font-weight:100; font-size: 1em;  font-family: sans-serif;
+}
+:focus::-webkit-input-placeholder{color:transparent;}
 strong, b {
 font-weight: 600;
 }
@@ -303,7 +310,7 @@ div.service_edit_links {
 #jsddm li ul li a {	width: auto; background: #9F1B1B; }
 #jsddm li ul li a:hover	{	background: #7F1616;}
 div.grippie {background:#EEEEEE url(../images/grippie.png) no-repeat scroll center 2px;border-color:#7D7D7D;border-style:solid;border-width:0pt 1px 1px;cursor:s-resize;height:9px;overflow:hidden;}
-.resizable-textarea textarea {display:block;margin-bottom:0pt;width:100%;height: 20%;}
+.resizable-textarea textarea {display:block;margin-bottom:0pt;width:100%;height: 20%; background-color: #FFFFF2;}
 .selected, .sourceselected{background-color:#FC829F; color:#FFFFFF;}
 .destination_selected{background-color:#68FA7E;}
 .hide { display:none;}
@@ -316,6 +323,7 @@ input.text  {
 margin: 0.8em 0 0.8em 0;
 padding:0.4em;
 width:95%;
+background-color: #FFFFF2;
 }
 input.blur {
 color:#999999;

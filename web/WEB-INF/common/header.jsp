@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <title>Mockey - <c:out value="${requestScope.pageTitle}"/></title>
@@ -171,18 +171,9 @@ $(document).ready(function() {
         autoOpen: false
     });
     
-    $('.blur').each( function(){
-    	var fieldVal = $(this).val();
-        if(fieldVal !== $(this).attr('title')){
-              $(this).removeClass('blur')
-           }
-    });
-    
     $("#filter-tag-update-button").click( function() {
            var filterTag = $('#filter-tag-field').val();
-           if(filterTag === $('#filter-tag-field').attr('title')){
-              filterTag = '';
-           }
+           
            $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
 					   //console.log(data);
 					   if(data.success){
@@ -229,10 +220,6 @@ $(document).ready(function() {
     $('#search_me').each( function() {
         $(this).click( function() {
             var term = $('#search_term').attr('value');
-            var title = $('#search_term').attr('title');
-            if(title === term){
-            	term = "";
-            }
             document.location="<c:url value="/search?term=" />" + term;
           }); 
        
@@ -360,7 +347,7 @@ $(document).ready(function() {
 			</span>
 		</div>
 		<div id="header_tool_wrapper_left" >
-		  <input type="text" value="${term}" title="Search" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me" style="text-decoration:none;"> <img src="<c:url value="/images/search.png" />" /></a>
+		  <input type="text" value="${term}" placeholder="Search" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me" style="text-decoration:none;"> <img src="<c:url value="/images/search.png" />" /></a>
 		</div>
 		
 	</div>

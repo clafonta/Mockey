@@ -65,13 +65,13 @@
                 </p>
         <fieldset>        
           <label for="proxyUrl">Proxy URL</label> 
-          <input type="text" class="text ui-corner-all ui-widget-content" id="proxyUrl" name="proxyUrl" size="80"  value="<c:out value="${proxyInfo.proxyUrl}"/>" />
+          <input type="text" placeholder="Your company proxy server." class="text ui-corner-all ui-widget-content" id="proxyUrl" name="proxyUrl" size="80"  value="<c:out value="${proxyInfo.proxyUrl}"/>" />
           <div class="tinyfieldset">Typically, this is your corporate proxy server.</div>       
                 <label for="proxyUsername">Proxy username</label>  
-                <input type="text" style="width:200px;"  class="text ui-corner-all ui-widget-content" id="proxyUsername" name="proxyUsername" maxlength="20" size="20" value="" /> 
+                <input type="text" style="width:200px;" placeholder="Username if needed." class="text ui-corner-all ui-widget-content" id="proxyUsername" name="proxyUsername" maxlength="20" size="20" value="" /> 
                 <div class="tinyfieldset">Username is <strong>not</strong> shown after a page refresh and not available in Export for security reasons. </div>
                 <label for="proxyPassword">Proxy password</label>  
-                <input type="password" style="width:200px;" class="text ui-corner-all ui-widget-content" id="proxyPassword" name="proxyPassword" maxlength="20" size="20" value="" />
+                <input type="password" style="width:200px;"placeholder="Password if needed." class="text ui-corner-all ui-widget-content" id="proxyPassword" name="proxyPassword" maxlength="20" size="20" value="" />
                 <div class="tinyfieldset">Password is <strong>not</strong> shown after a page refresh and not available in Export for security reasons.  </div>
                 <div id="proxy_message" class="info_message tiny"><strong>Note:</strong> the last time these settings were enabled,
                 <c:choose><c:when test='${!empty proxyInfo.proxyUsername}'><strong>proxy name</strong> was provided</c:when><c:otherwise><strong>proxy name</strong> was <strong>not</strong> provided</span></c:otherwise></c:choose> and

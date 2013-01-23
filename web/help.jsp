@@ -12,7 +12,7 @@
 		    <ul>
 		        <li>&#187; <a href="#bigpicture">Big Picture</a></li>
 		        <li>&#187; <a href="#transient">Transient</a></li> 
-		        <li>&#187; <a href="#mockservice" name="mockservice">Mock Service</a></li>
+		        <li>&#187; <a href="#mockservice">Mock Service</a></li>
 		        <li>&#187; <a href="#plan">Service Plan</a></li>
 		        <li>&#187; <a href="#scenario">Mock Service Scenario</a></li>
 		        <li>&#187; <a href="#twisting">Twisting</a></li>
@@ -36,8 +36,8 @@
 		   <p><img src="<c:url value="/images/bigpicture.png" />" /></p>
 		</div>
 	</div>
+	<a href="#transient" name="transient"></a>
 	<div class="help_section">
-        <a href="#transient" name="transient"></a>
         <h2>Transient</h2>
         <p>
         The <i>transient</i> setting toggles Mockey's state between <strong>In Memory Only</strong> or <strong>Writing to File</strong>. If Mockey is in transient mode (<a href="<c:url value="/configuration/info"/>">transient_state=true</a>), then 
@@ -61,8 +61,8 @@
         is OFF (set to false). 
         </p>
     </div>
+    <a href="#mockservice" name="mockservice"></a>
 	<div class="help_section_zebra">
-		<a href="#mockservice" name="mockservice"></a>
 		<h2>Mock Service</h2>
 		<p>
 		 A mock service can be a proxy to a real service, enabling you to inspect request and response messages
@@ -71,8 +71,8 @@
 		 to inspect and save a past conversation as a Service Scenario.                       
 	    </p>
     </div>
+    <a href="#plan" name="plan"></a> 
     <div class="help_section">
-	    <a href="#plan" name="plan"></a> 
 	    <h2>Service Plan</h2>
 	    <p>
 	    A service plan is a snap shot of your service and scenario settings. For example, you toggle your service
@@ -84,15 +84,14 @@
 	    smell bad. </div>
 	    </p>
 	</div>
+	<a href="#scenario" name="scenario"></a>
     <div class="help_section_zebra">
-	    <a href="#scenario" name="scenario"></a>
 		<h2>Mock Service Scenario</h2>
 		<p>
 	    A mock service can have 0 or more <i>mock service scenario</i> definitions associated with it. 
 	    This is handy if you don't want to proxy to a real service and want to explicitly define 
 		your mock service's response.      
 	    </p>
-    
 	    <p>
 	    <h3>Match Argument</h3>
 	     Setting your mock service to 
@@ -155,8 +154,8 @@
         </p>
 	    
     </div>
+    <a href="#twisting" name="twisting"></a>
     <div class="help_section">
-	    <a href="#twisting" name="twisting"></a>
 	    <h2>Twisting</h2>
 	    <p>
 	    Twisting refers to taking incoming requests from URL/Domain X and mapping them to URL/Domain Y. 
@@ -165,7 +164,6 @@
 	      <li>Twisting is <b>not</b> used for services set to <strong>Static</strong> or <strong>Dynamic</strong></li>
 	    
 	    </ul>
-	       
 	    <strong>When would I want to use Twisting?</strong> When your client application doesn't
 	        easily allow you to point to different environments or when some requests should be answered by the real
 	        service but other requests need to be answered by your sandbox. 
@@ -200,14 +198,13 @@
 	        </div>
 	    </p>
 	</div>
+    <a href="#record" name="record"></a> 
 	<div class="help_section_zebra">
-	    <a href="#record" name="record"></a> 
 	    <h2>Get Started - Record Stuff</h2>
 	    <p>
 	    Mockey can proxy to a desired URL/service, record it, and create a new
 		service definition for you. Be sure to check the service defintion's
 		history link to inspect the request and response messages.
-		
 			<div class="info_message">
 			    <h4>How to Record</h4>
 				<p>
@@ -237,16 +234,16 @@
 			</div>
 		</p>
 	</div>
+	<a href="#flush_feature" name="flush_feature"></a>
 	<div class="help_section" style="position:relative;">
-		<a href="#flush_feature" name="flush_feature"></a>
 	    <h2>Flush</h2>
 	    <div style="position:absolute; top: 5px; right: 5px;"><img src="<c:url value="/images/flush.png"/>"></div>
 	    <p>
 	    Clicking on the <strong>Flush</strong> menu button will clear out everything, allowing you to start with a clean slate. 
 	    </p>
 	</div>
+	<a href="#export_upload" name="export_upload"></a>
 	<div class="help_section_zebra">
-	    <a href="#export_upload" name="export_upload"></a>
 	    <h2>Export/Upload - huh?</h2>
 	    <p>
 	    There isn't a database for this web tool, everything is kept in memory and written to a local file. 
@@ -254,8 +251,8 @@
 	    to a <strong>mockservice.xml</strong> file; you can share this file with others if you like.  
 	     </p>
 	</div>
+	<a href="#url_injection" name="url_injection"></a>
 	<div class="help_section">
-        <a href="#url_injection" name="url_injection"></a>
         <h2>URL Injection</h2>
         <p>
         <strong>When would URL injection be important?</strong> Mockey tries to be smart about things. With an incoming HTTP URL request, 
@@ -298,8 +295,8 @@
          
         </p>
     </div>
+    <a href="#merge_services" name="merge_services"></a>
     <div class="help_section_zebra">
-        <a href="#merge_services" name="merge_services"></a>
         <h2>Merge Services</h2>
         <p>
          <strong>When would I want to Merge Services?</strong> Whenever you see duplication of Service and/or Scenario definitions. 
@@ -313,8 +310,8 @@
          
          </p>
     </div>
+    <a href="#initialization" name="initialization"></a>
     <div class="help_section">
-      <a href="#initialization" name="initialization"></a>
       <h2>Initialization</h2>
       <p>
       There are few ways to initialize Mockey. Here they are:
@@ -363,8 +360,8 @@
         </div>
       </p>
     </div>
+    <a href="#good_things_to_test" name="good_things_to_test"></a>
     <div class="help_section_zebra">
-	    <a href="#good_things_to_test" name="good_things_to_test"></a>
 	    <h2>Good Things to Test</h2>
 	    <p>
 		    Here's a short list of things Mockey is good for. 
@@ -375,8 +372,8 @@
 		    </ul>      
 	    </p>
     </div>
+    <a href="#url_recommendations" name="url_recommendations"></a>
     <div class="help_section">
-        <a href="#url_recommendations" name="url_recommendations"></a>
 	    <h2>URL Config Recommendations</h2>
 		<p>
 		    If your application points to 1 or more services like this:
@@ -399,9 +396,8 @@
 		    just define DEV_BASE_URL as an empty string. 
 	    </p>
 	</div>
+	<a href="#robots" name="robots"></a>
 	<div class="help_section_zebra">
-	    <a href="#robots" name="robots"></a>
-	
         <h2>Robots</h2>
         <p>
         Mockey is not only for Humans. Robots can use it too. See <a href="service_api">here</a>.
