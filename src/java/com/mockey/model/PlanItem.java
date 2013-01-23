@@ -36,8 +36,8 @@ package com.mockey.model;
  * @author chad.lafontaine
  * 
  */
-public class PlanItem {
-	
+public class PlanItem implements PersistableItem{
+	private Long id;
 	private String serviceName;
 	private String scenarioName;
     
@@ -75,6 +75,14 @@ public class PlanItem {
 
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

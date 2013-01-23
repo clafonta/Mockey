@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 import com.mockey.OrderedMap;
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.PersistableItem;
+import com.mockey.model.PlanItem;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.ScenarioRef;
@@ -160,7 +161,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			while (iter.hasNext()) {
 				Service serviceTmp = iter.next();
 				service = findServiceBasedOnUrlPattern(url, serviceTmp);
-				if(service!=null){
+				if (service != null) {
 					break;
 				}
 			}
@@ -368,6 +369,48 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			this.servicePlanStore.remove(servicePlan.getId());
 			this.writeMemoryToFile();
 		}
+	}
+
+	public void updateServicePlansWithNewServiceName(String oldServiceName,
+			String newServiceName) {
+
+		for (ServicePlan servicePlan : this.getServicePlans()) {
+			for (PlanItem planItem : servicePlan.getPlanItemList()) {
+				if (planItem.getServiceName() != null
+						&& planItem.getServiceName().equals(oldServiceName)) {
+					planItem.setServiceName(newServiceName);
+					// 'Add' will 'update' too.
+					servicePlan.addPlanItem(planItem);
+
+				}
+			}
+
+		}
+
+		this.writeMemoryToFile();
+	}
+
+	public void updateServicePlansWithNewScenarioName(Long serviceId, String oldScenarioName, String newScenarioName) {
+
+		Service service = this.getServiceById(serviceId);
+		if (service != null) {
+
+			for (ServicePlan servicePlan : this.getServicePlans()) {
+				for (PlanItem planItem : servicePlan.getPlanItemList()) {
+					if (planItem.getServiceName() != null
+							&& planItem.getServiceName().equals(
+									service.getServiceName())
+							&& planItem.getScenarioName().equals(
+									oldScenarioName)) {
+						planItem.setScenarioName(newScenarioName);
+						// 'Add' will 'update' too.
+						servicePlan.addPlanItem(planItem);
+					}
+				}
+			}
+
+		}
+		this.writeMemoryToFile();
 	}
 
 	public ServicePlan getServicePlanById(Long servicePlanId) {

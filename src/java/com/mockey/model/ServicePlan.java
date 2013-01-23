@@ -27,8 +27,9 @@
  */
 package com.mockey.model;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import com.mockey.OrderedMap;
 
 /**
  * A Mock Service Plan is a set of desired scenarios. When selected, a plan will
@@ -46,7 +47,7 @@ public class ServicePlan extends StatusCheck implements PersistableItem {
 	private String name;
 	private String description;
 	private Boolean transientState = new Boolean(false);
-	private List<PlanItem> planItemList = new ArrayList<PlanItem>();
+	private OrderedMap<PlanItem> planItemStore = new OrderedMap<PlanItem>();
 
 	public Long getId() {
 		return id;
@@ -73,15 +74,28 @@ public class ServicePlan extends StatusCheck implements PersistableItem {
 	}
 
 	public List<PlanItem> getPlanItemList() {
-		return planItemList;
+		return this.planItemStore.getOrderedList();
 	}
 
+	/**
+	 * Clears the ServicePlan state, and updates with all plan items.
+	 * 
+	 * @param planItemList
+	 */
 	public void setPlanItemList(List<PlanItem> planItemList) {
-		this.planItemList = planItemList;
+		this.planItemStore = new OrderedMap<PlanItem>();
+		for (PlanItem pI : planItemList) {
+			pI.setId(null);
+			this.planItemStore.save(pI);
+		}
 	}
 
+	/**
+	 * If plan item has an ID, then it will be updated. 
+	 * @param planItem
+	 */
 	public void addPlanItem(PlanItem planItem) {
-		this.planItemList.add(planItem);
+		planItemStore.save(planItem);
 	}
 
 	public void setTransientState(Boolean transientState) {

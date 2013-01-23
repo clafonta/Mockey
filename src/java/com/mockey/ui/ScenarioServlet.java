@@ -100,9 +100,25 @@ public class ScenarioServlet extends HttpServlet {
 		}
 
 		Scenario scenario = null;
+
+		// ************************************************
+		// HACK A: if renaming an existing Scenario Name, then
+		// we need to update this Service's Scenario Name in a
+		// Service Plan. NOTE:
+		// * we can't ask the Service to update the Plan because it doesn't
+		// know about it.
+		// * we can't ask the Store to update the Plan because it doesn't
+		// know about the Scenario's 'old' name, only this Servlet does!
+		// Hence, we do it here via 'newName' and 'oldName'.
+		// ************************************************
+		String oldName = null;
+		String newName = null;
 		try {
 			scenario = service.getScenario(new Long(req
 					.getParameter("scenarioId")));
+			// ***************** HACK A ****************
+			oldName = scenario.getScenarioName();
+			// *****************************************
 		} catch (Exception e) {
 			//
 		}
@@ -120,6 +136,10 @@ public class ScenarioServlet extends HttpServlet {
 			scenarioName = "Scenario for " + service.getServiceName()
 					+ "(name auto-generated)";
 		}
+		// ***************** HACK A ****************
+		newName = scenarioName;
+		// *****************************************
+
 		scenario.setScenarioName(scenarioName);
 
 		if (req.getParameter("tag") != null) {
@@ -150,13 +170,13 @@ public class ScenarioServlet extends HttpServlet {
 		if (req.getParameter("matchStringArg") != null) {
 			scenario.setMatchStringArg(req.getParameter("matchStringArg"));
 		}
-		
-		
-		String matchArgAsRegexBoolVal = req.getParameter("matchStringArgEvaluationRulesFlag");
+
+		String matchArgAsRegexBoolVal = req
+				.getParameter("matchStringArgEvaluationRulesFlag");
 		if (matchArgAsRegexBoolVal != null) {
 			try {
-				scenario.setMatchStringArgEvaluationRulesFlag(
-						Boolean.parseBoolean(matchArgAsRegexBoolVal));
+				scenario.setMatchStringArgEvaluationRulesFlag(Boolean
+						.parseBoolean(matchArgAsRegexBoolVal));
 			} catch (Exception t) {
 				logger.error(
 						"Unable to parse the Scenario match-to-be-used-as-a-regex flag, which should be 'true' or 'false' but was  "
@@ -196,6 +216,16 @@ public class ScenarioServlet extends HttpServlet {
 			}
 
 			store.saveOrUpdateService(service);
+
+			// ***************** HACK A ****************
+			if (newName != null && oldName != null
+					&& !oldName.trim().equals(newName.trim())) {
+				// OK, we had an existing Service Scenario with a name change.
+				// Let's update the appropriate Service Plan.
+				store.updateServicePlansWithNewScenarioName(serviceId, oldName, newName);
+				
+			}
+			// *****************************************
 			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
 

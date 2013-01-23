@@ -86,7 +86,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 	}
 
 	public List<ServicePlan> getServicePlans() {
-		
+
 		String SERVICENAME_A = "happy path";
 		String SCENARIO_A = "123";
 		String SCENARIO_B = "456";
@@ -101,7 +101,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		planItem.setScenarioName(SCENARIO_A);
 		planItem.setServiceName(SERVICENAME_A);
 		servicePlan.addPlanItem(planItem);
-		
+
 		planItem = new PlanItem();
 		planItem.setServiceResponseType(Service.SERVICE_RESPONSE_TYPE_PROXY);
 		planItem.setScenarioName(SCENARIO_B);
@@ -109,7 +109,6 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		servicePlan.addPlanItem(planItem);
 		planList.add(servicePlan);
 
-		
 		return planList;
 	}
 
@@ -360,10 +359,20 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		return null;
 	}
 
+	public void updateServicePlansWithNewScenarioName(Long serviceId,
+			String oldScenarioName, String newScenarioName) {
+		// TODO Auto-generated method stub
+	}
+
+	public void updateServicePlansWithNewServiceName(String oldServiceName,
+			String newServiceName) {
+		// TODO Auto-generated method stub
+	}
+
 	@Override
 	public void setUniversalErrorScenarioRef(ScenarioRef scenario) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
