@@ -73,54 +73,85 @@ public class UrlUtil {
 
 		UrlPatternMatchResult matchResult = new UrlPatternMatchResult();
 
-		// If '{' and/or '} exist, then pattern matching will
+		if (url != null && urlPattern != null) {
+			// If '{' and/or '} exist, then pattern matching will
 
-		// be tested.
+			// be tested.
 
-		if (urlPattern != null && urlPattern.indexOf("{") > -1) {
+			if (urlPattern != null && urlPattern.indexOf("{") > -1) {
 
-			try {
-				int indexOfStart = urlPattern.indexOf("{");
-				int indexOfEnd = urlPattern.indexOf("}");
-				String startOfRest = urlPattern.substring(0, indexOfStart);
-				String endOfRest = null;
-				if (urlPattern.length() <= indexOfEnd + 1) {
-					endOfRest = "";
+				try {
+					int indexOfStart = urlPattern.indexOf("{");
+					int indexOfEnd = urlPattern.indexOf("}");
+					String startOfRest = urlPattern.substring(0, indexOfStart);
+					String endOfRest = null;
+
+					String endOfUrl = null;
+					if (urlPattern.length() <= indexOfEnd + 1) {
+						endOfRest = "";
+					} else {
+						endOfRest = urlPattern.substring(indexOfEnd + 1);
+					}
+					if (url.toLowerCase().startsWith(startOfRest.toLowerCase())) {
+						String remainingUrl = url.substring(startOfRest
+								.length());
+						int indexOfNextSlash = remainingUrl.indexOf("/");
+						if (indexOfNextSlash > -1) {
+							endOfUrl = remainingUrl.substring(indexOfNextSlash);
+						}
+					}
+
+					if (url.toLowerCase().startsWith(startOfRest.toLowerCase())
+							&& endOfRest.length() > 0
+							&& url.toLowerCase().endsWith(
+									endOfRest.toLowerCase())) {
+						matchResult.setMatchingUrlPattern(true);
+						int indexOfEndOfRest = url.indexOf(endOfRest);
+						String val = url.substring(startOfRest.length(),
+								indexOfEndOfRest);
+						matchResult.setRestTokenId(val);
+					} else if (url.toLowerCase().startsWith(
+							startOfRest.toLowerCase())
+							&& endOfRest.length() == 0 && endOfUrl == null) {
+						matchResult.setMatchingUrlPattern(true);
+						String val = url.substring(startOfRest.length());
+						matchResult.setRestTokenId(val);
+					}
+				} catch (StringIndexOutOfBoundsException t) {
+					logger.error("Unable to process url '" + url
+							+ "' and matchArg '" + urlPattern + "'", t);
+				}
+			} else if (url != null && urlPattern != null) {
+
+				if (url.toLowerCase().trim()
+						.equals(urlPattern.trim().toLowerCase())) {
+					matchResult.setMatchingUrlPattern(true);
+					matchResult.setRestTokenId(null);
 				} else {
-					endOfRest = urlPattern.substring(indexOfEnd + 1);
+					matchResult.setMatchingUrlPattern(false);
+					matchResult.setRestTokenId(null);
 				}
-				if (url.startsWith(startOfRest) && endOfRest.length() > 0
-						&& url.endsWith(endOfRest)) {
-					matchResult.setMatchingUrlPattern(true);
-					int indexOfEndOfRest = url.indexOf(endOfRest);
-					String val = url.substring(startOfRest.length(),
-							indexOfEndOfRest);
-					matchResult.setRestTokenId(val);
-				} else if (url.startsWith(startOfRest)
-						&& endOfRest.length() == 0) {
-					matchResult.setMatchingUrlPattern(true);
-					String val = url.substring(startOfRest.length());
-					matchResult.setRestTokenId(val);
-				}
-			} catch (StringIndexOutOfBoundsException t) {
-				logger.error("Unable to process url '" + url
-						+ "' and matchArg '" + urlPattern + "'", t);
-			}
-		} else if (url != null && urlPattern != null) {
-
-			if (url.toLowerCase().trim()
-					.equals(urlPattern.trim().toLowerCase())) {
-				matchResult.setMatchingUrlPattern(true);
-				matchResult.setRestTokenId(null);
 			} else {
 				matchResult.setMatchingUrlPattern(false);
 				matchResult.setRestTokenId(null);
 			}
-		} else {
+		}else {
 			matchResult.setMatchingUrlPattern(false);
 			matchResult.setRestTokenId(null);
 		}
 		return matchResult;
+	}
+
+	public static void main(String[] args) {
+
+		String url = "http://customer/123";
+		String urlPattern = "http://customer/{token}";
+
+		UrlPatternMatchResult result = UrlUtil.evaluateUrlPattern(url,
+				urlPattern);
+		System.out.println("Match: " + result.isMatchingUrlPattern()
+				+ " Token: " + result.getRestTokenId());
+		System.out.println("Done");
 	}
 
 }

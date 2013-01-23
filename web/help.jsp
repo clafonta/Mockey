@@ -413,14 +413,14 @@
 		</ul>
 		
 		<h3>Service</h3>
-		<p>You can apply validation rules at a Service level to help flag potential errors and it works as follows:
+		<p>You can apply evaluation rules at a Service level to help flag potential errors ("<i>Hey, you're missing a required request attribute!</i>") and it works as follows:
 			<ul>
 				<li>A request is made to Mockey. 
 					</li>
 				<li>Mockey finds the appropriate mock Service. If request validation is <b>enabled</b>, then Mockey will scan
 					the incoming request with your defined rules.  
 					</li>
-				<li>If errors/issues are found, then they will be logged and viewable in the <a href="<c:url value="/history"/>">History</a> page. 
+				<li>If evaluation errors/issues are found, then they will be logged and viewable in the <a href="<c:url value="/history"/>">History</a> page. 
 					</li>	
 				</ul>
 			</div>
@@ -512,22 +512,44 @@
     ]
 }
 </pre>
+<pre class="code" style="font-size:0.9em;">
+	// EXAMPLE Service A with 'Scenario C'
+{
+    "url": [
+        {
+            "desc": "If the value '123' is in the RESTful URL. For example 'http://127.0.0.1/service/customer/123'",
+            "value_rule_arg": "\\b123\\b",
+            "value_rule_type": "regex_required"
+        }
+    ]
+}
+</pre>
 
 
 		</p>
 		<h3>Rules API</h3>
         <p>
-	    The JSON rules API supports an array of Rules for 'parameters' and 'headers'. Each rule includes the following:
+	    The JSON rules API supports an array of evaluation rules per group type. The group type supported are:
+	    <ul>
+	      <li><strong>parameters</strong>: for the purpose of evaluating key value pairs.</li>
+	       <li><strong>headers</strong>: for the purpose of evaluating key value pairs.</li>
+	        <li><strong>body</strong>: for the purpose of evaluating the existence of specific content contained in a POST body payload.</li>
+	         <li><strong>url</strong>: for the purpose of evaluating the existence of specific content related to the incoming request URL, i.e. RESTful URLs containing token identifiers.</li>
+	    </ul>
+	    </p>
+	    <p>
+	    Each evaluation rule includes the following:
 		
         <table class="api">
         <thead>
         <tr><th>KEY</th><th>DESCRIPTION</th></tr>
           </thead>
         <tbody>
-        <tr><td>key</td><td><strong>Required</strong> for type 'headers' and 'parameters'. The name of the parameter-key or header-key that needs a value. 
+        <tr><td>key</td><td><strong>Required</strong> for rule group type 'headers' and 'parameters'. The name of the parameter-key or header-key that needs a value. 
         
-        <br /></br /><strong>Ignored</strong> for type 'body' and 'url'.</td></tr>
-        <tr><td>desc</td><td><strong>Optional.</strong> A short description of what you're trying to accomplish. This message will display in the History page if the error occurs to inform the user what's wrong. </td></tr>
+        <br /></br /><strong>Ignored</strong> for rule group type 'body' and 'url'.</td></tr>
+        <tr><td>desc</td><td><strong>Optional.</strong> A short description of what you're trying to accomplish. Note: 
+        This message will display in the History page if an evaluation issue occurs with a Service (not Scenario) to inform the user that they may be missing request parameters. </td></tr>
         <tr><td>value_rule_arg</td><td>Can be an empty string, character, non-empty string or string representing a regex' value. </td></tr>
         <tr><td>value_rule_type</td><td>Tells Mockey <i>how</i> to evaluate the key-value pair. Valid values are
 	<ul>
