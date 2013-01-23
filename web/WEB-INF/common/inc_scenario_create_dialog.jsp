@@ -7,8 +7,8 @@ $(document).ready( function() {
 	// SCENARIO CREATION JAVASCRIPT
     $("#dialog-create-scenario").dialog({
         resizable: true,
-        height:700,
-        width:700,
+        height:1600,
+        width:800,
         modal: true,
         autoOpen: false
     });
@@ -107,7 +107,7 @@ $(document).ready( function() {
                            allFields.removeClass('ui-state-error');
                            bValid = bValid && checkLength(name,"scenario name",3,1000);
                            if (bValid) {
-                               $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: tag.val(), 
+                               $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: $('input[name=tag]').val(), 
                                     matchStringArg: match.val(), matchStringArgRegexFlag: match_regex_flag.is(':checked'),
                                     responseMessage: responsemsg.val(), responseHeader: scenario_response_header.val(),
                                     httpResponseStatusCode: http_response_status_code.val(),
@@ -159,17 +159,15 @@ $(document).ready( function() {
                                if (bValid) {
                                    
                                    $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId,  
-                                        tag: tag.val(), matchStringArg: match.val(), matchStringArgRegexFlag: match_regex_flag.is(':checked'), 
+                                        tag: $('input[name=tag]').val(), matchStringArg: match.val(), matchStringArgRegexFlag: match_regex_flag.is(':checked'), 
                                         responseHeader: scenario_response_header.val(), responseMessage: responsemsg.val(), 
                                         universalErrorScenario: universal_error_scenario.is(':checked'), httpResponseStatusCode: http_response_status_code.val(),
                                         errorScenario: error_scenario.is(':checked')  } ,function(data){
                                                console.log(data);
-                                              
+                                               $('#view-scenario_'+scenarioId+'_' +serviceId).fadeOut(function(){ $(this).text(name.val()).fadeIn() });
+                                               $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
                                         }, 'json' );  
-                                   $('#view-scenario_'+scenarioId+'_' +serviceId).fadeOut(function(){ $(this).text(name.val()).fadeIn() });
-                                   $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
                                    return false;
-                                   
                                }
                           }, 
                           "Close": function(){
@@ -218,7 +216,7 @@ $(document).ready( function() {
                            $.post('<c:url value="/scenario"/>', { 
                                 scenarioName: name.val(), 
                                 serviceId: serviceId, 
-                                tag: tag.val(), 
+                                tag: $('input[name=tag]').val(), 
                                 matchStringArg: match.val(), 
                                 matchStringArgRegexFlag: match_regex_flag.val(), 
                                 responseHeader: scenario_response_header.val(), 
@@ -263,8 +261,8 @@ $(document).ready( function() {
         <label for="scenario_response"><strong>Response Content:</strong></label>
         </p>
         <textarea name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="20"></textarea>
-        <p><a href="#" id="toggleMoreOptionsDisplay"><span id="showOptionsText">Show More Options</span> <span id="hideOptionsText" style="display:none;">Hide Options</span></a></p>
-        <div id="moreOptionsDisplay"  style="display:none;">
+        
+        <div id="moreOptionsDisplay">
             <p class="tinyfieldset info_message">For information on these input fields, please read the <a href="<c:url value="/help#scenario"/>"><strong>Help</strong></a> section.</p>
 	        <hr />
 	        <p style"padding-bottom:25px;">
@@ -275,8 +273,8 @@ $(document).ready( function() {
 	        <textarea  name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all resizable" rows="8"></textarea> 
 	        <p>
 	        <input type="checkbox" name="scenario_match_regex_flag" id="scenario_match_regex_flag"  value="true" ></input>
-	        Check the box if you want the match argument to be treated as <a href="<c:url value="/help#evaluation_rules_api"/>">JSON</a> rules. Leaving the box unchecked will
-	        result in a very basic text search.
+	        Check the box if you want the match argument to be treated as <a href="<c:url value="/help#evaluation_rules_api"/>">evaluation</a> rules. Leaving the box unchecked will
+	        result in a very basic text search, but please read the <a href="<c:url value="/help#beware_of_match"/>">beware</a> section before moving forward. 
 	        </p> 
 	        <hr />
 	        <label for="tag"><strong>Tag(s):</strong></label> 

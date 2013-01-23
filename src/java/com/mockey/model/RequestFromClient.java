@@ -74,7 +74,8 @@ public class RequestFromClient {
 	 * </pre>
 	 * 
 	 */
-	public static final String[] HEADERS_TO_IGNORE = { "content-length", "host", "accept-encoding" , "cookie"};
+	public static final String[] HEADERS_TO_IGNORE = { "content-length",
+			"host", "accept-encoding", "cookie" };
 
 	private Log log = LogFactory.getLog(RequestFromClient.class);
 	private List<Cookie> httpClientCookies = new ArrayList<Cookie>();
@@ -82,6 +83,7 @@ public class RequestFromClient {
 	private Map<String, List<String>> headers = new HashMap<String, List<String>>();
 	private String requestBody;
 	private String method;
+	private String fullURL;
 
 	/**
 	 * Initialization will extract Headers, Body, Parameters, and Cookies from
@@ -98,7 +100,7 @@ public class RequestFromClient {
 			e.printStackTrace();
 		}
 		this.method = rawRequest.getMethod();
-
+		this.fullURL = rawRequest.getRequestURL().toString();
 		parseRequestHeaders(rawRequest);
 		parseRequestBody(rawRequest);
 		parseParameters(rawRequest);
@@ -107,6 +109,10 @@ public class RequestFromClient {
 
 	public List<Cookie> getHttpClientCookies() {
 		return this.httpClientCookies;
+	}
+	
+	public String getRequestURL(){
+		return this.fullURL;
 	}
 
 	/**
@@ -118,11 +124,12 @@ public class RequestFromClient {
 	 * @throws URISyntaxException
 	 * @throws UnsupportedEncodingException
 	 */
-	public HttpRequest postToRealServer(Url url) throws URISyntaxException, UnsupportedEncodingException {
+	public HttpRequest postToRealServer(Url url) throws URISyntaxException,
+			UnsupportedEncodingException {
 		// TODO: Cleanup the logic to handle creating a GET vs POST
 		HttpRequest request;
-		URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1, url.getPath(), this.buildParameterRequest(),
-				null);
+		URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1,
+				url.getPath(), this.buildParameterRequest(), null);
 
 		if (("GET").equalsIgnoreCase(this.method)) {
 			request = new HttpGet(uri);
@@ -136,7 +143,8 @@ public class RequestFromClient {
 		}
 
 		// copy the headers into the request to the real server
-		for (Map.Entry<String, List<String>> stringListEntry : headers.entrySet()) {
+		for (Map.Entry<String, List<String>> stringListEntry : headers
+				.entrySet()) {
 			String name = stringListEntry.getKey();
 
 			// ignore certain headers that httpclient will generate for us
@@ -148,16 +156,15 @@ public class RequestFromClient {
 		}
 
 		/*
-		 * If the port is the default one for the scheme,
-		 * force HttpClient to not set it in the Host header.
-		 * By default, HttpClient always specifies the port in
-		 * the Host header, even if it's the default one -
-		 * e.g., "Host: www.amazon.com:443". Some web servers do
-		 * not like that.
- 		 */
-                if (url.isDefaultPort()) {
-			request.getParams().setParameter(ClientPNames.VIRTUAL_HOST, new HttpHost(url.getHost()));
-                }
+		 * If the port is the default one for the scheme, force HttpClient to
+		 * not set it in the Host header. By default, HttpClient always
+		 * specifies the port in the Host header, even if it's the default one -
+		 * e.g., "Host: www.amazon.com:443". Some web servers do not like that.
+		 */
+		if (url.isDefaultPort()) {
+			request.getParams().setParameter(ClientPNames.VIRTUAL_HOST,
+					new HttpHost(url.getHost()));
+		}
 
 		return request;
 	}
@@ -198,8 +205,9 @@ public class RequestFromClient {
 			if (values != null && values.length > 0) {
 				for (String value : values) {
 					if (value.trim().length() > 0) {
-						requestMsg.append(URLEncoder.encode(key, HTTP.UTF_8)).append("=").append(
-								URLEncoder.encode(value, HTTP.UTF_8));
+						requestMsg.append(URLEncoder.encode(key, HTTP.UTF_8))
+								.append("=")
+								.append(URLEncoder.encode(value, HTTP.UTF_8));
 					} else {
 						requestMsg.append(URLEncoder.encode(key, HTTP.UTF_8));
 					}
@@ -268,7 +276,7 @@ public class RequestFromClient {
 			// ******************
 			// This doesn't seem right.
 			// We have to map javax Cookies to httpclient Cookies?!?!
-			// 
+			//
 			// ******************
 			for (int i = 0; i < cookies.length; i++) {
 				javax.servlet.http.Cookie c = cookies[i];
@@ -280,9 +288,11 @@ public class RequestFromClient {
 				if (cpath == null) {
 					cpath = rawRequest.getContextPath();
 				}
-				// Commented out; too much noise. 
-				//log.info("Cookie from client: " + c.getName() + " = " + c.getValue());
-				BasicClientCookie basicClientCookie = new BasicClientCookie(c.getName(), c.getValue());
+				// Commented out; too much noise.
+				// log.info("Cookie from client: " + c.getName() + " = " +
+				// c.getValue());
+				BasicClientCookie basicClientCookie = new BasicClientCookie(
+						c.getName(), c.getValue());
 				basicClientCookie.setDomain(domain);
 				if (c.getMaxAge() > -1) {
 					int seconds = c.getMaxAge();
@@ -347,19 +357,19 @@ public class RequestFromClient {
 		}
 		return buf.toString();
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public Map<String, String[]> getHeaderInfoAsMap() {
-		
+
 		Map<String, String[]> headerMap = new HashMap<String, String[]>();
-		
+
 		for (String headerName : headers.keySet()) {
 			List<String> arg = headers.get(headerName);
-			headerMap.put(headerName, arg.toArray( new String[arg.size()]));
-			
+			headerMap.put(headerName, arg.toArray(new String[arg.size()]));
+
 		}
 		return headerMap;
 	}
@@ -387,16 +397,19 @@ public class RequestFromClient {
 				body = new StringEntity(requestBody);
 			} else {
 				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-				for (Map.Entry<String, String[]> entry : this.parameters.entrySet()) {
+				for (Map.Entry<String, String[]> entry : this.parameters
+						.entrySet()) {
 					for (String value : entry.getValue()) {
-						parameters.add(new BasicNameValuePair(entry.getKey(), value));
+						parameters.add(new BasicNameValuePair(entry.getKey(),
+								value));
 					}
 				}
 				body = new UrlEncodedFormEntity(parameters, HTTP.ISO_8859_1); // .UTF_8);
 			}
 
 		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException("Unable to generate a POST from the incoming request", e);
+			throw new IllegalStateException(
+					"Unable to generate a POST from the incoming request", e);
 		}
 
 		return body;

@@ -105,13 +105,17 @@
 		  You only need to define a match argument per service scenario for <u>dynamic</u> scenarios, and does not apply to static or proxy.
 	    </p>	    
 	    <p style="text-align:center;"><img src="<c:url value="/images/dynamic_response.png" />" /></p>
+	    <a href="#beware_of_match" name="beware_of_match"></a>
 	    <p class="alert_message" style="position:relative;">
 	      <img style="float:right;" height="30px" src="<c:url value="/images/skull_and_crossbones.png"/>" />
           <b>Beware:</b> Let's say you have <i>Scenario A</i> with match argument '123' and <i>Scenario B</i> with match argument 'ABC', and 
           an incoming request with value 'ABC123'. Which scenario will be returned, A or B? There's no guarantee on what Mockey will respond 
           with. Let's say in addition, you have a <i>Scenario C</i> with match argument 'ABC123' and the incoming request includes the argument
           'ABC123'. Which scenario will be returned, A, B, or C, since all match-arguments are in the request? In this case, <i>Scenario C</i> 
-          will always be returned because it has the greatest length match argument, 6 characters versus 3 characters.  
+          will always be returned because it has the greatest length match argument, 6 characters versus 3 characters. 
+          <br /><br />
+          If you are looking for an exact value, then use <a href="#evaluation_rules_api">Evaluation Rules in JSON</a> with type 'regex_required' and do not depend
+          on a simple text search. 
         </p>
 	    <p>
 	    <h3>Tags</h3>
@@ -403,8 +407,8 @@
         Mockey is not only for Humans. Robots can use it too. See <a href="service_api">here</a>.
         </p>
     </div>
+    <a href="#evaluation_rules_api" name="evaluation_rules_api"></a>
     <div class="help_section">
-	    <a href="#evaluation_rules_api" name="evaluation_rules_api"></a>
         <h2>Evaluation Rules in JSON</h2>
 		<div>Mockey has some hooks for you to evaluate incoming requests defined in a JSON formatted API. These rules can be applied to:
 		<ul>
@@ -457,6 +461,13 @@
             "value_rule_arg": "username",
             "value_rule_type": "string_required"
         }
+    ],
+    "url": [
+        {
+            "desc": "The value '123' is required to be present in the RESTful URL. For example 'http://127.0.0.1/service/customer/123/invoice'",
+            "value_rule_arg": "\\b123\\b",
+            "value_rule_type": "regex_required"
+        }
     ]
 }
 </pre>
@@ -467,8 +478,10 @@
 		When the JSON rules API are applied to a Scenario, they are processd only when the Scenario's parent Service is set to Dynamic. 
 		If the Service is set to Dynamic, and the Scenario has a <i>match</i> argument defined, then the incoming request will be evaluated. 
 		If the request satisfies the Scenario's matching argument or rules, then that Scenario is returned.     
-		<div>Here's an example definition: 
-				</div>
+		<br /><br />For example, if you want your request 
+		<span class="code_text"> http://127.0.0.1:8080/service/customer?customer=111&invoice=222</span> to return Scenario B, 
+		then here's an example setup: 
+		
         <pre class="code" style="font-size:0.9em;">
 	// EXAMPLE Service A with 'Scenario A' 
 {
@@ -504,7 +517,7 @@
 }
 </pre>
 
-Request <span class="code_text"> http://127.0.0.1:8080/service/customer?customer=333&invoice=444</span> will return Scenario B. 
+
 		</p>
 		<h3>Rules API</h3>
         <p>
@@ -515,14 +528,18 @@ Request <span class="code_text"> http://127.0.0.1:8080/service/customer?customer
         <tr><th>KEY</th><th>DESCRIPTION</th></tr>
           </thead>
         <tbody>
-        <tr><td>key</td><td><strong>Required</strong> for type 'headers' and 'parameters'. The name of the parameter-key or header-key that needs a value. <strong>Ignored</strong> for type 'body'.</td></tr>
+        <tr><td>key</td><td><strong>Required</strong> for type 'headers' and 'parameters'. The name of the parameter-key or header-key that needs a value. 
+        
+        <br /></br /><strong>Ignored</strong> for type 'body' and 'url'.</td></tr>
         <tr><td>desc</td><td><strong>Optional.</strong> A short description of what you're trying to accomplish. This message will display in the History page if the error occurs to inform the user what's wrong. </td></tr>
         <tr><td>value_rule_arg</td><td>Can be an empty string, character, non-empty string or string representing a regex' value. </td></tr>
         <tr><td>value_rule_type</td><td>Tells Mockey <i>how</i> to evaluate the key-value pair. Valid values are
 	<ul>
 		<li><b>string_required</b>: Case insensitive. The string or character must be present in the non-empty-VALUE associated to the parameter (or header) KEY. 
 			You could use a REGEX here, like <span class="code_text">^(?!\s*$).+</span>, but for those who just want a simple character or text search, you can use this instead
-			of dealing with the complexities of regular-<i>confusing?</i>-expressions. </li>
+			of dealing with the complexities of regular-<i>confusing?</i>-expressions. 
+			Please read the <a href="#beware_of_match">beware</a> section before using 'string_required'.
+			</li>
 		<li><b>regex_required</b>: A non-null value must be provided and satisfy the regex' definition ('value_rule_arg')</li>
 		<li><b>regex_optional</b>: Optional, but if non-null, then it must satisfy the regex' definition ('value_rule_arg')</li>
 		</ul>

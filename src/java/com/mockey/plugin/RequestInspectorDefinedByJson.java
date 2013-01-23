@@ -97,6 +97,13 @@ import com.mockey.model.RequestFromClient;
  * 	            "value_rule_arg": "username",
  * 	            "value_rule_type": "string_required"
  * 	        }
+ * 	    ],
+ *      "url": [
+ * 	        {
+ * 	            "desc": "The value '123' is required to be present in the RESTful URL.",
+ * 	            "value_rule_arg": "\\b123\\b",
+ * 	            "value_rule_type": "regex_required"
+ * 	        }
  * 	    ]
  * 	}
  * </pre>
@@ -106,13 +113,12 @@ import com.mockey.model.RequestFromClient;
  */
 public class RequestInspectorDefinedByJson implements IRequestInspector {
 
-	
-
 	private JSONObject json = null;
 	private Logger logger = Logger
 			.getLogger(RequestInspectorDefinedByJson.class);
 	private Map<String, List<String>> errorMapByKey = new HashMap<String, List<String>>();
 	private int ruleCount = 0;
+
 	/**
 	 * 
 	 * @param json
@@ -129,10 +135,10 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	 * 
 	 * @return the number of rules processed post analysis.
 	 */
-	public int getRuleCount(){
+	public int getRuleCount() {
 		return this.ruleCount;
 	}
-	
+
 	/**
 	 * Will apply request inspection rules as defined in JSON, only looking at
 	 * parameters and headers, not Body.
@@ -149,21 +155,31 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		// *************
 		// Parameters
 		// *************
-		analyze(RequestRuleType.RULE_TYPE_FOR_PARAMETERS, request.getParameters());
+		analyze(RequestRuleType.RULE_TYPE_FOR_PARAMETERS,
+				request.getParameters());
 
 		// *************
 		// Headers
 		// *************
-		analyze(RequestRuleType.RULE_TYPE_FOR_HEADERS, request.getHeaderInfoAsMap());
+		analyze(RequestRuleType.RULE_TYPE_FOR_HEADERS,
+				request.getHeaderInfoAsMap());
 
 		// *************
 		// RULE_FOR_BODY ??
 		// *************
 		Map<String, String[]> postBodyMap = new HashMap<String, String[]>();
 		if (request.hasPostBody()) {
-			postBodyMap.put(RequestRuleType.RULE_TYPE_FOR_BODY.toString(), new String[] {request.getBodyInfo()});
+			postBodyMap.put(RequestRuleType.RULE_TYPE_FOR_BODY.toString(),
+					new String[] { request.getBodyInfo() });
 		}
 		analyze(RequestRuleType.RULE_TYPE_FOR_BODY, postBodyMap);
+
+		// *************
+		// Url
+		// *************
+		Map<String, String[]> urlMap = new HashMap<String, String[]>();
+		urlMap.put(RequestRuleType.RULE_TYPE_FOR_URL.toString(),new String[] { request.getRequestURL()});
+		analyze(RequestRuleType.RULE_TYPE_FOR_URL, urlMap	);
 
 	}
 
@@ -178,23 +194,35 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	 * @see #RULE_FOR_HEADERS
 	 * @see #RULE_FOR_PARAMETERS
 	 */
-	private void analyze(RequestRuleType ruleType, Map<String, String[]> keyValues) {
+	private void analyze(RequestRuleType ruleType,
+			Map<String, String[]> keyValues) {
 
 		// Validate parameters.
 		try {
 
 			// FOR PARAMETERs and HEADERs
-			JSONArray parameterArray = this.json.getJSONArray(ruleType.toString());
+			JSONArray parameterArray = this.json.getJSONArray(ruleType
+					.toString());
 
 			for (int i = 0; i < parameterArray.length(); i++) {
 				JSONObject jsonRule = parameterArray.getJSONObject(i);
-				
+
 				this.ruleCount++;
 				try {
-					RequestRule requestRule = new RequestRule(jsonRule, ruleType);
+					RequestRule requestRule = new RequestRule(jsonRule,
+							ruleType);
 
 					if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType)) {
-						String[] values = keyValues.get(RequestRuleType.RULE_TYPE_FOR_BODY.toString());
+						String[] values = keyValues
+								.get(RequestRuleType.RULE_TYPE_FOR_BODY
+										.toString());
+						if (requestRule.evaluate(values)) {
+							addErrorMessage(ruleType.toString(), requestRule);
+						}
+					}else if (RequestRuleType.RULE_TYPE_FOR_URL.equals(ruleType)) {
+						String[] values = keyValues
+								.get(RequestRuleType.RULE_TYPE_FOR_URL
+										.toString());
 						if (requestRule.evaluate(values)) {
 							addErrorMessage(ruleType.toString(), requestRule);
 						}
@@ -216,9 +244,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		} catch (JSONException e) {
 
 			// Not necessarily an error. Could be missing
-			logger.debug(
-					"Request Inspection JSON rules does not have rule defined for '"
-							+ ruleType.toString() + "'");
+			logger.debug("Request Inspection JSON rules does not have rule defined for '"
+					+ ruleType.toString() + "'");
 		}
 
 	}
@@ -236,9 +263,12 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 
 		// Build
 		StringBuilder sb = new StringBuilder();
-		sb.append("ISSUE: Rule of type '"+type+"'. ");
-		if(!RequestRuleType.RULE_TYPE_FOR_BODY.toString().equals(type)){
-			sb.append(" Belonging to key name of '"+ requestRule.getKey()+ "'. " );
+		sb.append("ISSUE: Rule of type '" + type + "'. ");
+		if (!RequestRuleType.RULE_TYPE_FOR_BODY.toString().equals(type)
+				&& !RequestRuleType.RULE_TYPE_FOR_URL.toString().equals(type)
+				) {
+			sb.append(" Belonging to key name of '" + requestRule.getKey()
+					+ "'. ");
 		}
 		for (String issue : requestRule.getIssues()) {
 			sb.append(issue + " ");
@@ -263,17 +293,18 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	}
 
 	/**
-	 * Method should be called post analysis. 
-	 *  
-	 * @return true if one or more errors exist. 
+	 * Method should be called post analysis.
+	 * 
+	 * @return true if one or more errors exist.
 	 */
 	public boolean hasErrors() {
-		if(this.errorMapByKey.isEmpty()){
+		if (this.errorMapByKey.isEmpty()) {
 			return false;
-		}else {
+		} else {
 			return true;
 		}
 	}
+
 	/**
 	 * If errors exists, this method will build 1 long string representation of
 	 * all broken rules, inserting a counter i.e. 1, 2, 3, etc. in front of each

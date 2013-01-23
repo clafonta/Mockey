@@ -50,7 +50,7 @@ package com.mockey.plugin;
  */
 
 public enum RequestRuleType {
-	RULE_TYPE_FOR_PARAMETERS("parameters"), RULE_TYPE_FOR_HEADERS("headers"), RULE_TYPE_FOR_BODY(
+	RULE_TYPE_FOR_URL("url"), RULE_TYPE_FOR_PARAMETERS("parameters"), RULE_TYPE_FOR_HEADERS("headers"), RULE_TYPE_FOR_BODY(
 			"body");
 	private String value;
 

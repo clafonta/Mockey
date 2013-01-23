@@ -47,7 +47,7 @@ public class RequestRule {
 	public RequestRule(JSONObject json, RequestRuleType ruleType)
 			throws RequestRuleException {
 		this.desc = getRuleValFromRule(RULE_DESC, json, false);
-		if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType)) {
+		if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType) || RequestRuleType.RULE_TYPE_FOR_URL.equals(ruleType) ) {
 			this.key = getRuleValFromRule(RULE_KEY, json, false);
 		} else {
 			this.key = getRuleValFromRule(RULE_KEY, json, true);
