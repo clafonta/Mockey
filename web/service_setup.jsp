@@ -26,7 +26,13 @@
 			  });
 			  
 			});
-							
+		$('#prettyPrintMyServiceJsonRules').click ( function() {
+	        var txt = $('#request_inspector_json_rules').val();
+	    	var pTxt = js_beautify(txt);
+	    	$('#request_inspector_json_rules').val(pTxt);
+	        return false;
+	    });
+								
 		$('#update-service')
 		    .button()
 		    .click(function() {
@@ -184,7 +190,9 @@
                 <div class="tinyfieldset"><i>Purely informational.</i> The last time this service was called.</div>                
                <hr>
                <label>Evaluation Rules in JSON</label>
+               <span style="float:right;" >Pretty format:  <a href="#" class="blue" id="prettyPrintMyServiceJsonRules">JSON</a></span>
                <div style="margin-bottom:5px; margin-top:10px;">
+               
                <textarea name="request_inspector_json_rules" placeholder="See the Help section for directions. " id="request_inspector_json_rules" class="text ui-widget-content ui-corner-all resizable" rows="8"><c:out value="${mockservice.requestInspectorJsonRules}"/></textarea>
                </div>
                <input type="checkbox" name="request_inspector_json_rules_enable_flag" id="request_inspector_json_rules_enable_flag" value="true" <c:if test="${mockservice.requestInspectorJsonRulesEnableFlag}">checked</c:if> />
