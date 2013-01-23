@@ -50,7 +50,8 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	private String requestMessage = "";
 	private String responseMessage = "";
 	private String matchStringArg = "";
-	private boolean matchStringArgRegexFlag = false;
+	private boolean matchStringArgEvaluationRulesFlag = false;
+
 	private String responseHeader = "Accept-Language: en-US | Accept: text/plain";
 	private int httpResponseStatusCode = HttpServletResponse.SC_OK;
 
@@ -179,37 +180,39 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	 * @return
 	 */
 	public Map<String, String> getHeaderInfoHelper() {
-		Map<String, String> m = new HashMap<String,String>();
-		
+		Map<String, String> m = new HashMap<String, String>();
+
 		String[] args = this.responseHeader.split("\\|");
-		
-		for(String k: args){
+
+		for (String k : args) {
 			int beginIndex = k.indexOf(":");
-			if(beginIndex>-1){
+			if (beginIndex > -1) {
 				String key = k.substring(0, beginIndex);
-				String val = k.substring(beginIndex+1);
+				String val = k.substring(beginIndex + 1);
 				m.put(key.trim(), val.trim());
 			}
 		}
 		return m;
 	}
-	public static void main(String[] args){
-		Scenario sce = new Scenario();
-		sce.setResponseHeader("Content-Type: text/html; charset=utf-8 | Cache-Control: max-age=3600");
-		Map<String, String> m = sce.getHeaderInfoHelper();
-		for(String k: m.keySet()){
-			System.out.println(k +":"+ m.get(k));
-		}
-		
+
+	/**
+	 * 
+	 * @return true if this Scenario's match argument should be treated as
+	 *         evaluation rules in JSON format, otherwise false.
+	 */
+	public boolean isMatchStringArgEvaluationRulesFlag() {
+		return matchStringArgEvaluationRulesFlag;
 	}
 
-	public boolean isMatchStringArgRegexFlag() {
-		return matchStringArgRegexFlag;
+	/**
+	 * 
+	 * @param matchStringArgEvaluationRulesFlag
+	 *            set to true if this Scenario's match argument should be
+	 *            treated as evaluation rules in JSON format
+	 */
+	public void setMatchStringArgEvaluationRulesFlag(
+			boolean matchStringArgEvaluationRulesFlag) {
+		this.matchStringArgEvaluationRulesFlag = matchStringArgEvaluationRulesFlag;
 	}
 
-	public void setMatchStringArgRegexFlag(boolean matchStringArgRegexFlag) {
-		this.matchStringArgRegexFlag = matchStringArgRegexFlag;
-	}
-
-	
 }

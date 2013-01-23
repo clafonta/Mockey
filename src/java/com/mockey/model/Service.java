@@ -581,7 +581,7 @@ public class Service extends StatusCheck implements PersistableItem,
 			int indexValue = -1;
 			int tempArgLength = -1;
 			if (scenario.hasMatchArgument()) {
-				if (scenario.isMatchStringArgRegexFlag()) {
+				if (scenario.isMatchStringArgEvaluationRulesFlag()) {
 
 					
 					try {

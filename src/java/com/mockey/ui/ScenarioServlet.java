@@ -152,10 +152,10 @@ public class ScenarioServlet extends HttpServlet {
 		}
 		
 		
-		String matchArgAsRegexBoolVal = req.getParameter("matchStringArgRegexFlag");
+		String matchArgAsRegexBoolVal = req.getParameter("matchStringArgEvaluationRulesFlag");
 		if (matchArgAsRegexBoolVal != null) {
 			try {
-				scenario.setMatchStringArgRegexFlag(
+				scenario.setMatchStringArgEvaluationRulesFlag(
 						Boolean.parseBoolean(matchArgAsRegexBoolVal));
 			} catch (Exception t) {
 				logger.error(

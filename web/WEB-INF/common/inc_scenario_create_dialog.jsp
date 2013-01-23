@@ -14,14 +14,14 @@ $(document).ready( function() {
     });
     var name = $("#scenario_name"),
         match = $("#scenario_match"),
-        match_regex_flag = $('#scenario_match_regex_flag'),
+        match_evaluation_rules_flag = $('#scenario_match_evaluation_rules_flag'),
         responsemsg = $("#scenario_response"),
         universal_error_scenario = $('#universal_error_scenario'),
         scenario_response_header = $('#scenario_response_header'),
         tag = $('#tag'),
         http_response_status_code = $('#http_response_status_code');
         error_scenario = $('#error_scenario'),
-        allFields = $([]).add(name).add(match).add(match_regex_flag).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag).add(http_response_status_code).add(scenario_response_header),
+        allFields = $([]).add(name).add(match).add(match_evaluation_rules_flag).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag).add(http_response_status_code).add(scenario_response_header),
         tips = $(".validateTips");  
     
     function updateTips(t) {
@@ -92,7 +92,7 @@ $(document).ready( function() {
             $('#service-name-for-scenario').text(serviceName);
             $('#scenario_name').val('');
             $('#scenario_match').val('');
-            $('#scenario_match_regex_flag').attr('checked', false),
+            $('#scenario_match_evaluation_rules_flag').attr('checked', false),
             $('#scenario_response').val(''); 
             $('#scenario_response_header').val('');
             $('#tag').val(''); 
@@ -108,7 +108,7 @@ $(document).ready( function() {
                            bValid = bValid && checkLength(name,"scenario name",3,1000);
                            if (bValid) {
                                $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, tag: $('input[name=tag]').val(), 
-                                    matchStringArg: match.val(), matchStringArgRegexFlag: match_regex_flag.is(':checked'),
+                                    matchStringArg: match.val(), matchStringArgEvaluationRulesFlag: match_evaluation_rules_flag.is(':checked'),
                                     responseMessage: responsemsg.val(), responseHeader: scenario_response_header.val(),
                                     httpResponseStatusCode: http_response_status_code.val(),
                                     universalErrorScenario: universal_error_scenario.is(':checked'), 
@@ -142,7 +142,7 @@ $(document).ready( function() {
                     $('#service-name-for-scenario').text(data.serviceName);
                     $('#scenario_name').val(data.name);
                     $('#scenario_match').val(data.match);
-                    $('#scenario_match_regex_flag').attr('checked', data.matchRegexFlag);
+                    $('#scenario_match_evaluation_rules_flag').attr('checked', data.matchRegexFlag);
                     $('#tag').val(data.tag);
                     $('#scenario_response_header').val(data.responseHeader);
                     $('#scenario_response').val(data.response); 
@@ -159,7 +159,7 @@ $(document).ready( function() {
                                if (bValid) {
                                    
                                    $.post('<c:url value="/scenario"/>', { scenarioName: name.val(), serviceId: serviceId, scenarioId: scenarioId,  
-                                        tag: $('input[name=tag]').val(), matchStringArg: match.val(), matchStringArgRegexFlag: match_regex_flag.is(':checked'), 
+                                        tag: $('input[name=tag]').val(), matchStringArg: match.val(), matchStringArgEvaluationRulesFlag: match_evaluation_rules_flag.is(':checked'), 
                                         responseHeader: scenario_response_header.val(), responseMessage: responsemsg.val(), 
                                         universalErrorScenario: universal_error_scenario.is(':checked'), httpResponseStatusCode: http_response_status_code.val(),
                                         errorScenario: error_scenario.is(':checked')  } ,function(data){
@@ -218,7 +218,7 @@ $(document).ready( function() {
                                 serviceId: serviceId, 
                                 tag: $('input[name=tag]').val(), 
                                 matchStringArg: match.val(), 
-                                matchStringArgRegexFlag: match_regex_flag.val(), 
+                                matchStringArgEvaluationRulesFlag: match_evaluation_rules_flag.val(), 
                                 responseHeader: scenario_response_header.val(), 
                                 responseMessage: responsemsg.val(), 
                                 universalErrorScenario: universal_error_scenario.val(), 
@@ -272,7 +272,7 @@ $(document).ready( function() {
 			</p>
 	        <textarea  name="scenario_match" id="scenario_match" class="text ui-widget-content ui-corner-all resizable" rows="8"></textarea> 
 	        <p>
-	        <input type="checkbox" name="scenario_match_regex_flag" id="scenario_match_regex_flag"  value="true" ></input>
+	        <input type="checkbox" name="scenario_match_evaluation_rules_flag" id="scenario_match_evaluation_rules_flag"  value="true" ></input>
 	        Check the box if you want the match argument to be treated as <a href="<c:url value="/help#evaluation_rules_api"/>">evaluation</a> rules. Leaving the box unchecked will
 	        result in a very basic text search, but please read the <a href="<c:url value="/help#beware_of_match"/>">beware</a> section before moving forward. 
 	        </p> 
