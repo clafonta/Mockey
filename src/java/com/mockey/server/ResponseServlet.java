@@ -99,7 +99,7 @@ public class ResponseServlet extends HttpServlet {
 		RequestInspectionResult inspectionMessage = pluginStore
 				.processRequestInspectors(service, request);
 
-		//Url urlToExecute = service.getDefaultRealUrl();
+		// Url urlToExecute = service.getDefaultRealUrl();
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
 		ResponseFromService response = service.execute(request, serviceUrl);
 		logRequestAsFulfilled(service, request, response,
@@ -127,7 +127,11 @@ public class ResponseServlet extends HttpServlet {
 			resp.getOutputStream().flush();
 		} else {
 			// RULE_FOR_HEADERS
-			resp.setStatus(response.getHttpResponseStatusCode());
+			try {
+				resp.setStatus(response.getHttpResponseStatusCode());
+			} catch (java.lang.IllegalArgumentException iae) {
+				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode()+ "'", iae);
+			}
 			response.writeToOutput(resp);
 		}
 	}
