@@ -25,12 +25,14 @@ What is Mockey not good at?
 Getting Started - Quick
 ====================
 
- * run "ant dist"
- * cd dist
- * java -jar Mockey.jar -t false 
+Via command line, build Mockey via Ant. 
+ > ant dist 
 
-This will start mockey, fire up your browser pointing at the defaults (port 8080, /home)
+Alternatively, download a stable version (via MOCKEY_HOME/stable/Mockey.jar), and run it:
+> java -jar Mockey.jar 
+
+
+This will start Mockey, fire up your browser pointing at the defaults (port 8080, /home). Use --help for more options. 
  
- * java -jar Mockey.jar --help
+> java -jar Mockey.jar --help
 
-Will show you the options and their defaults.

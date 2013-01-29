@@ -121,7 +121,12 @@ public class ResponseServlet extends HttpServlet {
 					resp.setHeader(h.getName(), h.getValue());
 				}
 			}
-			resp.setStatus(response.getHttpResponseStatusCode());
+			
+			try {
+				resp.setStatus(response.getHttpResponseStatusCode());
+			} catch (java.lang.IllegalArgumentException iae) {
+				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode()+ "'", iae);
+			}
 			byte[] myCharSetBytes = response.getBody().getBytes();
 			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
 			resp.getOutputStream().flush();
