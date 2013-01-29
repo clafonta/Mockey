@@ -196,7 +196,7 @@
                <textarea name="request_inspector_json_rules" placeholder="See the Help section for directions. " id="request_inspector_json_rules" class="text ui-widget-content ui-corner-all resizable" rows="8"><c:out value="${mockservice.requestInspectorJsonRules}"/></textarea>
                </div>
                <input type="checkbox" name="request_inspector_json_rules_enable_flag" id="request_inspector_json_rules_enable_flag" value="true" <c:if test="${mockservice.requestInspectorJsonRulesEnableFlag}">checked</c:if> />
-			   Check this box to run the Evaluation Rules rules (if provided).  
+			   Check this box to run the Evaluation Rules.  Uncheck this box if you want to ignore Evaluation Rules. 
 			   <div class="tinyfieldset" style="margin-top:5px;"><strong>Optional.</strong> For more on this, read the <a href="<c:url value="/help#evaluation_rules_api"/>">help</a> section.
 	           </div>
                <hr>
