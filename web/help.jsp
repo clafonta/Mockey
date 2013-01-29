@@ -525,6 +525,26 @@
 }
 </pre>
 
+<h3>Wild card</h3>
+There is limited wildcard support for those who need to evaluate values not necessarily tied to a specific parameter key. 
+For example: 
+
+<pre class="code" style="font-size:0.9em;">
+// EXAMPLE wild card
+{
+    "parameters": [{
+        "key": "*",
+        "value_rule_arg": "^(aaa)$",
+        "value_rule_type": "regex_required"
+    },{
+        "key": "*",
+        "value_rule_arg": "^(bbb)$",
+        "value_rule_type": "regex_required"
+    }]
+}
+</pre>
+This definition will work for either <span class="code_text">http://127.0.0.1:8080/service/customer?ticker=aaa&customer=bbb</span> or
+<span class="code_text">http://127.0.0.1:8080/service/customer?invoice=bbb&channel=aaa</span>. 
 
 		</p>
 		<h3>Rules API</h3>
@@ -545,7 +565,9 @@
         <tr><th>KEY</th><th>DESCRIPTION</th></tr>
           </thead>
         <tbody>
-        <tr><td>key</td><td><strong>Required</strong> for rule group type 'headers' and 'parameters'. The name of the parameter-key or header-key that needs a value. 
+        <tr><td>key</td><td><strong>Required</strong> for rule group type 'headers' and 'parameters'. 
+        The name of the parameter-key or header-key that needs a non-empty string value. Use <strong>&#42;</strong> for wildcard 
+        support, meaning you want to apply evaluation rules to values only.   
         
         <br /></br /><strong>Ignored</strong> for rule group type 'body' and 'url'.</td></tr>
         <tr><td>desc</td><td><strong>Optional.</strong> A short description of what you're trying to accomplish. Note: 

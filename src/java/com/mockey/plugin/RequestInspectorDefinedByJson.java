@@ -50,6 +50,7 @@ package com.mockey.plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -178,8 +179,9 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		// Url
 		// *************
 		Map<String, String[]> urlMap = new HashMap<String, String[]>();
-		urlMap.put(RequestRuleType.RULE_TYPE_FOR_URL.toString(),new String[] { request.getRequestURL()});
-		analyze(RequestRuleType.RULE_TYPE_FOR_URL, urlMap	);
+		urlMap.put(RequestRuleType.RULE_TYPE_FOR_URL.toString(),
+				new String[] { request.getRequestURL() });
+		analyze(RequestRuleType.RULE_TYPE_FOR_URL, urlMap);
 
 	}
 
@@ -219,7 +221,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 						if (requestRule.evaluate(values)) {
 							addErrorMessage(ruleType.toString(), requestRule);
 						}
-					}else if (RequestRuleType.RULE_TYPE_FOR_URL.equals(ruleType)) {
+					} else if (RequestRuleType.RULE_TYPE_FOR_URL
+							.equals(ruleType)) {
 						String[] values = keyValues
 								.get(RequestRuleType.RULE_TYPE_FOR_URL
 										.toString());
@@ -228,9 +231,35 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 						}
 					} else {
 
-						String[] values = keyValues.get(requestRule.getKey());
-						if (requestRule.evaluate(values)) {
-							addErrorMessage(ruleType.toString(), requestRule);
+						// For HEADERS and PARAMETERS
+						if (requestRule.getKey() != null && requestRule
+										.getKey().contains("*")) {
+							// We treat this as a wild-card.
+							Iterator<String> allKeys = keyValues.keySet()
+									.iterator();
+							List<String> allValues = new ArrayList<String>();
+							while (allKeys.hasNext()) {
+								String key = allKeys.next();
+								String[] vals = keyValues.get(key);
+								for (String v : vals) {
+									allValues.add(v);
+								}
+							}
+							// Get ALL values from all parameters, and evaluate. 
+							if (requestRule.evaluate(allValues
+									.toArray(new String[allValues.size()]))) {
+								addErrorMessage(ruleType.toString(),
+										requestRule);
+							}
+						} else {
+							// We have non-null, and non-empty keys.
+							// Apply specific rules.
+							String[] values = keyValues.get(requestRule
+									.getKey());
+							if (requestRule.evaluate(values)) {
+								addErrorMessage(ruleType.toString(),
+										requestRule);
+							}
 						}
 					}
 
@@ -265,8 +294,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		StringBuilder sb = new StringBuilder();
 		sb.append("ISSUE: Rule of type '" + type + "'. ");
 		if (!RequestRuleType.RULE_TYPE_FOR_BODY.toString().equals(type)
-				&& !RequestRuleType.RULE_TYPE_FOR_URL.toString().equals(type)
-				) {
+				&& !RequestRuleType.RULE_TYPE_FOR_URL.toString().equals(type)) {
 			sb.append(" Belonging to key name of '" + requestRule.getKey()
 					+ "'. ");
 		}
@@ -331,20 +359,22 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	}
 
 	public static void main(String[] args) {
-		String valueRuleArg = "^((1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2})?$";
-		String value = "10/23/1972";
-		try {
-
-			Pattern pattern = Pattern.compile(valueRuleArg);
-			Matcher matcher = pattern.matcher(value);
-			if (!matcher.find()) {
-				System.out.println("No match");
-			} else {
-				System.out.println("yes, Match");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		// String valueRuleArg =
+		// "^((1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2})?$";
+		// String value = "10/23/1972";
+		// try {
+		//
+		// Pattern pattern = Pattern.compile(valueRuleArg);
+		// Matcher matcher = pattern.matcher(value);
+		// if (!matcher.find()) {
+		// System.out.println("No match");
+		// } else {
+		// System.out.println("yes, Match");
+		// }
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		Map<String, String[]> test = new HashMap<String, String[]>();
 
 	}
 }

@@ -47,7 +47,8 @@ public class RequestRule {
 	public RequestRule(JSONObject json, RequestRuleType ruleType)
 			throws RequestRuleException {
 		this.desc = getRuleValFromRule(RULE_DESC, json, false);
-		if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType) || RequestRuleType.RULE_TYPE_FOR_URL.equals(ruleType) ) {
+		if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType)
+				|| RequestRuleType.RULE_TYPE_FOR_URL.equals(ruleType)) {
 			this.key = getRuleValFromRule(RULE_KEY, json, false);
 		} else {
 			this.key = getRuleValFromRule(RULE_KEY, json, true);
@@ -97,7 +98,7 @@ public class RequestRule {
 	public boolean evaluate(String[] values) {
 
 		if (InspectorRuleType.REGEX_REQUIRED.equalsString(this.getRuleType())
-				&& values == null) {
+				&& (values == null || values.length == 0)) {
 
 			issueList
 					.add("Requires a non-null value to be evaluated by a regex value.");
@@ -107,19 +108,24 @@ public class RequestRule {
 				|| (InspectorRuleType.REGEX_REQUIRED.equalsString(this
 						.getRuleType()) && values != null)) {
 
-			for (String value : values) {
-				String errorMsgRequired = "Fails to validate against the regular expression '"
-						+ this.getRule() + "' with value +'" + value + "'.";
-				try {
+			boolean found = false;
+			String errorMsgRequired = "Fails to validate against the regular expression '"
+					+ this.getRule() + "' with value +'" + values + "'.";
 
+			for (String value : values) {
+
+				try {
 					Pattern pattern = Pattern.compile(this.getRule());
 					Matcher matcher = pattern.matcher(value);
-					if (!matcher.find()) {
-						issueList.add(errorMsgRequired);
+					if (matcher.find()) {
+						found = true;
 					}
 				} catch (Exception e) {
 					issueList.add(errorMsgRequired);
 				}
+			}
+			if (!found) {
+				issueList.add(errorMsgRequired);
 			}
 
 		} else if (InspectorRuleType.STRING_REQUIRED.equalsString(this
