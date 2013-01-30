@@ -128,8 +128,14 @@ public class RequestFromClient {
 			UnsupportedEncodingException {
 		// TODO: Cleanup the logic to handle creating a GET vs POST
 		HttpRequest request;
+		String urlQuery = this.buildParameterRequest();
+                if (urlQuery.length() == 0) {
+            		// If the query is empty, pass a null query to URIUtils.createURI(), as an empty string
+            		// causes URIUtils.createURI() to append a ? to the URI.
+            		urlQuery = null;
+        	}
 		URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1,
-				url.getPath(), this.buildParameterRequest(), null);
+				url.getPath(), urlQuery, null);
 
 		if (("GET").equalsIgnoreCase(this.method)) {
 			request = new HttpGet(uri);
