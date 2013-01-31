@@ -110,8 +110,8 @@ public class RequestFromClient {
 	public List<Cookie> getHttpClientCookies() {
 		return this.httpClientCookies;
 	}
-	
-	public String getRequestURL(){
+
+	public String getRequestURL() {
 		return this.fullURL;
 	}
 
@@ -129,11 +129,12 @@ public class RequestFromClient {
 		// TODO: Cleanup the logic to handle creating a GET vs POST
 		HttpRequest request;
 		String urlQuery = this.buildParameterRequest();
-                if (urlQuery.length() == 0) {
-            		// If the query is empty, pass a null query to URIUtils.createURI(), as an empty string
-            		// causes URIUtils.createURI() to append a ? to the URI.
-            		urlQuery = null;
-        	}
+		if (urlQuery.length() == 0) {
+			// If the query is empty, pass a null query to URIUtils.createURI(),
+			// as an empty string
+			// causes URIUtils.createURI() to append a ? to the URI.
+			urlQuery = null;
+		}
 		URI uri = URIUtils.createURI(url.getScheme(), url.getHost(), -1,
 				url.getPath(), urlQuery, null);
 
