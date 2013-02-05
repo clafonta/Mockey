@@ -14,11 +14,10 @@
 	<property name="etc.dir" location="etc"/>
 	<property name="one-jar-lib.dir" location="${etc.dir}/one-jar"/>
 	<property name="dist.dir" location="dist"/>
-	<property name="version.num" value="1.3"/>
-
+	<!--  VERSION NUMBER should follow Semantic Versioning. http://semver.org/ -->
+	<property name="version.num" value="1.0"/>
 	<property name="classes.dir" location="${build.dir}/WEB-INF/classes"/>
 	<property name="test.classes.dir" value="${build.dir}/test/classes" />
-
 	<property name="test.report.dir" value="${build.dir}/report"/>
 	<path id="standard.classpath">
 		<fileset dir="${lib.dir}">
@@ -278,9 +277,11 @@
             <fileset dir="etc/one-jar" />
             <fileset dir="web/WEB-INF/lib" />
         </unzip>
+        <buildnumber file="build.num"/>
         <jar destfile="dist/Mockey.jar">
             <manifest>
                 <attribute name="Main-Class" value="com.mockey.runner.JettyRunner"/>
+                <attribute name="Implementation-Version" value="${version.num}.${build.number}"/>
             </manifest>
             <fileset dir="build/jar">
                 <exclude name="MANIFEST.MF" />

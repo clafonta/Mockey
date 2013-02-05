@@ -40,5 +40,6 @@ public interface BSC {
 	public static final String ACTION = "action";
 	public static final String URL = "url";
 	public static final String HEADLESS = "headless";
+	public static final String VERSION = "version";
 
 }
