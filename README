@@ -28,11 +28,10 @@ Getting Started - Quick
 Via command line, build Mockey via Ant. 
  > ant dist 
 
-Alternatively, download a stable version (via MOCKEY_HOME/stable/Mockey.jar), and run it:
-> java -jar Mockey.jar 
 
-
-This will start Mockey, fire up your browser pointing at the defaults (port 8080, /home). Use --help for more options. 
- 
+After a successful build, do the following to start the app:
+> cd dist 
 > java -jar Mockey.jar --help
+
+This will start Mockey and fire up your browser pointing at the defaults (port 8080, /home). Use --help for more options. 
 
