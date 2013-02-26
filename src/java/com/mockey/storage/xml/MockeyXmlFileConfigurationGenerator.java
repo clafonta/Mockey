@@ -121,15 +121,20 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 					getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
 			serviceElement.setAttribute("default_real_url_index",
 					getSafeForXmlOutputString("" + mockServiceBean.getDefaultRealUrlIndex()));
-
+			
 			// Request validation rules in JSON format definition.
 			Element requestInspectorJsonRulesElement = document.createElement("request_inspector_json_rules");
 			requestInspectorJsonRulesElement.setAttribute("enable_flag", ""+mockServiceBean.isRequestInspectorJsonRulesEnableFlag());
 			CDATASection cdataJsonRulesElement = document.createCDATASection(getSafeForXmlOutputString(mockServiceBean.getRequestInspectorJsonRules()));
 			requestInspectorJsonRulesElement.appendChild(cdataJsonRulesElement);
 			serviceElement.appendChild(requestInspectorJsonRulesElement);
-			//
-			//
+			
+			// Service Scenario Response Schema
+			Element responseSchemaElement = document.createElement("response_schema");
+			responseSchemaElement.setAttribute("enable_flag", ""+mockServiceBean.isResponseSchemaFlag());
+			CDATASection cdataresponseSchemaElement = document.createCDATASection(getSafeForXmlOutputString(mockServiceBean.getResponseSchema()));
+			responseSchemaElement.appendChild(cdataresponseSchemaElement);
+			serviceElement.appendChild(responseSchemaElement);
 			
 			// New real service URLs
 			for (Url realUrl : mockServiceBean.getRealServiceUrls()) {

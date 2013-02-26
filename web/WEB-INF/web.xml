@@ -332,6 +332,50 @@
             com.mockey.ui.RequestInspectorAjaxServlet
         </servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>
+            ServiceResponseSchemaServlet
+        </servlet-name>
+        <servlet-class>
+            com.mockey.ui.ServiceResponseSchemaServlet
+        </servlet-class>
+    </servlet>
+    <!--  JSON SCHEMA BEGIN -->
+    <servlet>
+        <servlet-name>JsonSchemaValidateServlet</servlet-name>
+        <servlet-class>com.mockey.ui.JsonSchemaValidateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JsonSchemaValidateServlet</servlet-name>
+        <url-pattern>/jsonschemavalidate</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>validateSyntax</servlet-name>
+        <servlet-class>com.github.fge.jsonschema.servlets.SyntaxValidateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>validateSyntax</servlet-name>
+        <url-pattern>/validateSyntax</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>JsonSchemaLoadSamplesServlet</servlet-name>
+        <servlet-class>com.mockey.ui.JsonSchemaLoadSamplesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JsonSchemaLoadSamplesServlet</servlet-name>
+        <url-pattern>/loadjsonschemasamples</url-pattern>
+    </servlet-mapping>
+    <!--  JSON SCHEMA END -->
+    <servlet-mapping>
+        <servlet-name>
+            ServiceResponseSchemaServlet
+        </servlet-name>
+        <url-pattern>
+            /responseschema
+        </url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>
             RequestInspectorAjaxServlet

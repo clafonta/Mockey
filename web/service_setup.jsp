@@ -32,6 +32,12 @@
 	    	$('#request_inspector_json_rules').val(pTxt);
 	        return false;
 	    });
+	    $('#prettyPrintMyResponseSchema').click ( function() {
+	        var txt = $('#response_schema').val();
+	    	var pTxt = js_beautify(txt);
+	    	$('#response_schema').val(pTxt);
+	        return false;
+	    });
 								
 		$('#update-service')
 		    .button()
@@ -53,14 +59,18 @@
 			        requestInspectorName = $("#request_inspector_name"),
 			        requestInspectorJsonRules = $("#request_inspector_json_rules"),
 			        requestInspectorJsonRulesEnableFlag = $("#request_inspector_json_rules_enable_flag"),
+			        responseSchema = $("#response_schema"),
+			        responseSchemaEnableFlag = $("#response_schema_enable_flag"),
 			        tag = $('#tag'),
 			        lastVisit = $("#last_visit");
 			        
 			 
 			   $.post('<c:url value="/setup"/>', { serviceName: serviceName.val(), serviceId: serviceId.val(), tag: tag.val(),
 				   'realServiceUrl[]':  realServiceUrlValues, url: url.val(), lastVisit: lastVisit.val(), 
-				   requestInspectorName: requestInspectorName.val(), requestInspectorJsonRules: requestInspectorJsonRules.val(), 
-				   requestInspectorJsonRulesEnableFlag: requestInspectorJsonRulesEnableFlag.is(':checked'), hangTime: hangtime.val() } ,function(data){
+				   requestInspectorName: requestInspectorName.val(), requestInspectorJsonRules: requestInspectorJsonRules.val(), 				   
+				   requestInspectorJsonRulesEnableFlag: requestInspectorJsonRulesEnableFlag.is(':checked'), 
+				   responseSchema: responseSchema.val(), responseSchemaEnableFlag: responseSchemaEnableFlag.is(':checked'), 
+				   hangTime: hangtime.val() } ,function(data){
 					   
 					   if (data.result.redirect){
 						   window.location.replace(data.result.redirect);
@@ -189,7 +199,7 @@
                 </div>                                
                 <div class="tinyfieldset"><i>Purely informational.</i> The last time this service was called.</div>                
                <hr>
-               <label>Evaluation Rules in JSON</label>
+               <label>Request Evaluation Rules in JSON</label>
                <span style="float:right;" >Pretty format:  <a href="#" class="blue" id="prettyPrintMyServiceJsonRules">JSON</a></span>
                <div style="margin-bottom:5px; margin-top:10px;">
                
@@ -198,6 +208,17 @@
                <input type="checkbox" name="request_inspector_json_rules_enable_flag" id="request_inspector_json_rules_enable_flag" value="true" <c:if test="${mockservice.requestInspectorJsonRulesEnableFlag}">checked</c:if> />
 			   Check this box to run the Evaluation Rules.  Uncheck this box if you want to ignore Evaluation Rules. 
 			   <div class="tinyfieldset" style="margin-top:5px;"><strong>Optional.</strong> For more on this, read the <a href="<c:url value="/help#evaluation_rules_api"/>">help</a> section.
+	           </div>
+	           <hr>
+               <label>Response JSON Schema</label>
+               <span style="float:right;" >Pretty format:  <a href="#" class="blue" id="prettyPrintMyJsonSchema">JSON</a></span>
+               <div style="margin-bottom:5px; margin-top:10px;">
+               
+               <textarea name="response_schema" placeholder="See the Help section for directions. " id="response_schema" class="text ui-widget-content ui-corner-all resizable" rows="8"><c:out value="${mockservice.responseSchema}"/></textarea>
+               </div>
+               <input type="checkbox" name="response_schema_enable_flag" id="response_schema_enable_flag" value="true" <c:if test="${mockservice.responseSchemaFlag}">checked</c:if> />
+			   Check this box to run the JSON Schema on your Scenarios.  Uncheck this box if you want to ignore JSON Schema validation. 
+			   <div class="tinyfieldset" style="margin-top:5px;"><strong>Optional.</strong> For more on this, read the <a href="<c:url value="/help#response_schema"/>">help</a> section.
 	           </div>
                <hr>
                <!-- 

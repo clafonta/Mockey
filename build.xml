@@ -63,6 +63,7 @@
 		<copy todir="${webapp.dir}/WEB-INF/classes">
             <fileset dir="${webapp.dir}/WEB-INF">
                 <include name="**/*.properties"/>
+                <include name="**/*.json"/>
             </fileset>
         </copy>
 
@@ -109,11 +110,13 @@
 			<fileset dir="${webapp.dir}/WEB-INF">
 				<include name="**/*.properties"/>
 				<include name="**/*.xml"/>
+
 			</fileset>
 		</copy>
 		<copy todir="${build.dir}/WEB-INF/classes">
             <fileset dir="${webapp.dir}/WEB-INF">
-                <include name="**/*.properties"/>
+                <include name="**/*.properties"/>				
+                <include name="**/*.json"/>
             </fileset>
         </copy>
 

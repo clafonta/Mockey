@@ -79,6 +79,8 @@ public class Service extends StatusCheck implements PersistableItem,
 	private int serviceResponseType = SERVICE_RESPONSE_TYPE_PROXY;
 	private String httpMethod = "GET";
 	private String url = "";
+	private String responseSchema = "";
+	private boolean responseSchemaFlag = false;
 
 	private List<FulfilledClientRequest> fulfilledRequests;
 	private List<Url> realServiceUrlList = new ArrayList<Url>();
@@ -583,7 +585,6 @@ public class Service extends StatusCheck implements PersistableItem,
 			if (scenario.hasMatchArgument()) {
 				if (scenario.isMatchStringArgEvaluationRulesFlag()) {
 
-					
 					try {
 						RequestInspectorDefinedByJson jsonRulesInspector = new RequestInspectorDefinedByJson(
 								scenario.getMatchStringArg());
@@ -594,9 +595,11 @@ public class Service extends StatusCheck implements PersistableItem,
 							indexValue = 1;
 							// Capture the number of rules being processed
 							tempArgLength = jsonRulesInspector.getRuleCount();
-							
-						}else {
-							logger.debug("No match. Reason: " + jsonRulesInspector.getPostAnalyzeResultMessage());
+
+						} else {
+							logger.debug("No match. Reason: "
+									+ jsonRulesInspector
+											.getPostAnalyzeResultMessage());
 						}
 
 					} catch (JSONException e) {
@@ -871,5 +874,31 @@ public class Service extends StatusCheck implements PersistableItem,
 	public void setRequestInspectorJsonRulesEnableFlag(
 			boolean requestInspectorJsonRulesEnableFlag) {
 		this.requestInspectorJsonRulesEnableFlag = requestInspectorJsonRulesEnableFlag;
+	}
+
+	/**
+	 * Response schema is used to validate a Service's Scenario format, to help
+	 * developers quickly find out if their Service Scenario(s) are invalid.
+	 * 
+	 * @return a string representing a schema.
+	 */
+	public String getResponseSchema() {
+		return responseSchema;
+	}
+
+	/**
+	 * 
+	 * @param responseSchema
+	 */
+	public void setResponseSchema(String responseSchema) {
+		this.responseSchema = responseSchema;
+	}
+
+	public boolean isResponseSchemaFlag() {
+		return responseSchemaFlag;
+	}
+
+	public void setResponseSchemaFlag(boolean responseSchemaFlag) {
+		this.responseSchemaFlag = responseSchemaFlag;
 	}
 }

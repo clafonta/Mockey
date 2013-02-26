@@ -25,8 +25,8 @@
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		        <li>&#187; <a href="#url_recommendations">URL Config Recommendations</a></li>	        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
-		        <li>&#187; <a href="#evaluation_rules_api">Evaluation Rules in JSON</a></li>   
-		        <!-- <li>&#187; <a href="#inspector_in_java">Request Inspector in Java</a></li>   -->    
+		        <li>&#187; <a href="#evaluation_rules_api">Request Evaluation Rules in JSON</a></li>
+		        <li>&#187; <a href="#response_schema">Response JSON Schema</a></li> 
 		    </ul>
 	    </div>
 	    <div style="">
@@ -405,7 +405,7 @@
     </div>
     <a href="#evaluation_rules_api" name="evaluation_rules_api"></a>
     <div class="help_section">
-        <h2>Evaluation Rules in JSON</h2>
+        <h2>Request Evaluation Rules in JSON</h2>
 		<div>Mockey has some hooks for you to evaluate incoming requests defined in a JSON formatted API. These rules can be applied to:
 		<ul>
 		  <li>A <strong>Service</strong> for request validation.</li>
@@ -591,6 +591,16 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
         </p>
         
     </div>
+    <div class="help_section_zebra">
+	    <a href="#response_schema" name="response_schema"></a>
+        <h2>Response JSON Schema</h2>
+        <p>
+        How do you know that your Service Scenarios (those defined in JSON) are in a valid data format? By providing a JSON Schema, 
+        Mockey will inform you if your Scenarios are invalid and give you insight on why. For more information on JSON Schema, see
+        <a href="http://json-schema.org/">http://json-schema.org/</a>. 
+        
+        </p>
+    </div>
     <!-- 
     <div class="help_section_zebra">
 	    <a href="#inspector_in_java" name="inspector_in_java"></a>
@@ -615,7 +625,7 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
         </p>
     </div>
      -->
-	<div class="help_section_zebra">
+	<div class="help_section">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

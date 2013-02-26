@@ -211,7 +211,6 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		String serviceResponseType = req.getParameter(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
 		String defaultUrlIndex = req.getParameter("defaultUrlIndex");
 		String transientState = req.getParameter(ServiceConfigurationAPI.API_TRANSIENT_STATE);
-
 		Service service = null;
 		JSONObject jsonResultObject = new JSONObject();
 

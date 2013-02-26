@@ -461,7 +461,7 @@ $(document).ready( function() {
 		        <table class="simple" width="100%" cellspacing="0">
 	            <tbody>
 		              <tr>                                                                                 
-							<td valign="top" width="220px;" style="padding-left:0;">
+							<td valign="top" width="33%" style="max-width:220px;padding-left:0;">
 							<div id="tabs" style="display:none;">
 								<ul>
 									<li><a href="#tabs-1" style="font-weight:100;">Services</a></li>
@@ -494,8 +494,9 @@ $(document).ready( function() {
 				                                </span>
 				                                
 				                                
-												<div style="margin-bottom:0.5em;">
+												<div style="margin-bottom:0.5em;display:block;">
 												 <mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
+												 
 												</div>
 												
 												<div class="toggle-buttons" style="margin-bottom:8px;">
@@ -576,7 +577,7 @@ $(document).ready( function() {
                                  <div class="service" width="350px;">
                                     
                                    <div class="service-label"><label>Service name:</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
-                                   <div class="service-value big"><mockey:slug text="${mockservice.serviceName}" maxLength="40"/></div>
+                                   <div class="service-value big">${mockservice.serviceName}</div>
                                    <mockey-tag:statusCheckByService service="${mockservice}" view="detail"/>
                                    <div class="service-label border-top"><label>Mock URL:</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
@@ -622,9 +623,9 @@ $(document).ready( function() {
 			                                      </c:choose>
 			                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
 			                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
-			                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" class="viewServiceScenarioLink"><mockey:slug text="${scenario.scenarioName}" maxLength="60"/></a>
+			                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" title="${scenario.scenarioName}" class="viewServiceScenarioLink">${scenario.scenarioName}</a>
 			                                    </div>
-			                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" serviceId="${mockservice.id}"/>
+			                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" service="${mockservice}"/>
 		                                    </div>
 		                                  </c:forEach>
 		                                  </c:when>

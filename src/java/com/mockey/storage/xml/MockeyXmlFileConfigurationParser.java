@@ -61,6 +61,7 @@ public class MockeyXmlFileConfigurationParser {
 	private final static String ROOT_SERVICE_REAL_URL = ROOT_SERVICE + "/real_url";
 	private final static String ROOT_SERVICE_SCENARIO = ROOT_SERVICE + "/scenario";
 	private final static String ROOT_SERVICE_REQUEST_INSPECTOR_JSON_RULES = ROOT_SERVICE + "/request_inspector_json_rules";
+	private final static String ROOT_SERVICE_RESPONSE_SCHEMA = ROOT_SERVICE + "/response_schema";
 	private final static String ROOT_PLAN = ROOT + "/service_plan";
 	private final static String ROOT_PLAN_ITEM = ROOT_PLAN + "/plan_item";
 	private final static String ROOT_TWIST_CONFIG = ROOT + "/twist_config";
@@ -117,6 +118,8 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addBeanPropertySetter(ROOT_SERVICE_REQUEST_INSPECTOR_JSON_RULES, "requestInspectorJsonRules");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_REQUEST_INSPECTOR_JSON_RULES, "enable_flag", "requestInspectorJsonRulesEnableFlag");
 		//
+		fullSetDigester.addBeanPropertySetter(ROOT_SERVICE_RESPONSE_SCHEMA, "responseSchema");
+		fullSetDigester.addSetProperties(ROOT_SERVICE_RESPONSE_SCHEMA, "enable_flag", "responseSchemaFlag");
 		
 		fullSetDigester.addObjectCreate(ROOT_SERVICE_REAL_URL, Url.class);
 		fullSetDigester.addSetProperties(ROOT_SERVICE_REAL_URL, "url", "url");

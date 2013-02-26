@@ -136,7 +136,7 @@ a.response_set:hover, a.response_not:hover {background: #B1D1E8;}
 a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
-div#container{width:875px;margin:0 auto}
+div#container{width:90%;margin:0 auto; min-width:850px;}
 div#main{width: 100%; margin-top: 10px; }
 div{margin-top: 1px; font-weight:300; }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
@@ -377,7 +377,6 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .ui-dialog .ui-state-error { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; color: red;}
 div.scroll {
-height:800px;
 overflow: auto;
 border: 0px solid #C0C0C0;
 padding: 8px;
@@ -450,7 +449,7 @@ text-transform: normal;
 letter-spacing: normal;
 line-height: 1.4em;
 }
-.hhButton, .hhButtonGreen, .hhButtonRed, .hhButtonBlue {
+.hhButton, .hhButtonGreen, .hhButtonRed, .hhButtonBlue, .false_jsonschema, .true_jsonschema {
   display: inline-block;
   text-align: center;
   padding: 5px 18px 4px;
@@ -477,11 +476,11 @@ line-height: 1.4em;
   background-color: #66CD00;
   color: #333;
 }
-.hhButtonBlue {
+.hhButtonBlue, .true_jsonschema {
   background-color: #009ACD;
   color: #333;
 }
-.hhButtonRed {
+.hhButtonRed, .false_jsonschema {
   background-color: #E80C24;
   color: #BDBDBD;
 }

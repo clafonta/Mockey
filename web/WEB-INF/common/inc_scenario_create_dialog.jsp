@@ -246,6 +246,7 @@ $(document).ready( function() {
     <p class="validateTips"></p>
     This scenario belongs to the service called: <br />
     <h2 class="big" id="service-name-for-scenario"></h2>
+    <p class="tinyfieldset info_message">For information on these input fields, please read the <a href="<c:url value="/help#scenario"/>"><strong>Help</strong></a> section.</p>
     <p>
     <fieldset>
         <hr />
@@ -263,7 +264,9 @@ $(document).ready( function() {
         <textarea placeholder="Enter HTML, JSON, whatever." name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="20"></textarea>
         
         <div id="moreOptionsDisplay">
-            <p class="tinyfieldset info_message">For information on these input fields, please read the <a href="<c:url value="/help#scenario"/>"><strong>Help</strong></a> section.</p>
+            <p style="text-align:right;margint-right:2em;">
+			<a href="<c:url value="responseschema"/>">Validate</a>
+			</p>
 	        <hr />
 	        <p style"padding-bottom:25px;">
 			<span style="float:right;">Pretty format: 

@@ -64,6 +64,7 @@ public class SlugTag extends TagSupport {
                 slugTxt = slugTxt.substring(0, maxLength - 1);
                 slugTxt = slugTxt + "...";
             }
+            //out.print("<a href=\"\" title=\""+this.text+"\" class=\"slugview\">"+slugTxt+"</a>");
             out.print(slugTxt);
         } catch (IOException e) {
             throw new JspException("Unable to write to the jsp output", e);

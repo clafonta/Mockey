@@ -1,0 +1,2750 @@
+[
+    {
+        "schema": {
+            "minimum": 1.1,
+            "exclusiveMinimum": true
+        },
+        "data": 1.2,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", "string" ]
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "array"
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "array", {
+                "type": "object"
+            } ]
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": [ "string", {
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            } ]
+        },
+        "data": {
+            "foo": 1
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maxLength": 2
+        },
+        "data": "f",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minLength": 2
+        },
+        "data": "f",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "a*": {
+                    "type": "integer"
+                },
+                "aaa*": {
+                    "maximum": 20
+                }
+            }
+        },
+        "data": {
+            "aaaa": 31
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "null"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maximum": 3
+        },
+        "data": "x",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "pattern": "^a*$"
+        },
+        "data": "aaa",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minLength": 2
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "object"
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "number"
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "integer"
+                },
+                "bar": {
+                    "$ref": "#/properties/foo"
+                }
+            }
+        },
+        "data": {
+            "bar": 3
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maximum": 3
+        },
+        "data": 3.5,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "f.*o": {
+                    "type": "integer"
+                }
+            }
+        },
+        "data": {
+            "foo": 1
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "number"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", "string" ]
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "any"
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "integer"
+                },
+                "bar": {
+                    "type": "string"
+                }
+            }
+        },
+        "data": {
+            "foo": [ ],
+            "bar": { }
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "null"
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": "foo"
+            }
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [
+            [ "foo" ],
+            [ "bar" ]
+        ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "number"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "null"
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": {
+                    "properties": {
+                        "foo": {
+                            "type": "integer"
+                        },
+                        "bar": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "data": {
+            "foo": 2,
+            "bar": "quux"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "boolean"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [
+            {
+                "foo": {
+                    "bar": {
+                        "baz": true
+                    }
+                }
+            },
+            {
+                "foo": {
+                    "bar": {
+                        "baz": false
+                    }
+                }
+            }
+        ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "array", {
+                "type": "object"
+            } ]
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": { },
+                "bar": { }
+            },
+            "additionalProperties": {
+                "type": "boolean"
+            }
+        },
+        "data": {
+            "foo": 1
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "enum": [ 1, 2, 3 ]
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": [ "integer", "boolean" ]
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "array",
+                    "maxItems": 3
+                },
+                "bar": {
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "f.o": {
+                    "minItems": 2
+                }
+            },
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "bar": [ ]
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "bar": {
+                    "type": "integer",
+                    "required": true
+                }
+            },
+            "extends": [
+                {
+                    "properties": {
+                        "foo": {
+                            "type": "string",
+                            "required": true
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "baz": {
+                            "type": "null",
+                            "required": true
+                        }
+                    }
+                }
+            ]
+        },
+        "data": {
+            "foo": "quux",
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": { },
+                "bar": { }
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": 2,
+            "quux": true
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", {
+                "properties": {
+                    "foo": {
+                        "type": "null"
+                    }
+                }
+            } ]
+        },
+        "data": {
+            "foo": null
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "divisibleBy": 2
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "enum": [ 1, 2, 3 ]
+        },
+        "data": 4,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maxItems": 2
+        },
+        "data": [ 1, 2 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "object"
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "integer"
+                },
+                "bar": {
+                    "type": "string"
+                }
+            }
+        },
+        "data": {
+            "quux": [ ]
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", {
+                "properties": {
+                    "foo": {
+                        "type": "null"
+                    }
+                }
+            } ]
+        },
+        "data": {
+            "foo": "bar"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "array",
+                    "maxItems": 3
+                },
+                "bar": {
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "f.o": {
+                    "minItems": 2
+                }
+            },
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "foo": [ 1, 2 ]
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": {
+                "type": "integer"
+            }
+        },
+        "data": [ 1, "x" ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minItems": 1
+        },
+        "data": [ 1, 2 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": [ "integer", "boolean" ]
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "string"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maxItems": 2
+        },
+        "data": "foobar",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "enum": [ 6, "foo", [ ], true, {
+                "foo": 12
+            } ]
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "a*": {
+                    "type": "integer"
+                },
+                "aaa*": {
+                    "maximum": 20
+                }
+            }
+        },
+        "data": {
+            "a": 21,
+            "aaaa": 18
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "required": true
+                },
+                "bar": { }
+            }
+        },
+        "data": {
+            "bar": 1
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": "integer"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "string"
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "array",
+                    "maxItems": 3
+                },
+                "bar": {
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "f.o": {
+                    "minItems": 2
+                }
+            },
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "fxo": [ 1, 2 ]
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": {
+                    "properties": {
+                        "foo": {
+                            "type": "integer"
+                        },
+                        "bar": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "data": {
+            "foo": "quux",
+            "bar": "quux"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "string"
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": { }
+            }
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "divisibleBy": 1.5
+        },
+        "data": 35,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "tilda~field": {
+                "type": "integer"
+            },
+            "slash/field": {
+                "type": "integer"
+            },
+            "percent%field": {
+                "type": "integer"
+            },
+            "properties": {
+                "tilda": {
+                    "$ref": "#/tilda~0field"
+                },
+                "slash": {
+                    "$ref": "#/slash~1field"
+                },
+                "percent": {
+                    "$ref": "#/percent%25field"
+                }
+            }
+        },
+        "data": {
+            "slash": "aoeu"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minItems": 1
+        },
+        "data": "",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": 12345678910111213141516171819202122232425262728293031,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "divisibleBy": 0.0001
+        },
+        "data": 0.0075,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minLength": 2
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "array", {
+                "type": "object"
+            } ]
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": "foo"
+            }
+        },
+        "data": {
+            "foo": 1
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "any"
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "null"
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maxLength": 2
+        },
+        "data": "fo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [ 0, false ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": { },
+                "bar": { }
+            },
+            "additionalProperties": false
+        },
+        "data": {
+            "foo": 1
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "integer"
+                },
+                "bar": {
+                    "type": "string"
+                }
+            }
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": [ "string", {
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            } ]
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": "foo"
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "number"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "$ref": "#"
+                }
+            },
+            "additionalProperties": false
+        },
+        "data": {
+            "foo": false
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": {
+                "type": "integer"
+            }
+        },
+        "data": [ 1, 2, 3 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "format": "regex"
+        },
+        "data": "([abc])+\\s+$",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "any"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "array"
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "bar": {
+                    "type": "integer",
+                    "required": true
+                }
+            },
+            "extends": [
+                {
+                    "properties": {
+                        "foo": {
+                            "type": "string",
+                            "required": true
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "baz": {
+                            "type": "null",
+                            "required": true
+                        }
+                    }
+                }
+            ]
+        },
+        "data": {
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "f.*o": {
+                    "type": "integer"
+                }
+            }
+        },
+        "data": {
+            "foo": "bar",
+            "fooooo": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "a*": {
+                    "type": "integer"
+                },
+                "aaa*": {
+                    "maximum": 20
+                }
+            }
+        },
+        "data": {
+            "a": 21
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [
+            {
+                "foo": {
+                    "bar": {
+                        "baz": true
+                    }
+                }
+            },
+            {
+                "foo": {
+                    "bar": {
+                        "baz": true
+                    }
+                }
+            }
+        ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "quux": [ "foo", "bar" ]
+            }
+        },
+        "data": {
+            "bar": 1,
+            "quux": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "divisibleBy": 2
+        },
+        "data": 7,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "boolean"
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "quux": [ "foo", "bar" ]
+            }
+        },
+        "data": {
+            "foo": 1,
+            "quux": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "bar": {
+                    "type": "integer",
+                    "required": true
+                }
+            },
+            "extends": {
+                "properties": {
+                    "foo": {
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            }
+        },
+        "data": {
+            "foo": "baz",
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minItems": 1
+        },
+        "data": [ 1 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "quux": [ "foo", "bar" ]
+            }
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "integer"
+                },
+                "bar": {
+                    "type": "string"
+                }
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": "baz"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "number"
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "array",
+                    "maxItems": 3
+                },
+                "bar": {
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "f.o": {
+                    "minItems": 2
+                }
+            },
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "quux": "foo"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "quux": [ "foo", "bar" ]
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minItems": 1
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maxItems": 2
+        },
+        "data": [ 1 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "object"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "tilda~field": {
+                "type": "integer"
+            },
+            "slash/field": {
+                "type": "integer"
+            },
+            "percent%field": {
+                "type": "integer"
+            },
+            "properties": {
+                "tilda": {
+                    "$ref": "#/tilda~0field"
+                },
+                "slash": {
+                    "$ref": "#/slash~1field"
+                },
+                "percent": {
+                    "$ref": "#/percent%25field"
+                }
+            }
+        },
+        "data": {
+            "percent": "aoeu"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [
+            { },
+            [ 1 ],
+            true,
+            null,
+            { },
+            1
+        ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": { },
+                "bar": { }
+            },
+            "additionalProperties": false
+        },
+        "data": {
+            "foo": 1,
+            "bar": 2,
+            "quux": "boom"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [ 1, 1 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": "foo"
+            }
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maxLength": 2
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": [ ],
+            "additionalItems": {
+                "type": "integer"
+            }
+        },
+        "data": [ 1, 2, 3, 4 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": {
+                    "properties": {
+                        "foo": {
+                            "type": "integer"
+                        },
+                        "bar": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "data": {
+            "foo": "quux",
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "array", {
+                "type": "object"
+            } ]
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "integer"
+                },
+                "bar": {
+                    "type": "string"
+                }
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": { }
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "string"
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", {
+                "properties": {
+                    "foo": {
+                        "type": "null"
+                    }
+                }
+            } ]
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "f.*o": {
+                    "type": "integer"
+                }
+            }
+        },
+        "data": 12,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": [ "integer", "boolean" ]
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": { },
+                "bar": { }
+            },
+            "additionalProperties": false
+        },
+        "data": [ 1, 2, 3 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "number"
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "bar": {
+                    "type": "integer",
+                    "required": true
+                }
+            },
+            "extends": {
+                "properties": {
+                    "foo": {
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            }
+        },
+        "data": {
+            "foo": "baz",
+            "bar": "quux"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [ 1, 2 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [
+                {
+                    "type": [ "string" ]
+                },
+                {
+                    "type": [ "array", "null" ]
+                }
+            ]
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "pattern": "^a*$"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "foo": "bar"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "bar": {
+                    "type": "integer",
+                    "required": true
+                }
+            },
+            "extends": {
+                "properties": {
+                    "foo": {
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            }
+        },
+        "data": {
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maxItems": 2
+        },
+        "data": [ 1, 2, 3 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": {
+                    "properties": {
+                        "foo": {
+                            "type": "integer"
+                        },
+                        "bar": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "$ref": "#"
+                }
+            },
+            "additionalProperties": false
+        },
+        "data": {
+            "foo": {
+                "foo": false
+            }
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "f.*o": {
+                    "type": "integer"
+                }
+            }
+        },
+        "data": {
+            "foo": 1,
+            "foooooo": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "a*": {
+                    "type": "integer"
+                },
+                "aaa*": {
+                    "maximum": 20
+                }
+            }
+        },
+        "data": {
+            "aaa": "foo",
+            "aaaa": 31
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "additionalItems": false
+        },
+        "data": [ 1, 2, 3, 4, 5 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "null"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "any"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "array",
+                    "maxItems": 3
+                },
+                "bar": {
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "f.o": {
+                    "minItems": 2
+                }
+            },
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "quux": 3
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "required": true
+                },
+                "bar": { }
+            }
+        },
+        "data": {
+            "foo": 1
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "additionalItems": false
+        },
+        "data": {
+            "foo": "bar"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", "string" ]
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "quux": [ "foo", "bar" ]
+            }
+        },
+        "data": {
+            "quux": 1
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": [
+                { },
+                { },
+                { }
+            ],
+            "additionalItems": false
+        },
+        "data": [ 1, 2, 3 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minimum": 1.1
+        },
+        "data": "x",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "array"
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "a*": {
+                    "type": "integer"
+                },
+                "aaa*": {
+                    "maximum": 20
+                }
+            }
+        },
+        "data": {
+            "a": "bar"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", "string" ]
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "format": "regex"
+        },
+        "data": "^(abc]",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": [ "string", {
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            } ]
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maxLength": 2
+        },
+        "data": 10,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": [ ],
+            "additionalItems": {
+                "type": "integer"
+            }
+        },
+        "data": [ 1, 2, 3, "foo" ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "divisibleBy": 1.5
+        },
+        "data": 0,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [
+                {
+                    "type": [ "string" ]
+                },
+                {
+                    "type": [ "array", "null" ]
+                }
+            ]
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "array",
+                    "maxItems": 3
+                },
+                "bar": {
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "f.o": {
+                    "minItems": 2
+                }
+            },
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "foo": [ 1, 2, 3, 4 ]
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "null"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "any"
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "required": false
+                }
+            }
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [
+            { },
+            [ 1 ],
+            true,
+            null,
+            1
+        ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "divisibleBy": 0.0001
+        },
+        "data": 0.00751,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maximum": 3,
+            "exclusiveMaximum": true
+        },
+        "data": 3,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", "string" ]
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "any"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "bar": "foo"
+            }
+        },
+        "data": {
+            "bar": 2
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", "string" ]
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "object"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "object"
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [ 1, 1, 1 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "string"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "$ref": "#"
+                }
+            },
+            "additionalProperties": false
+        },
+        "data": {
+            "bar": false
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [
+            {
+                "foo": "bar"
+            },
+            {
+                "foo": "baz"
+            }
+        ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "array", {
+                "type": "object"
+            } ]
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "bar": {
+                    "type": "integer",
+                    "required": true
+                }
+            },
+            "extends": [
+                {
+                    "properties": {
+                        "foo": {
+                            "type": "string",
+                            "required": true
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "baz": {
+                            "type": "null",
+                            "required": true
+                        }
+                    }
+                }
+            ]
+        },
+        "data": {
+            "bar": 2,
+            "baz": null
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "bar": {
+                    "type": "integer",
+                    "required": true
+                }
+            },
+            "extends": [
+                {
+                    "properties": {
+                        "foo": {
+                            "type": "string",
+                            "required": true
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "baz": {
+                            "type": "null",
+                            "required": true
+                        }
+                    }
+                }
+            ]
+        },
+        "data": {
+            "foo": "quux",
+            "bar": 2,
+            "baz": null
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "array"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maximum": 3,
+            "exclusiveMaximum": true
+        },
+        "data": 2.2,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "boolean"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "array",
+                    "maxItems": 3
+                },
+                "bar": {
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "f.o": {
+                    "minItems": 2
+                }
+            },
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "foo": [ ]
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "integer"
+                },
+                "bar": {
+                    "$ref": "#/properties/foo"
+                }
+            }
+        },
+        "data": {
+            "bar": true
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minLength": 2
+        },
+        "data": "fo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "boolean"
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [
+            {
+                "foo": "bar"
+            },
+            {
+                "foo": "bar"
+            }
+        ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "data": [ "foo", 1 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "divisibleBy": 2
+        },
+        "data": 10,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "array"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "array"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": { },
+                "bar": { }
+            },
+            "additionalProperties": {
+                "type": "boolean"
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": 2,
+            "quux": true
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": { },
+                "bar": { }
+            },
+            "additionalProperties": {
+                "type": "boolean"
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": 2,
+            "quux": 12
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [
+            [ "foo" ],
+            [ "foo" ]
+        ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": [
+                { },
+                { },
+                { }
+            ],
+            "additionalItems": false
+        },
+        "data": [ 1, 2, 3, 4 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minimum": 20,
+            "extends": {
+                "maximum": 30
+            }
+        },
+        "data": 25,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "object"
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "maximum": 3
+        },
+        "data": 2.6,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": "integer"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "any"
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "array", {
+                "type": "object"
+            } ]
+        },
+        "data": 1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "integer"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "divisibleBy": 1.5
+        },
+        "data": 4.5,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "bar": {
+                    "type": "integer",
+                    "required": true
+                }
+            },
+            "extends": {
+                "properties": {
+                    "foo": {
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            }
+        },
+        "data": {
+            "foo": "baz"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minimum": 20,
+            "extends": {
+                "maximum": 30
+            }
+        },
+        "data": 35,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "null"
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "boolean"
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "integer", "string" ]
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minimum": 1.1
+        },
+        "data": 2.6,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [
+                {
+                    "type": [ "string" ]
+                },
+                {
+                    "type": [ "array", "null" ]
+                }
+            ]
+        },
+        "data": [ 1, 2, 3 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "uniqueItems": true
+        },
+        "data": [ 1, true ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "f.*o": {
+                    "type": "integer"
+                }
+            }
+        },
+        "data": {
+            "foo": "bar",
+            "foooooo": "baz"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "number"
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "$ref": "#"
+                }
+            },
+            "additionalProperties": false
+        },
+        "data": {
+            "foo": {
+                "bar": false
+            }
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "properties": {
+                "foo": {
+                    "type": "array",
+                    "maxItems": 3
+                },
+                "bar": {
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "f.o": {
+                    "minItems": 2
+                }
+            },
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
+        "data": {
+            "fxo": [ ]
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "string"
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": [ ]
+        },
+        "data": [ 1, "foo", false ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "patternProperties": {
+                "a*": {
+                    "type": "integer"
+                },
+                "aaa*": {
+                    "maximum": 20
+                }
+            }
+        },
+        "data": {
+            "aaaa": 18
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "boolean"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": [ "array", {
+                "type": "object"
+            } ]
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "tilda~field": {
+                "type": "integer"
+            },
+            "slash/field": {
+                "type": "integer"
+            },
+            "percent%field": {
+                "type": "integer"
+            },
+            "properties": {
+                "tilda": {
+                    "$ref": "#/tilda~0field"
+                },
+                "slash": {
+                    "$ref": "#/slash~1field"
+                },
+                "percent": {
+                    "$ref": "#/percent%25field"
+                }
+            }
+        },
+        "data": {
+            "tilda": "aoeu"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minimum": 1.1,
+            "exclusiveMinimum": true
+        },
+        "data": 1.1,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "string"
+        },
+        "data": "foo",
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "disallow": [ "string", {
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            } ]
+        },
+        "data": {
+            "foo": "bar"
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "data": [ 1, "foo" ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "dependencies": {
+                "quux": [ "foo", "bar" ]
+            }
+        },
+        "data": {
+            "foo": 1,
+            "bar": 2,
+            "quux": 3
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "array"
+        },
+        "data": { },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "minimum": 1.1
+        },
+        "data": 0.6,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "enum": [ 6, "foo", [ ], true, {
+                "foo": 12
+            } ]
+        },
+        "data": null,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "object"
+        },
+        "data": true,
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "type": "boolean"
+        },
+        "data": [ ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "enum": [ 6, "foo", [ ], true, {
+                "foo": 12
+            } ]
+        },
+        "data": {
+            "foo": false
+        },
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "items": { },
+            "additionalItems": false
+        },
+        "data": [ 1, 2, 3, 4, 5 ],
+        "useV3": true,
+        "useId": false
+    },
+    {
+        "schema": {
+            "pattern": "^a*$"
+        },
+        "data": "abc",
+        "useV3": true,
+        "useId": false
+    }
+]

@@ -43,8 +43,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 
 import com.mockey.ServiceValidator;
@@ -56,8 +54,6 @@ import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 public class ServiceSetupServlet extends HttpServlet {
-	private Log log = LogFactory.getLog(ServiceSetupServlet.class);
-
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static final Boolean TRANSIENT_STATE = new Boolean(true);
@@ -91,7 +87,7 @@ public class ServiceSetupServlet extends HttpServlet {
 					store.saveOrUpdateService(service);
 				}
 			} catch (Exception e) {
-				log.error("Unable to update service(s", e);
+				logger.error("Unable to update service(s", e);
 			}
 			// #3 Return store back to original setting.
 			store.setReadOnlyMode(origReadOnlyMode);
@@ -277,6 +273,21 @@ public class ServiceSetupServlet extends HttpServlet {
 				logger.error("Json Rule Enable flag has an invalid format.", e);
 			}
 		}
+
+		// REQUEST SCHEMA rules in JSON format. - optional
+		if (req.getParameter("responseSchema") != null) {
+			service.setResponseSchema(req.getParameter("responseSchema").trim());
+		}
+		// RESPONSE SCHEMA enable flag - optional
+		if (req.getParameter("responseSchemaEnableFlag") != null) {
+			try {
+				service.setResponseSchemaFlag(new Boolean(req
+						.getParameter("responseSchemaEnableFlag"))
+						.booleanValue());
+			} catch (Exception e) {
+				logger.error("Json Rule Enable flag has an invalid format.", e);
+			}
+		}
 		// Last visit
 		if (req.getParameter("lastVisit") != null) {
 			try {
@@ -333,7 +344,6 @@ public class ServiceSetupServlet extends HttpServlet {
 		if ((errorMap != null) && (errorMap.size() == 0)) {
 			// no errors, so create service.
 
-			
 			Service updatedService = store.saveOrUpdateService(service);
 			Util.saveSuccessMessage("Service updated.", req);
 			// ***************** HACK A ****************
