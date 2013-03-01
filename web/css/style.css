@@ -203,7 +203,18 @@ font-weight:100; font-stretch: ultra-condensed;color:#303030;}
 -moz-box-shadow: 3px 3px 4px #303030; -webkit-box-shadow: 3px 3px 4px #303030; box-shadow: 3px 3px 4px #303030;}
 .code a{text-align:center;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
-pre{	background-color: White;	border: 1px solid #666;	color: Black;	margin: 1.5em;	overflow: auto;	font-size: 115%;	padding: 1.2em;	font: 120% "Courier New"; }
+pre{	
+background-color: White;	
+color: #666;	
+margin: 0.8em;	
+overflow: auto;	
+padding: 0.8em;	font: 100% "Courier New"; 
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
 div#infotext, div#servicename, div#password {position:relative; float:left; margin-right:1px; background: #EEEEEE; border: none; border-style: none }
 .overlabel {color:#999;}
 .overlabel-apply {	position:absolute;top:3px;left:5px;	z-index:1;	color:#999;}

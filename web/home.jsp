@@ -492,10 +492,7 @@ $(document).ready( function() {
 				                                </span>
 				                                
 				                                
-												<div style="margin-bottom:0.5em;display:block;">
-												 <mockey:slug text="${mockservice.serviceName}" maxLength="30"/>
-												 
-												</div>
+												<div style="margin-bottom:0.5em;display:block; word-wrap: break-word;">${mockservice.serviceName}</div>
 												
 												<div class="toggle-buttons" style="margin-bottom:8px;">
 				                                  <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
