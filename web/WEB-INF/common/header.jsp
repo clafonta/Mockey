@@ -289,6 +289,9 @@ $(document).ready(function() {
                         <i aria-hidden="true" class="icon-mobile"></i>&nbsp;Mobile
                         </a>
                         </li>
+                    <li ><a title="JSON Schema Validation" href="<c:url value="/jsonschemavalidate" />">
+                        <i aria-hidden="true" class="icon-power"></i>&nbsp;JSON Schema</a>
+                        </li>
 	            </ul>
 	        </li>
 		</ul>
