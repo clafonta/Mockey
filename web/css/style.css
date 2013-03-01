@@ -205,7 +205,8 @@ font-weight:100; font-stretch: ultra-condensed;color:#303030;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
 pre{	
 background-color: White;	
-color: #666;	
+color: #666;
+border: thin solid #bdbdbd;
 margin: 0.8em;	
 overflow: auto;	
 padding: 0.8em;	font: 100% "Courier New"; 

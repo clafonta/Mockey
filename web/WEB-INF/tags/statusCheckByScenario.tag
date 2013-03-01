@@ -24,7 +24,7 @@ ${scenario.lastVisitSimple}</span>
 </c:forEach>
  
 <p class="count-box">Service ID: ${service.id}, Scenario ID: ${scenario.id} </p>
-<p class="tiny">Match arguments: <pre class="match"> ${scenario.matchStringArg} </pre> </p>
+<p class="tiny">Match arguments:  <pre class="match" > ${scenario.matchStringArg} </pre> </p>
 
 <%
 if(service.isResponseSchemaFlag()) {
