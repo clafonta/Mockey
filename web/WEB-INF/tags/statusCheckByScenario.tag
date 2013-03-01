@@ -29,8 +29,17 @@ ${scenario.lastVisitSimple}</span>
 <%
 if(service.isResponseSchemaFlag()) {
 boolean result = com.mockey.ui.JsonSchemaUtil.validData(service.getResponseSchema(), scenario.getResponseMessage() );
+String messageClass = "info_message";
+String message = "JSON is valid; satisfies JSON Schema.";
+String buttonClass = "hhButtonBlue";
+if(!result) {
+
+  messageClass = "conflict_message";
+  buttonClass = "hhButtonRed";
+  message ="Invalid JSON based on this Service's JSON Schema.";
+}
 %>
-<div class='conflict_message'>Invalid JSON based on this Service's JSON Schema. <a class="<%= result %>_jsonschema" href="<c:url value="jsonschemavalidate"/>?serviceId=${service.id}&scenarioId=${scenario.id}">Inspect JSON</a>
+<div class='<%= messageClass%>'> <%= message %> <a class="<%= buttonClass %>" href="<c:url value="jsonschemavalidate"/>?serviceId=${service.id}&scenarioId=${scenario.id}">Inspect JSON</a>
 </div> 
 
 

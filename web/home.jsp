@@ -502,7 +502,7 @@ $(document).ready( function() {
 												<div class="toggle-buttons" style="margin-bottom:8px;">
 				                                  <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
 				                                  <span class="toggle_button tiny">
-												      <a class="service-view-master-link" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>">view</a> |
+												      <a class="service-view-master-link" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>" title="${mockservice.serviceName}">view</a> |
 												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> | 
 												      <a class="tiny_service_duplicate" id="duplicateServiceLink_<c:out value="${mockservice.id}"/>" title="Duplicate this service" href="#">dup'</a>
 												  </span>

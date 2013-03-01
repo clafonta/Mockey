@@ -73,9 +73,11 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		// This information is used in the API JSP document, used to describe
 		// how to make setting changes from a head-less client.
 
-		if (apiStore.getApiDocServiceByName(ServiceConfigurationAPI.API_SERVICE_CONFIGURATION_NAME) == null) {
+		if (apiStore
+				.getApiDocServiceByName(ServiceConfigurationAPI.API_SERVICE_CONFIGURATION_NAME) == null) {
 			ApiDocService apiDocService = new ApiDocService();
-			apiDocService.setName(ServiceConfigurationAPI.API_SERVICE_CONFIGURATION_NAME);
+			apiDocService
+					.setName(ServiceConfigurationAPI.API_SERVICE_CONFIGURATION_NAME);
 			// TODO: We need to use a pattern matching replace e.g. ${0} ${1}
 			// with array ["a", "b"] for VALUES
 			apiDocService.setServicePath("/config/service");
@@ -90,36 +92,85 @@ public class ServiceConfigurationServlet extends HttpServlet {
 
 			ApiDocAttribute reqServiceId = new ApiDocAttribute();
 			reqServiceId.setFieldName(ServiceConfigurationAPI.API_SERVICE_ID);
-			reqServiceId.addFieldValues(new ApiDocFieldValue("[identifier]", "A valid service identifier."));
+			reqServiceId.addFieldValues(new ApiDocFieldValue("[identifier]",
+					"A valid service identifier."));
 			reqServiceId.setExample("123");
 			apiDocRequest.addAttribute(reqServiceId);
 
 			ApiDocAttribute reqServiceName = new ApiDocAttribute();
-			reqServiceName.setFieldName(ServiceConfigurationAPI.API_SERVICE_NAME);
-			reqServiceName.addFieldValues(new ApiDocFieldValue("[string]", "A valid service name."));
+			reqServiceName
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_NAME);
+			reqServiceName.addFieldValues(new ApiDocFieldValue("[string]",
+					"A valid service name."));
 			reqServiceName.setExample("My Service Name");
 			apiDocRequest.addAttribute(reqServiceName);
 
+			// SCHEMA
+			ApiDocAttribute reqServiceSchema = new ApiDocAttribute();
+			reqServiceSchema
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_SCHEMA);
+			reqServiceSchema.addFieldValues(new ApiDocFieldValue("[string]",
+					"A valid JSON Schema definition."));
+			reqServiceSchema
+					.setExample("{\"type\":\"object\",\"$schema\": \"http://json-schema.org/draft-03/schema\",\"id\": \"#\",\"required\":false,\"properties\":{ \"address\": { \"type\":\"object\", \"id\": \"address\", \"required\":false, \"properties\":{ \"streetAddress\": { \"type\":\"string\", \"id\": \"streetAddress\", \"required\":false } } } }}");
+			apiDocRequest.addAttribute(reqServiceSchema);
+
+			ApiDocAttribute reqServiceSchemaEnableFlag = new ApiDocAttribute();
+			reqServiceSchemaEnableFlag
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_SCHEMA_ENABLE_FLAG);
+			reqServiceSchemaEnableFlag
+					.addFieldValues(new ApiDocFieldValue(
+							"[boolean]",
+							"Set to true for the service to validate each Service Scenario JSON response with the provided JSON Schema."));
+			reqServiceSchemaEnableFlag.setExample("true");
+			apiDocRequest.addAttribute(reqServiceSchemaEnableFlag);
+
+			// REQUEST INSPECTOR RULES
+			ApiDocAttribute reqInspectorRules = new ApiDocAttribute();
+			reqInspectorRules
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_RULES);
+			reqInspectorRules.addFieldValues(new ApiDocFieldValue("[string]",
+					"Request evaluation rules in JSON. "));
+			reqInspectorRules.setExample("");
+			apiDocRequest.addAttribute(reqInspectorRules);
+
+			ApiDocAttribute reqInspectorRulesEnableFlag = new ApiDocAttribute();
+			reqInspectorRulesEnableFlag
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_RULES_ENABLE_FLAG);
+			reqInspectorRulesEnableFlag
+					.addFieldValues(new ApiDocFieldValue(
+							"[boolean]",
+							"Set to true for the service to validate each incoming request to ensure the appropriate parameters are being passed."));
+			reqInspectorRulesEnableFlag.setExample("true");
+			apiDocRequest.addAttribute(reqInspectorRulesEnableFlag);
+
 			ApiDocAttribute reqScenarioId = new ApiDocAttribute();
-			reqScenarioId.setFieldName(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID);
-			reqScenarioId.addFieldValues(new ApiDocFieldValue("[identifier]", "A valid service scenario identifier."));
+			reqScenarioId
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID);
+			reqScenarioId.addFieldValues(new ApiDocFieldValue("[identifier]",
+					"A valid service scenario identifier."));
 			reqScenarioId.setExample("123");
 			apiDocRequest.addAttribute(reqScenarioId);
 
 			ApiDocAttribute reqScenarioName = new ApiDocAttribute();
-			reqScenarioName.setFieldName(ServiceConfigurationAPI.API_SERVICE_NAME);
-			reqScenarioName.addFieldValues(new ApiDocFieldValue("[string]", "A valid service scenario name."));
+			reqScenarioName
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_NAME);
+			reqScenarioName.addFieldValues(new ApiDocFieldValue("[string]",
+					"A valid service scenario name."));
 			reqScenarioName.setExample("My Service Scenario Name");
 			apiDocRequest.addAttribute(reqScenarioName);
 
 			ApiDocAttribute reqHangtime = new ApiDocAttribute();
-			reqHangtime.setFieldName(ServiceConfigurationAPI.API_SERVICE_HANGTIME);
-			reqHangtime.addFieldValues(new ApiDocFieldValue("[int]", "Hang time in milliseconds."));
+			reqHangtime
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_HANGTIME);
+			reqHangtime.addFieldValues(new ApiDocFieldValue("[int]",
+					"Hang time in milliseconds."));
 			reqHangtime.setExample("500");
 			apiDocRequest.addAttribute(reqHangtime);
 
 			ApiDocAttribute transientSet = new ApiDocAttribute();
-			transientSet.setFieldName(ServiceConfigurationAPI.API_TRANSIENT_STATE);
+			transientSet
+					.setFieldName(ServiceConfigurationAPI.API_TRANSIENT_STATE);
 			transientSet
 					.addFieldValues(new ApiDocFieldValue(
 							"[boolean]",
@@ -128,15 +179,20 @@ public class ServiceConfigurationServlet extends HttpServlet {
 			apiDocRequest.addAttribute(transientSet);
 
 			ApiDocAttribute reqAttributeAction = new ApiDocAttribute();
-			reqAttributeAction.setFieldName(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(
-					ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_DYNAMIC,
-					"Sets service to respond as dynamic."));
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(
-					ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY, "Sets service to act as a proxy."));
-			reqAttributeAction.addFieldValues(new ApiDocFieldValue(
-					ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_STATIC,
-					"Sets service to respond with a static response"));
+			reqAttributeAction
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
+			reqAttributeAction
+					.addFieldValues(new ApiDocFieldValue(
+							ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_DYNAMIC,
+							"Sets service to respond as dynamic."));
+			reqAttributeAction
+					.addFieldValues(new ApiDocFieldValue(
+							ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY,
+							"Sets service to act as a proxy."));
+			reqAttributeAction
+					.addFieldValues(new ApiDocFieldValue(
+							ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_STATIC,
+							"Sets service to respond with a static response"));
 			apiDocRequest.addAttribute(reqAttributeAction);
 
 			apiDocService.setApiRequest(apiDocRequest);
@@ -153,14 +209,26 @@ public class ServiceConfigurationServlet extends HttpServlet {
 				jsonResultObject
 						.put("success",
 								"Some informative coaching message. If success isn't a value, then maybe you have a 'fail' message.");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_ID, "1234");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_NAME, "Some service name");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID, "5678");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME, "Some scenario name");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE,
-						ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY);
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, "500");
-				jsonResultObject.put(ServiceConfigurationAPI.API_TRANSIENT_STATE, "true");
+				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_ID,
+						"1234");
+				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_NAME,
+						"Some service name");
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_SCHEMA,
+						"JSON Schema");
+				jsonResultObject
+						.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID,
+								"5678");
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME,
+						"Some scenario name");
+				jsonResultObject
+						.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE,
+								ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE_VALUE_PROXY);
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_HANGTIME, "500");
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_TRANSIENT_STATE, "true");
 				jsonResponseObject.put("result", jsonResultObject);
 				apiResponse.setExample(jsonResponseObject.toString());
 			} catch (Exception e) {
@@ -169,13 +237,15 @@ public class ServiceConfigurationServlet extends HttpServlet {
 
 			// Response attribute 'planId'
 			ApiDocAttribute resAttributePlanId = new ApiDocAttribute();
-			resAttributePlanId.setFieldName(ServiceConfigurationAPI.API_SERVICE_ID);
+			resAttributePlanId
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_ID);
 			resAttributePlanId.setFieldDescription("Identifier of a Service");
 			apiResponse.addAttribute(resAttributePlanId);
 
 			// Response attribute 'planName'
 			ApiDocAttribute resAttributePlanName = new ApiDocAttribute();
-			resAttributePlanName.setFieldName(ServiceConfigurationAPI.API_SERVICE_NAME);
+			resAttributePlanName
+					.setFieldName(ServiceConfigurationAPI.API_SERVICE_NAME);
 			resAttributePlanName.setFieldDescription("Name of a Service");
 			apiResponse.addAttribute(resAttributePlanName);
 
@@ -200,17 +270,38 @@ public class ServiceConfigurationServlet extends HttpServlet {
 	/**
 	 * 
 	 */
-	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
-		String serviceId = req.getParameter(ServiceConfigurationAPI.API_SERVICE_ID);
-		String serviceName = req.getParameter(ServiceConfigurationAPI.API_SERVICE_NAME);
-		String hangTime = req.getParameter(ServiceConfigurationAPI.API_SERVICE_HANGTIME);
-		String scenarioId = req.getParameter(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID);
-		String scenarioName = req.getParameter(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME);
-		String requestInspectorName = req.getParameter(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME);
-		String serviceResponseType = req.getParameter(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
+		String serviceId = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_ID);
+		String serviceName = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_NAME);
+		// SCHEMA
+		String serviceResponseSchema = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_SCHEMA);
+		String serviceResponseSchemaEnableFlag = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_SCHEMA_ENABLE_FLAG);
+
+		// REQUEST Evaluations
+		String reqInspectorRules = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_RULES);
+		String reqInspectorRulesEnableFlag = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_RULES_ENABLE_FLAG);
+
+		String hangTime = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_HANGTIME);
+		String scenarioId = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID);
+		String scenarioName = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME);
+		String requestInspectorName = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME);
+		String serviceResponseType = req
+				.getParameter(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE);
 		String defaultUrlIndex = req.getParameter("defaultUrlIndex");
-		String transientState = req.getParameter(ServiceConfigurationAPI.API_TRANSIENT_STATE);
+		String transientState = req
+				.getParameter(ServiceConfigurationAPI.API_TRANSIENT_STATE);
 		Service service = null;
 		JSONObject jsonResultObject = new JSONObject();
 
@@ -234,15 +325,54 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		} catch (Exception e) {
 
 		}
-		
+
 		try {
 			if (requestInspectorName != null) {
 				service.setRequestInspectorName(requestInspectorName);
 			}
 		} catch (Exception e) {
-			log.debug("Updating service without a 'request Inspector Name' value although, one was given:" + requestInspectorName);
+			log.debug("Updating service without a 'request Inspector Name' value although, one was given:"
+					+ requestInspectorName);
 		}
 
+		// SCHEMA
+		try {
+			if (serviceResponseSchemaEnableFlag != null) {
+				service.setResponseSchemaFlag(Boolean
+						.valueOf(serviceResponseSchemaEnableFlag));
+			}
+		} catch (Exception e) {
+			log.debug("Unable to set the Service JSON Schema enable flag. Non-null value given: "
+					+ serviceResponseSchemaEnableFlag);
+		}
+
+		try {
+			if (serviceResponseSchema != null) {
+				service.setResponseSchema(serviceResponseSchema);
+			}
+		} catch (Exception e) {
+			// Do nothing.
+		}
+		
+		// ******************************
+		// REQUEST Evaluation Rules
+		// ******************************
+		try {
+			if (reqInspectorRulesEnableFlag != null) {
+				service.setRequestInspectorJsonRulesEnableFlag(Boolean
+						.valueOf(reqInspectorRulesEnableFlag));
+			}
+		} catch (Exception e) {
+			log.debug("Unable to set the Service JSON Schema enable flag. Non-null value given: "
+					+ serviceResponseSchemaEnableFlag);
+		}
+		try {
+			if (reqInspectorRules != null) {
+				service.setRequestInspectorJsonRules(reqInspectorRules);
+			}
+		} catch (Exception e) {
+			// TODO: we should add JSON Schema to evaluate the rules. Right? 
+		}
 
 		try {
 			if (hangTime != null) {
@@ -281,30 +411,63 @@ public class ServiceConfigurationServlet extends HttpServlet {
 			if (service != null) {
 
 				jsonResultObject.put("success", "updated");
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_NAME, service.getServiceName());
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_ID, service.getId());
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID, service.getDefaultScenarioId());
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME, service
-						.getDefaultScenarioName());
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE, service
-						.getServiceResponseTypeAsString());
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_HANGTIME, service.getHangTime());
-				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME, service.getRequestInspectorName());
+				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_NAME,
+						service.getServiceName());
+				jsonResultObject.put(ServiceConfigurationAPI.API_SERVICE_ID,
+						service.getId());
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID,
+						service.getDefaultScenarioId());
+				
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_SCHEMA_ENABLE_FLAG,
+						service.isResponseSchemaFlag());
+				
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_RULES_ENABLE_FLAG,
+						service.isRequestInspectorJsonRulesEnableFlag());
+				
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME,
+						service.getDefaultScenarioName());
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE,
+						service.getServiceResponseTypeAsString());
+				jsonResultObject.put(
+						ServiceConfigurationAPI.API_SERVICE_HANGTIME,
+						service.getHangTime());
+				jsonResultObject
+						.put(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME,
+								service.getRequestInspectorName());
 				jsonResponseObject.put("result", jsonResultObject);
 			} else {
-				
+
 				StringBuffer outputInfo = new StringBuffer();
-				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_ID + ":" + serviceId + " ");
-				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_NAME + ":" + serviceName + " ");
-				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_HANGTIME + ":" + hangTime + " ");
-				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME + ":"+ requestInspectorName);
-				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID + ":" + scenarioId + " ");
-				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME + ":" + scenarioName + " ");
-				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE + ":" + serviceResponseType + " ");
-				outputInfo.append("defaultUrlIndex" + ":" + defaultUrlIndex + " ");
-				outputInfo.append(ServiceConfigurationAPI.API_TRANSIENT_STATE + ":" + transientState + " ");
-	
-				jsonResultObject.put("fail", "Unable to update service configuration. ");
+				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_ID + ":"
+						+ serviceId + " ");
+				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_NAME
+						+ ":" + serviceName + " ");
+				outputInfo.append(ServiceConfigurationAPI.API_SERVICE_HANGTIME
+						+ ":" + hangTime + " ");
+				outputInfo
+						.append(ServiceConfigurationAPI.API_SERVICE_REQUEST_INSPECTOR_NAME
+								+ ":" + requestInspectorName);
+				outputInfo
+						.append(ServiceConfigurationAPI.API_SERVICE_SCENARIO_ID
+								+ ":" + scenarioId + " ");
+				outputInfo
+						.append(ServiceConfigurationAPI.API_SERVICE_SCENARIO_NAME
+								+ ":" + scenarioName + " ");
+				outputInfo
+						.append(ServiceConfigurationAPI.API_SERVICE_RESPONSE_TYPE
+								+ ":" + serviceResponseType + " ");
+				outputInfo.append("defaultUrlIndex" + ":" + defaultUrlIndex
+						+ " ");
+				outputInfo.append(ServiceConfigurationAPI.API_TRANSIENT_STATE
+						+ ":" + transientState + " ");
+
+				jsonResultObject.put("fail",
+						"Unable to update service configuration. ");
 				jsonResultObject.put("info", outputInfo.toString());
 
 			}
@@ -316,7 +479,9 @@ public class ServiceConfigurationServlet extends HttpServlet {
 				jsonResponseObject.put("result", jsonResultObject);
 				out.println(jsonResponseObject.toString());
 			} catch (Exception ee) {
-				log.error("Unable to again build an informative error JSON message response.", e);
+				log.error(
+						"Unable to again build an informative error JSON message response.",
+						e);
 			}
 
 		}

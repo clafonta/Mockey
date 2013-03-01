@@ -8,29 +8,8 @@
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="cache-control" content="none;">
 <link rel="shortcut icon" href="<c:url value="/images/favicon.ico" />">
-<link rel="stylesheet" type="text/css" href="<c:url value="/css/hoverbox.css" />" media="screen, projection" />
-<link rel="stylesheet" type="text/css" href="<c:url value="/css/superfish.css" />" />
-<link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
-<link rel="stylesheet" type="text/css" href="<c:url value="/jquery-ui-1.8.1.custom/css/flick/jquery-ui-1.8.1.custom.css" />" />
-<link rel="stylesheet" type="text/css" href="<c:url value="/javascript/fileuploader/fileuploader.css" />" />
-<link rel="stylesheet" type="text/css" href="<c:url value="/icomoon/style.css" />" />
-<%
-// Only for DEV. This polls every few seconds and will refressh this page's CSS
-//<script type="text/javascript" src="<c:url value="/javascript/cssrefresh.js" />"></script>
-%>
-<script type="text/javascript" src="<c:url value="/javascript/util.js" />"></script>
-<script type="text/javascript" src="<c:url value="/jquery-ui-1.8.1.custom/js/jquery-1.4.2.min.js" />"></script>
-<script type="text/javascript" src="<c:url value="/jquery-ui-1.8.1.custom/js/jquery-ui-1.8.1.custom.min.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/jquery-jeditable-min.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/jquery-impromptu.2.7.min.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/jquery.textarearesizer.compressed.js" />"></script>
+<%@ include file="/WEB-INF/common/inc_common_files.jsp" %>
 
-<script type="text/javascript" src="<c:url value="/javascript/superfish.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/hoverIntent.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/jquery.hint.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/fileuploader/fileuploader.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/beautify.js" />"></script>
-<script type="text/javascript" src="<c:url value="/javascript/beautify-html.js" />"></script>
 <script language="Javascript">
 <!---
 function decision(message, url){

@@ -128,7 +128,7 @@
 --></script>
 
 
-<div id="main">
+<div id="main2">
     
     <div class="result"></div>
     <c:choose>

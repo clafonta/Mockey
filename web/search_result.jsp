@@ -1,12 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
-<%--@elvariable id="proxyInfo" type="com.mockey.ProxyServer"--%>
 <c:set var="actionKey" value="conf_service" scope="request" />
-<c:set var="pageTitle" value="Proxy Settings" scope="request" />
-<c:set var="currentTab" value="proxy" scope="request" />
+<c:set var="pageTitle" value="Search Results" scope="request" />
 <%@include file="/WEB-INF/common/header.jsp" %>
 
-<div id="main">
+<div id="main2">
     <%@ include file="/WEB-INF/common/message.jsp"%>     
     <p><h1>Search Results</h1></p> 
     

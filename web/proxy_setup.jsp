@@ -44,7 +44,7 @@
 	});
 	//<form action="<c:url value="/proxy/settings" />" method="POST">
 </script>
-<div id="main">
+<div id="main2">
     <%@ include file="/WEB-INF/common/message.jsp"%>     
     <p><h1>Proxy Settings</h1></p> 
     <div class="parentform">

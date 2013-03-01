@@ -176,7 +176,7 @@ $(document).ready( function() {
 
 });
 </script>
-<div id="main">     
+<div id="main2">     
     <h1>Twisting</h1> 
     <div>
 		<p><strong>Twisting</strong> refers to re-mapping incoming URL requests to other URLs. This is useful if 

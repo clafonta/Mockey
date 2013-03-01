@@ -229,7 +229,7 @@ $(document).ready(function() {
                      <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">flag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">unflag</span></a>
                      <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink remove_grey" style="margin-left:2em;">x</a>	              
 	               </div>
-	               <div style="width:720px; position:relative; margin-top:-1em;font-size:80%;">
+	               <div style="width:95%; position:relative; margin-top:-1em;font-size:80%;">
 	                 
 	                 <b>When:</b> <mockey:fdate date="${request.time}"/> <b>From:</b> <a id="finfo" title="<c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a>
 						 (<mockey:service style="1" type="${request.serviceResponseType}"/>)
@@ -254,16 +254,16 @@ $(document).ready(function() {
 	                                        <li><a href="#tabs-4_${request.id}">Body</a></li>
 	                                    </ul>
 	                                    <div id="tabs-2_${request.id}">
-	                                    <textarea class="noborder_textarea resizable" id="requestParameters_${request.id}" name="requestParameters" rows="5" cols="50"></textarea>
+	                                    <textarea class="noborder_textarea resizable" id="requestParameters_${request.id}" name="requestParameters" rows="25" cols="50"></textarea>
 	                                    </div>
 	                                    <div id="tabs-3_${request.id}">
-	                                    <textarea class="noborder_textarea resizable" id="requestHeaders_${request.id}"  name="requestHeaders" rows="5" cols="50"></textarea>
+	                                    <textarea class="noborder_textarea resizable" id="requestHeaders_${request.id}"  name="requestHeaders" rows="25" cols="50"></textarea>
 	                                    </div>
 	                                    <div id="tabs-5_${request.id}">
-                                        <textarea class="noborder_textarea resizable" id="requestCookies_${request.id}"  name="requestCookies" rows="5" cols="50"></textarea>
+                                        <textarea class="noborder_textarea resizable" id="requestCookies_${request.id}"  name="requestCookies" rows="25" cols="50"></textarea>
                                         </div>
 	                                    <div id="tabs-4_${request.id}">
-	                                    <textarea class="noborder_textarea resizable" id="requestBody_${request.id}" name="requestBody" rows="5" cols="50"></textarea>
+	                                    <textarea class="noborder_textarea resizable" id="requestBody_${request.id}" name="requestBody" rows="25" cols="50"></textarea>
 	                                    </div>
 	                        </div>
                         </div>

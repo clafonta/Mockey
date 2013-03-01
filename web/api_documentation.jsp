@@ -2,10 +2,8 @@
 <%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
 <c:set var="pageTitle" value="Service Documentation" scope="request" />
 <c:set var="currentTab" value="api" scope="request" />
-
 <jsp:include page="/WEB-INF/common/header.jsp" />
-
-<div id="main">
+<div id="main2">
     <h1>Configuration API</h1>
     <div id="top_config_api" style="position:relative;">
 	    <div style="clear:both;"></div>
@@ -29,7 +27,6 @@
              set the appropriate settings. 
             </p>
         </div>
-	    
     </div>
     <div style="clear:both; margin-top:2em;"></div>
     <c:forEach var="apiservice" items="${apiServices}"  varStatus="status">
@@ -40,7 +37,6 @@
     <h3>Request</h3>
         <p class="code">${apiservice.servicePath}</p>
         <h4>Parameters</h4>
-        
         <table class="api">
             <tr><th>Field</th><th>Description of possible value(s)</th></tr>
             <c:forEach var="attribute" items="${apiservice.apiRequest.attributes}"  varStatus="status">
@@ -56,7 +52,6 @@
                   </tr>
             </c:forEach>
         </table>
-        
         <h3>Response</h3>
         <table class="api">
             <tr><th>Field</th><th>Description</th></tr>
@@ -71,9 +66,6 @@
         <div class="code">${apiservice.apiResponse.example}</div> 
         <mockey-tag:availableConfigurationLinks servicePath="${apiservice.servicePath}" serviceName="${apiservice.name}"/>        
      </div>
-    </c:forEach>
-    
-    
-    
+    </c:forEach>    
 </div>	
 <jsp:include page="/WEB-INF/common/footer.jsp" />

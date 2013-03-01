@@ -12,7 +12,7 @@ $(document).ready( function() {
     $("#upload-via-url").button();
 });
 </script>
-<div id="main">
+<div id="main2">
 
 <%@ include file="/WEB-INF/common/message.jsp"%>
 <div>

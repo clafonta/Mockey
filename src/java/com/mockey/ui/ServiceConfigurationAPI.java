@@ -25,14 +25,22 @@
 package com.mockey.ui;
 
 public interface ServiceConfigurationAPI {
-	
+
 	public static final String API_SERVICE_CONFIGURATION_NAME = "Service Configuration";
 	public static final String API_SERVICE_NAME = "serviceName";
 	public static final String API_SERVICE_ID = "serviceId";
+	// SCENARIO RESONSE JSON SCHEMA
+	public static final String API_SERVICE_SCHEMA = "serviceSchema";
+	public static final String API_SERVICE_SCHEMA_ENABLE_FLAG = "serviceSchemaEnableFlag";
+
+	// REQUEST JSON VALIDATION RULES
+
+	public static final String API_SERVICE_REQUEST_INSPECTOR_RULES = "requestInspectorJsonRules";
+	public static final String API_SERVICE_REQUEST_INSPECTOR_RULES_ENABLE_FLAG = "requestInspectorJsonRulesEnableFlag";
+
 	public static final String API_TRANSIENT_STATE = "transientState";
 	public static final String API_DEFAULT_SCENARIO_ID = "defaultScenarioId";
 	public static final String API_DEFAULT_SCENARIO_NAME = "defaultScenarioName";
-
 	public static final String API_SERVICE_SCENARIO_NAME = "scenarioName";
 	public static final String API_SERVICE_SCENARIO_ID = "scenarioId";
 	public static final String API_SERVICE_RESPONSE_TYPE = "serviceResponseType";

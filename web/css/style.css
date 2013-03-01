@@ -138,6 +138,7 @@ a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
 div#container{width:90%;margin:0 auto; min-width:850px;}
 div#main{width: 100%; margin-top: 10px; }
+div#main2{width: 850px; margin: 0 auto; margin-top:10px; }
 div{margin-top: 1px; font-weight:300; }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
 .spread{margin-left:0.8em;font-size:80%;}
@@ -449,7 +450,7 @@ text-transform: normal;
 letter-spacing: normal;
 line-height: 1.4em;
 }
-.hhButton, .hhButtonGreen, .hhButtonRed, .hhButtonBlue, .false_jsonschema, .true_jsonschema {
+.hhButton, .hhButtonGreen, .hhButtonRed, .hhButtonBlue {
   display: inline-block;
   text-align: center;
   padding: 5px 18px 4px;

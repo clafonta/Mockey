@@ -4,7 +4,7 @@
 
 <jsp:include page="/WEB-INF/common/header.jsp" />
 
-<div id="main">
+<div id="main2">
     <div id="helpTop" style="position:relative;">
 	    <div class="table_of_contents" >  
 		    <h3 style="float:right;padding-right:1em;">Table of Contents</h3>

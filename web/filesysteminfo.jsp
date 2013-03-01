@@ -50,9 +50,8 @@ $(document).ready( function() {
 
 
 </script>
-<div class="row">
-  <div class="column grid_12">
-    
+<div id="main2">
+  <div>
     <div>
     <h2>
 	Image Depot
@@ -61,9 +60,7 @@ $(document).ready( function() {
     <i>"Why is this here?"</i> The image depot helps serve up images when you're offline or you need to test different image sizes in your app.
     </p> 
     <c:choose>
-        
         <c:when test="${not empty imageList}">
-        
         <p>
         <c:set var="r" value="${pageContext.request}" />
         <!-- reference: http://stackoverflow.com/questions/3131063/how-can-i-create-an-absolute-url-in-a-jsp -->
