@@ -141,7 +141,7 @@ div#main{width: 100%; margin-top: 10px; }
 div#main2{width: 850px; margin: 0 auto; margin-top:10px; }
 div{margin-top: 1px; font-weight:300; }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
-.spread{margin-left:0.8em;font-size:80%;}
+.spread{margin-left:0.8em; }
 span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;}
 .api_message {  margin: 0.8em;  padding: 0.8em; text-align: left;   color: black;}
 .hint_message, .alert_message, .conflict_message, .addition_message, .info_message {	margin: 0.8em;	padding: 0.8em;	text-align: left;	color: black;	border: thin solid #d3d3d3;}
@@ -510,6 +510,9 @@ div.tooltip ul  {
 div.tooltip ul li:before {
     content: "\00BB \0020";
 
+}
+
+div.historyTextArea textarea { height: 200px;
 }
 
 /*Credits: Dynamic Drive CSS Library */

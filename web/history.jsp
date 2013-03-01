@@ -199,7 +199,7 @@ $(document).ready(function() {
    
     <p>
     <c:forEach var="token" items="${historyFilter.tokens}">
-        ${token}<a id="token" class="remove_grey" title="Remove filter token" href="<mockey:history value="${token}"/>">x</a> 
+        ${token}<a id="token" class="remove_grey" title="Remove filter token" href="<mockey:history value="${token}"/>"><i aria-hidden="true" class="icon-cancel"></i></a> 
     </c:forEach>
     </p>
     
@@ -222,14 +222,14 @@ $(document).ready(function() {
                       </c:forEach>
                       </ul>
                      </div>
-                     <a href="#" id="viewRequestInspection_${request.id}" class="viewRequestInspectionLink" onclick="return false;" style="color:red;">info</a> |
+                     <a href="#" id="viewRequestInspection_${request.id}" class="viewRequestInspectionLink hhButtonRed" onclick="return false;">info</a>
                      </c:if>
-                     <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink" onclick="return false;">view</a>
-                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink" onclick="return false;" style="display:none;">hide</a> |    
-                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">flag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">unflag</span></a>
-                     <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink remove_grey" style="margin-left:2em;">x</a>	              
+                     <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink hhButton" onclick="return false;">view</a>
+                     <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink hhButton" onclick="return false;" style="display:none;">hide</a>   
+                     <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink hhButton" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">flag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">unflag</span></a>
+                     <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink remove_grey" style="margin-left:2em;"><i aria-hidden="true" class="icon-cancel"></i></a>	              
 	               </div>
-	               <div style="width:95%; position:relative; margin-top:-1em;font-size:80%;">
+	               <div style="width:95%; position:relative; margin-top:-1em;">
 	                 
 	                 <b>When:</b> <mockey:fdate date="${request.time}"/> <b>From:</b> <a id="finfo" title="<c:out value="${request.requestorIP}"/>"><mockey:slug text="${request.requestorIP}" maxLength="25"/></a>
 						 (<mockey:service style="1" type="${request.serviceResponseType}"/>)
@@ -253,16 +253,16 @@ $(document).ready(function() {
 	                                        <li><a href="#tabs-5_${request.id}">Cookies</a></li>
 	                                        <li><a href="#tabs-4_${request.id}">Body</a></li>
 	                                    </ul>
-	                                    <div id="tabs-2_${request.id}">
+	                                    <div id="tabs-2_${request.id}" class="historyTextArea">
 	                                    <textarea class="noborder_textarea resizable" id="requestParameters_${request.id}" name="requestParameters" rows="25" cols="50"></textarea>
 	                                    </div>
-	                                    <div id="tabs-3_${request.id}">
+	                                    <div id="tabs-3_${request.id}" class="historyTextArea">
 	                                    <textarea class="noborder_textarea resizable" id="requestHeaders_${request.id}"  name="requestHeaders" rows="25" cols="50"></textarea>
 	                                    </div>
-	                                    <div id="tabs-5_${request.id}">
+	                                    <div id="tabs-5_${request.id}" class="historyTextArea">
                                         <textarea class="noborder_textarea resizable" id="requestCookies_${request.id}"  name="requestCookies" rows="25" cols="50"></textarea>
                                         </div>
-	                                    <div id="tabs-4_${request.id}">
+	                                    <div id="tabs-4_${request.id}" class="historyTextArea">
 	                                    <textarea class="noborder_textarea resizable" id="requestBody_${request.id}" name="requestBody" rows="25" cols="50"></textarea>
 	                                    </div>
 	                        </div>
@@ -276,17 +276,17 @@ $(document).ready(function() {
                                             <li><a href="#resp-tabs-3_${request.id}">Body</a></li>
                                             <li><a href="#resp-tabs-1_${request.id}">Status</a></li>
                                         </ul>
-                                        <div id="resp-tabs-2_${request.id}">
+                                        <div id="resp-tabs-2_${request.id}" class="historyTextArea">
                                            <p style="color:red;">Note: header key values are pipe ("|") delimited by Mockey for readability. </p>
                                            <textarea class="noborder_textarea resizable" id="responseHeader_${request.id}"  name="requestHeader" rows="5" cols="50"></textarea>
                                         </div>
-                                        <div id="resp-tabs-5_${request.id}">
+                                        <div id="resp-tabs-5_${request.id}" class="historyTextArea">
                                            <textarea class="noborder_textarea resizable" id="responseCookies_${request.id}" name="responseCookies" rows="5" cols="50"></textarea>
                                         </div>
-                                        <div id="resp-tabs-3_${request.id}">
+                                        <div id="resp-tabs-3_${request.id}" class="historyTextArea">
                                            <textarea class="noborder_textarea resizable" id="responseBody_${request.id}" name="responseBody" rows="5" cols="50"></textarea>
                                         </div>
-                                        <div id="resp-tabs-1_${request.id}">
+                                        <div id="resp-tabs-1_${request.id}" class="historyTextArea">
                                            <textarea class="noborder_textarea resizable" id="responseStatus_${request.id}" name="responseStatus" rows="5" cols="50"></textarea>
                                         </div>
                                         

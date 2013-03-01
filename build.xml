@@ -15,7 +15,7 @@
 	<property name="one-jar-lib.dir" location="${etc.dir}/one-jar"/>
 	<property name="dist.dir" location="dist"/>
 	<!--  VERSION NUMBER should follow Semantic Versioning. http://semver.org/ -->
-	<property name="version.num" value="1.0"/>
+	<property name="version.num" value="1.1"/>
 	<property name="classes.dir" location="${build.dir}/WEB-INF/classes"/>
 	<property name="test.classes.dir" value="${build.dir}/test/classes" />
 	<property name="test.report.dir" value="${build.dir}/report"/>
@@ -137,12 +137,6 @@
 
 		</war>
 	</target>
-	<!-- =================================================================== -->
-	<!-- Deploys to Tomcat                                                                                                         -->
-	<!-- =================================================================== -->
-	<target name="tomcat" depends="webapp" description="Deploys to Tomcat's webapp directory. Be sure to set env home for Tomcat as CATALINA_HOME.">
-		<copy file="${dist.dir}/${ant.project.name}.war" todir="${env.CATALINA_HOME}/webapps"/>
-	</target>
 
 	<!-- =================================================================== -->
 	<!-- Runs TestNG tests                                                   -->
@@ -169,73 +163,6 @@
 			<classfileset dir="${test.classes.dir}" includes="**/*.class" />
 		</testng>
 	</target>
-
-	<target name="tomcat-update" depends="compile">
-		<javac srcdir="src" 
-			destdir="webapp/WEB-INF/classes" deprecation="on" 
-			classpathref="standard.classpath" debug="on"
-		/>
-		<copy todir="webapp/WEB-INF/classes">
-			<fileset dir="src">
-				<include name="**/*.properties"/>
-				<include name="**/*.xml"/>
-			</fileset>
-		</copy>
-		<antcall target="_tomcat-reload" inheritall="true"/>
-	</target>
-
-	<!-- Based on \apache-tomcat-6.0.20 -->
-	<target name="_tomcat-reload">
-		<taskdef name="tomcatreload" classname="org.apache.catalina.ant.ReloadTask">
-			<classpath>
-				<fileset dir="${env.CATALINA_HOME}/lib">
-					<include name="*.jar"/>
-				</fileset>
-			</classpath>
-		</taskdef>
-		<tomcatreload url="http://localhost:8080/manager" path="/rulesengine" 
-			username="tomcat" password="tomcat"/>
-	</target>
-
-	<target name="_tomcat-check">
-		<available file="${env.CATALINA_HOME}" property="tomcat-dir-avail"/>
-		<fail unless="tomcat-dir-avail" 
-			message="Missing tomcat 5 directory or 'CATALINA_HOME' is not set correctly!"/>
-	</target>
-
-
-	<target name="windows-deps" depends="dist">
-
-		<mkdir dir="${dist.dir}\win32service" />
-
-		<copy file="${etc.dir}/one-jar/jetty-runner.jar"
-	  		todir="${basedir}\windows\MockeyWin32Service\MockeyWin32Runner\resources\"/>
-		<copy file="${etc.dir}/one-jar/jsp-api.jar"
-	  		todir="${basedir}\windows\MockeyWin32Service\MockeyWin32Runner\resources\"/>
-		<copy file="${etc.dir}/one-jar/servlet-api.jar"
-	  		todir="${basedir}\windows\MockeyWin32Service\MockeyWin32Runner\resources\"/>
-		<copy file="${dist.dir}\${ant.project.name}.war"
-	  		todir="${basedir}\windows\MockeyWin32Service\MockeyWin32Runner\resources\"/>
-
-		<jar destfile="${basedir}\windows\MockeyWin32Service\MockeyWin32Runner\resources\MockeyBooter.jar">
-			<fileset dir="${build.dir}/WEB-INF/classes" includes="**/runner/**" />
-		</jar>
-	</target>
-
-	<target name="windows-service" depends="">
-		<taskdef resource="org/apache/ant/dotnet/antlib.xml">
-			<classpath>
-				<pathelement location="etc/ant-dotnet-1.0.jar"/>
-			</classpath>
-		</taskdef>
-		<msbuild>
-			<build>
-				<MSBuild Projects="${basedir}\windows\MockeyWin32Service\MockeyWin32Service.sln"
-	        xmlns="http://schemas.microsoft.com/developer/msbuild/2003"/>
-			</build>
-		</msbuild>
-	</target>
-
 
 	<target name="build" depends="compile, jspc, test" description="Build the whole app and test it" />
 	<target name="build-in-place" depends="compile" description="Build app into the webapp src dir">

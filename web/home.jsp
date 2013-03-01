@@ -1,11 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
-
 <c:set var="pageTitle" value="Home" scope="request" />
 <c:set var="currentTab" value="home" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
-
 <script>
 $(document).ready( function() {
 	$('#tabs').tabs().hide();
