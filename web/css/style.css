@@ -136,9 +136,9 @@ a.response_set:hover, a.response_not:hover {background: #B1D1E8;}
 a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
-div#container{width:90%;margin:0 auto; min-width:850px;}
-div#main{width: 100%; margin-top: 10px; }
-div#main2{width: 850px; margin: 0 auto; margin-top:10px; }
+div#container{width:90%;margin:0 auto; min-width:850px; max-width:1600px;}
+div#main{width: 100%; margin-top: 10px;}
+div#main2{width: 850px; margin: 0 auto; margin-top:10px;}
 div{margin-top: 1px; font-weight:300; }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
 .spread{margin-left:0.8em; }
@@ -396,13 +396,14 @@ padding: 8px;
 }
 #updated, #foo, #deleted, #error-info{
     position: fixed;
-    width: 150px;
+    width: 250px;
     background: red;
-    text-align: left;
+    text-align: center;
     top: 10px;
-    right: 10px;
+    right: 250px;
     color:yellow;
     padding: 0.2em;
+    z-index:90;
 }
 .configuration-info {
     text-align: center;

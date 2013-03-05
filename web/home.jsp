@@ -383,6 +383,11 @@ $(document).ready( function() {
            
         });
     });
+    $("#servicePlanSetMessgeLink").click( function() {
+    	$("#servicePlanSetMessge").hide();
+    	return false;
+    });
+    
     $("#filter-tag-button").click( function() {
            var filterTag = $('#filter-tag').val();
            $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
@@ -467,6 +472,18 @@ $(document).ready( function() {
 								</ul>
 							  	<div id="tabs-1">
 							  	  <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
+							  	  <c:if test="${!empty servicePlan}">
+							  	  <div class="alert_message tiny" id="servicePlanSetMessge">
+							  	  <span style="float:right;">
+							  	  <a href="#" id="servicePlanSetMessgeLink" class="remove_grey" title="Hide this message." style="text-decoration:none;"><i aria-hidden="true" class="icon-cancel"></i></a>
+							  	  </span>
+							  	  Plan that was just set:  
+							  	  <h2>
+							  	  <strong>${servicePlan.name}</strong>
+							  	  </h2>
+							  	  <span class="tiny">Service Plan Id: ${servicePlan.id}</span>
+							  	  </div>
+							  	  </c:if>
 							  	  <div class="info_message tiny">
 							  	  Click one of the following buttons to set 
 							  	  response type for <strong>each service</strong>.
