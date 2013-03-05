@@ -479,7 +479,7 @@ $(document).ready( function() {
 							  	  </span>
 							  	  Plan that was just set:  
 							  	  <h2>
-							  	  <strong>${servicePlan.name}</strong>
+							  	  <strong style="display:block; word-wrap: break-word;" title="${servicePlan.name}">${servicePlan.name}</strong>
 							  	  </h2>
 							  	  <span class="tiny">Service Plan Id: ${servicePlan.id}</span>
 							  	  </div>
