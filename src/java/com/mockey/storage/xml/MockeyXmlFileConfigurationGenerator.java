@@ -111,7 +111,10 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 					getSafeForXmlOutputString("" + mockServiceBean.getRequestInspectorName()));
 			serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
 			serviceElement.setAttribute("tag", getSafeForXmlOutputString(mockServiceBean.getTag()));
-			serviceElement.setAttribute("last_visit", getSafeForXmlOutputString("" + mockServiceBean.getLastVisit()));
+			// CHANGE on March 2013
+			// Last visit will always change, and there's no need to persist this to a repository. 
+			// This information is for in-memory use only, and displayed to users ONLY. 
+			//serviceElement.setAttribute("last_visit", getSafeForXmlOutputString("" + mockServiceBean.getLastVisit()));
 			serviceElement.setAttribute("default_scenario_id",
 					getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId())));
 			serviceElement.setAttribute("error_scenario_id",
@@ -152,7 +155,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				scenarioElement.setAttribute("id", scenario.getId().toString());
 				scenarioElement.setAttribute("name", getSafeForXmlOutputString(scenario.getScenarioName()));
 				scenarioElement.setAttribute("tag", getSafeForXmlOutputString(scenario.getTag()));
-				scenarioElement.setAttribute("last_visit", getSafeForXmlOutputString("" + scenario.getLastVisit()));
+				// REMOVED March 2013. We don't need this in a repot for persistence. It's only for a visual/at-run-time queue.
+				//scenarioElement.setAttribute("last_visit", getSafeForXmlOutputString("" + scenario.getLastVisit()));
 				scenarioElement.setAttribute("http_resp_status_code",
 						getSafeForXmlOutputString("" + scenario.getHttpResponseStatusCode()));
 				
@@ -248,8 +252,9 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				servicePlanElement.setAttribute("description", servicePlan.getDescription());
 				servicePlanElement.setAttribute("id", "" + servicePlan.getId());
 				servicePlanElement.setAttribute("tag", servicePlan.getTag());
-				servicePlanElement.setAttribute("last_visit",
-						getSafeForXmlOutputString("" + servicePlan.getLastVisit()));
+				// REMOVED March 2013.
+				// No need to persist. Visual queue only. 
+				//servicePlanElement.setAttribute("last_visit", getSafeForXmlOutputString("" + servicePlan.getLastVisit()));
 				for (PlanItem pi : servicePlan.getPlanItemList()) {
 					Element planItemElement = document.createElement("plan_item");
 					planItemElement.setAttribute("hang_time", "" + pi.getHangTime());

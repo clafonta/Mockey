@@ -103,7 +103,9 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "hang_time", "hangTime");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "url", "url");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "tag", "tag");
-		fullSetDigester.addSetProperties(ROOT_SERVICE, "last_visit", "lastVisit");
+		//REMOVED March 2013. 
+		// No need to persist to a repot'. At run time, visual queue only. 
+		//fullSetDigester.addSetProperties(ROOT_SERVICE, "last_visit", "lastVisit");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "error_scenario_id", "errorScenarioId");
 		
 		
@@ -128,7 +130,10 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addObjectCreate(ROOT_SERVICE_SCENARIO, Scenario.class);
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "id", "id");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "name", "scenarioName");
-		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "last_visit", "lastVisit");
+		// CHANGE on March 2013
+		// Last visit will always change, and there's no need to persist this to a repository. 
+		// This information is for in-memory use only, and displayed to users ONLY. 
+		//fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "last_visit", "lastVisit");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "http_resp_status_code", "httpResponseStatusCode");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "tag", "tag");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
@@ -147,7 +152,9 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_PLAN, "description", "description");//
 		fullSetDigester.addSetProperties(ROOT_PLAN, "id", "id");
 		fullSetDigester.addSetProperties(ROOT_PLAN, "tag", "tag");
-		fullSetDigester.addSetProperties(ROOT_PLAN, "last_visit", "lastVisit");
+		// REMOVED. 
+		// March 2013, no need to persist this value to a repository. 
+		//fullSetDigester.addSetProperties(ROOT_PLAN, "last_visit", "lastVisit");
 		fullSetDigester.addSetNext(ROOT_PLAN, "saveOrUpdateServicePlan");
 		fullSetDigester.addObjectCreate(ROOT_PLAN_ITEM, PlanItem.class);
 		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "hang_time", "hangTime");

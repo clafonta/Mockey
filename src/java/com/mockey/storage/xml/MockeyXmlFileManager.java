@@ -27,22 +27,21 @@
  */
 package com.mockey.storage.xml;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.google.common.io.CharStreams;
 import com.mockey.model.ProxyServerModel;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
@@ -93,20 +92,12 @@ public class MockeyXmlFileManager {
 	 * @throws SAXException
 	 * @throws SAXParseException
 	 */
-	private String getFileContentAsString(File file) throws IOException,
+	public String getFileContentAsString(InputStream fstream) throws IOException,
 			SAXParseException, SAXException {
 
-		FileInputStream fstream = new FileInputStream(file);
-		BufferedReader br = new BufferedReader(new InputStreamReader(fstream,
-				Charset.forName(HTTP.UTF_8)));
-		StringBuffer inputString = new StringBuffer();
-		// Read File Line By Line
-		String strLine = null;
-		while ((strLine = br.readLine()) != null) {
-			// Print the content on the console
-			inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
-		}
-		return inputString.toString();
+
+		String inputStreamString = CharStreams.toString(new InputStreamReader(fstream, "UTF-8"));
+		return inputStreamString;
 
 	}
 
@@ -125,7 +116,8 @@ public class MockeyXmlFileManager {
 		logger.debug("Loading configuration from " + MOCK_SERVICE_DEFINITION);
 
 		try {
-			return loadConfigurationWithXmlDef(getFileContentAsString(n), null);
+			
+			return loadConfigurationWithXmlDef(getFileContentAsString(new FileInputStream(n)), null);
 		} catch (SAXException e) {
 			logger.error("Ouch, unable to parse" + n.getAbsolutePath(), e);
 		}
@@ -194,8 +186,8 @@ public class MockeyXmlFileManager {
 		List<Service> serviceListFromRefs = new ArrayList<Service>();
 		for (ServiceRef serviceRef : mockServiceStoreTemporary.getServiceRefs()) {
 			try {
-				String mockServiceDefinition = getFileContentAsString(new File(
-						serviceRef.getFileName()));
+
+				String mockServiceDefinition = getFileContentAsString(new FileInputStream(serviceRef.getFileName()));
 
 				List<Service> tmpList = msfr
 						.readServiceDefinition(mockServiceDefinition);

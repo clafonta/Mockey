@@ -27,20 +27,21 @@
  */
 package com.mockey.ui;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.protocol.HTTP;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.mockey.storage.xml.MockeyXmlFileConfigurationReader;
+import com.mockey.storage.xml.MockeyXmlFileManager;
 
 /**
  * Access to application debug file.
@@ -81,16 +82,16 @@ public class ConsoleServlet extends HttpServlet {
 	 */
 	private String getFileContentAsString(File file) throws IOException {
 
+		
 		FileInputStream fstream = new FileInputStream(file);
-		BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
-		StringBuffer inputString = new StringBuffer();
-		// Read File Line By Line
-		String strLine = null;
-		while ((strLine = br.readLine()) != null) {
-			// Print the content on the console
-			inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
-		}
-		return inputString.toString();
+		MockeyXmlFileManager mxfm = new MockeyXmlFileManager();
+		String arg = null;
+		try {
+			arg = mxfm.getFileContentAsString(fstream);
+		} catch (Exception e) {
+			throw new IOException(e);
+		} 
+		return arg;
 
 	}
 
