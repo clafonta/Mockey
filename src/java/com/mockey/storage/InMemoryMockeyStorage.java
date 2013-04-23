@@ -123,6 +123,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public void setDefaultServicePlanId(String v) {
 		try {
 			this.defaultServicePlanId = new Long(v);
+			this.writeMemoryToFile();
 		} catch (Exception e) {
 			// Do nothing. Leave value as is.
 		}
