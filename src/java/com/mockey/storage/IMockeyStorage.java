@@ -47,6 +47,12 @@ import com.mockey.model.TwistInfo;
  */
 public interface IMockeyStorage {
 
+	public String getDefaultServicePlanId();
+
+	public Long getDefaultServicePlanIdAsLong();
+
+	public void setDefaultServicePlanId(String v);
+
 	public void setReadOnlyMode(Boolean transientState);
 
 	public String getGlobalStateSystemFilterTag();
@@ -101,11 +107,9 @@ public interface IMockeyStorage {
 	 * @param oldScenarioName
 	 * @param newScenarioName
 	 */
-	public void updateServicePlansWithNewScenarioName(Long serviceId,
-			String oldScenarioName, String newScenarioName);
+	public void updateServicePlansWithNewScenarioName(Long serviceId, String oldScenarioName, String newScenarioName);
 
-	public void updateServicePlansWithNewServiceName(String oldServiceName,
-			String newServiceName);
+	public void updateServicePlansWithNewServiceName(String oldServiceName, String newServiceName);
 
 	public void deleteServicePlan(ServicePlan servicePlan);
 
@@ -129,23 +133,17 @@ public interface IMockeyStorage {
 
 	public List<FulfilledClientRequest> getFulfilledClientRequests();
 
-	public FulfilledClientRequest getFulfilledClientRequestsById(
-			Long fulfilledClientRequestId);
+	public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId);
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(
-			String ip);
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip);
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(
-			Long serviceId);
+	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId);
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(
-			String ip, Long serviceId);
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 
-	public List<FulfilledClientRequest> getFulfilledClientRequest(
-			Collection<String> filterArguments);
+	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments);
 
-	public void saveOrUpdateFulfilledClientRequest(
-			FulfilledClientRequest requestResponseX);
+	public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest requestResponseX);
 
 	public void deleteFulfilledClientRequests();
 
@@ -155,19 +153,13 @@ public interface IMockeyStorage {
 
 	public void deleteFulfilledClientRequestsForService(Long serviceId);
 
-	public void deleteFulfilledClientRequestsFromIPForService(String ip,
-			Long serviceId);
+	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 
-	/**
-	 * Removes the tag from all Services and Scenarios
-	 * 
-	 * @param tag
-	 *            - a space delimited argument.
-	 */
 	public void deleteTagFromStore(String tag);
 
 	public void setGlobalStateSystemFilterTag(String tag);
 
 	public Service getServiceByName(String serviceName);
 
+	public void setServicePlan(ServicePlan servicePlan);
 }

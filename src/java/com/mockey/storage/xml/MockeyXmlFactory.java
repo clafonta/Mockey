@@ -43,6 +43,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
+import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.storage.IMockeyStorage;
 
@@ -94,11 +95,19 @@ public class MockeyXmlFactory {
 
 			// WRITE EACH SERVICE
 			for (Service service : sourceStore.getServices()) {
-				File serviceFile = new File(MockeyXmlFileManager.getServiceFileNameOutputString(service));
+
+				// File to write out
+				File serviceFile = MockeyXmlFileManager.getServiceFile(service);
+
 				FileOutputStream serviceFOP = new FileOutputStream(serviceFile);
 				MockeyXmlFileConfigurationGenerator xmlGeneratorSupport = new MockeyXmlFileConfigurationGenerator();
-				Document serviceDoc = xmlGeneratorSupport.getServiceAsDocument(service);
+				Document serviceDoc = xmlGeneratorSupport.getServiceAsDocument(service, false);
 				String serviceOutput = this.getDocumentAsString(serviceDoc);
+				for (Scenario scenario : service.getScenarios()) {
+
+					File scenarioFile = MockeyXmlFileManager.getServiceScenarioFile(service, scenario);
+					this.writeServiceScenarioToXMLFile(scenarioFile, scenario);
+				}
 
 				byte[] serviceOutputAsBytes = serviceOutput.getBytes(HTTP.UTF_8);
 				serviceFOP.write(serviceOutputAsBytes);
@@ -106,9 +115,68 @@ public class MockeyXmlFactory {
 				serviceFOP.close();
 				logger.debug("Written to: " + serviceFile.getAbsolutePath());
 			}
-			
+
 		} catch (Exception e) {
 			logger.debug("Unable to write file", e);
 		}
+	}
+
+	/**
+	 * 
+	 * @param scenarioFile
+	 *            The file to write the scenario XML definition to.
+	 * @param scenario
+	 *            Scenario definitions/model to write to XML.
+	 * @throws IOException
+	 * @throws TransformerException
+	 */
+	private void writeServiceScenarioToXMLFile(File scenarioFile, Scenario scenario) throws IOException,
+			TransformerException {
+		FileOutputStream serviceFOP = new FileOutputStream(scenarioFile);
+		MockeyXmlFileConfigurationGenerator xmlGeneratorSupport = new MockeyXmlFileConfigurationGenerator();
+
+		// Yes, hardcoded for now. As of April 18th, 2013
+		boolean writeScenarioResponseToTxtFile = true;
+		// TRUE means the scenario response will NOT be included in the Scenario
+		// XML definition file. The Scenario response will be written to its
+		// own '.txt' file. For example:
+		// + <scenario def>.xml // Includes a x:include pointer to the *.txt file.
+		// + <scenario response>.txt // contains the scenario response.
+		//
+		// FALSE means the scenario response will include in the Scenario response 
+		// as a CDATA element. 
+
+		Document serviceDoc = xmlGeneratorSupport
+				.getServiceScenarioAsDocument(scenario, writeScenarioResponseToTxtFile);
+		// Write the XML
+		String serviceOutput = this.getDocumentAsString(serviceDoc);
+		byte[] serviceOutputAsBytes = serviceOutput.getBytes(HTTP.UTF_8);
+		serviceFOP.write(serviceOutputAsBytes);
+		serviceFOP.flush();
+		serviceFOP.close();
+
+		if (writeScenarioResponseToTxtFile) {
+			byte[] scenarioResponseOutputAsBytes = scenario.getResponseMessage().getBytes(HTTP.UTF_8);
+			String xmlDefinitionFilePath = scenarioFile.getPath();
+			File scenarioResponseFile = new File(swapFileExtensions(xmlDefinitionFilePath));
+			FileOutputStream scenarioResponseFOP = new FileOutputStream(scenarioResponseFile);
+			scenarioResponseFOP.write(scenarioResponseOutputAsBytes);
+			scenarioResponseFOP.flush();
+			scenarioResponseFOP.close();
+		}
+		logger.debug("Written to: " + scenarioFile.getAbsolutePath());
+
+	}
+
+	// Quick utility to swap file extensions
+	private String swapFileExtensions(String arg) {
+		int extIndex = arg.lastIndexOf(".");
+		if (extIndex != -1) {
+			String ext = arg.substring(extIndex);
+			if (ext.equalsIgnoreCase(".xml")) {
+				arg = arg.substring(0, extIndex) + ".txt";
+			}
+		}
+		return arg;
 	}
 }

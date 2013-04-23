@@ -1,0 +1,62 @@
+
+============================
+April 2013. Version: 2.0.0
+============================
+
+-----------------------------------------------------------------------------
+ADDITIONS:
+-----------------------------------------------------------------------------
+
+A1. Added feature "set this Service Plan as a default configuration" upon startup. 
+Reason for the change: allows for an explicit state setup upon startup 
+rather than inheriting the last saved state prior to stopping Mockey. 
+
+-----------------------------------------------------------------------------
+CHANGES:
+-----------------------------------------------------------------------------
+
+C1. Changed the file structure of saved Mockey service and scenario definitions 
+persisted to the local file system. Reason for change: this allows for validation 
+and creation of scenario responses outside of Mockey's UI or manual editing the 
+XML's CDATA element. 
+
+For example, here is the new file structure: 
+
+mockey_def_depot   // Directory of all Service definitions.
+├── 1              // Directory of a Service w/ sub-folders containing Scenarios
+│   ├── 1.xml      // Service meta data
+│   └── scenarios  // Directory containing Scenarios associated to this Service
+│       ├── 1.txt  // Scenario's response to be parsed as TEXT (not structured XML)
+│       ├── 1.xml  // Service Scenario meta data
+│       ├── 2.txt
+│       ├── 2.xml
+│       ├── 3.txt
+│       ├── 3.xml
+│       ├── 4.txt
+│       └── 4.xml
+├── 2
+│   ├── 2.xml
+│   └── scenarios
+│       ├── 1.txt
+│       ├── 1.xml
+│       ├── 2.txt
+│       └── 2.xml
+
+
+How to migrate pre 2.0.x Mockey XML definitions to the new file structure:
+-----------------------------------------------------------------------------
+
+
+Step 1. With previous version of Mockey running, export your definitions as an XML file. 
+
+>Import/Export > download
+
+Step 2. Within another directory, run the new Mockey and import the XML file from Step 1. 
+
+>Import/Export > Upload local definitions file
+
+Step 3. From the Home page http://127.0.0.1:8080/home click on "In Memory Only" link. This will
+persist your Mockey configurations and definitions to your local file system with the new file
+structure.
+
+

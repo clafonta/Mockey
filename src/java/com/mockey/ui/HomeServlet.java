@@ -346,6 +346,11 @@ public class HomeServlet extends HttpServlet {
 		req.setAttribute("plans",
 				filterHelper.getFilteredServicePlans(filterTagArg, store));
 		req.setAttribute("filterTag", filterTagArg);
+		if(store.getDefaultServicePlanIdAsLong() !=null){
+			req.setAttribute("defaultServicePlanId", store.getDefaultServicePlanId() );
+		}else {
+			req.setAttribute("defaultServicePlanId", "" );
+		}
 		req.setAttribute("httpRespCodeList", HttpStatusCodeStore.getInstance()
 				.getCodeEntryList());
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");

@@ -58,8 +58,8 @@ public class UploadConfigurationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2874257060865115637L;
 	private static Logger logger = Logger.getLogger(UploadConfigurationServlet.class);
-	public void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		super.service(req, resp);
 	}
 
@@ -75,8 +75,7 @@ public class UploadConfigurationServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		RequestDispatcher dispatch = req.getRequestDispatcher("/upload.jsp");
 		dispatch.forward(req, resp);
@@ -95,8 +94,7 @@ public class UploadConfigurationServlet extends HttpServlet {
 	 *             basic
 	 */
 	@SuppressWarnings("unchecked")
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String url = null;
 		String definitionsAsString = null;
@@ -112,24 +110,20 @@ public class UploadConfigurationServlet extends HttpServlet {
 				InputStream fstream = new URL(url).openStream();
 				if (fstream != null) {
 
-					BufferedReader br = new BufferedReader(
-							new InputStreamReader(fstream,
-									Charset.forName(HTTP.UTF_8)));
+					BufferedReader br = new BufferedReader(new InputStreamReader(fstream, Charset.forName(HTTP.UTF_8)));
 					StringBuffer inputString = new StringBuffer();
 					// Read File Line By Line
 					String strLine = null;
 					// READ FIRST
 					while ((strLine = br.readLine()) != null) {
 						// Print the content on the console
-						inputString.append(new String(strLine
-								.getBytes(HTTP.UTF_8)));
+						inputString.append(new String(strLine.getBytes(HTTP.UTF_8)));
 					}
 					definitionsAsString = inputString.toString();
 				}
 			} catch (Exception e) {
-				logger.error("Unable to reach url: "+url, e);
-				Util.saveErrorMessage("Unable to reach url: "+url,
-						req);
+				logger.error("Unable to reach url: " + url, e);
+				Util.saveErrorMessage("Unable to reach url: " + url, req);
 			}
 		} else {
 			byte[] data = null;
@@ -164,7 +158,7 @@ public class UploadConfigurationServlet extends HttpServlet {
 				logger.error("Unable to read or parse file: ", e);
 				Util.saveErrorMessage("Unable to upload or parse file.", req);
 			}
-		} 
+		}
 
 		// ***********************************
 		// STEP #2 - PERSIST DATA
@@ -173,16 +167,14 @@ public class UploadConfigurationServlet extends HttpServlet {
 
 			if (definitionsAsString != null) {
 				MockeyXmlFileManager configurationReader = new MockeyXmlFileManager();
-				ServiceMergeResults results = configurationReader
-						.loadConfigurationWithXmlDef(definitionsAsString,
-								taglistValue);
+				ServiceMergeResults results = configurationReader.loadConfigurationWithXmlDef(definitionsAsString,
+						taglistValue);
 
 				Util.saveSuccessMessage("Service definitions uploaded.", req);
 				req.setAttribute("conflicts", results.getConflictMsgs());
 				req.setAttribute("additions", results.getAdditionMessages());
 			} else {
-				Util.saveErrorMessage("Unable to upload or parse empty file.",
-						req);
+				Util.saveErrorMessage("Unable to upload or parse empty file.", req);
 			}
 		} catch (Exception e) {
 			Util.saveErrorMessage("Unable to upload or parse file.", req);

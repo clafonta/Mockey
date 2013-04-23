@@ -27,6 +27,8 @@
  */
 package com.mockey.storage.xml;
 
+import java.io.File;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -60,8 +62,13 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setXIncludeAware(true);
 			factory.setNamespaceAware(true);
 			DocumentBuilder docBuilder = factory.newDocumentBuilder();
+			if (!docBuilder.isXIncludeAware()) {
+				throw new IllegalStateException("Dang, not xinclude aware.");
+			}
+
 			Document document = docBuilder.newDocument();
 
 			return document;
@@ -72,13 +79,18 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 
 	}
 
-	public Document getServiceAsDocument(Service mockServiceBean) {
+	/**
+	 * 
+	 * @param mockServiceBean
+	 * @return Service as an XML definition.
+	 */
+	public Document getServiceAsDocument(Service mockServiceBean, boolean includeScenarioDefinitions) {
 		Document document = getDocument();
 		Element rootElement = document.createElement("mockservice");
 
 		this.setAttribute(rootElement, "xml:lang", "en-US");
 		this.setAttribute(rootElement, "version", "1.0");
-		Element serviceElement = this.getServiceAsElement(document, mockServiceBean);
+		Element serviceElement = this.getServiceAsElement(document, mockServiceBean, includeScenarioDefinitions);
 		rootElement.appendChild(serviceElement);
 		document.appendChild(rootElement);
 		return document;
@@ -86,11 +98,26 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 
 	/**
 	 * 
+	 * @param scenario
+	 * @return Scenario as an XML definition.
+	 */
+	public Document getServiceScenarioAsDocument(Scenario scenario, boolean scenarioResponseAsXIncludeTxtFile) {
+		Document document = getDocument();
+		Element serviceElement = this.getScenarioAsElement(document, scenario, scenarioResponseAsXIncludeTxtFile);
+		this.setAttribute(serviceElement, "xml:lang", "en-US");
+		this.setAttribute(serviceElement, "version", "1.0");
+		document.appendChild(serviceElement);
+		return document;
+	}
+
+	/**
+	 * 
 	 * @param document
 	 * @param mockServiceBean
+	 * @param includeScenarioDefinitions
 	 * @return
 	 */
-	private Element getServiceAsElement(Document document, Service mockServiceBean) {
+	private Element getServiceAsElement(Document document, Service mockServiceBean, boolean includeScenarioDefinitions) {
 
 		Element serviceElement = document.createElement("service");
 
@@ -112,33 +139,39 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
 			serviceElement.setAttribute("tag", getSafeForXmlOutputString(mockServiceBean.getTag()));
 			// CHANGE on March 2013
-			// Last visit will always change, and there's no need to persist this to a repository. 
-			// This information is for in-memory use only, and displayed to users ONLY. 
-			//serviceElement.setAttribute("last_visit", getSafeForXmlOutputString("" + mockServiceBean.getLastVisit()));
+			// Last visit will always change, and there's no need to persist
+			// this to a repository.
+			// This information is for in-memory use only, and displayed to
+			// users ONLY.
+			// serviceElement.setAttribute("last_visit",
+			// getSafeForXmlOutputString("" + mockServiceBean.getLastVisit()));
 			serviceElement.setAttribute("default_scenario_id",
 					getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId())));
 			serviceElement.setAttribute("error_scenario_id",
 					getSafeForXmlOutputString("" + (mockServiceBean.getErrorScenarioId())));
-			
+
 			serviceElement.setAttribute("service_response_type",
 					getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
 			serviceElement.setAttribute("default_real_url_index",
 					getSafeForXmlOutputString("" + mockServiceBean.getDefaultRealUrlIndex()));
-			
+
 			// Request validation rules in JSON format definition.
 			Element requestInspectorJsonRulesElement = document.createElement("request_inspector_json_rules");
-			requestInspectorJsonRulesElement.setAttribute("enable_flag", ""+mockServiceBean.isRequestInspectorJsonRulesEnableFlag());
-			CDATASection cdataJsonRulesElement = document.createCDATASection(getSafeForXmlOutputString(mockServiceBean.getRequestInspectorJsonRules()));
+			requestInspectorJsonRulesElement.setAttribute("enable_flag",
+					"" + mockServiceBean.isRequestInspectorJsonRulesEnableFlag());
+			CDATASection cdataJsonRulesElement = document.createCDATASection(getSafeForXmlOutputString(mockServiceBean
+					.getRequestInspectorJsonRules()));
 			requestInspectorJsonRulesElement.appendChild(cdataJsonRulesElement);
 			serviceElement.appendChild(requestInspectorJsonRulesElement);
-			
+
 			// Service Scenario Response Schema
 			Element responseSchemaElement = document.createElement("response_schema");
-			responseSchemaElement.setAttribute("enable_flag", ""+mockServiceBean.isResponseSchemaFlag());
-			CDATASection cdataresponseSchemaElement = document.createCDATASection(getSafeForXmlOutputString(mockServiceBean.getResponseSchema()));
+			responseSchemaElement.setAttribute("enable_flag", "" + mockServiceBean.isResponseSchemaFlag());
+			CDATASection cdataresponseSchemaElement = document
+					.createCDATASection(getSafeForXmlOutputString(mockServiceBean.getResponseSchema()));
 			responseSchemaElement.appendChild(cdataresponseSchemaElement);
 			serviceElement.appendChild(responseSchemaElement);
-			
+
 			// New real service URLs
 			for (Url realUrl : mockServiceBean.getRealServiceUrls()) {
 				Element urlElement = document.createElement("real_url");
@@ -148,44 +181,66 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			}
 
 			// Scenarios
-			for (Scenario scenario : mockServiceBean.getScenarios()) {
-				// logger.debug("building XML representation for MockServiceScenarioBean:\n"
-				// + scenario.toString());
-				Element scenarioElement = document.createElement("scenario");
-				scenarioElement.setAttribute("id", scenario.getId().toString());
-				scenarioElement.setAttribute("name", getSafeForXmlOutputString(scenario.getScenarioName()));
-				scenarioElement.setAttribute("tag", getSafeForXmlOutputString(scenario.getTag()));
-				// REMOVED March 2013. We don't need this in a repot for persistence. It's only for a visual/at-run-time queue.
-				//scenarioElement.setAttribute("last_visit", getSafeForXmlOutputString("" + scenario.getLastVisit()));
-				scenarioElement.setAttribute("http_resp_status_code",
-						getSafeForXmlOutputString("" + scenario.getHttpResponseStatusCode()));
-				
-				Element scenarioMatchStringElement = document.createElement("scenario_match");
-				scenarioMatchStringElement.setAttribute("scenario_match_evaluation_rules_flag", Boolean.toString(scenario.isMatchStringArgEvaluationRulesFlag()));
-				CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
-						.getMatchStringArg()));
-				scenarioMatchStringElement.appendChild(cdataMatchElement);
-				scenarioElement.appendChild(scenarioMatchStringElement);
-
-				//responseHeader
-				Element scenarioResponseElement = document.createElement("scenario_response");
-				CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario
-						.getResponseMessage()));
-				scenarioResponseElement.appendChild(cdataResponseElement);
-				scenarioElement.appendChild(scenarioResponseElement);
-				
-				Element scenarioResponseHeaderElement = document.createElement("scenario_response_header");
-				CDATASection cdataResponseHeaderElement = document.createCDATASection(getSafeForXmlOutputString(scenario
-						.getResponseHeader()));
-				scenarioResponseHeaderElement.appendChild(cdataResponseHeaderElement);
-				scenarioElement.appendChild(scenarioResponseHeaderElement);
-				
-				serviceElement.appendChild(scenarioElement);
+			// TODO.
+			// includeScenarioDefinitions = true;
+			if (includeScenarioDefinitions) {
+				for (Scenario scenario : mockServiceBean.getScenarios()) {
+					Element scenarioElement = getScenarioAsElement(document, scenario, false);
+					serviceElement.appendChild(scenarioElement);
+				}
+			} else {
+				for (Scenario scenario : mockServiceBean.getScenarios()) {
+					Element include = document.createElementNS("http://www.w3.org/2001/XInclude", "xi:include");
+					File scenarioFile = MockeyXmlFileManager.getServiceScenarioFile(mockServiceBean, scenario);
+					include.setAttribute("href", scenarioFile.getPath());
+					include.setAttribute("parse", "xml");
+					serviceElement.appendChild(include);
+				}
 			}
 		}
-
 		return serviceElement;
+	}
 
+	private Element getScenarioAsElement(Document document, Scenario scenario, boolean scenarioResponseAsXIncludeTxtFile) {
+		Element scenarioElement = document.createElement("scenario");
+		scenarioElement.setAttribute("id", scenario.getId().toString());
+		scenarioElement.setAttribute("name", getSafeForXmlOutputString(scenario.getScenarioName()));
+		scenarioElement.setAttribute("tag", getSafeForXmlOutputString(scenario.getTag()));
+		// REMOVED March 2013. We don't need this in a repot for persistence.
+		// It's only for a visual/at-run-time queue.
+		// scenarioElement.setAttribute("last_visit",
+		// getSafeForXmlOutputString("" + scenario.getLastVisit()));
+		scenarioElement.setAttribute("http_resp_status_code",
+				getSafeForXmlOutputString("" + scenario.getHttpResponseStatusCode()));
+
+		Element scenarioMatchStringElement = document.createElement("scenario_match");
+		scenarioMatchStringElement.setAttribute("scenario_match_evaluation_rules_flag",
+				Boolean.toString(scenario.isMatchStringArgEvaluationRulesFlag()));
+		CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
+				.getMatchStringArg()));
+		scenarioMatchStringElement.appendChild(cdataMatchElement);
+		scenarioElement.appendChild(scenarioMatchStringElement);
+
+		// responseHeader
+		Element scenarioResponseElement = document.createElement("scenario_response");
+		if (scenarioResponseAsXIncludeTxtFile) {
+			Element include = document.createElementNS("http://www.w3.org/2001/XInclude", "xi:include");
+			include.setAttribute("href", scenario.getId() + ".txt");
+			include.setAttribute("parse", "text");
+			scenarioResponseElement.appendChild(include);
+		} else {
+			CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario
+					.getResponseMessage()));
+			scenarioResponseElement.appendChild(cdataResponseElement);
+		}
+		scenarioElement.appendChild(scenarioResponseElement);
+
+		Element scenarioResponseHeaderElement = document.createElement("scenario_response_header");
+		CDATASection cdataResponseHeaderElement = document.createCDATASection(getSafeForXmlOutputString(scenario
+				.getResponseHeader()));
+		scenarioResponseHeaderElement.appendChild(cdataResponseHeaderElement);
+		scenarioElement.appendChild(scenarioResponseHeaderElement);
+		return scenarioElement;
 	}
 
 	/**
@@ -211,7 +266,14 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			this.setAttribute(rootElement, "universal_error_service_id", "" + mssb.getServiceId());
 			this.setAttribute(rootElement, "universal_error_scenario_id", "" + mssb.getId());
 		}
-		this.setAttribute(rootElement, "universal_twist_info_id", "" + store.getUniversalTwistInfoId());
+		if (store.getUniversalTwistInfoId() != null) {
+			this.setAttribute(rootElement, "universal_twist_info_id", "" + store.getUniversalTwistInfoId());
+		}
+		
+		if(store.getDefaultServicePlanIdAsLong()!=null){
+			this.setAttribute(rootElement, "default_service_plan_id", "" + store.getDefaultServicePlanId());
+		}
+		
 
 		// Proxy settings
 		ProxyServerModel psm = store.getProxy();
@@ -228,8 +290,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		if (nonRefFullDefinition) {
 			// Includes ALL service definitions in the DOM
 			for (Service mockServiceBean : store.getServices()) {
-
-				Element serviceElement = this.getServiceAsElement(document, mockServiceBean);
+				Element serviceElement = this.getServiceAsElement(document, mockServiceBean, true);
 				rootElement.appendChild(serviceElement);
 			}
 		} else {
@@ -237,9 +298,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			for (Service mockServiceBean : store.getServices()) {
 
 				Element serviceElement = document.createElement("serviceref");
-				serviceElement.setAttribute("file",
-						MockeyXmlFileManager.getServiceFileNameOutputString(mockServiceBean));
-
+				File serviceFile = MockeyXmlFileManager.getServiceFile(mockServiceBean);
+				serviceElement.setAttribute("file", serviceFile.getAbsolutePath());
 				rootElement.appendChild(serviceElement);
 			}
 		}
@@ -253,13 +313,14 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				servicePlanElement.setAttribute("id", "" + servicePlan.getId());
 				servicePlanElement.setAttribute("tag", servicePlan.getTag());
 				// REMOVED March 2013.
-				// No need to persist. Visual queue only. 
-				//servicePlanElement.setAttribute("last_visit", getSafeForXmlOutputString("" + servicePlan.getLastVisit()));
+				// No need to persist. Visual queue only.
+				// servicePlanElement.setAttribute("last_visit",
+				// getSafeForXmlOutputString("" + servicePlan.getLastVisit()));
 				for (PlanItem pi : servicePlan.getPlanItemList()) {
 					Element planItemElement = document.createElement("plan_item");
 					planItemElement.setAttribute("hang_time", "" + pi.getHangTime());
-					planItemElement.setAttribute("service_name",  getSafeForXmlOutputString(pi.getServiceName()));
-					planItemElement.setAttribute("scenario_name",  getSafeForXmlOutputString(pi.getScenarioName()));
+					planItemElement.setAttribute("service_name", getSafeForXmlOutputString(pi.getServiceName()));
+					planItemElement.setAttribute("scenario_name", getSafeForXmlOutputString(pi.getScenarioName()));
 					planItemElement.setAttribute("service_response_type", "" + pi.getServiceResponseType());
 
 					servicePlanElement.appendChild(planItemElement);
@@ -290,7 +351,6 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		return document;
 	}
 
-	
 	private String getSafeForXmlOutputString(String arg) {
 		if (arg != null) {
 			return arg.trim();

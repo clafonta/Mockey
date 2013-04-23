@@ -33,10 +33,7 @@ import java.util.List;
 
 import org.xml.sax.InputSource;
 
-import com.mockey.model.Scenario;
 import com.mockey.model.Service;
-import com.mockey.model.ServiceRef;
-import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 
 public class MockeyXmlFileConfigurationReader {
@@ -73,5 +70,6 @@ public class MockeyXmlFileConfigurationReader {
 
 		return msp.getMockService(new InputSource(br));
 
-	}	
+	}
+
 }

@@ -380,4 +380,28 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getDefaultServicePlanId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getDefaultServicePlanIdAsLong() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDefaultServicePlanId(String v) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setServicePlan(ServicePlan servicePlan) {
+		// TODO Auto-generated method stub
+		
+	}
 }

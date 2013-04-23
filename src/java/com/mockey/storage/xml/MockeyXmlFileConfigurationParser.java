@@ -27,10 +27,18 @@
  */
 package com.mockey.storage.xml;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.mockey.model.PlanItem;
 import com.mockey.model.ProxyServerModel;
@@ -60,7 +68,8 @@ public class MockeyXmlFileConfigurationParser {
 
 	private final static String ROOT_SERVICE_REAL_URL = ROOT_SERVICE + "/real_url";
 	private final static String ROOT_SERVICE_SCENARIO = ROOT_SERVICE + "/scenario";
-	private final static String ROOT_SERVICE_REQUEST_INSPECTOR_JSON_RULES = ROOT_SERVICE + "/request_inspector_json_rules";
+	private final static String ROOT_SERVICE_REQUEST_INSPECTOR_JSON_RULES = ROOT_SERVICE
+			+ "/request_inspector_json_rules";
 	private final static String ROOT_SERVICE_RESPONSE_SCHEMA = ROOT_SERVICE + "/response_schema";
 	private final static String ROOT_PLAN = ROOT + "/service_plan";
 	private final static String ROOT_PLAN_ITEM = ROOT_PLAN + "/plan_item";
@@ -74,25 +83,47 @@ public class MockeyXmlFileConfigurationParser {
 	private static Digester fullSetDigester = null;
 	static {
 		MockeyXmlFileConfigurationParser.fullSetDigester = new Digester();
-
+		fullSetDigester.setNamespaceAware(true);
+		fullSetDigester.setXIncludeAware(true);
+		fullSetDigester.setEntityResolver(new EntityResolver() {
+			@Override
+			public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+				if (systemId.endsWith(".xml")) {
+					try {
+						// Why URI? Because system id comes over as
+						// "file://value"
+						// Let URI handle the 'file://' pretext
+						File x2 = new File(new URI(systemId));
+						MockeyXmlFileManager mxfm = new MockeyXmlFileManager();
+						FileInputStream fstream = new FileInputStream(x2);
+						String inputStreamString = mxfm.getFileContentAsString(fstream);
+						InputSource is = new InputSource(new StringReader(inputStreamString));
+						is.setSystemId(systemId);
+						return is;
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					}
+				}
+				return null;
+			}
+		});
 		fullSetDigester.setValidating(false);
 		fullSetDigester.addObjectCreate(ROOT, InMemoryMockeyStorage.class);
 
 		fullSetDigester.addSetProperties(ROOT, "universal_error_service_id", "universalErrorServiceId");
-																			   
+
 		fullSetDigester.addSetProperties(ROOT, "universal_error_scenario_id", "universalErrorScenarioId");
 		fullSetDigester.addSetProperties(ROOT, "universal_twist_info_id", "universalTwistInfoId");
+		fullSetDigester.addSetProperties(ROOT, "default_service_plan_id", "defaultServicePlanId");
 
 		fullSetDigester.addObjectCreate(ROOT_PROXYSERVER, ProxyServerModel.class);
 		fullSetDigester.addSetProperties(ROOT_PROXYSERVER, "proxy_url", "proxyUrl");
 		fullSetDigester.addSetProperties(ROOT_PROXYSERVER, "proxy_enabled", "proxyEnabled");
 		fullSetDigester.addSetNext(ROOT_PROXYSERVER, "setProxy");
 
-		
 		fullSetDigester.addObjectCreate(ROOT_SERVICEREF, ServiceRef.class);
 		fullSetDigester.addSetProperties(ROOT_SERVICEREF, "file", "fileName");
 		fullSetDigester.addSetNext(ROOT_SERVICEREF, "saveOrUpdateServiceRef");
-
 
 		fullSetDigester.addObjectCreate(ROOT_SERVICE, Service.class);
 		fullSetDigester.addSetNext(ROOT_SERVICE, "saveOrUpdateService");
@@ -103,58 +134,55 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "hang_time", "hangTime");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "url", "url");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "tag", "tag");
-		//REMOVED March 2013. 
-		// No need to persist to a repot'. At run time, visual queue only. 
-		//fullSetDigester.addSetProperties(ROOT_SERVICE, "last_visit", "lastVisit");
+		// REMOVED March 2013.
+		// No need to persist to a repot'. At run time, visual queue only.
+		// fullSetDigester.addSetProperties(ROOT_SERVICE, "last_visit",
+		// "lastVisit");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "error_scenario_id", "errorScenarioId");
-		
-		
-
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "proxyurl", "realServiceUrlByString");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "default_real_url_index", "defaultRealUrlIndex");
-
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "service_response_type", "serviceResponseType");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "default_scenario_id", "defaultScenarioId");
-
 		//
 		fullSetDigester.addBeanPropertySetter(ROOT_SERVICE_REQUEST_INSPECTOR_JSON_RULES, "requestInspectorJsonRules");
-		fullSetDigester.addSetProperties(ROOT_SERVICE_REQUEST_INSPECTOR_JSON_RULES, "enable_flag", "requestInspectorJsonRulesEnableFlag");
+		fullSetDigester.addSetProperties(ROOT_SERVICE_REQUEST_INSPECTOR_JSON_RULES, "enable_flag",
+				"requestInspectorJsonRulesEnableFlag");
 		//
 		fullSetDigester.addBeanPropertySetter(ROOT_SERVICE_RESPONSE_SCHEMA, "responseSchema");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_RESPONSE_SCHEMA, "enable_flag", "responseSchemaFlag");
-		
 		fullSetDigester.addObjectCreate(ROOT_SERVICE_REAL_URL, Url.class);
 		fullSetDigester.addSetProperties(ROOT_SERVICE_REAL_URL, "url", "url");
 		fullSetDigester.addSetNext(ROOT_SERVICE_REAL_URL, "saveOrUpdateRealServiceUrl");
-
 		fullSetDigester.addObjectCreate(ROOT_SERVICE_SCENARIO, Scenario.class);
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "id", "id");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "name", "scenarioName");
 		// CHANGE on March 2013
-		// Last visit will always change, and there's no need to persist this to a repository. 
-		// This information is for in-memory use only, and displayed to users ONLY. 
-		//fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "last_visit", "lastVisit");
+		// Last visit will always change, and there's no need to persist this to
+		// a repository.
+		// This information is for in-memory use only, and displayed to users
+		// ONLY.
+		// fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "last_visit",
+		// "lastVisit");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "http_resp_status_code", "httpResponseStatusCode");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "tag", "tag");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
-		fullSetDigester.addSetProperties(SCENARIO_MATCH, "scenario_match_evaluation_rules_flag", "matchStringArgEvaluationRulesFlag");
-
+		fullSetDigester.addSetProperties(SCENARIO_MATCH, "scenario_match_evaluation_rules_flag",
+				"matchStringArgEvaluationRulesFlag");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_REQUEST, "requestMessage");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_RESPONSE, "responseMessage");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_RESPONSE_HEADER, "responseHeader");
-		
-		
 		fullSetDigester.addSetNext(ROOT_SERVICE_SCENARIO, "saveOrUpdateScenario");
 
 		// PLAN
 		fullSetDigester.addObjectCreate(ROOT_PLAN, ServicePlan.class);
-		fullSetDigester.addSetProperties(ROOT_PLAN, "name", "name");//     
+		fullSetDigester.addSetProperties(ROOT_PLAN, "name", "name");//
 		fullSetDigester.addSetProperties(ROOT_PLAN, "description", "description");//
 		fullSetDigester.addSetProperties(ROOT_PLAN, "id", "id");
 		fullSetDigester.addSetProperties(ROOT_PLAN, "tag", "tag");
-		// REMOVED. 
-		// March 2013, no need to persist this value to a repository. 
-		//fullSetDigester.addSetProperties(ROOT_PLAN, "last_visit", "lastVisit");
+		// REMOVED.
+		// March 2013, no need to persist this value to a repository.
+		// fullSetDigester.addSetProperties(ROOT_PLAN, "last_visit",
+		// "lastVisit");
 		fullSetDigester.addSetNext(ROOT_PLAN, "saveOrUpdateServicePlan");
 		fullSetDigester.addObjectCreate(ROOT_PLAN_ITEM, PlanItem.class);
 		fullSetDigester.addSetProperties(ROOT_PLAN_ITEM, "hang_time", "hangTime");
@@ -165,7 +193,7 @@ public class MockeyXmlFileConfigurationParser {
 
 		// TWIST CONFIGURATION
 		fullSetDigester.addObjectCreate(ROOT_TWIST_CONFIG, TwistInfo.class);
-		fullSetDigester.addSetProperties(ROOT_TWIST_CONFIG, "name", "name");//     
+		fullSetDigester.addSetProperties(ROOT_TWIST_CONFIG, "name", "name");//
 		fullSetDigester.addSetProperties(ROOT_TWIST_CONFIG, "id", "id");
 		fullSetDigester.addSetNext(ROOT_TWIST_CONFIG, "saveOrUpdateTwistInfo");
 		fullSetDigester.addObjectCreate(ROOT_TWIST_CONFIG_ITEM, PatternPair.class);
@@ -187,8 +215,10 @@ public class MockeyXmlFileConfigurationParser {
 	public IMockeyStorage getMockeyStore(InputSource inputSource) throws org.xml.sax.SAXParseException,
 			java.io.IOException, org.xml.sax.SAXException {
 
-		// For initialization (by default), the store is in transient mode, which is important to prevent
-		// file writing. Too much, too slow. Yuck. 
+		// For initialization (by default), the store is in transient mode,
+		// which is important to prevent
+		// file writing. Too much, too slow. Yuck.
+		// inputSource.getByteStream();
 		IMockeyStorage c = (IMockeyStorage) MockeyXmlFileConfigurationParser.fullSetDigester.parse(inputSource);
 		return c;
 	}
@@ -205,11 +235,9 @@ public class MockeyXmlFileConfigurationParser {
 	public List<Service> getMockService(InputSource inputSource) throws org.xml.sax.SAXParseException,
 			java.io.IOException, org.xml.sax.SAXException {
 
-		InMemoryMockeyStorage c = (InMemoryMockeyStorage) MockeyXmlFileConfigurationParser.fullSetDigester
-				.parse(inputSource);
+		IMockeyStorage c = getMockeyStore(inputSource);
 		List<Service> list = c.getServices();
 		return list;
-
 	}
 
 }

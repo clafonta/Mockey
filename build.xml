@@ -15,7 +15,7 @@
 	<property name="one-jar-lib.dir" location="${etc.dir}/one-jar"/>
 	<property name="dist.dir" location="dist"/>
 	<!--  VERSION NUMBER should follow Semantic Versioning. http://semver.org/ -->
-	<property name="version.num" value="1.1"/>
+	<property name="version.num" value="2.0"/>
 	<property name="classes.dir" location="${build.dir}/WEB-INF/classes"/>
 	<property name="test.classes.dir" value="${build.dir}/test/classes" />
 	<property name="test.report.dir" value="${build.dir}/report"/>

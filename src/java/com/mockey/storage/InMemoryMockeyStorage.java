@@ -29,6 +29,7 @@ package com.mockey.storage;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -66,10 +67,10 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
 
 	private OrderedMap<TwistInfo> twistInfoStore = new OrderedMap<TwistInfo>();
-	private static Logger logger = Logger
-			.getLogger(InMemoryMockeyStorage.class);
+	private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
 	private ProxyServerModel proxyInfoBean = new ProxyServerModel();
 	private Long univeralTwistInfoId = null;
+	private Long defaultServicePlanId = null;
 	private Long universalErrorServiceId = null;
 	private Long universalErrorScenarioId = null;
 	private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
@@ -99,6 +100,37 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			this.writeMemoryToFile();
 		}
 
+	}
+
+	/**
+	 * 
+	 * @return empty string if service plan id is null, otherwise long value as
+	 *         string.
+	 */
+	public String getDefaultServicePlanId() {
+		if (defaultServicePlanId != null) {
+			return defaultServicePlanId.toString();
+		} else {
+			return "";
+		}
+	}
+
+	/**
+	 * 
+	 * @return empty string if service plan id is null, otherwise long value as
+	 *         string.
+	 */
+	public void setDefaultServicePlanId(String v) {
+		try {
+			this.defaultServicePlanId = new Long(v);
+		} catch (Exception e) {
+			// Do nothing. Leave value as is.
+		}
+
+	}
+
+	public Long getDefaultServicePlanIdAsLong() {
+		return this.defaultServicePlanId;
 	}
 
 	/**
@@ -132,9 +164,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public Service getServiceByName(String name) {
 		if (name != null) {
 			for (Service service : getServices()) {
-				if (service.getServiceName() != null
-						&& service.getServiceName().trim()
-								.equalsIgnoreCase(name.trim())) {
+				if (service.getServiceName() != null && service.getServiceName().trim().equalsIgnoreCase(name.trim())) {
 					return service;
 				}
 			}
@@ -169,24 +199,18 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			logger.error("Unable to retrieve service w/ url pattern: " + url, e);
 		}
 
-		if (service != null && filterTag != null
-				&& filterTag.trim().length() > 0 && service.hasTag(filterTag)) {
-			logger.debug("Found service with Service path: " + url
-					+ ", with tag filter '" + filterTag + "'.");
+		if (service != null && filterTag != null && filterTag.trim().length() > 0 && service.hasTag(filterTag)) {
+			logger.debug("Found service with Service path: " + url + ", with tag filter '" + filterTag + "'.");
 			return service;
-		} else if (service != null && filterTag != null
-				&& filterTag.trim().length() > 0 && !service.hasTag(filterTag)) {
-			logger.debug("Found service with Service path: " + url
-					+ ", but DOES NOT have a matching tag filter of '"
+		} else if (service != null && filterTag != null && filterTag.trim().length() > 0 && !service.hasTag(filterTag)) {
+			logger.debug("Found service with Service path: " + url + ", but DOES NOT have a matching tag filter of '"
 					+ filterTag + "', so Mockey is returning not-found.");
 			service = null;
 		} else if (service != null) {
-			logger.debug("Found service with Service path: " + url
-					+ ". No tag filter. ");
+			logger.debug("Found service with Service path: " + url + ". No tag filter. ");
 			return service;
 		} else {
-			logger.debug("Didn't find service with Service path: " + url
-					+ ".  Creating a new one.");
+			logger.debug("Didn't find service with Service path: " + url + ".  Creating a new one.");
 		}
 
 		service = new Service();
@@ -223,11 +247,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 *            service state to compare to the url
 	 * @return service if url pattern matches
 	 */
-	private Service findServiceBasedOnUrlPattern(String url,
-			Service serviceToEvaluate) {
+	private Service findServiceBasedOnUrlPattern(String url, Service serviceToEvaluate) {
 		Url fullUrl = new Url(serviceToEvaluate.getUrl());
-		UrlPatternMatchResult result = UrlUtil.evaluateUrlPattern(url,
-				fullUrl.getFullUrl());
+		UrlPatternMatchResult result = UrlUtil.evaluateUrlPattern(url, fullUrl.getFullUrl());
 
 		Service foundService = null;
 		if (!result.isMatchingUrlPattern()) {
@@ -259,8 +281,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		newService.setHangTime(service.getHangTime());
 		newService.setHttpMethod(service.getHttpMethod());
 		newService.setServiceName(service.getServiceName());
-		newService.setServiceResponseTypeByString(service
-				.getServiceResponseTypeAsString());
+		newService.setServiceResponseTypeByString(service.getServiceResponseTypeAsString());
 		newService.setDefaultRealUrlIndex(service.getDefaultRealUrlIndex());
 		newService.setUrl(service.getUrl());
 		// We don't do this because the Default scenario ID is not guaranteed to
@@ -279,8 +300,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		// Now add scenarios
 		for (Scenario scenario : service.getScenarios()) {
 			Scenario newScenario = new Scenario();
-			newScenario.setHttpResponseStatusCode(scenario
-					.getHttpResponseStatusCode());
+			newScenario.setHttpResponseStatusCode(scenario.getHttpResponseStatusCode());
 			newScenario.setMatchStringArg(scenario.getMatchStringArg());
 			newScenario.setResponseHeader(scenario.getResponseHeader());
 			newScenario.setResponseMessage(scenario.getResponseMessage());
@@ -341,8 +361,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		historyStore.remove(scenarioId);
 	}
 
-	public void saveOrUpdateFulfilledClientRequest(
-			FulfilledClientRequest request) {
+	public void saveOrUpdateFulfilledClientRequest(FulfilledClientRequest request) {
 		logger.debug("saving a request.");
 		historyStore.save(request);
 	}
@@ -371,13 +390,11 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		}
 	}
 
-	public void updateServicePlansWithNewServiceName(String oldServiceName,
-			String newServiceName) {
+	public void updateServicePlansWithNewServiceName(String oldServiceName, String newServiceName) {
 
 		for (ServicePlan servicePlan : this.getServicePlans()) {
 			for (PlanItem planItem : servicePlan.getPlanItemList()) {
-				if (planItem.getServiceName() != null
-						&& planItem.getServiceName().equals(oldServiceName)) {
+				if (planItem.getServiceName() != null && planItem.getServiceName().equals(oldServiceName)) {
 					planItem.setServiceName(newServiceName);
 					// 'Add' will 'update' too.
 					servicePlan.addPlanItem(planItem);
@@ -397,11 +414,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 			for (ServicePlan servicePlan : this.getServicePlans()) {
 				for (PlanItem planItem : servicePlan.getPlanItemList()) {
-					if (planItem.getServiceName() != null
-							&& planItem.getServiceName().equals(
-									service.getServiceName())
-							&& planItem.getScenarioName().equals(
-									oldScenarioName)) {
+					if (planItem.getServiceName() != null && planItem.getServiceName().equals(service.getServiceName())
+							&& planItem.getScenarioName().equals(oldScenarioName)) {
 						planItem.setScenarioName(newScenarioName);
 						// 'Add' will 'update' too.
 						servicePlan.addPlanItem(planItem);
@@ -420,8 +434,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public ServicePlan getServicePlanByName(String servicePlanName) {
 		ServicePlan sp = null;
 		for (ServicePlan servicePlan : this.getServicePlans()) {
-			if (servicePlan.getName() != null
-					&& servicePlan.getName().equalsIgnoreCase(servicePlanName)) {
+			if (servicePlan.getName() != null && servicePlan.getName().equalsIgnoreCase(servicePlanName)) {
 				sp = servicePlan;
 				break;
 			}
@@ -444,10 +457,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public ScenarioRef getUniversalErrorScenarioRef() {
 		ScenarioRef scenarioRef = null; // new ScenarioRef();
-		if (this.universalErrorScenarioId != null
-				&& this.universalErrorServiceId != null) {
-			scenarioRef = new ScenarioRef(this.universalErrorScenarioId,
-					this.universalErrorServiceId);
+		if (this.universalErrorScenarioId != null && this.universalErrorServiceId != null) {
+			scenarioRef = new ScenarioRef(this.universalErrorScenarioId, this.universalErrorServiceId);
 		}
 		return scenarioRef;
 	}
@@ -523,8 +534,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public List<String> uniqueClientIPsForService(Long serviceId) {
 
-		logger.debug("getting IPs for serviceId: " + serviceId
-				+ ". there are a total of " + this.historyStore.size()
+		logger.debug("getting IPs for serviceId: " + serviceId + ". there are a total of " + this.historyStore.size()
 				+ " requests currently stored.");
 
 		List<String> uniqueIPs = new ArrayList<String>();
@@ -537,18 +547,15 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return uniqueIPs;
 	}
 
-	public FulfilledClientRequest getFulfilledClientRequestsById(
-			Long fulfilledClientRequestId) {
+	public FulfilledClientRequest getFulfilledClientRequestsById(Long fulfilledClientRequestId) {
 
 		return this.historyStore.get(fulfilledClientRequestId);
 
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(
-			Long serviceId) {
-		logger.debug("getting requests for serviceId: " + serviceId
-				+ ". there are a total of " + this.historyStore.size()
-				+ " requests currently stored.");
+	public List<FulfilledClientRequest> getFulfilledClientRequestsForService(Long serviceId) {
+		logger.debug("getting requests for serviceId: " + serviceId + ". there are a total of "
+				+ this.historyStore.size() + " requests currently stored.");
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
 		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 			if (req.getServiceId().equals(serviceId)) {
@@ -558,8 +565,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return rv;
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(
-			String ip) {
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIP(String ip) {
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
 		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 			if (req.getRequestorIP().equals(ip)) {
@@ -569,12 +575,10 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		return rv;
 	}
 
-	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(
-			String ip, Long serviceId) {
+	public List<FulfilledClientRequest> getFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
 		for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
-			if (req.getServiceId().equals(serviceId)
-					&& req.getRequestorIP().equals(ip)) {
+			if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
 				rv.add(req);
 			}
 		}
@@ -586,11 +590,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	}
 
-	public void deleteFulfilledClientRequestsFromIPForService(String ip,
-			Long serviceId) {
+	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
 		for (FulfilledClientRequest req : historyStore.getOrderedList()) {
-			if (req.getServiceId().equals(serviceId)
-					&& req.getRequestorIP().equals(ip)) {
+			if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
 				this.historyStore.remove(req.getId());
 			}
 		}
@@ -610,16 +612,14 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 * Filters list with AND not OR. If string starts with "!", we consider it
 	 * NOT.
 	 */
-	public List<FulfilledClientRequest> getFulfilledClientRequest(
-			Collection<String> filterArguments) {
+	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments) {
 
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
 		if (filterArguments.size() == 0) {
 			rv = this.getFulfilledClientRequests();
 		} else {
 
-			for (FulfilledClientRequest req : this.historyStore
-					.getOrderedList()) {
+			for (FulfilledClientRequest req : this.historyStore.getOrderedList()) {
 				boolean allFilterTokensPresentInReq = true;
 				for (String filterArg : filterArguments) {
 					boolean notValue = filterArg.startsWith("!");
@@ -715,8 +715,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 		if (!transientState) {
 			MockeyXmlFactory g = new MockeyXmlFactory();
-			g.writeStoreToXML(store,
-					MockeyXmlFileManager.MOCK_SERVICE_DEFINITION);
+			g.writeStoreToXML(store, MockeyXmlFileManager.MOCK_SERVICE_DEFINITION);
 		}
 
 	}
@@ -786,22 +785,19 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 				service.removeTagFromList(tag);
 				for (Scenario scenario : service.getScenarios()) {
 					scenario.removeTagFromList(tag);
-					if (tag.trim().toLowerCase()
-							.equals(scenario.getLastVisitSimple())) {
+					if (tag.trim().toLowerCase().equals(scenario.getLastVisitSimple())) {
 						scenario.setLastVisit(null);
 					}
 				}
 
-				if (tag.trim().toLowerCase()
-						.equals(service.getLastVisitSimple())) {
+				if (tag.trim().toLowerCase().equals(service.getLastVisitSimple())) {
 					service.setLastVisit(null);
 				}
 			}
 			for (ServicePlan servicePlan : servicePlanStore.getOrderedList()) {
 				servicePlan.removeTagFromList(tag);
 
-				if (tag.trim().toLowerCase()
-						.equals(servicePlan.getLastVisitSimple())) {
+				if (tag.trim().toLowerCase().equals(servicePlan.getLastVisitSimple())) {
 					servicePlan.setLastVisit(null);
 				}
 			}
@@ -824,6 +820,29 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			this.globalFilterTag = "";
 		} else {
 			this.globalFilterTag = filterTag.toLowerCase().trim();
+		}
+	}
+
+	@Override
+	public void setServicePlan(ServicePlan servicePlan) {
+
+		if (servicePlan != null) {
+
+			for (PlanItem planItem : servicePlan.getPlanItemList()) {
+
+				Service service = this.getServiceByName(planItem.getServiceName());
+
+				if (service != null) {
+					service.setHangTime(planItem.getHangTime());
+					service.setDefaultScenarioByName(planItem.getScenarioName());
+					service.setServiceResponseType(planItem.getServiceResponseType());
+					this.saveOrUpdateService(service);
+				}
+			}
+			// Why do we save the Plan here?
+			// To save the lastVisit time
+			servicePlan.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+			this.saveOrUpdateServicePlan(servicePlan);
 		}
 	}
 

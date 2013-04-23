@@ -130,6 +130,32 @@ $(document).ready( function() {
             
         });
     });
+    
+    $('.save-as-default-plan').each( function() {
+        $(this).click( function() {
+            
+            var planId = this.id.split("_")[1];
+            $.post('<c:url value="/plan/setup"/>', { action: 'set_as_default_plan', plan_id: planId, type: 'json'} ,function(data){
+            
+                   if(data.result.success){
+                       $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+                       $('.save-as-default-plan').each( function() {
+                       		$(this).removeClass("response_green").addClass("response_not");
+                       });
+                       $('#save-as-default-plan_'+planId).removeClass("response_not").addClass("response_green");
+                       $('.not-service-plan').each( function() {
+                       		$(this).show();
+                       });
+                        $('.yes-service-plan').each( function() {
+                       		$(this).hide();
+                       });
+                       $('#not-service-plan_'+planId).hide();
+                       $('#yes-service-plan_'+planId).show();
+                    }
+            }, 'json' );
+            
+        });
+    });
 
 	
     $('.tiny_service_delete').each( function() {
@@ -543,26 +569,37 @@ $(document).ready( function() {
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
 			                                <div id="plan_${plan.id}" class="parentform" >
-			                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_<c:out value="${plan.id}"/>" title="Delete this plan" href="#"><i aria-hidden="true" class="icon-cancel"></i></a></span>
-			                                
-			                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
-			                                <mockey-tag:statusCheckByServicePlan servicePlan="${plan}"/>
-			                                <div style="padding-top:0.6em;">  
-			                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#"> Set This Plan </a> &nbsp;
-			                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#">Save As Plan</a></div>
+				                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_${plan.id}" title="Delete this plan" href="#"><i aria-hidden="true" class="icon-cancel"></i></a></span>
+				                                
+				                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
+				                                <mockey-tag:statusCheckByServicePlan servicePlan="${plan}"/>
+				                                <div style="padding-top:0.6em;"> 
+					                                  
+				                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#" title="Enable this plan">Enable Plan</a> &nbsp;
+				                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#" title="Save settings as this plan.">Save As Plan</a>
+				                                  
+				                                  <div style="padding-top:1em;font-size: 0.8em; align:right;" class="tiny">
+				                                  <hr /> 
+				                                  Default plan upon startup?
+				                                  <a id="save-as-default-plan_${plan.id}" class="save-as-default-plan <c:choose><c:when test="${plan.id eq defaultServicePlanId}">response_green</c:when><c:otherwise>response_not</c:otherwise></c:choose>" style="text-decoration:none;" href="#" title="Set as the default plan upon Mockey startup.">
+				                                  <span id="not-service-plan_${plan.id}" class="not-service-plan" style="<c:if test="${plan.id eq defaultServicePlanId}">display:none;</c:if>">No</span>
+				                                  <span id="yes-service-plan_${plan.id}" class="yes-service-plan" style="<c:choose><c:when test="${plan.id eq defaultServicePlanId}"></c:when><c:otherwise>display:none;</c:otherwise></c:choose>">Yes</span>
+				                                  </a>
+				                                  </div>
+				                                </div>
 			                                </div>
 									    </c:forEach>
 									    <div class="tiny" style="padding-top:1em;" id="no-plans-msg"><a href="<c:url value="help#plan"/>">What's a plan?</a></div>
-			                            <div class="info_message tiny">
-			                            <p>To <strong>create a plan</strong>, go to the Services tab, make your settings, and
-                                        then tab to here to create (or save). </p>
-                                        <p>To <strong>set a plan</strong>, click on the <b>Set As Plan</b> link. Note: you 
-                                        will be redirected to the Services tab. </p>
-                                        <p>
-                                        To <strong>update a plan</strong>, go to the <b>Services</b> tab, make the 
-                                        necessary updates you need and return here. Clicking <b>Save/Update</b> will 
-                                        update the service plan name and settings. </p>
-                                        </div>
+				                            <div class="info_message tiny">
+					                            <p>To <strong>create a plan</strong>, go to the Services tab, make your settings, and
+		                                        then tab to here to create (or save). </p>
+		                                        <p>To <strong>enable a plan</strong>, click on the <b>Enable Plan</b> link. Note: you 
+		                                        will be redirected to the Services tab. </p>
+		                                        <p>
+		                                        To <strong>update a plan</strong>, go to the <b>Services</b> tab, make the 
+		                                        necessary updates you need and return here. Clicking <b>Save/Update</b> will 
+		                                        update the service plan name and settings. </p>
+	                                        </div>
 									    </div>
 									   
 							    	</div>
