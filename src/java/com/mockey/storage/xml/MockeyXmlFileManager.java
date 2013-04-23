@@ -450,11 +450,11 @@ public class MockeyXmlFileManager {
 	protected static File getServiceFile(Service service) {
 		// Ensure the name is good.
 
-		Long serviceId = service.getId();
+		String serviceFileName = service.getServiceName();
 
-		if (serviceId != null) {
-
-			File serviceDirectoryFile = new File(MockeyXmlFileManager.MOCK_SERVICE_FOLDER + FILESEPERATOR + serviceId);
+		if (serviceFileName != null) {
+			serviceFileName = getSafeForFileSystemName(serviceFileName);
+			File serviceDirectoryFile = new File(MockeyXmlFileManager.MOCK_SERVICE_FOLDER + FILESEPERATOR + serviceFileName);
 			// depot directory/<service ID> directory
 			if (!serviceDirectoryFile.exists()) {
 				serviceDirectoryFile.mkdir();
@@ -466,7 +466,7 @@ public class MockeyXmlFileManager {
 				serviceScenarioListDirectory.mkdir();
 			}
 			// depot directory/<service ID> directory/<service ID> file
-			File serviceFile = new File(serviceDirectoryFile.getPath() + FILESEPERATOR + serviceId + ".xml");
+			File serviceFile = new File(serviceDirectoryFile.getPath() + FILESEPERATOR + serviceFileName + ".xml");
 			return serviceFile;
 		} else {
 			return null;
@@ -476,7 +476,7 @@ public class MockeyXmlFileManager {
 
 	protected static File[] getServiceScenarioFileNames(Service service) {
 
-		File serviceScenarioDir = new File(service.getServiceName() + FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
+		File serviceScenarioDir = new File(getSafeForFileSystemName(service.getServiceName()) + FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
 		return serviceScenarioDir.listFiles();
 
 	}
@@ -485,7 +485,7 @@ public class MockeyXmlFileManager {
 		// mockey_def_depot/<service ID>/scenarios/<scenario_name>.xml
 
 		File serviceScenarioFolder = new File(MockeyXmlFileManager.MOCK_SERVICE_FOLDER + FILESEPERATOR
-				+ service.getId() + FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
+				+ getSafeForFileSystemName(service.getServiceName()) + FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
 
 		return serviceScenarioFolder;
 	}
@@ -509,11 +509,15 @@ public class MockeyXmlFileManager {
 		return serviceScenarioFile;
 	}
 
-	private static String getScenarioResponseFileName(Scenario scenario) {
-		return scenario.getId() + ".txt";
+	public static String getScenarioResponseFileName(Scenario scenario) {
+		return getSafeForFileSystemName(scenario.getScenarioName()) + ".txt";
 	}
-
+	
 	public static String getScenarioXmlFileName(Scenario scenario) {
-		return scenario.getId() + ".xml";
+		return getSafeForFileSystemName(scenario.getScenarioName()) + ".xml";
+	}
+	
+	public static String getSafeForFileSystemName(String arg){
+		return arg.replace(" ", "_");
 	}
 }

@@ -225,7 +225,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		Element scenarioResponseElement = document.createElement("scenario_response");
 		if (scenarioResponseAsXIncludeTxtFile) {
 			Element include = document.createElementNS("http://www.w3.org/2001/XInclude", "xi:include");
-			include.setAttribute("href", scenario.getId() + ".txt");
+			include.setAttribute("href", MockeyXmlFileManager.getScenarioResponseFileName(scenario));
 			include.setAttribute("parse", "text");
 			scenarioResponseElement.appendChild(include);
 		} else {

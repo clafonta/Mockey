@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.List;
 
 import org.apache.commons.digester3.Digester;
@@ -93,6 +94,7 @@ public class MockeyXmlFileConfigurationParser {
 						// Why URI? Because system id comes over as
 						// "file://value"
 						// Let URI handle the 'file://' pretext
+						
 						File x2 = new File(new URI(systemId));
 						MockeyXmlFileManager mxfm = new MockeyXmlFileManager();
 						FileInputStream fstream = new FileInputStream(x2);
