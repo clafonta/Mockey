@@ -127,7 +127,7 @@ $(document).ready( function() {
                        $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
                     }
             }, 'json' );
-            
+            return false;
         });
     });
     
@@ -153,7 +153,7 @@ $(document).ready( function() {
                        $('#yes-service-plan_'+planId).show();
                     }
             }, 'json' );
-            
+            return false;
         });
     });
 
