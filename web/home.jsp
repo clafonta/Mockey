@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
 <c:set var="pageTitle" value="Home" scope="request" />
@@ -493,8 +494,8 @@ $(document).ready( function() {
 							<td valign="top" width="33%" style="max-width:220px;padding-left:0;">
 							<div id="tabs" style="display:none;">
 								<ul>
-									<li><a href="#tabs-1" style="font-weight:100;">Services (${services.size()})</a></li>
-									<li><a href="#tabs-2" style="font-weight:100;">Plans (${plans.size()})</a></li>
+									<li><a href="#tabs-1" style="font-weight:100;">Services (${fn:length(services)})</a></li>
+									<li><a href="#tabs-2" style="font-weight:100;">Plans (${fn:length(plans)})</a></li>
 								</ul>
 							  	<div id="tabs-1">
 							  	  <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
@@ -651,7 +652,7 @@ $(document).ready( function() {
                                    </div>
                                    <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
                                    
-                                   <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario (${mockservice.scenarios.size()}):</label>
+                                   <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario (${fn:length(mockservice.scenarios)}):</label>
                                    <span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
                                    <div >
