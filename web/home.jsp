@@ -493,8 +493,8 @@ $(document).ready( function() {
 							<td valign="top" width="33%" style="max-width:220px;padding-left:0;">
 							<div id="tabs" style="display:none;">
 								<ul>
-									<li><a href="#tabs-1" style="font-weight:100;">Services</a></li>
-									<li><a href="#tabs-2" style="font-weight:100;">Plans</a></li>
+									<li><a href="#tabs-1" style="font-weight:100;">Services (${services.size()})</a></li>
+									<li><a href="#tabs-2" style="font-weight:100;">Plans (${plans.size()})</a></li>
 								</ul>
 							  	<div id="tabs-1">
 							  	  <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
@@ -561,7 +561,9 @@ $(document).ready( function() {
 							    </div>
 							    
 							    <div id="tabs-2">
-							        <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
+							        
+							        <div style="text-align:right;">
+							        <span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
 								    <div class="scroll">
 								         <c:if test="${empty plans}">
 									      <div class="info_message" id="no-plans-msg"> No plans here - yet! You should make one. </div>
@@ -649,7 +651,7 @@ $(document).ready( function() {
                                    </div>
                                    <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
                                    
-                                   <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario:</label>
+                                   <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario (${mockservice.scenarios.size()}):</label>
                                    <span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
                                    <div >
