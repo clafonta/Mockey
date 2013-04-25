@@ -299,7 +299,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 
 				Element serviceElement = document.createElement("serviceref");
 				File serviceFile = MockeyXmlFileManager.getServiceFile(mockServiceBean);
-				serviceElement.setAttribute("file", serviceFile.getAbsolutePath());
+				serviceElement.setAttribute("file", serviceFile.getPath());
 				rootElement.appendChild(serviceElement);
 			}
 		}
