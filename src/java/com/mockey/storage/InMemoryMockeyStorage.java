@@ -61,7 +61,7 @@ import com.mockey.storage.xml.MockeyXmlFileManager;
  */
 public class InMemoryMockeyStorage implements IMockeyStorage {
 
-	private OrderedMap<FulfilledClientRequest> historyStore = new OrderedMap<FulfilledClientRequest>();
+	private OrderedMap<FulfilledClientRequest> historyStore;
 	private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
 	private OrderedMap<ServiceRef> serviceRefStore = new OrderedMap<ServiceRef>();
 	private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
@@ -153,7 +153,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 * </pre>
 	 */
 	public InMemoryMockeyStorage() {
-		this.historyStore.setMaxSize(new Integer(25)); // Careful, more than ~45
+		initHistoryStore(); // Careful, more than ~45
 		// and AJAX /JavaScript
 		// gets funky.
 	}
@@ -511,7 +511,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 	public void deleteEverything() {
-		historyStore = new OrderedMap<FulfilledClientRequest>();
+        initHistoryStore();
 		mockServiceStore = new OrderedMap<Service>();
 		servicePlanStore = new OrderedMap<ServicePlan>();
 		twistInfoStore = new OrderedMap<TwistInfo>();
@@ -587,11 +587,15 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 	public void deleteFulfilledClientRequests() {
-		historyStore = new OrderedMap<FulfilledClientRequest>();
-
+        initHistoryStore();
 	}
 
-	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
+    private void initHistoryStore() {
+        historyStore = new OrderedMap<FulfilledClientRequest>();
+        historyStore.setMaxSize(new Integer(25));
+    }
+
+    public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
 		for (FulfilledClientRequest req : historyStore.getOrderedList()) {
 			if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
 				this.historyStore.remove(req.getId());
