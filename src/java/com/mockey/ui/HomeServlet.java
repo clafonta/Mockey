@@ -307,7 +307,6 @@ public class HomeServlet extends HttpServlet {
 		String servicePlanId = req.getParameter("plan_id");
 		if (servicePlanId != null) {
 			try {
-				System.out.println("HEYHEY: " + servicePlanId);
 				ServicePlan sp = store.getServicePlanById(new Long(servicePlanId));
 				req.setAttribute("servicePlan", sp);
 
