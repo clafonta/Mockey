@@ -85,4 +85,12 @@ public class PlanItem implements PersistableItem{
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return "PlanItem [id=" + id + ", serviceName=" + serviceName + ", scenarioName=" + scenarioName + ", hangTime="
+				+ hangTime + ", serviceResponseType=" + serviceResponseType + "]";
+	}
+	
+	
+
 }

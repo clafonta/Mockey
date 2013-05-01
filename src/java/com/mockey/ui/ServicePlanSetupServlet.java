@@ -106,6 +106,10 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 					"Saves current configuration settings as a service plan definition."));
 			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_SETPLAN_PARAMETER_ACTION_VALUE_SET_PLAN,
 					"Sets a service plan given a valid plan_id parameter."));
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_SETPLAN_PARAMETER_ACTION_VALUE_SET_AS_DEFAULT_PLAN,
+					"Sets a service plan to be set as the default state upon a Mockey startup. Set " + API_SETPLAN_PARAMETER_PLAN_ID
+					+" to 'none' if no desired default plan is to be set."));
+			
 			apiDocRequest.addAttribute(reqAttributeAction);
 
 			// Parameter - 'plan_id'
@@ -219,6 +223,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			// log.debug("Service Plan setup/delete");
 			ServicePlan servicePlan = null;
 			Long servicePlanId = null;
+			String servicePlanIdAsString = req.getParameter(API_SETPLAN_PARAMETER_PLAN_ID);
 			List<Service> allServices = store.getServices();
 			// *********************
 			// BEST EFFORT HERE.
@@ -228,7 +233,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			// *********************
 
 			try {
-				servicePlanId = new Long(req.getParameter(API_SETPLAN_PARAMETER_PLAN_ID));
+				servicePlanId = new Long(servicePlanIdAsString);
 				servicePlan = store.getServicePlanById(servicePlanId);
 			} catch (Exception e) {
 				if (req.getParameter(API_SETPLAN_PARAMETER_PLAN_ID) != null) {
@@ -309,7 +314,12 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			else if(API_SETPLAN_PARAMETER_ACTION_VALUE_SET_AS_DEFAULT_PLAN.equals(action)){
 				PrintWriter out = resp.getWriter();
 				JSONObject jsonObject = new JSONObject();
-				if(servicePlan!=null && servicePlan.getId()!=null){
+				if("none".equalsIgnoreCase(servicePlanIdAsString)){
+					store.setDefaultServicePlanId(null);
+					// JSON response
+					jsonObject.put("success", "Removed default plan.");
+				}
+				else if(servicePlan!=null && servicePlan.getId()!=null){
 					store.setDefaultServicePlanId(servicePlan.getId().toString());
 					// JSON response
 					jsonObject.put("success", "Set as Default Service Plan");

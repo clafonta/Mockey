@@ -123,6 +123,13 @@ public class ServicePlan extends StatusCheck implements PersistableItem {
 
 		}
 		return foundMatch;
-
 	}
+
+	@Override
+	public String toString() {
+		return "ServicePlan [id=" + id + ", name=" + name + ", description=" + description + ", transientState="
+				+ transientState + ", planItemStore=" + planItemStore + "]";
+	}
+	
+	
 }

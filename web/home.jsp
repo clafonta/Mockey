@@ -136,25 +136,40 @@ $(document).ready( function() {
         $(this).click( function() {
             
             var planId = this.id.split("_")[1];
-            $.post('<c:url value="/plan/setup"/>', { action: 'set_as_default_plan', plan_id: planId, type: 'json'} ,function(data){
+            if($(this).hasClass("response_green")) {
+            	$.post('<c:url value="/plan/setup"/>', { action: 'set_as_default_plan', plan_id: 'none', type: 'json'} ,function(data){
+	                   if(data.result.success){
+	                       $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+	                       $('#save-as-default-plan_'+planId).removeClass("response_green").addClass("response_not");
+	                       $('#not-service-plan_'+planId).show();
+	                       $('#yes-service-plan_'+planId).hide();
+	                    }
+	            }, 'json' );
+	            return false;
+            }else {
             
-                   if(data.result.success){
-                       $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
-                       $('.save-as-default-plan').each( function() {
-                       		$(this).removeClass("response_green").addClass("response_not");
-                       });
-                       $('#save-as-default-plan_'+planId).removeClass("response_not").addClass("response_green");
-                       $('.not-service-plan').each( function() {
-                       		$(this).show();
-                       });
-                        $('.yes-service-plan').each( function() {
-                       		$(this).hide();
-                       });
-                       $('#not-service-plan_'+planId).hide();
-                       $('#yes-service-plan_'+planId).show();
-                    }
-            }, 'json' );
-            return false;
+	            $.post('<c:url value="/plan/setup"/>', { action: 'set_as_default_plan', plan_id: planId, type: 'json'} ,function(data){
+	            
+	                   if(data.result.success){
+	                       $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
+	                       $('.save-as-default-plan').each( function() {
+	                       		$(this).removeClass("response_green").addClass("response_not");
+	                       });
+	                       $('#save-as-default-plan_'+planId).removeClass("response_not").addClass("response_green");
+	                       $('.not-service-plan').each( function() {
+	                       		$(this).show();
+	                       });
+	                        $('.yes-service-plan').each( function() {
+	                       		$(this).hide();
+	                       });
+	                       $('#not-service-plan_'+planId).hide();
+	                       $('#yes-service-plan_'+planId).show();
+	                    }
+	            }, 'json' );
+	            return false;
+	        }
+            
+            
         });
     });
 

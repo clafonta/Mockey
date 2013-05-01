@@ -121,11 +121,15 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 *         string.
 	 */
 	public void setDefaultServicePlanId(String v) {
-		try {
-			this.defaultServicePlanId = new Long(v);
-			this.writeMemoryToFile();
-		} catch (Exception e) {
-			// Do nothing. Leave value as is.
+		if (v != null) {
+			try {
+				this.defaultServicePlanId = new Long(v);
+				this.writeMemoryToFile();
+			} catch (Exception e) {
+				// Do nothing. Leave value as is.
+			}
+		} else {
+			this.defaultServicePlanId = null;
 		}
 
 	}
@@ -317,8 +321,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 	public Service saveOrUpdateService(Service mockServiceBean) {
-		// System.out.println("XXXXXXXXXXXXX Saving Service. Name is: " +
-		// mockServiceBean.getServiceName());
+
 		PersistableItem item = mockServiceStore.save(mockServiceBean);
 		if (mockServiceBean != null && !mockServiceBean.getTransientState()) {
 			this.writeMemoryToFile();
@@ -387,6 +390,10 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public void deleteServicePlan(ServicePlan servicePlan) {
 		if (servicePlan != null) {
 			this.servicePlanStore.remove(servicePlan.getId());
+			// Dont' forget to delete the Default Plan ID
+			if (this.getDefaultServicePlanId().equals(new Long(servicePlan.getId()).toString())) {
+				this.setDefaultServicePlanId(null);
+			}
 			this.writeMemoryToFile();
 		}
 	}
@@ -511,12 +518,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 	public void deleteEverything() {
-        initHistoryStore();
+		initHistoryStore();
 		mockServiceStore = new OrderedMap<Service>();
 		servicePlanStore = new OrderedMap<ServicePlan>();
 		twistInfoStore = new OrderedMap<TwistInfo>();
 		this.proxyInfoBean = new ProxyServerModel();
 		this.globalFilterTag = "";
+		this.defaultServicePlanId = null;
 		this.universalErrorServiceId = null;
 		this.universalErrorScenarioId = null;
 		this.writeMemoryToFile();
@@ -587,15 +595,15 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	}
 
 	public void deleteFulfilledClientRequests() {
-        initHistoryStore();
+		initHistoryStore();
 	}
 
-    private void initHistoryStore() {
-        historyStore = new OrderedMap<FulfilledClientRequest>();
-        historyStore.setMaxSize(new Integer(25));
-    }
+	private void initHistoryStore() {
+		historyStore = new OrderedMap<FulfilledClientRequest>();
+		historyStore.setMaxSize(new Integer(25));
+	}
 
-    public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
+	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
 		for (FulfilledClientRequest req : historyStore.getOrderedList()) {
 			if (req.getServiceId().equals(serviceId) && req.getRequestorIP().equals(ip)) {
 				this.historyStore.remove(req.getId());

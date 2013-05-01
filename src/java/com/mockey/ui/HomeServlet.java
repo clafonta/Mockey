@@ -105,32 +105,25 @@ public class HomeServlet extends HttpServlet {
 			// Parameter - 'action'
 			ApiDocAttribute reqAttributeAction = new ApiDocAttribute();
 			reqAttributeAction.setFieldName(BSC.ACTION);
-			reqAttributeAction
-					.addFieldValues(new ApiDocFieldValue(
-							API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE,
-							"Delete all configurations, history, settings, etc., and start with a clean Mockey. "));
-			reqAttributeAction
-					.addFieldValues(new ApiDocFieldValue(BSC.INIT,
-							"Will delete everything and configure Mockey with the defined file. "));
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(API_CONFIGURATION_PARAMETER_ACTION_VALUE_DELETE,
+					"Delete all configurations, history, settings, etc., and start with a clean Mockey. "));
+			reqAttributeAction.addFieldValues(new ApiDocFieldValue(BSC.INIT,
+					"Will delete everything and configure Mockey with the defined file. "));
 			apiDocRequest.addAttribute(reqAttributeAction);
 
 			// Parameter - 'file'
 			ApiDocAttribute reqAttributeFile = new ApiDocAttribute();
 			reqAttributeFile.setFieldName(BSC.FILE);
-			reqAttributeFile
-					.addFieldValues(new ApiDocFieldValue(
-							"[string]",
-							"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
-			reqAttributeFile
-					.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
+			reqAttributeFile.addFieldValues(new ApiDocFieldValue("[string]",
+					"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
+			reqAttributeFile.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
 			apiDocRequest.addAttribute(reqAttributeFile);
 
 			// Parameter - 'type'
 			ApiDocAttribute reqAttributeType = new ApiDocAttribute();
 			reqAttributeType.setFieldName(BSC.TYPE);
 			reqAttributeType
-					.addFieldValues(new ApiDocFieldValue(
-							"json",
+					.addFieldValues(new ApiDocFieldValue("json",
 							"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
 			apiDocRequest.addAttribute(reqAttributeType);
 			apiDocService.setApiRequest(apiDocRequest);
@@ -138,8 +131,8 @@ public class HomeServlet extends HttpServlet {
 			// Parameter - 'transientState'
 			ApiDocAttribute reqAttributeState = new ApiDocAttribute();
 			reqAttributeState.setFieldName(BSC.TRANSIENT);
-			reqAttributeState.addFieldValues(new ApiDocFieldValue("boolean",
-					"Read only mode? Also known as transient."));
+			reqAttributeState
+					.addFieldValues(new ApiDocFieldValue("boolean", "Read only mode? Also known as transient."));
 			apiDocRequest.addAttribute(reqAttributeState);
 			apiDocService.setApiRequest(apiDocRequest);
 
@@ -165,8 +158,7 @@ public class HomeServlet extends HttpServlet {
 			// Response attribute 'file'
 			ApiDocAttribute resAttributeFile = new ApiDocAttribute();
 			resAttributeFile.setFieldName(BSC.FILE);
-			resAttributeFile
-					.setFieldDescription("Name of file used to initialize Mockey.");
+			resAttributeFile.setFieldDescription("Name of file used to initialize Mockey.");
 			apiResponse.addAttribute(resAttributeFile);
 
 			// Response attribute 'success'
@@ -187,8 +179,7 @@ public class HomeServlet extends HttpServlet {
 		}
 	}
 
-	public void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String action = req.getParameter(BSC.ACTION);
 		String type = req.getParameter(BSC.TYPE);
@@ -213,8 +204,7 @@ public class HomeServlet extends HttpServlet {
 			try {
 				transientState = new Boolean(req.getParameter(BSC.TRANSIENT));
 				store.setReadOnlyMode(transientState);
-				logger.debug("In memory-mode (i.e. do not write to file system)? "
-						+ transientState);
+				logger.debug("In memory-mode (i.e. do not write to file system)? " + transientState);
 			} catch (Exception e) {
 
 			}
@@ -229,10 +219,8 @@ public class HomeServlet extends HttpServlet {
 					if (f.exists()) {
 						fstream = new FileInputStream(f);
 					} else {
-						logger.info("Filename '" + fileName
-								+ "' does not exist. doing nothing.");
-						jsonResultObject.put(FAIL, fileName
-								+ " does not exist. doing nothing.");
+						logger.info("Filename '" + fileName + "' does not exist. doing nothing.");
+						jsonResultObject.put(FAIL, fileName + " does not exist. doing nothing.");
 					}
 				}
 
@@ -240,23 +228,19 @@ public class HomeServlet extends HttpServlet {
 
 					// DELETE SECOND
 					MockeyXmlFileManager reader = new MockeyXmlFileManager();
-					String inputAsString = reader
-							.getFileContentAsString(fstream);
+					String inputAsString = reader.getFileContentAsString(fstream);
 					store.deleteEverything();
 					reader.loadConfigurationWithXmlDef(inputAsString, null);
 					logger.info("Loaded definitions from " + fileName);
-					jsonResultObject.put(SUCCESS, "Loaded definitions from "
-							+ fileName);
+					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
 					jsonResultObject.put(BSC.FILE, fileName);
 				}
 			} catch (Exception e) {
 
-				logger.debug("Unable to load service definitions with name: '"
-						+ fileName + "' or URL: " + fileUrl, e);
+				logger.debug("Unable to load service definitions with name: '" + fileName + "' or URL: " + fileUrl, e);
 				try {
-					jsonResultObject.put(FAIL,
-							"Unable to load service definitions with filename: '"
-									+ fileName + "' or URL: " + fileUrl);
+					jsonResultObject.put(FAIL, "Unable to load service definitions with filename: '" + fileName
+							+ "' or URL: " + fileUrl);
 				} catch (Exception ef) {
 					logger.error("Unable to produce a JSON response.", e);
 				}
@@ -286,6 +270,7 @@ public class HomeServlet extends HttpServlet {
 				return;
 			} else {
 				String contextRoot = req.getContextPath();
+
 				resp.sendRedirect(Url.getContextAwarePath("/home", contextRoot));
 
 				return;
@@ -302,8 +287,7 @@ public class HomeServlet extends HttpServlet {
 				JSONObject jsonResponseObject = new JSONObject();
 				JSONObject jsonObject = new JSONObject();
 				try {
-					jsonObject.put(SUCCESS,
-							"All is deleted. You have a clean slate. Enjoy.");
+					jsonObject.put(SUCCESS, "All is deleted. You have a clean slate. Enjoy.");
 					jsonResponseObject.put("result", jsonObject);
 				} catch (JSONException e) {
 					logger.error("Unable to produce a JSON result.", e);
@@ -323,36 +307,31 @@ public class HomeServlet extends HttpServlet {
 		String servicePlanId = req.getParameter("plan_id");
 		if (servicePlanId != null) {
 			try {
-				ServicePlan sp = store.getServicePlanById(new Long(
-						servicePlanId));
+				System.out.println("HEYHEY: " + servicePlanId);
+				ServicePlan sp = store.getServicePlanById(new Long(servicePlanId));
 				req.setAttribute("servicePlan", sp);
 
 			} catch (Exception e) {
-				logger.debug("Service Plan with ID '" + servicePlanId
-						+ "' does not exist.", e);
+				logger.debug("Service Plan with ID '" + servicePlanId + "' does not exist.", e);
 			}
 		}
 
 		String filterTagArg = store.getGlobalStateSystemFilterTag();
 		FilterHelper filterHelper = new FilterHelper();
-		List<Service> filteredServiceList = filterHelper.getFilteredServices(
-				filterTagArg, store);
+		List<Service> filteredServiceList = filterHelper.getFilteredServices(filterTagArg, store);
 
 		ConflictHelper conflictHelper = new ConflictHelper();
-		ConflictInfo conflictInfo = conflictHelper
-				.getConflictInfo(filteredServiceList);
+		ConflictInfo conflictInfo = conflictHelper.getConflictInfo(filteredServiceList);
 		req.setAttribute("services", filteredServiceList);
 		req.setAttribute("conflictInfo", conflictInfo);
-		req.setAttribute("plans",
-				filterHelper.getFilteredServicePlans(filterTagArg, store));
+		req.setAttribute("plans", filterHelper.getFilteredServicePlans(filterTagArg, store));
 		req.setAttribute("filterTag", filterTagArg);
-		if(store.getDefaultServicePlanIdAsLong() !=null){
-			req.setAttribute("defaultServicePlanId", store.getDefaultServicePlanId() );
-		}else {
-			req.setAttribute("defaultServicePlanId", "" );
+		if (store.getDefaultServicePlanIdAsLong() != null) {
+			req.setAttribute("defaultServicePlanId", store.getDefaultServicePlanId());
+		} else {
+			req.setAttribute("defaultServicePlanId", "");
 		}
-		req.setAttribute("httpRespCodeList", HttpStatusCodeStore.getInstance()
-				.getCodeEntryList());
+		req.setAttribute("httpRespCodeList", HttpStatusCodeStore.getInstance().getCodeEntryList());
 		RequestDispatcher dispatch = req.getRequestDispatcher("home.jsp");
 		dispatch.forward(req, resp);
 	}
