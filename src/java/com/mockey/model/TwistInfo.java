@@ -38,7 +38,7 @@ import com.mockey.ui.PatternPair;
  * 
  * Why is this needed? This is useful when an application is making requests to
  * URLs belonging to <i>User Acceptance Testing Environment A</i> but one really
- * wants to be pointing to <i>Developer Sandbox Environment</i>. 
+ * wants to be pointing to <i>Developer Sandbox Environment</i>.
  * 
  * @author chadlafontaine
  * 
@@ -76,20 +76,21 @@ public class TwistInfo implements PersistableItem {
 	public void addPatternPair(PatternPair patternPair) {
 		this.patternPairList.add(patternPair);
 	}
-	
-	
+
 	/**
-	 * If no matching origination value (from the pattern list) found in the incoming argument, 
-	 * then returns null. 
-	 *  
-	 * @param incoming - value to be twisted
-	 * @return may be null
+	 * 
+	 * 
+	 * @param incoming
+	 *            - value to be twisted
+	 * @return If no matching origination value (from the pattern list) found in
+	 *         the incoming argument, then returns incoming value as is,
+	 *         otherwise returns the new value.
 	 */
-	public String getTwistedValue(String incoming){
-		String outgoing = null;
-		for(PatternPair patternPair: getPatternPairList()){
-			if(incoming!=null && incoming.indexOf(patternPair.getOrigination()) > -1){
-				if(patternPair.getOrigination()!=null && patternPair.getDestination()!=null ){
+	public String getTwistedValue(String incoming) {
+		String outgoing = incoming;
+		for (PatternPair patternPair : getPatternPairList()) {
+			if (incoming != null && incoming.indexOf(patternPair.getOrigination()) > -1) {
+				if (patternPair.getOrigination() != null && patternPair.getDestination() != null) {
 					outgoing = incoming.replaceAll(patternPair.getOrigination(), patternPair.getDestination());
 				}
 				break;
@@ -97,32 +98,34 @@ public class TwistInfo implements PersistableItem {
 		}
 		return outgoing;
 	}
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		TwistInfo twistInfo = new TwistInfo();
+
+		twistInfo.addPatternPair(new PatternPair("qa1", "qa2"));
+		System.out.println(twistInfo.getTwistedValue("http://qa2.google.com"));
+
 		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
 		twistInfo.addPatternPair(new PatternPair("uat.google.com", "qa.google.com"));
 		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
 
-		
 		twistInfo = new TwistInfo();
 		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
 		twistInfo.addPatternPair(new PatternPair("uat.google.com", null));
 		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
-		
+
 		twistInfo = new TwistInfo();
 		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
 		twistInfo.addPatternPair(new PatternPair("qa3.google.com", "qa4.google.com"));
 		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
-		
+
 		twistInfo = new TwistInfo();
 		twistInfo.addPatternPair(new PatternPair("qa3.google.com", "qa4.google.com"));
 		twistInfo.addPatternPair(new PatternPair("uat.google.com", "qa4.google.com"));
 		twistInfo.addPatternPair(new PatternPair(null, "qa4.google.com"));
 
-
 		System.out.println(twistInfo.getTwistedValue("http://uat.google.com"));
 
-		
 	}
-	
+
 }

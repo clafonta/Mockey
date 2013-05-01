@@ -41,25 +41,27 @@ import com.mockey.plugin.RequestInspectionResult;
  */
 public class FulfilledClientRequest implements PersistableItem {
 
-	private Long id;
-	private Long serviceId;
-	private String serviceName;
-	private String clientRequestBody;
-	private String clientRequestHeaders;
-	private String clientRequestParameters;
-	private String clientRequestCookies;
-	private String clientResponseCookies;
-	private String requestorIP;
-	private String rawRequest;
-	private String comment;
+	private Long id = null;
+	private Long serviceId = null;
+	private String serviceName = null;
+	private String clientRequestBody = null;
+	private String clientRequestHeaders = null;
+	private String clientRequestParameters = null;
+	private String clientRequestCookies = null;
+	private String clientResponseCookies = null;
+	private String requestorIP = null;
+	private String rawRequest = null;
+	private String comment = null;
 	private String originalUrlBeforeTwisting = null;
 	private int serviceResponseType = -1;
 	private ResponseFromService responseMessage;
 	private RequestInspectionResult requestInspectionResult;
 	private Date time = new Date();
+
 	/**
-	 * Value of the response type, defining Static, Dynamic, or Proxy response. 
-	 * @return non-negative value if set. 
+	 * Value of the response type, defining Static, Dynamic, or Proxy response.
+	 * 
+	 * @return non-negative value if set.
 	 * @see com.mockey.model.Service#getServiceResponseType()
 	 */
 	public int getServiceResponseType() {
@@ -74,7 +76,6 @@ public class FulfilledClientRequest implements PersistableItem {
 	public void setServiceResponseType(int serviceResponseType) {
 		this.serviceResponseType = serviceResponseType;
 	}
-
 
 	/**
 	 * 
@@ -207,5 +208,5 @@ public class FulfilledClientRequest implements PersistableItem {
 	public void setRequestInspectionResult(RequestInspectionResult requestInspectionResult) {
 		this.requestInspectionResult = requestInspectionResult;
 	}
-	
+
 }

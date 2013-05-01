@@ -43,6 +43,7 @@ import com.mockey.model.FulfilledClientRequest;
 import com.mockey.model.RequestFromClient;
 import com.mockey.model.ResponseFromService;
 import com.mockey.model.Service;
+import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 import com.mockey.plugin.PluginStore;
 import com.mockey.plugin.RequestInspectionResult;
@@ -72,38 +73,55 @@ public class ResponseServlet extends HttpServlet {
 	 * @see com.mockey.model.Service#getRequestInspectorName()
 	 */
 	@SuppressWarnings("static-access")
-	public void service(HttpServletRequest originalHttpReqFromClient,
-			HttpServletResponse resp) throws ServletException, IOException {
+	public void service(HttpServletRequest originalHttpReqFromClient, HttpServletResponse resp)
+			throws ServletException, IOException {
 
 		String originalHttpReqURI = originalHttpReqFromClient.getRequestURI();
-
+		String targetHttpReqURI = null;
 		String contextRoot = originalHttpReqFromClient.getContextPath();
 		if (originalHttpReqURI.startsWith(contextRoot)) {
-			originalHttpReqURI = originalHttpReqURI.substring(
-					contextRoot.length(), originalHttpReqURI.length());
+			originalHttpReqURI = originalHttpReqURI.substring(contextRoot.length(), originalHttpReqURI.length());
 		}
 
-		Url serviceUrl = new Url(originalHttpReqURI);
+		// ************************************************************************
+		// STEP #1) Is URL TWISTING ON?
+		// ************************************************************************
+		targetHttpReqURI = originalHttpReqURI;
+		if (store.getUniversalTwistInfoId() != null) {
+			TwistInfo twistInfo = store.getTwistInfoById(store.getUniversalTwistInfoId());
+			if (twistInfo != null) {
+				logger.debug("URL twisting is enabled.");
+				targetHttpReqURI = twistInfo.getTwistedValue(originalHttpReqURI);
+			}
+		}
+
+		Url serviceUrl = new Url(targetHttpReqURI);
 		Service service = store.getServiceByUrl(serviceUrl.getFullUrl());
 		// ************************************************************************
-		// STEP #1) Process your original request.
+		// STEP #2) Process your original request.
 		// ************************************************************************
-		RequestFromClient request = new RequestFromClient(
-				originalHttpReqFromClient);
+		RequestFromClient request = new RequestFromClient(originalHttpReqFromClient);
 
 		// ************************************************************************
-		// STEP #2) JAVA and JSON implemented Inspectors
+		// STEP #3) JAVA and JSON implemented Inspectors
 		// ************************************************************************
 
 		PluginStore pluginStore = PluginStore.getInstance();
-		RequestInspectionResult inspectionMessage = pluginStore
-				.processRequestInspectors(service, request);
+		RequestInspectionResult inspectionMessage = pluginStore.processRequestInspectors(service, request);
 
-		// Url urlToExecute = service.getDefaultRealUrl();
+		// ************************************************************************
+		// STEP #4) Get the Response (static,dynamic, or proxy).
+		// ************************************************************************
 		service.setHttpMethod(originalHttpReqFromClient.getMethod());
 		ResponseFromService response = service.execute(request, serviceUrl);
-		logRequestAsFulfilled(service, request, response,
-				originalHttpReqFromClient.getRemoteAddr(), inspectionMessage);
+
+		// ************************************************************************
+		// STEP #5) If twisting was enabled, let's be sure to set the original URL
+		// ************************************************************************
+		if (!originalHttpReqURI.equalsIgnoreCase(targetHttpReqURI)) {
+			response.setOriginalRequestUrlBeforeTwisting(new Url(originalHttpReqURI));
+		}
+		logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr(), inspectionMessage);
 
 		try {
 			// Wait for a X hang time seconds.
@@ -121,11 +139,11 @@ public class ResponseServlet extends HttpServlet {
 					resp.setHeader(h.getName(), h.getValue());
 				}
 			}
-			
+
 			try {
 				resp.setStatus(response.getHttpResponseStatusCode());
 			} catch (java.lang.IllegalArgumentException iae) {
-				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode()+ "'", iae);
+				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode() + "'", iae);
 			}
 			byte[] myCharSetBytes = response.getBody().getBytes();
 			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
@@ -135,19 +153,16 @@ public class ResponseServlet extends HttpServlet {
 			try {
 				resp.setStatus(response.getHttpResponseStatusCode());
 			} catch (java.lang.IllegalArgumentException iae) {
-				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode()+ "'", iae);
+				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode() + "'", iae);
 			}
 			response.writeToOutput(resp);
 		}
 	}
 
-	private void logRequestAsFulfilled(Service service,
-			RequestFromClient request, ResponseFromService response, String ip,
-			RequestInspectionResult inspectionResult)
-			throws UnsupportedEncodingException {
+	private void logRequestAsFulfilled(Service service, RequestFromClient request, ResponseFromService response,
+			String ip, RequestInspectionResult inspectionResult) throws UnsupportedEncodingException {
 		FulfilledClientRequest fcr = new FulfilledClientRequest();
-		fcr.setRawRequest((response.getRequestUrl() != null) ? response
-				.getRequestUrl().toString() : "");
+		fcr.setRawRequest((response.getRequestUrl() != null) ? response.getRequestUrl().toString() : "");
 		fcr.setRequestorIP(ip);
 		fcr.setServiceId(service.getId());
 		fcr.setServiceName(service.getServiceName());
@@ -160,8 +175,7 @@ public class ResponseServlet extends HttpServlet {
 
 		fcr.setServiceResponseType(service.getServiceResponseType());
 		if (response.getOriginalRequestUrlBeforeTwisting() != null) {
-			fcr.setOriginalUrlBeforeTwisting(response
-					.getOriginalRequestUrlBeforeTwisting().toString());
+			fcr.setOriginalUrlBeforeTwisting(response.getOriginalRequestUrlBeforeTwisting().toString());
 		}
 		fcr.setRequestInspectionResult(inspectionResult);
 		store.saveOrUpdateFulfilledClientRequest(fcr);

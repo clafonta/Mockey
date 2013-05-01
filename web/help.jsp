@@ -160,9 +160,7 @@
 	    <p>
 	    Twisting refers to taking incoming requests from URL/Domain X and mapping them to URL/Domain Y. 
 	    <ul>
-	      <li>Twisting is <b>only</b> used for services set to <strong>Proxy</strong> requests</li>
-	      <li>Twisting is <b>not</b> used for services set to <strong>Static</strong> or <strong>Dynamic</strong></li>
-	    
+	      <li>Twisting is used for services set to <strong>Proxy</strong>, <strong>Static</strong> or <strong>Dynamic</strong></li>
 	    </ul>
 	    <strong>When would I want to use Twisting?</strong> When your client application doesn't
 	        easily allow you to point to different environments or when some requests should be answered by the real
