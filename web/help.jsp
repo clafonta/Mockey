@@ -555,6 +555,11 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
 	         <li><strong>url</strong>: for the purpose of evaluating the existence of specific content related to the incoming request URL, i.e. RESTful URLs containing token identifiers.</li>
 	    </ul>
 	    </p>
+	    <h4>Are rules handled with AND or OR?<h4>
+	    <ul>
+	    <li>All rules per TYPE will be treated as 'AND'. For example, all key/value pairs in 'parameters' must exist AND be valid.</li>
+		<li>All rules between TYPEs will be treated as 'OR'. For example, all key/value pair rules must be TRUE in 'parameters' OR all key/value rules must be true for 'headers'. </li>
+	    </ul>
 	    <p>
 	    Each evaluation rule includes the following:
 		

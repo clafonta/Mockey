@@ -53,8 +53,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -66,7 +64,15 @@ import com.mockey.model.RequestFromClient;
 /**
  * Given a JSON string containing rules to validate the HTTP request, this will
  * provide the logic to inspect and validate HTTP request and build an
- * informative message for results.
+ * informative message for results. A few things to note: 
+ * 
+ * All rules per TYPE will be treated as 'AND'. For example, all key/value 
+ * pairs in 'parameters' must exist. 
+ * 
+ * All rules between TYPEs will be treated as 'OR'. For example, all key/value
+ * pair rules must be TRUE in 'parameters' OR all key/value rules must be true
+ * for 'headers'. 
+ * 
  * 
  * <pre>
  *  	{
@@ -117,7 +123,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	private JSONObject json = null;
 	private Logger logger = Logger
 			.getLogger(RequestInspectorDefinedByJson.class);
-	private Map<String, List<String>> errorMapByKey = new HashMap<String, List<String>>();
+	private Map<RequestRuleType, List<String>> errorMapByKey = new HashMap<RequestRuleType, List<String>>();
+	private Map<RequestRuleType, Boolean> rulesDefinedForType = new HashMap<RequestRuleType, Boolean>();
 	private int ruleCount = 0;
 
 	/**
@@ -158,7 +165,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		// *************
 		analyze(RequestRuleType.RULE_TYPE_FOR_PARAMETERS,
 				request.getParameters());
-
+		
 		// *************
 		// Headers
 		// *************
@@ -213,13 +220,13 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 				try {
 					RequestRule requestRule = new RequestRule(jsonRule,
 							ruleType);
-
+					this.rulesDefinedForType.put(ruleType, new Boolean(true));
 					if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType)) {
 						String[] values = keyValues
 								.get(RequestRuleType.RULE_TYPE_FOR_BODY
 										.toString());
 						if (requestRule.evaluate(values)) {
-							addErrorMessage(ruleType.toString(), requestRule);
+							addErrorMessage(ruleType, requestRule);
 						}
 					} else if (RequestRuleType.RULE_TYPE_FOR_URL
 							.equals(ruleType)) {
@@ -227,10 +234,9 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 								.get(RequestRuleType.RULE_TYPE_FOR_URL
 										.toString());
 						if (requestRule.evaluate(values)) {
-							addErrorMessage(ruleType.toString(), requestRule);
+							addErrorMessage(ruleType, requestRule);
 						}
 					} else {
-
 						// For HEADERS and PARAMETERS
 						if (requestRule.getKey() != null && requestRule
 										.getKey().contains("*")) {
@@ -248,7 +254,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 							// Get ALL values from all parameters, and evaluate. 
 							if (requestRule.evaluate(allValues
 									.toArray(new String[allValues.size()]))) {
-								addErrorMessage(ruleType.toString(),
+								addErrorMessage(ruleType,
 										requestRule);
 							}
 						} else {
@@ -257,14 +263,14 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 							String[] values = keyValues.get(requestRule
 									.getKey());
 							if (requestRule.evaluate(values)) {
-								addErrorMessage(ruleType.toString(),
+								addErrorMessage(ruleType,
 										requestRule);
 							}
 						}
 					}
 
 				} catch (RequestRuleException e) {
-					addErrorMessage(ruleType.toString(),
+					addErrorMessage(ruleType,
 							"Invalid JSON rule setup. " + e.getMessage());
 				}
 
@@ -284,7 +290,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	 * @param type
 	 * @param error
 	 */
-	private void addErrorMessage(String type, RequestRule requestRule) {
+	private void addErrorMessage(RequestRuleType type, RequestRule requestRule) {
 		List<String> errorListByKeyType = this.errorMapByKey.get(type);
 		if (errorListByKeyType == null) {
 			errorListByKeyType = new ArrayList<String>();
@@ -293,8 +299,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		// Build
 		StringBuilder sb = new StringBuilder();
 		sb.append("ISSUE: Rule of type '" + type + "'. ");
-		if (!RequestRuleType.RULE_TYPE_FOR_BODY.toString().equals(type)
-				&& !RequestRuleType.RULE_TYPE_FOR_URL.toString().equals(type)) {
+		if (!RequestRuleType.RULE_TYPE_FOR_BODY.equals(type)
+				&& !RequestRuleType.RULE_TYPE_FOR_URL.equals(type)) {
 			sb.append(" Belonging to key name of '" + requestRule.getKey()
 					+ "'. ");
 		}
@@ -311,7 +317,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	 * @param type
 	 * @param error
 	 */
-	private void addErrorMessage(String type, String msg) {
+	private void addErrorMessage(RequestRuleType type, String msg) {
 		List<String> errorListByKeyType = this.errorMapByKey.get(type);
 		if (errorListByKeyType == null) {
 			errorListByKeyType = new ArrayList<String>();
@@ -320,18 +326,39 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		this.errorMapByKey.put(type, errorListByKeyType);
 	}
 
+//	/**
+//	 * Method should be called post analysis.
+//	 * 
+//	 * @return true if one or more errors exist regardless of type.
+//	 */
+//	public boolean hasErrors_() {
+//		if (this.errorMapByKey.isEmpty()) {
+//			return false;
+//		} else {
+//			return true;
+//		}
+//	}
+	
 	/**
-	 * Method should be called post analysis.
 	 * 
-	 * @return true if one or more errors exist.
+	 * @return true if ALL rules pass for PARAMETERS or BODY or HEADERS or URL
 	 */
-	public boolean hasErrors() {
-		if (this.errorMapByKey.isEmpty()) {
-			return false;
-		} else {
-			return true;
+	public boolean hasAnySuccessForAtLeastOneRuleType(){
+		boolean success = false;
+		
+		Iterator<RequestRuleType> iter = rulesDefinedForType.keySet().iterator();
+		while(iter.hasNext()){
+			RequestRuleType type = iter.next();
+			List<String> errors = this.errorMapByKey.get(type);
+			if(errors==null || errors.size() == 0){
+				success = true;
+				break;
+			}
 		}
+		return success;
 	}
+	
+	
 
 	/**
 	 * If errors exists, this method will build 1 long string representation of
@@ -344,7 +371,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	public String getPostAnalyzeResultMessage() {
 		StringBuffer sb = new StringBuffer();
 		int i = 1;
-		for (String key : this.errorMapByKey.keySet()) {
+		for (RequestRuleType key : this.errorMapByKey.keySet()) {
 			for (String value : this.errorMapByKey.get(key)) {
 				sb.append(i++ + ") " + value + " \n");
 			}
@@ -358,7 +385,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		return false;
 	}
 
-	public static void main(String[] args) {
+	public static void main_(String[] args) {
 		// String valueRuleArg =
 		// "^((1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2})?$";
 		// String value = "10/23/1972";
@@ -374,7 +401,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 		// } catch (Exception e) {
 		// e.printStackTrace();
 		// }
-		Map<String, String[]> test = new HashMap<String, String[]>();
+		//Map<String, String[]> test = new HashMap<String, String[]>();
 
 	}
 }

@@ -562,7 +562,9 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 								scenario.getMatchStringArg());
 
 						jsonRulesInspector.analyze(request);
-						if (!jsonRulesInspector.hasErrors()) {
+					
+						if (jsonRulesInspector.hasAnySuccessForAtLeastOneRuleType()) {
+							
 							// No errors, so we have a match.
 							indexValue = 1;
 							// Capture the number of rules being processed

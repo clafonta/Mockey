@@ -69,5 +69,6 @@ public enum RequestRuleType {
 			return false;
 		}
 	}
+	
 
 }
