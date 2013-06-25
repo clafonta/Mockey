@@ -28,7 +28,7 @@ ${scenario.lastVisitSimple}</span>
 
 <%
 if(service.isResponseSchemaFlag()) {
-boolean result = com.mockey.ui.JsonSchemaUtil.validData(service.getResponseSchema(), scenario.getResponseMessage() );
+boolean result = com.mockey.ui.JsonSchemaUtil.validData(service.getResponseSchema(), scenario.getMatchStringArg() );
 String messageClass = "info_message";
 String message = "JSON is valid; satisfies JSON Schema.";
 String buttonClass = "hhButtonBlue";
