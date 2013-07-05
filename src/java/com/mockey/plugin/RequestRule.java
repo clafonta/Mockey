@@ -25,6 +25,7 @@
 package com.mockey.plugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -110,7 +111,7 @@ public class RequestRule {
 
 			boolean found = false;
 			String errorMsgRequired = "Fails to validate against the regular expression '"
-					+ this.getRule() + "' with value +'" + values + "'.";
+					+ this.getRule() + "' with value '" + Arrays.toString(values) + "'.";
 
 			for (String value : values) {
 

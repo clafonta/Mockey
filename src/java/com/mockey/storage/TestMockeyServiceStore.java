@@ -404,4 +404,10 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public Long getTimeOfCreation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

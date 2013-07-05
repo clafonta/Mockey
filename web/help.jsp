@@ -27,6 +27,7 @@
 		        <li>&#187; <a href="#robots">Robots</a></li>  
 		        <li>&#187; <a href="#evaluation_rules_api">Request Evaluation Rules in JSON</a></li>
 		        <li>&#187; <a href="#response_schema">Response JSON Schema</a></li> 
+		        <li>&#187; <a href="#status">Status</a></li> 
 		    </ul>
 	    </div>
 	    <div style="">
@@ -604,31 +605,16 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
         
         </p>
     </div>
-    <!-- 
-    <div class="help_section_zebra">
-	    <a href="#inspector_in_java" name="inspector_in_java"></a>
-        <h2>Request Inspector In Java</h2>
-        <p>
-        You can create your own Service request inspectors to help validate or provide helpful information for incoming
-        service requests. <i>What exactly is a request inspector?</i> It's a Java implementation that evaluates the incoming 
-        <strong>javax.servlet.http.HttpServletRequest</strong> for request parameters, body, headers, whatever, and then provides helpful
-        messages to display to the QA or Developer using Mockey. To learn how to create a request inspector of your own, 
-        you'll need to do a fresh code pull from <a href="https://github.com/clafonta/Mockey">GitHub/Mockey</a> and 
-        checkout the <strong>[MOCKEY_HOME]\plugin\README.txt</strong> for help. 
-        </p>
-        <p>If you want to see a request inspector in action, then do the following: 
-        <ul>
-        <li>Step 1. Create a Service and a Service Scenario. Look at above documentation for help on this.  </li>
-        <li>Step 2. Be sure your service returns a response. Check out the <a href="<c:url value="/history"/>">History</a> after you call your service. </li>
-        <li>Step 3. Now, call your service again but this time, append "<i>?foobarKey=true</i>" to your mock service URL. </li>
-        <li>Step 4. Again, check out the history via <a href="<c:url value="/history"/>">History</a>. You'll notice a 
-        new 'info' message appended to your history artifact letting you know that there was a request inspector 
-        who's only job is to look for 'foobarKey' as a parameter key for each and every incoming request to Mockey. </li>        
-        </ul>
-        </p>
-    </div>
-     -->
-	<div class="help_section">
+     <div class="help_section">
+	    <a href="#status" name="status"></a>
+	    <h2>Status</h2>
+	    <p>
+	    There's a 'status' URL that will give you information on Mockey. See <a href="<c:url value="/status" />">status</a>.
+	    
+	    </p>
+	</div>
+	<div class="help_section_zebra">
+		
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>

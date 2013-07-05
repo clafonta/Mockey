@@ -46,6 +46,8 @@ import com.mockey.model.TwistInfo;
  * 
  */
 public interface IMockeyStorage {
+	
+	public Long getTimeOfCreation();
 
 	public String getDefaultServicePlanId();
 

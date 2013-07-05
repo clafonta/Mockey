@@ -349,16 +349,22 @@
         <servlet-name>JsonSchemaValidateServlet</servlet-name>
         <url-pattern>/jsonschemavalidate</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>validateSyntax</servlet-name>
         <servlet-class>com.github.fge.jsonschema.servlets.SyntaxValidateServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StatusServlet</servlet-name>
+        <servlet-class>com.mockey.ui.StatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StatusServlet</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>validateSyntax</servlet-name>
         <url-pattern>/validateSyntax</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>JsonSchemaLoadSamplesServlet</servlet-name>
         <servlet-class>com.mockey.ui.JsonSchemaLoadSamplesServlet</servlet-class>
@@ -708,7 +714,7 @@
             403
         </error-code>
         <location>
-            /common/fourohthree.jsp
+            /WEB-INF/common/fourohthree.jsp
         </location>
     </error-page>
     <error-page>
@@ -716,7 +722,7 @@
             404
         </error-code>
         <location>
-            /common/fourohfour.jsp
+            /WEB-INF/common/fourohfour.jsp
         </location>
     </error-page>
     <error-page>
@@ -724,7 +730,7 @@
             500
         </error-code>
         <location>
-            /common/fivehundred.jsp
+            /WEB-INF/common/fivehundred.jsp
         </location>
     </error-page>
 </web-app>

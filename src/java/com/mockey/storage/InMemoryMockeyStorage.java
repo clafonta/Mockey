@@ -65,7 +65,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private OrderedMap<Service> mockServiceStore = new OrderedMap<Service>();
 	private OrderedMap<ServiceRef> serviceRefStore = new OrderedMap<ServiceRef>();
 	private OrderedMap<ServicePlan> servicePlanStore = new OrderedMap<ServicePlan>();
-
+	private Long creationTime = null;
 	private OrderedMap<TwistInfo> twistInfoStore = new OrderedMap<TwistInfo>();
 	private static Logger logger = Logger.getLogger(InMemoryMockeyStorage.class);
 	private ProxyServerModel proxyInfoBean = new ProxyServerModel();
@@ -157,6 +157,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 * </pre>
 	 */
 	public InMemoryMockeyStorage() {
+		Calendar time = Calendar.getInstance();
+		this.creationTime = new Long(time.getTimeInMillis());
 		initHistoryStore(); // Careful, more than ~45
 		// and AJAX /JavaScript
 		// gets funky.
@@ -857,6 +859,13 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			servicePlan.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 			this.saveOrUpdateServicePlan(servicePlan);
 		}
+	}
+
+	/**
+	 * @see IMockeyStorage#creationTime
+	 */
+	public Long getTimeOfCreation() {
+		return this.creationTime;
 	}
 
 }
