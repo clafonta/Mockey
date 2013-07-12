@@ -505,10 +505,16 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 
 		// Optional REST token from the URL
 		Url mockUrl = new Url(this.getUrl());
-		UrlPatternMatchResult requestResult = UrlUtil.evaluateUrlPattern(realServiceUrl.getFullUrl(),
-				mockUrl.getFullUrl());
-		if (requestResult.hasTokenId()) {
-			rawRequestDataBuffer.append(requestResult.getRestTokenId());
+		// Example: "http://example.com/hotels/{hotel}/bookings/{room}"
+		UriTemplate template = new UriTemplate(mockUrl.getFullUrl());
+		// Example: "http://example.com/hotels/1/bookings/42"
+		@SuppressWarnings("rawtypes")
+		Map restTokenResults = template.match(realServiceUrl.getFullUrl());
+		@SuppressWarnings("unchecked")
+		Iterator<String> tokenKeyIterator = restTokenResults.keySet().iterator();
+		while(tokenKeyIterator.hasNext()){
+			String key = tokenKeyIterator.next();
+			rawRequestDataBuffer.append(restTokenResults.get(key));
 		}
 
 		// Optional parameters and body
