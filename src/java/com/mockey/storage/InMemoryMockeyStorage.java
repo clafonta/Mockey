@@ -257,32 +257,40 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private Service findServiceBasedOnUrlPattern(String url, Service serviceToEvaluate) {
 		Url fullUrl = new Url(serviceToEvaluate.getUrl());
 		Service foundService = null;
-		 // EXAMPLE: "http://example.com/hotels/{hotel}/bookings/{booking}"
-		 UriTemplate template = new UriTemplate(fullUrl.getFullUrl());
-		 
-		 // EXAMPLE: "http://example.com/hotels/1/bookings/42"
-		 @SuppressWarnings("rawtypes")
+		// EXAMPLE: "http://example.com/hotels/{hotel}/bookings/{booking}"
+		UriTemplate template = new UriTemplate(fullUrl.getFullUrl());
+
+		// EXAMPLE: "http://example.com/hotels/1/bookings/42"
+		@SuppressWarnings("rawtypes")
 		Map results = template.match(url);
-		 if(results.size() > 0){
-			 // Possible match
-			 foundService = serviceToEvaluate;
-		 }else {
-			 
+		if (results.size() > 0) {
+			// Possible match
+			foundService = serviceToEvaluate;
+		} else {
+
 			// OK, not found based on primary Mock url.
 			// Let's look at secondary list of real URLs
 			List<Url> serviceUrlList = serviceToEvaluate.getRealServiceUrls();
 			Iterator<Url> altUrlIter = serviceUrlList.iterator();
 			while (altUrlIter.hasNext()) {
 				Url altUrl = altUrlIter.next();
-				results = template.match(altUrl.getFullUrl());
-				if(results.size() > 0){
-					 // Possible match
-					 foundService = serviceToEvaluate;
-					 break;
-				 }
-				
+
+				// Variable template is set to the template of the service's
+				// full URL.
+				// The template is matched against the service real URLs,
+				// therefore the match always succeeds. The template should be
+				// matched against the url of the request instead.
+				template = new UriTemplate(altUrl.getFullUrl());
+				results = template.match(url);
+
+				if (results.size() > 0) {
+					// Possible match
+					foundService = serviceToEvaluate;
+					break;
+				}
+
 			}
-		} 
+		}
 		return foundService;
 	}
 
