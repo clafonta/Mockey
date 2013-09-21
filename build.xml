@@ -94,9 +94,6 @@
 	<!-- Jars up file for distribution                                       -->
 	<!-- =================================================================== -->
 	<target name="dist" depends="clean, build, webapp, create-jar" description="Builds a .war and executable .jar file, e.g. 'java -jar Mockey.jar'">
-		<zip destfile="${dist.dir}/${ant.project.name}-${version.num}_with_dependencies.zip">
-			<fileset dir="${dist.dir}" includes="${ant.project.name}.war"/>
-		</zip>
 		<echo message="Success! Now try this:"/>
 		<echo message="                    >cd dist"/>
 		<echo message="                    >java -jar Mockey.jar --help"/>
@@ -119,8 +116,6 @@
                 <include name="**/*.json"/>
             </fileset>
         </copy>
-
-
 		<war destfile="${dist.dir}/${ant.project.name}.war" webxml="${build.dir}/WEB-INF/web.xml">
 			<fileset dir="${webapp.dir}">
 				<exclude name="**/web.xml" />
@@ -128,13 +123,6 @@
 			</fileset>
 			<classes dir="${classes.dir}"/>
 			<lib dir="${lib.dir}"/>
-			<!--  Putting these jars in WEB-INF/lib (instead of 'etc') breaks Eclipse Tomcat debug plugin, -->
-			<!--  but are needed for compiled JSPs for a .war file.                                        -->    
-			<lib dir="${etc.dir}">
-				<include name="jsp-api-2.1-glassfish-9.1.1.B60.25.p2.jar"/>
-				<include name="jsp-2.1-glassfish-9.1.1.B60.25.p2.jar"/>
-			</lib>
-
 		</war>
 	</target>
 
@@ -198,9 +186,7 @@
 		<copy todir="${build.dir}/WEB-INF" file="${tmp.webapp.dir}/WEB-INF/web.xml" />
 	</target>
 
-
     <target name="create-jar">
-
         <!-- Will clean up the hard-coded paths, just want to see what needs to be included -->
         <mkdir dir="build/jar" />
         <unzip dest="build/jar" overwrite="false">
