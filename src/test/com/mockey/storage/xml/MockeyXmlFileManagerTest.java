@@ -22,7 +22,7 @@ import com.mockey.ui.ServiceMergeResults;
 public class MockeyXmlFileManagerTest {
 
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-	private static String TESTCONFIG_DIR = System.getProperty("user.dir") + "build" + File.separator + "test" + File.separator + "configfiles";
+	private static String TESTCONFIG_DIR = System.getProperty("user.dir")+File.separator  + "build" + File.separator + "test" + File.separator + "configfiles";
 	
 	@Test
 	public void validateServiceScenarioFile(){

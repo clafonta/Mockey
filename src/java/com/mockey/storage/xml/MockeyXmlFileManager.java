@@ -106,6 +106,8 @@ public class MockeyXmlFileManager {
 			boolean success = fileDepot.mkdirs();
 			if (!success) {
 				logger.fatal("Unable to create a folder called " + MOCK_SERVICE_FOLDER);
+			}else {
+				logger.info("Created directory: " +  fileDepot.getAbsolutePath());
 			}
 		}
 	}

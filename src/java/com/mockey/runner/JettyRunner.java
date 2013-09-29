@@ -27,6 +27,7 @@
  */
 package com.mockey.runner;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -146,18 +147,24 @@ public class JettyRunner {
 
 		server.start();
 		// Construct the arguments for Mockey
-		String file = String.valueOf(config.getString(BSC.FILE));
-		String url = String.valueOf(config.getString(BSC.URL));
-		String filterTag = config.getString(BSC.FILTERTAG);
-		String fTagParam = "";
 
-		
-		// /////////////////////// Set BASE path for reading files. ////////////////
+		// /////////////////////// Set BASE path for reading files.
+		// ////////////////
 		String configurationPath = String.valueOf(config.getString(BSC.DEFINITION_LOCATION));
 		MockeyXmlFileManager.createInstance(configurationPath);
 		MockeyXmlFileManager instance = MockeyXmlFileManager.getInstance();
 		System.out.println("Configuration base path: " + instance.getBasePathFile().getAbsolutePath());
 		// /////////////////////////////////////////////////////////////////////
+
+		String file = String.valueOf(config.getString(BSC.FILE));
+		if (!file.startsWith(File.separator + "")) {
+			//No absolute, so we try for a relative path.
+			file = instance.getBasePathFile().getAbsolutePath() + File.separator + file;
+		}
+
+		String url = String.valueOf(config.getString(BSC.URL));
+		String filterTag = config.getString(BSC.FILTERTAG);
+		String fTagParam = "";
 
 		boolean headless = config.getBoolean(BSC.HEADLESS);
 		if (filterTag != null) {

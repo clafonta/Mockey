@@ -75,27 +75,30 @@ public class StartUpServlet extends HttpServlet {
 
 		// Init
 		getDebugFile();
+		boolean ECLIPSE_DEBUG = false;
+		if (ECLIPSE_DEBUG) {
+			try {
 
-		try {
+				// Doesn't the HomeServlet do this? Yes but
+				// this is one duplicate activity that allows for
+				// sandbox development (i.e. within Eclipse)
+				// since we're not using JettyRunner, which contains
+				// logic to pass/tell HomeServlet _how_ to initialize.
 
-			// Doesn't the HomeServlet do this? Yes but
-			// this is one duplicate activity that allows for
-			// sandbox development (i.e. within Eclipse)
-			// since we're not using JettyRunner, which contains
-			// logic to pass/tell HomeServlet _how_ to initialize.
-			MockeyXmlFileManager.createInstance(System.getProperty("user.dir"));
-			MockeyXmlFileManager reader =  MockeyXmlFileManager.getInstance();
-			reader.loadConfiguration();
+				MockeyXmlFileManager.createInstance(System.getProperty("user.dir"));
+				MockeyXmlFileManager reader = MockeyXmlFileManager.getInstance();
+				reader.loadConfiguration();
 
-		} catch (FileNotFoundException fnf) {
+			} catch (FileNotFoundException fnf) {
 
-			System.out.println("File used to initialize Mockey not found. "
-					+ "It's OK; one will be created if Mockey is not in 'memory-mode-only' "
-					+ "meaning you have to tell Mockey to 'write-to-file' via the web browser interface. ");
+				System.out.println("File used to initialize Mockey not found. "
+						+ "It's OK; one will be created if Mockey is not in 'memory-mode-only' "
+						+ "meaning you have to tell Mockey to 'write-to-file' via the web browser interface. ");
 
-		} catch (Exception e) {
-			// logger.error("StartUpServlet:init()", e);
-			e.printStackTrace();
+			} catch (Exception e) {
+				// logger.error("StartUpServlet:init()", e);
+				e.printStackTrace();
+			}
 		}
 	}
 }

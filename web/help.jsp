@@ -28,6 +28,7 @@
 		        <li>&#187; <a href="#evaluation_rules_api">Request Evaluation Rules in JSON</a></li>
 		        <li>&#187; <a href="#response_schema">Response JSON Schema</a></li> 
 		        <li>&#187; <a href="#status">Status</a></li> 
+		        <li>&#187; <a href="#startup">Start Up Configurations</a></li> 
 		    </ul>
 	    </div>
 	    <div style="">
@@ -605,7 +606,7 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
         
         </p>
     </div>
-     <div class="help_section">
+    <div class="help_section">
 	    <a href="#status" name="status"></a>
 	    <h2>Status</h2>
 	    <p>
@@ -614,7 +615,33 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
 	    </p>
 	</div>
 	<div class="help_section_zebra">
-		
+	    <a href="#startup" name="startup"></a>
+	    <h2>Start Up Configuration</h2>
+	    <p>
+	    There are a few options to configure Mockey on startup. Pass in the Help command to see your options:
+	    <div class="code">
+	    java -jar Mockey.jar --help
+	    </div>
+	    For example, if you want your configuration files to be located in a specific directory, then do the following:
+	    <div class="code">
+	    java -jar Mockey.jar -l /Users/clafonta/Work/Mockey/dist/testme
+	    </div>
+	    ..and Mockey will save your files in the 'testme' directory, e.g.:
+	    <pre>
+>tree /Users/clafonta/Work/Mockey/dist/testme/
+/Users/clafonta/Work/Mockey/dist/testme/
+|---mock_service_definitions.xml
+|___mockey_def_depot
+    |____Feeling
+         |---Feeling.xml
+         |___scenarios
+             |--- happy.txt
+             |___ happy.xml
+	    </pre>
+	    
+	    </p>
+	</div>
+	<div class="help_section">
 	    <h2>Related Read</h2>
 	    <p>
 	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>
