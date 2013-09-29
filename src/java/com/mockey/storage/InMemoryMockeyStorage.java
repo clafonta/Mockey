@@ -268,27 +268,31 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			foundService = serviceToEvaluate;
 		} else {
 
-			// OK, not found based on primary Mock url.
-			// Let's look at secondary list of real URLs
-			List<Url> serviceUrlList = serviceToEvaluate.getRealServiceUrls();
-			Iterator<Url> altUrlIter = serviceUrlList.iterator();
-			while (altUrlIter.hasNext()) {
-				Url altUrl = altUrlIter.next();
+			// OK, not found based on template URL.
+			if (fullUrl.getFullUrl().equalsIgnoreCase(url)) {
+				foundService = serviceToEvaluate;
+			} else {
+				// Let's look at secondary list of real URLs
+				List<Url> serviceUrlList = serviceToEvaluate.getRealServiceUrls();
+				Iterator<Url> altUrlIter = serviceUrlList.iterator();
+				while (altUrlIter.hasNext()) {
+					Url altUrl = altUrlIter.next();
 
-				// Variable template is set to the template of the service's
-				// full URL.
-				// The template is matched against the service real URLs,
-				// therefore the match always succeeds. The template should be
-				// matched against the url of the request instead.
-				template = new UriTemplate(altUrl.getFullUrl());
-				results = template.match(url);
+					// Variable template is set to the template of the service's
+					// full URL.
+					// The template is matched against the service real URLs,
+					// therefore the match always succeeds. The template should
+					// be
+					// matched against the url of the request instead.
+					template = new UriTemplate(altUrl.getFullUrl());
+					results = template.match(url);
 
-				if (results.size() > 0) {
-					// Possible match
-					foundService = serviceToEvaluate;
-					break;
+					if (results.size() > 0) {
+						// Possible match
+						foundService = serviceToEvaluate;
+						break;
+					}
 				}
-
 			}
 		}
 		return foundService;

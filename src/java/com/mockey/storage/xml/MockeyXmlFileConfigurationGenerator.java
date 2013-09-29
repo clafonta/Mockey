@@ -191,7 +191,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			} else {
 				for (Scenario scenario : mockServiceBean.getScenarios()) {
 					Element include = document.createElementNS("http://www.w3.org/2001/XInclude", "xi:include");
-					File scenarioFile = MockeyXmlFileManager.getServiceScenarioFile(mockServiceBean, scenario);
+					File scenarioFile = MockeyXmlFileManager.getInstance().getServiceScenarioFile(mockServiceBean, scenario);
 					include.setAttribute("href", scenarioFile.getPath());
 					include.setAttribute("parse", "xml");
 					serviceElement.appendChild(include);
@@ -225,7 +225,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		Element scenarioResponseElement = document.createElement("scenario_response");
 		if (scenarioResponseAsXIncludeTxtFile) {
 			Element include = document.createElementNS("http://www.w3.org/2001/XInclude", "xi:include");
-			include.setAttribute("href", MockeyXmlFileManager.getScenarioResponseFileName(scenario));
+			include.setAttribute("href", MockeyXmlFileManager.getInstance().getScenarioResponseFileName(scenario));
 			include.setAttribute("parse", "text");
 			scenarioResponseElement.appendChild(include);
 		} else {
@@ -298,7 +298,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			for (Service mockServiceBean : store.getServices()) {
 
 				Element serviceElement = document.createElement("serviceref");
-				File serviceFile = MockeyXmlFileManager.getServiceFile(mockServiceBean);
+				File serviceFile = MockeyXmlFileManager.getInstance().getServiceFile(mockServiceBean);
 				serviceElement.setAttribute("file", serviceFile.getPath());
 				rootElement.appendChild(serviceElement);
 			}

@@ -96,7 +96,7 @@ public class MockeyXmlFileConfigurationParser {
 						// Let URI handle the 'file://' pretext
 						
 						File x2 = new File(new URI(systemId));
-						MockeyXmlFileManager mxfm = new MockeyXmlFileManager();
+						MockeyXmlFileManager mxfm = MockeyXmlFileManager.getInstance();
 						FileInputStream fstream = new FileInputStream(x2);
 						String inputStreamString = mxfm.getFileContentAsString(fstream);
 						InputSource is = new InputSource(new StringReader(inputStreamString));

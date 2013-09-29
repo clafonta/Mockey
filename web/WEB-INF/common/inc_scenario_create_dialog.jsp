@@ -133,7 +133,6 @@ $(document).ready( function() {
         $(this).click( function() {
             var scenarioId = this.id.split("_")[1];
             var serviceId = this.id.split("_")[2];
-            
             $.ajax({
                 type: "GET",
                 dataType: 'json',
@@ -264,9 +263,6 @@ $(document).ready( function() {
         <textarea placeholder="Enter HTML, JSON, whatever." name="scenario_response" id="scenario_response" class="text ui-widget-content ui-corner-all resizable" rows="20"></textarea>
         
         <div id="moreOptionsDisplay">
-            <p style="text-align:right;margint-right:2em;">
-			<a href="<c:url value="responseschema"/>">Validate</a>
-			</p>
 	        <hr />
 	        <p style"padding-bottom:25px;">
 			<span style="float:right;">Pretty format: 

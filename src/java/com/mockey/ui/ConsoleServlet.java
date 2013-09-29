@@ -84,7 +84,7 @@ public class ConsoleServlet extends HttpServlet {
 
 		
 		FileInputStream fstream = new FileInputStream(file);
-		MockeyXmlFileManager mxfm = new MockeyXmlFileManager();
+		MockeyXmlFileManager mxfm = MockeyXmlFileManager.getInstance();
 		String arg = null;
 		try {
 			arg = mxfm.getFileContentAsString(fstream);

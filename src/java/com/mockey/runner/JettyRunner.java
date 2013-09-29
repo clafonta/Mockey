@@ -60,44 +60,33 @@ public class JettyRunner {
 		}
 
 		// Initialize the argument parser
-		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar",
-				"Starts a Jetty server running Mockey");
-		jsap.registerParameter(new FlaggedOption(ARG_PORT, JSAP.INTEGER_PARSER,
-				"8080", JSAP.NOT_REQUIRED, 'p', ARG_PORT,
-				"port to run Jetty on"));
-		jsap.registerParameter(new FlaggedOption(
-				BSC.FILE,
-				JSAP.STRING_PARSER,
-				MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
-				JSAP.NOT_REQUIRED,
-				'f',
-				BSC.FILE,
+		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar", "Starts a Jetty server running Mockey");
+		jsap.registerParameter(new FlaggedOption(ARG_PORT, JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p',
+				ARG_PORT, "port to run Jetty on"));
+		jsap.registerParameter(new FlaggedOption(BSC.FILE, JSAP.STRING_PARSER,
+				MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, JSAP.NOT_REQUIRED, 'f', BSC.FILE,
 				"Relative path to a mockey-definitions file to initialize Mockey, relative to where you're starting Mockey"));
 
-		jsap.registerParameter(new FlaggedOption(BSC.URL, JSAP.STRING_PARSER,
-				"", JSAP.NOT_REQUIRED, 'u', BSC.URL,
+		jsap.registerParameter(new FlaggedOption(BSC.URL, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'u', BSC.URL,
 				"URL to a mockey-definitions file to initialize Mockey"));
 
-		jsap.registerParameter(new FlaggedOption(BSC.TRANSIENT,
-				JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',
-				BSC.TRANSIENT,
-				"Read only mode if set to true, no updates are made to the file system."));
+		jsap.registerParameter(new FlaggedOption(BSC.TRANSIENT, JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',
+				BSC.TRANSIENT, "Read only mode if set to true, no updates are made to the file system."));
 
 		jsap.registerParameter(new FlaggedOption(
-				BSC.FILTERTAG,
+				BSC.DEFINITION_LOCATION,
 				JSAP.STRING_PARSER,
 				"",
 				JSAP.NOT_REQUIRED,
-				'F',
+				'l',
+				BSC.DEFINITION_LOCATION,
+				"Absolute or relative path/location for Mockey to save it's definitions and configuration. By default, relative to where Mockey is started. "));
+
+		jsap.registerParameter(new FlaggedOption(BSC.FILTERTAG, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'F',
 				BSC.FILTERTAG,
 				"Filter tag for services and scenarios, useful for 'only use information with this tag'. "));
 
-		jsap.registerParameter(new FlaggedOption(
-				BSC.HEADLESS,
-				JSAP.BOOLEAN_PARSER,
-				"false",
-				JSAP.NOT_REQUIRED,
-				'H',
+		jsap.registerParameter(new FlaggedOption(BSC.HEADLESS, JSAP.BOOLEAN_PARSER, "false", JSAP.NOT_REQUIRED, 'H',
 				BSC.HEADLESS,
 				"Headless flag. Default is 'false'. Set to 'true' if you do not want Mockey to spawn a browser thread upon startup."));
 
@@ -113,11 +102,11 @@ public class JettyRunner {
 		}
 
 		if (config.getBoolean(BSC.VERSION)) {
-			
+
 			String ver = JettyRunner.class.getPackage().getImplementationVersion();
 			System.out.println("Version " + ver);
 			System.exit(1);
-		} 
+		}
 
 		// String v = config.
 
@@ -133,8 +122,7 @@ public class JettyRunner {
 
 		// Initialize Log4J file roller appender.
 		StartUpServlet.getDebugFile();
-		InputStream log4jInputStream = Thread.currentThread()
-				.getContextClassLoader()
+		InputStream log4jInputStream = Thread.currentThread().getContextClassLoader()
 				.getResourceAsStream("WEB-INF/log4j.properties");
 		Properties log4JProperties = new Properties();
 		log4JProperties.load(log4jInputStream);
@@ -162,10 +150,18 @@ public class JettyRunner {
 		String url = String.valueOf(config.getString(BSC.URL));
 		String filterTag = config.getString(BSC.FILTERTAG);
 		String fTagParam = "";
+
+		
+		// /////////////////////// Set BASE path for reading files. ////////////////
+		String configurationPath = String.valueOf(config.getString(BSC.DEFINITION_LOCATION));
+		MockeyXmlFileManager.createInstance(configurationPath);
+		MockeyXmlFileManager instance = MockeyXmlFileManager.getInstance();
+		System.out.println("Configuration base path: " + instance.getBasePathFile().getAbsolutePath());
+		// /////////////////////////////////////////////////////////////////////
+
 		boolean headless = config.getBoolean(BSC.HEADLESS);
 		if (filterTag != null) {
-			fTagParam = "&" + BSC.FILTERTAG + "="
-					+ URLEncoder.encode(filterTag, "UTF-8");
+			fTagParam = "&" + BSC.FILTERTAG + "=" + URLEncoder.encode(filterTag, "UTF-8");
 		}
 
 		// Startup displays a big message and URL redirects after x seconds.
@@ -175,40 +171,24 @@ public class JettyRunner {
 		// then let's initialize with it instead.
 		if (url != null && url.trim().length() > 0) {
 			URLEncoder.encode(initUrl, "UTF-8");
-			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&"
-					+ BSC.TRANSIENT + "=" + transientState + "&" + BSC.URL
-					+ "=" + URLEncoder.encode(url, "UTF-8") + fTagParam;
+			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
+					+ BSC.URL + "=" + URLEncoder.encode(url, "UTF-8") + fTagParam;
 		} else if (file != null && file.trim().length() > 0) {
 			URLEncoder.encode(initUrl, "UTF-8");
-			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&"
-					+ BSC.TRANSIENT + "=" + transientState + "&" + BSC.FILE
-					+ "=" + URLEncoder.encode(file, "UTF-8") + fTagParam;
+			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
+					+ BSC.FILE + "=" + URLEncoder.encode(file, "UTF-8") + fTagParam;
 		} else {
-			initUrl = HOMEURL
-					+ "?"
-					+ BSC.ACTION
-					+ "="
-					+ BSC.INIT
-					+ "&"
-					+ BSC.TRANSIENT
-					+ "="
-					+ transientState
-					+ "&"
-					+ BSC.FILE
-					+ "="
-					+ URLEncoder.encode(
-							MockeyXmlFileManager.MOCK_SERVICE_DEFINITION,
-							"UTF-8") + fTagParam;
+			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
+					+ BSC.FILE + "=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8")
+					+ fTagParam;
 
 		}
 
 		if (!headless) {
-			new Thread(new BrowserThread("http://127.0.0.1",
-					String.valueOf(port), initUrl, 0)).start();
+			new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();
 			server.join();
 		} else {
-			initializeMockey(new URL("http://127.0.0.1" + ":"
-					+ String.valueOf(port) + initUrl));
+			initializeMockey(new URL("http://127.0.0.1" + ":" + String.valueOf(port) + initUrl));
 		}
 	}
 
@@ -218,8 +198,7 @@ public class JettyRunner {
 		HttpGet httpget = new HttpGet(initUrl.toString());
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		System.out.println("Initialized mockey with request: "
-				+ initUrl.toString());
+		System.out.println("Initialized mockey with request: " + initUrl.toString());
 		System.out.println("Response: " + entity.getContent());
 	}
 

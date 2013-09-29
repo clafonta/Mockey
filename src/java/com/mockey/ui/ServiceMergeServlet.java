@@ -106,7 +106,7 @@ public class ServiceMergeServlet extends HttpServlet {
 							.getServiceById(serviceIdMergeSource);
 					Service serviceMergeDestination = store
 							.getServiceById(serviceIdMergeDestination);
-					MockeyXmlFileManager configurationReader = new MockeyXmlFileManager();
+					MockeyXmlFileManager configurationReader = MockeyXmlFileManager.getInstance();
 					mergeResults = configurationReader.mergeServices(
 							serviceMergeSource, serviceMergeDestination,
 							mergeResults, null);

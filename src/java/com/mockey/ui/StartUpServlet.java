@@ -83,8 +83,8 @@ public class StartUpServlet extends HttpServlet {
 			// sandbox development (i.e. within Eclipse)
 			// since we're not using JettyRunner, which contains
 			// logic to pass/tell HomeServlet _how_ to initialize.
-
-			MockeyXmlFileManager reader = new MockeyXmlFileManager();
+			MockeyXmlFileManager.createInstance(System.getProperty("user.dir"));
+			MockeyXmlFileManager reader =  MockeyXmlFileManager.getInstance();
 			reader.loadConfiguration();
 
 		} catch (FileNotFoundException fnf) {

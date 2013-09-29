@@ -31,7 +31,7 @@ package com.mockey.runner;
  */
 public interface BSC {
 
-	public static final String PLUGINDIR = "mockey_plugin";
+	public static final String DEFINITION_LOCATION = "location"; 
 	public static final String TRANSIENT = "transientState";
 	public static final String FILTERTAG = "filterTag";
 	public static final String FILE = "file";

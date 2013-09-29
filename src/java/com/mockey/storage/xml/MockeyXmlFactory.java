@@ -84,7 +84,8 @@ public class MockeyXmlFactory {
 
 		try {
 			// WRITE STORE META FIRST
-			File f = new File(destinationFileName);
+			File parentFolder = MockeyXmlFileManager.getInstance().getBasePathFile();
+			File f = new File(parentFolder,destinationFileName);
 			FileOutputStream fop = new FileOutputStream(f);
 
 			String fileOutput = getStoreAsString(sourceStore, false);
@@ -97,7 +98,7 @@ public class MockeyXmlFactory {
 			for (Service service : sourceStore.getServices()) {
 
 				// File to write out
-				File serviceFile = MockeyXmlFileManager.getServiceFile(service);
+				File serviceFile = MockeyXmlFileManager.getInstance().getServiceFile(service);
 
 				FileOutputStream serviceFOP = new FileOutputStream(serviceFile);
 				MockeyXmlFileConfigurationGenerator xmlGeneratorSupport = new MockeyXmlFileConfigurationGenerator();
@@ -105,7 +106,7 @@ public class MockeyXmlFactory {
 				String serviceOutput = this.getDocumentAsString(serviceDoc);
 				for (Scenario scenario : service.getScenarios()) {
 
-					File scenarioFile = MockeyXmlFileManager.getServiceScenarioFile(service, scenario);
+					File scenarioFile = MockeyXmlFileManager.getInstance().getServiceScenarioFile(service, scenario);
 					this.writeServiceScenarioToXMLFile(scenarioFile, scenario);
 				}
 
@@ -132,6 +133,8 @@ public class MockeyXmlFactory {
 	 */
 	private void writeServiceScenarioToXMLFile(File scenarioFile, Scenario scenario) throws IOException,
 			TransformerException {
+		
+		
 		FileOutputStream serviceFOP = new FileOutputStream(scenarioFile);
 		MockeyXmlFileConfigurationGenerator xmlGeneratorSupport = new MockeyXmlFileConfigurationGenerator();
 

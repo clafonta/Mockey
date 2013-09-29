@@ -166,7 +166,7 @@ public class UploadConfigurationServlet extends HttpServlet {
 		try {
 
 			if (definitionsAsString != null) {
-				MockeyXmlFileManager configurationReader = new MockeyXmlFileManager();
+				MockeyXmlFileManager configurationReader = MockeyXmlFileManager.getInstance();
 				ServiceMergeResults results = configurationReader.loadConfigurationWithXmlDef(definitionsAsString,
 						taglistValue);
 

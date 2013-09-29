@@ -227,7 +227,7 @@ public class HomeServlet extends HttpServlet {
 				if (fstream != null) {
 
 					// DELETE SECOND
-					MockeyXmlFileManager reader = new MockeyXmlFileManager();
+					MockeyXmlFileManager reader = MockeyXmlFileManager.getInstance();
 					String inputAsString = reader.getFileContentAsString(fstream);
 					store.deleteEverything();
 					reader.loadConfigurationWithXmlDef(inputAsString, null);
