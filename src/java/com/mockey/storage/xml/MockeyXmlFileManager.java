@@ -103,7 +103,7 @@ public class MockeyXmlFileManager {
 		
 		File fileDepot = new File(this.getBasePathFile(),MOCK_SERVICE_FOLDER);
 		if (!fileDepot.exists()) {
-			boolean success = fileDepot.mkdir();
+			boolean success = fileDepot.mkdirs();
 			if (!success) {
 				logger.fatal("Unable to create a folder called " + MOCK_SERVICE_FOLDER);
 			}

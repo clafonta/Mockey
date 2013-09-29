@@ -22,11 +22,12 @@ import com.mockey.ui.ServiceMergeResults;
 public class MockeyXmlFileManagerTest {
 
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-
+	private static String TESTCONFIG_DIR = System.getProperty("user.dir") + "build" + File.separator + "test" + File.separator + "configfiles";
 	
 	@Test
 	public void validateServiceScenarioFile(){
-		MockeyXmlFileManager.createInstance("/Users/clafonta/Work/Mockey/dist/test");
+		
+		MockeyXmlFileManager.createInstance(TESTCONFIG_DIR);
 		Service feelingService = new Service();
 		feelingService.setServiceName("feeling");
 		feelingService.setUrl("/feeling");
@@ -36,20 +37,20 @@ public class MockeyXmlFileManagerTest {
 		happyScenario = feelingService.saveOrUpdateScenario(happyScenario);
 		File scenarioFile = MockeyXmlFileManager.getInstance().getServiceScenarioFile(feelingService, happyScenario);
 		assert(scenarioFile!=null) : "Scenario is null. It should not be.";	
-		String correctPath  = "/Users/clafonta/Work/Mockey/dist/test/mockey_def_depot/feeling/scenarios/happy.xml";
+		String correctPath  = TESTCONFIG_DIR + File.separator + "mockey_def_depot" +File.separator +"feeling" + File.separator +"scenarios" + File.separator +"happy.xml";
 		assert(scenarioFile.getAbsolutePath().equals(correctPath)) : "Invalid scenario file path.  \n    WAS:" + scenarioFile.getAbsolutePath() +"\nCORRECT:" + correctPath;
-		///Users/clafonta/Work/Mockey/dist/tmp/Users/clafonta/Work/Mockey/dist/tmp/mockey_def_depot/Another_force/scenarios/Happy.xml
+		
 	}
 	
 	
 	@Test
 	public void validateDefaultBasePath() {
 		
-		MockeyXmlFileManager.createInstance(System.getProperty("user.dir"));
+		MockeyXmlFileManager.createInstance(TESTCONFIG_DIR);
 		
 		MockeyXmlFileManager fileManager = MockeyXmlFileManager.getInstance();
 		
-		File x = new File(System.getProperty("user.dir"));	
+		File x = new File(TESTCONFIG_DIR);	
 		assert(fileManager.getBasePathFile()!=null) : "Base file path is null. It should not be.";
 		assert (x.getAbsolutePath().equals(fileManager.getBasePathFile().getAbsolutePath())) : "Base path didn't match. File manager: '" +fileManager.getBasePathFile().getAbsolutePath() 
 		+ "' vs. '"+x.getAbsolutePath() + "'";
@@ -58,9 +59,9 @@ public class MockeyXmlFileManagerTest {
 	
 	@Test
 	public void validateNewBasePath() {
-		MockeyXmlFileManager.createInstance("/Users/clafonta/Work/Mockey/dist/test");
+		MockeyXmlFileManager.createInstance(TESTCONFIG_DIR);
 		MockeyXmlFileManager fileManager = MockeyXmlFileManager.getInstance();
-		File x = new File("/Users/clafonta/Work/Mockey/dist/test");
+		File x = new File(TESTCONFIG_DIR);
 		if(!x.exists()){
 			x.mkdir();
 		}
@@ -72,13 +73,13 @@ public class MockeyXmlFileManagerTest {
 	
 	@Test
 	public void validateServiceFileWithNewBasePath() {
-		MockeyXmlFileManager.createInstance("/Users/clafonta/Work/Mockey/dist/test");
+		MockeyXmlFileManager.createInstance(TESTCONFIG_DIR);
 		
 		Service s = new Service();
 		s.setServiceName("a_service_name");
 		File x = MockeyXmlFileManager.getInstance().getServiceFile(s);
 		// Path should be.."/Users/clafonta/Work/Mockey/dist/test/mockey_def_depot/a_service_name/a_service_name.xml".
-		String path = "/Users/clafonta/Work/Mockey/dist/test/mockey_def_depot/a_service_name/a_service_name.xml";
+		String path = TESTCONFIG_DIR +  File.separator + "mockey_def_depot" + File.separator +"a_service_name" + File.separator + "a_service_name.xml";
 		
 		
 		assert (x.getAbsolutePath().equals(path) ) : "Base path didn't match. Should be '" + path + "' vs. '"+x.getAbsolutePath() + "'";
