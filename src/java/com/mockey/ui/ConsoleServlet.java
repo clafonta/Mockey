@@ -37,10 +37,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import com.mockey.storage.xml.MockeyXmlFileConfigurationReader;
 import com.mockey.storage.xml.MockeyXmlFileManager;
 
 /**

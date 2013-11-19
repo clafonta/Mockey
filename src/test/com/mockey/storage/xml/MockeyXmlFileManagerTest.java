@@ -309,6 +309,19 @@ public class MockeyXmlFileManagerTest {
 				+ scenarioTest.getTag() + "'";
 
 	}
+	
+	@Test
+	public void checkForRelativePath() {
+		File randomFile = new File(File.separator + "makebelieve" + File.separator + "somenewfile");
+		File seedFile = new File(File.separator + "seed");
+		MockeyXmlFileManager.createInstance(seedFile.getAbsolutePath());
+		MockeyXmlFileManager mxfm = MockeyXmlFileManager.getInstance();
+		Service s = new Service();
+		s.setServiceName("AnAccountService");
+		File serviceFile = MockeyXmlFileManager.getInstance().getServiceFile(s);
+		assert ("mockey_def_depot/AnAccountService/AnAccountService.xml".equals(mxfm.getRelativePath(serviceFile))) : "Fail in catching invalid child file path. ";
+		assert ("ERROR".equals(mxfm.getRelativePath(randomFile))) : "Fail in catching BAD file.";
+	}
 
 	@Test
 	public void checkForConflictingServiceName() {

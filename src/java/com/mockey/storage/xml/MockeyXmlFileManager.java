@@ -78,10 +78,10 @@ public class MockeyXmlFileManager {
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static MockeyXmlFileManager mockeyXmlFileManagerInstance = null;
 	public static final String MOCK_SERVICE_DEFINITION = "mock_service_definitions.xml";
-	
+
 	protected static final String MOCK_SERVICE_FOLDER = "mockey_def_depot";
 	protected static final String MOCK_SERVICE_SCENARIO_FOLDER = "scenarios";
-	
+
 	public static final String FILESEPERATOR = System.getProperty("file.separator");
 
 	/**
@@ -90,51 +90,48 @@ public class MockeyXmlFileManager {
 	 * 
 	 */
 	private MockeyXmlFileManager(String path) {
-		
-		if(path!=null && path.trim().length() > 0){
+
+		if (path != null && path.trim().length() > 0) {
 			this.basePathFile = new File(path);
-			if(!this.basePathFile.exists()){
+			if (!this.basePathFile.exists()) {
 				this.basePathFile.mkdir();
 			}
-		}
-		else {
+		} else {
 			this.basePathFile = new File(System.getProperty("user.dir"));
 		}
-		
-		File fileDepot = new File(this.getBasePathFile(),MOCK_SERVICE_FOLDER);
+
+		File fileDepot = new File(this.getBasePathFile(), MOCK_SERVICE_FOLDER);
 		if (!fileDepot.exists()) {
 			boolean success = fileDepot.mkdirs();
 			if (!success) {
 				logger.fatal("Unable to create a folder called " + MOCK_SERVICE_FOLDER);
-			}else {
-				logger.info("Created directory: " +  fileDepot.getAbsolutePath());
+			} else {
+				logger.info("Created directory: " + fileDepot.getAbsolutePath());
 			}
 		}
 	}
-	
-	public static MockeyXmlFileManager getInstance(){
+
+	public static MockeyXmlFileManager getInstance() {
 		return MockeyXmlFileManager.mockeyXmlFileManagerInstance;
 	}
-	
+
 	/**
 	 * 
 	 * @param path
 	 */
-	public static void createInstance(String path){
-	
+	public static void createInstance(String path) {
+
 		MockeyXmlFileManager.mockeyXmlFileManagerInstance = new MockeyXmlFileManager(path);
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @return location of Mockey definitions.
 	 */
-	public File getBasePathFile(){
+	public File getBasePathFile() {
 		return this.basePathFile;
 	}
-	
-	
 
 	/**
 	 * 
@@ -182,8 +179,7 @@ public class MockeyXmlFileManager {
 	 * @throws SAXParseException
 	 * @throws SAXException
 	 */
-	public ServiceMergeResults loadConfigurationWithXmlDef(String strXMLDefintion, String tagArguments)
-			throws IOException, SAXParseException, SAXException {
+	public ServiceMergeResults loadConfigurationWithXmlDef(String strXMLDefintion, String tagArguments) throws IOException, SAXParseException, SAXException {
 		ServiceMergeResults mergeResults = new ServiceMergeResults();
 
 		// ***** REMEMBER *****
@@ -269,12 +265,9 @@ public class MockeyXmlFileManager {
 		// information is used to set the primary in-memory store. The primary
 		// store has all the information and the TEMP store only needs to pass
 		// the references, e.g. Service 1, Scenario 2.
-		if (store.getUniversalErrorScenario() != null
-				&& mockServiceStoreTemporary.getUniversalErrorScenarioRef() != null) {
-			mergeResults.addConflictMsg("Universal error message already defined with name '"
-					+ store.getUniversalErrorScenario().getScenarioName() + "'");
-		} else if (store.getUniversalErrorScenario() == null
-				&& mockServiceStoreTemporary.getUniversalErrorScenarioRef() != null) {
+		if (store.getUniversalErrorScenario() != null && mockServiceStoreTemporary.getUniversalErrorScenarioRef() != null) {
+			mergeResults.addConflictMsg("Universal error message already defined with name '" + store.getUniversalErrorScenario().getScenarioName() + "'");
+		} else if (store.getUniversalErrorScenario() == null && mockServiceStoreTemporary.getUniversalErrorScenarioRef() != null) {
 			store.setUniversalErrorScenarioRef(mockServiceStoreTemporary.getUniversalErrorScenarioRef());
 			mergeResults.addAdditionMsg("Universal error response defined.");
 
@@ -296,8 +289,7 @@ public class MockeyXmlFileManager {
 		// STEP #8. DEFAULT Service Plan ID
 		// Only set a default service plan ID from the incoming XML file
 		// if one is not already set in the current store.
-		ServicePlan servicePlan = mockServiceStoreTemporary.getServicePlanById(mockServiceStoreTemporary
-				.getDefaultServicePlanIdAsLong());
+		ServicePlan servicePlan = mockServiceStoreTemporary.getServicePlanById(mockServiceStoreTemporary.getDefaultServicePlanIdAsLong());
 		if (servicePlan != null && store.getDefaultServicePlanIdAsLong() == null) {
 			// OK, we have a 'default' service plan from the incoming file AND
 			// the current store does not. Let's update the current store.
@@ -318,8 +310,7 @@ public class MockeyXmlFileManager {
 	}
 
 	// Let's Merge!
-	private ServiceMergeResults addServicesToStore(ServiceMergeResults mergeResults, List<Service> serviceListToAdd,
-			String tagArguments) {
+	private ServiceMergeResults addServicesToStore(ServiceMergeResults mergeResults, List<Service> serviceListToAdd, String tagArguments) {
 		// When loading a definition file, by default, we should
 		// compare the uploaded Service list mock URL to what's currently
 		// in memory.
@@ -347,11 +338,9 @@ public class MockeyXmlFileManager {
 				inMemoryServiceBean = (Service) inMemoryServiceIter.next();
 
 				// Same name?
-				if (uploadedServiceBean.getServiceName().trim().toLowerCase()
-						.equals(inMemoryServiceBean.getServiceName().trim().toLowerCase())) {
+				if (uploadedServiceBean.getServiceName().trim().toLowerCase().equals(inMemoryServiceBean.getServiceName().trim().toLowerCase())) {
 					existingService = true;
-					mergeResults.addConflictMsg("Service '" + uploadedServiceBean.getServiceName()
-							+ "' not created because one with the same name already defined. '"
+					mergeResults.addConflictMsg("Service '" + uploadedServiceBean.getServiceName() + "' not created because one with the same name already defined. '"
 							+ inMemoryServiceBean.getServiceName() + "' ");
 
 				}
@@ -373,8 +362,7 @@ public class MockeyXmlFileManager {
 
 				// Save to the IN-MEMORY STORE
 				store.saveOrUpdateService(uploadedServiceBean);
-				mergeResults.addAdditionMsg("Uploaded Service '" + uploadedServiceBean.getServiceName()
-						+ "' created with scenarios.");
+				mergeResults.addAdditionMsg("Uploaded Service '" + uploadedServiceBean.getServiceName() + "' created with scenarios.");
 
 			} else {
 				// We have an existing Service
@@ -401,8 +389,7 @@ public class MockeyXmlFileManager {
 		Boolean originalMode = store.getReadOnlyMode();
 		store.setReadOnlyMode(true);
 
-		if (uploadedService != null && inMemoryService != null
-				&& uploadedService.getServiceName().trim().equalsIgnoreCase(inMemoryService.getServiceName().trim())
+		if (uploadedService != null && inMemoryService != null && uploadedService.getServiceName().trim().equalsIgnoreCase(inMemoryService.getServiceName().trim())
 
 		) {
 
@@ -449,8 +436,7 @@ public class MockeyXmlFileManager {
 					uploadedScenario.addTagToList(tagArguments);
 					inMemoryService.saveOrUpdateScenario(uploadedScenario);
 
-					readResults.addAdditionMsg("Scenario name '" + uploadedScenario.getScenarioName()
-							+ "' from uploaded service named '" + uploadedService.getServiceName()
+					readResults.addAdditionMsg("Scenario name '" + uploadedScenario.getScenarioName() + "' from uploaded service named '" + uploadedService.getServiceName()
 							+ "' was merged into service '" + inMemoryService.getServiceName() + "' ");
 				} else {
 					// OK, we have a MATCHING Scenario.
@@ -462,9 +448,8 @@ public class MockeyXmlFileManager {
 					inMemoryService.saveOrUpdateScenario(inMemScenarioTemp);
 
 					// Although we still need to
-					readResults.addConflictMsg("Uploaded Scenario '" + uploadedScenario.getScenarioName()
-							+ "' not added, already defined in in-memory service '" + inMemoryService.getServiceName()
-							+ "' ");
+					readResults.addConflictMsg("Uploaded Scenario '" + uploadedScenario.getScenarioName() + "' not added, already defined in in-memory service '"
+							+ inMemoryService.getServiceName() + "' ");
 				}
 
 			}
@@ -495,15 +480,14 @@ public class MockeyXmlFileManager {
 
 		if (serviceFileName != null) {
 			serviceFileName = getSafeForFileSystemName(serviceFileName);
-			
+
 			File serviceDirectoryFile = new File(this.getBasePathFile(), MockeyXmlFileManager.MOCK_SERVICE_FOLDER + FILESEPERATOR + serviceFileName);
 			// depot directory/<service ID> directory
 			if (!serviceDirectoryFile.exists()) {
 				serviceDirectoryFile.mkdir();
 			}
 			// depot directory/<service ID> directory/scenario directory/
-			File serviceScenarioListDirectory = new File(serviceDirectoryFile.getPath() + FILESEPERATOR
-					+ MOCK_SERVICE_SCENARIO_FOLDER);
+			File serviceScenarioListDirectory = new File(serviceDirectoryFile.getPath() + FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
 			if (!serviceScenarioListDirectory.exists()) {
 				serviceScenarioListDirectory.mkdir();
 			}
@@ -518,15 +502,15 @@ public class MockeyXmlFileManager {
 
 	protected File[] getServiceScenarioFileNames(Service service) {
 
-		File serviceScenarioDir = new File(this.getBasePathFile(),getSafeForFileSystemName(service.getServiceName()) + FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
+		File serviceScenarioDir = new File(this.getBasePathFile(), getSafeForFileSystemName(service.getServiceName()) + FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
 		return serviceScenarioDir.listFiles();
 
 	}
 
 	private File getServiceScenarioDirectory(Service service, Scenario scenario) {
 		// mockey_def_depot/<service ID>/scenarios/<scenario_name>.xml
-		File serviceScenarioFolder = new File(this.getBasePathFile(), MockeyXmlFileManager.MOCK_SERVICE_FOLDER + FILESEPERATOR
-				+ getSafeForFileSystemName(service.getServiceName()) + FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
+		File serviceScenarioFolder = new File(this.getBasePathFile(), MockeyXmlFileManager.MOCK_SERVICE_FOLDER + FILESEPERATOR + getSafeForFileSystemName(service.getServiceName())
+				+ FILESEPERATOR + MOCK_SERVICE_SCENARIO_FOLDER);
 
 		return serviceScenarioFolder;
 	}
@@ -534,8 +518,7 @@ public class MockeyXmlFileManager {
 	protected File getServiceScenarioFile(Service service, Scenario scenario) {
 		// mockey_def_depot/<service ID>/scenarios/<scenario_name>.xml
 		File serviceScenarioFolder = getServiceScenarioDirectory(service, scenario);
-		File serviceScenarioFile = new File(serviceScenarioFolder.getPath() + FILESEPERATOR
-				+ getScenarioXmlFileName(scenario));
+		File serviceScenarioFile = new File(serviceScenarioFolder.getPath() + FILESEPERATOR + getScenarioXmlFileName(scenario));
 
 		return serviceScenarioFile;
 	}
@@ -543,8 +526,7 @@ public class MockeyXmlFileManager {
 	protected File getServiceScenarioResponseFile(Service service, Scenario scenario) {
 		// mockey_def_depot/<service id>/scenarios/<scenario_name>.txt
 		File serviceScenarioFolder = getServiceScenarioDirectory(service, scenario);
-		File serviceScenarioFile = new File(this.getBasePathFile(),serviceScenarioFolder.getPath() + FILESEPERATOR
-				+ getScenarioResponseFileName(scenario));
+		File serviceScenarioFile = new File(this.getBasePathFile(), serviceScenarioFolder.getPath() + FILESEPERATOR + getScenarioResponseFileName(scenario));
 
 		return serviceScenarioFile;
 	}
@@ -557,7 +539,7 @@ public class MockeyXmlFileManager {
 	public String getScenarioResponseFileName(Scenario scenario) {
 		return getSafeForFileSystemName(scenario.getScenarioName()) + ".txt";
 	}
-	
+
 	/**
 	 * 
 	 * @param scenario
@@ -566,31 +548,40 @@ public class MockeyXmlFileManager {
 	public String getScenarioXmlFileName(Scenario scenario) {
 		return getSafeForFileSystemName(scenario.getScenarioName()) + ".xml";
 	}
-	
+
 	/**
 	 * 
 	 * @param arg
-	 * @return replaces spaces with undersore. 
+	 * @return replaces spaces with undersore.
 	 */
-	private static String getSafeForFileSystemName(String arg){
+	private static String getSafeForFileSystemName(String arg) {
 		return arg.replace(" ", "_");
 	}
-	
-	public static void main(String[] args){
-		MockeyXmlFileManager.createInstance("/Users/clafonta/Work/Mockey/dist/moi");
-		MockeyXmlFileManager i = MockeyXmlFileManager.getInstance();
-		File b = i.getBasePathFile();
-		
-		System.out.println(b.getAbsolutePath());
-		
-		b = i.getBasePathFile();
-		
-		System.out.println(b.getAbsolutePath());
-		
-		Service s = new Service();
-		s.setServiceName("Howdy");
-		File serviceFile = MockeyXmlFileManager.getInstance().getServiceFile(s);
-		System.out.println(serviceFile.getAbsolutePath());
-		
+
+	/**
+	 * @param baseFile
+	 * @param fileArg
+	 * @return the RELATIVE path of the fileArg if a child of base file.
+	 *         Otherwise, returns the absolute path of the fileArg.
+	 */
+	public String getRelativePath(File fileArg) {
+		String relativePath = "";
+		String basePath =  this.getBasePathFile().getAbsolutePath();
+		String filePath = fileArg.getAbsolutePath();
+		int index = filePath.indexOf(basePath);
+		if (index > -1) {
+			try {
+				//
+				relativePath = fileArg.getAbsolutePath().substring(index + basePath.length() + 1);
+			} catch (Exception e) {
+				logger.error("Unable to retrive a relative path from: " + fileArg.getAbsolutePath() + "' with base path '" + basePath + "'", e);
+				relativePath = "ERROR";
+			}
+		} else {
+			relativePath = "ERROR";
+			logger.error("Unable to retrive a relative path from: " + fileArg.getAbsolutePath() + "' with base path '" + basePath + "'");
+		}
+		return relativePath;
 	}
+
 }

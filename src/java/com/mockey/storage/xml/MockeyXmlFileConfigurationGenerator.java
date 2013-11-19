@@ -134,8 +134,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			serviceElement.setAttribute("name", mockServiceBean.getServiceName());
 			serviceElement.setAttribute("description", getSafeForXmlOutputString(mockServiceBean.getDescription()));
 			serviceElement.setAttribute("hang_time", getSafeForXmlOutputString("" + mockServiceBean.getHangTime()));
-			serviceElement.setAttribute("request_inspector_name",
-					getSafeForXmlOutputString("" + mockServiceBean.getRequestInspectorName()));
+			serviceElement.setAttribute("request_inspector_name", getSafeForXmlOutputString("" + mockServiceBean.getRequestInspectorName()));
 			serviceElement.setAttribute("url", getSafeForXmlOutputString("" + mockServiceBean.getUrl()));
 			serviceElement.setAttribute("tag", getSafeForXmlOutputString(mockServiceBean.getTag()));
 			// CHANGE on March 2013
@@ -145,30 +144,23 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			// users ONLY.
 			// serviceElement.setAttribute("last_visit",
 			// getSafeForXmlOutputString("" + mockServiceBean.getLastVisit()));
-			serviceElement.setAttribute("default_scenario_id",
-					getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId())));
-			serviceElement.setAttribute("error_scenario_id",
-					getSafeForXmlOutputString("" + (mockServiceBean.getErrorScenarioId())));
+			serviceElement.setAttribute("default_scenario_id", getSafeForXmlOutputString("" + (mockServiceBean.getDefaultScenarioId())));
+			serviceElement.setAttribute("error_scenario_id", getSafeForXmlOutputString("" + (mockServiceBean.getErrorScenarioId())));
 
-			serviceElement.setAttribute("service_response_type",
-					getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
-			serviceElement.setAttribute("default_real_url_index",
-					getSafeForXmlOutputString("" + mockServiceBean.getDefaultRealUrlIndex()));
+			serviceElement.setAttribute("service_response_type", getSafeForXmlOutputString("" + mockServiceBean.getServiceResponseType()));
+			serviceElement.setAttribute("default_real_url_index", getSafeForXmlOutputString("" + mockServiceBean.getDefaultRealUrlIndex()));
 
 			// Request validation rules in JSON format definition.
 			Element requestInspectorJsonRulesElement = document.createElement("request_inspector_json_rules");
-			requestInspectorJsonRulesElement.setAttribute("enable_flag",
-					"" + mockServiceBean.isRequestInspectorJsonRulesEnableFlag());
-			CDATASection cdataJsonRulesElement = document.createCDATASection(getSafeForXmlOutputString(mockServiceBean
-					.getRequestInspectorJsonRules()));
+			requestInspectorJsonRulesElement.setAttribute("enable_flag", "" + mockServiceBean.isRequestInspectorJsonRulesEnableFlag());
+			CDATASection cdataJsonRulesElement = document.createCDATASection(getSafeForXmlOutputString(mockServiceBean.getRequestInspectorJsonRules()));
 			requestInspectorJsonRulesElement.appendChild(cdataJsonRulesElement);
 			serviceElement.appendChild(requestInspectorJsonRulesElement);
 
 			// Service Scenario Response Schema
 			Element responseSchemaElement = document.createElement("response_schema");
 			responseSchemaElement.setAttribute("enable_flag", "" + mockServiceBean.isResponseSchemaFlag());
-			CDATASection cdataresponseSchemaElement = document
-					.createCDATASection(getSafeForXmlOutputString(mockServiceBean.getResponseSchema()));
+			CDATASection cdataresponseSchemaElement = document.createCDATASection(getSafeForXmlOutputString(mockServiceBean.getResponseSchema()));
 			responseSchemaElement.appendChild(cdataresponseSchemaElement);
 			serviceElement.appendChild(responseSchemaElement);
 
@@ -210,14 +202,11 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		// It's only for a visual/at-run-time queue.
 		// scenarioElement.setAttribute("last_visit",
 		// getSafeForXmlOutputString("" + scenario.getLastVisit()));
-		scenarioElement.setAttribute("http_resp_status_code",
-				getSafeForXmlOutputString("" + scenario.getHttpResponseStatusCode()));
+		scenarioElement.setAttribute("http_resp_status_code", getSafeForXmlOutputString("" + scenario.getHttpResponseStatusCode()));
 
 		Element scenarioMatchStringElement = document.createElement("scenario_match");
-		scenarioMatchStringElement.setAttribute("scenario_match_evaluation_rules_flag",
-				Boolean.toString(scenario.isMatchStringArgEvaluationRulesFlag()));
-		CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario
-				.getMatchStringArg()));
+		scenarioMatchStringElement.setAttribute("scenario_match_evaluation_rules_flag", Boolean.toString(scenario.isMatchStringArgEvaluationRulesFlag()));
+		CDATASection cdataMatchElement = document.createCDATASection(getSafeForXmlOutputString(scenario.getMatchStringArg()));
 		scenarioMatchStringElement.appendChild(cdataMatchElement);
 		scenarioElement.appendChild(scenarioMatchStringElement);
 
@@ -229,15 +218,13 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			include.setAttribute("parse", "text");
 			scenarioResponseElement.appendChild(include);
 		} else {
-			CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario
-					.getResponseMessage()));
+			CDATASection cdataResponseElement = document.createCDATASection(getSafeForXmlOutputString(scenario.getResponseMessage()));
 			scenarioResponseElement.appendChild(cdataResponseElement);
 		}
 		scenarioElement.appendChild(scenarioResponseElement);
 
 		Element scenarioResponseHeaderElement = document.createElement("scenario_response_header");
-		CDATASection cdataResponseHeaderElement = document.createCDATASection(getSafeForXmlOutputString(scenario
-				.getResponseHeader()));
+		CDATASection cdataResponseHeaderElement = document.createCDATASection(getSafeForXmlOutputString(scenario.getResponseHeader()));
 		scenarioResponseHeaderElement.appendChild(cdataResponseHeaderElement);
 		scenarioElement.appendChild(scenarioResponseHeaderElement);
 		return scenarioElement;
@@ -269,11 +256,10 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		if (store.getUniversalTwistInfoId() != null) {
 			this.setAttribute(rootElement, "universal_twist_info_id", "" + store.getUniversalTwistInfoId());
 		}
-		
-		if(store.getDefaultServicePlanIdAsLong()!=null){
+
+		if (store.getDefaultServicePlanIdAsLong() != null) {
 			this.setAttribute(rootElement, "default_service_plan_id", "" + store.getDefaultServicePlanId());
 		}
-		
 
 		// Proxy settings
 		ProxyServerModel psm = store.getProxy();
@@ -298,8 +284,10 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			for (Service mockServiceBean : store.getServices()) {
 
 				Element serviceElement = document.createElement("serviceref");
-				File serviceFile = MockeyXmlFileManager.getInstance().getServiceFile(mockServiceBean);
-				serviceElement.setAttribute("file", serviceFile.getPath());
+				MockeyXmlFileManager mxfm = MockeyXmlFileManager.getInstance();
+				File serviceFile =  mxfm.getServiceFile(mockServiceBean);
+				String relativePathToServiceFile = mxfm.getRelativePath(serviceFile);
+				serviceElement.setAttribute("file", relativePathToServiceFile);
 				rootElement.appendChild(serviceElement);
 			}
 		}
