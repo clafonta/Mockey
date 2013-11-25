@@ -100,7 +100,7 @@
 	     Setting your mock service to 
 		 <strong>Static</strong> means your mock service will always return the same mock service scenario, no matter what the request is. <strong>Dynamic</strong> means, Mockey
 		  inspects the incoming request message for a specific <b>match argument</b>. If the incoming request message contains this match argument 
-		  (either <i>string</i> or satisfies the <i><a href="#evaluation_rules_api">Evaluation Rules in JSON</a></i>), 
+		  (either <i>string</i> or satisfies the <i>rules</i> for <a href="#getting_the_right_scenario">Getting the Right Scenario</a>), 
 		  then this service 
 		  scenario's response message will be the response. If more than one scenario is defined with this matching argument, then the first matched 
 		  scenario's response message will be returned. If no scenario is found with a matching argument, a plain text error message will display.
@@ -116,7 +116,7 @@
           'ABC123'. Which scenario will be returned, A, B, or C, since all match-arguments are in the request? In this case, <i>Scenario C</i> 
           will always be returned because it has the greatest length match argument, 6 characters versus 3 characters. 
           <br /><br />
-          If you are looking for an exact value, then use <a href="#evaluation_rules_api">Evaluation Rules in JSON</a> with type 'regex_required' and do not depend
+          If you are looking for an exact value, then use rules (see <a href="#getting_the_right_scenario">Getting the Right Scenario</a>) with type 'regex_required' and do not depend
           on a simple text search. 
         </p>
 	    <p>

@@ -80,13 +80,18 @@ public class ConsoleServlet extends HttpServlet {
 
 		
 		FileInputStream fstream = new FileInputStream(file);
+		System.out.println("Console file: "  + file.getAbsolutePath() + " (Size:" +file.length()+" bytes)");
 		MockeyXmlFileManager mxfm = MockeyXmlFileManager.getInstance();
 		String arg = null;
-		try {
-			arg = mxfm.getFileContentAsString(fstream);
-		} catch (Exception e) {
-			throw new IOException(e);
-		} 
+		if(file.length() > 0) {
+			try {
+				arg = mxfm.getFileContentAsString(fstream);
+			} catch (Exception e) {
+				throw new IOException(e);
+			} 
+		}else {
+			arg = "Console is empty. No debug information is available here. File is located here: " + file.getAbsolutePath();
+		}
 		return arg;
 
 	}
