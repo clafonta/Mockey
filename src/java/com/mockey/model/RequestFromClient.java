@@ -367,7 +367,7 @@ public class RequestFromClient {
 
 	/**
 	 * 
-	 * @return
+	 * @return 
 	 */
 	public Map<String, String[]> getHeaderInfoAsMap() {
 

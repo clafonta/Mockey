@@ -94,7 +94,7 @@ public class RequestRule {
 	/**
 	 * 
 	 * @param values
-	 * @return
+	 * @return true if ISSUES occur (e.g. values/data is bad), false otherwise. 
 	 */
 	public boolean evaluate(String[] values) {
 

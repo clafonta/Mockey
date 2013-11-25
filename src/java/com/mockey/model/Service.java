@@ -512,7 +512,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		Map restTokenResults = template.match(realServiceUrl.getFullUrl());
 		@SuppressWarnings("unchecked")
 		Iterator<String> tokenKeyIterator = restTokenResults.keySet().iterator();
-		while(tokenKeyIterator.hasNext()){
+		while (tokenKeyIterator.hasNext()) {
 			String key = tokenKeyIterator.next();
 			rawRequestDataBuffer.append(restTokenResults.get(key));
 		}
@@ -559,46 +559,56 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			Scenario scenario = iter.next();
 			logger.debug("Checking: '" + scenario.getMatchStringArg() + "' in Scenario message: \n" + rawRequestData);
 			int indexValue = -1;
-			int tempArgLength = -1;
-			if (scenario.hasMatchArgument()) {
-				if (scenario.isMatchStringArgEvaluationRulesFlag()) {
+			int tempTotalRuleSuccessfulEvaluationCount = -1;
+			// For RESTful support of VERB (method type), we check if a Scenario
+			// value is set, and if so, it matches incoming request method type.
+			// All TYPES will be allowed if Scenario's method type is 'empty', 'null', or '*' (wildcard). 
+			// Otherwise, ONLY a matching type will be looked at. 
+			String incomingRequestMethod = request.getMethod();
+			if (scenario.getHttpMethodType() == null || scenario.getHttpMethodType().trim().length() == 0
+					|| "*".equals(scenario.getHttpMethodType().trim())
+					|| scenario.getHttpMethodType().trim().equalsIgnoreCase(incomingRequestMethod)) {
 
-					try {
-						RequestInspectorDefinedByJson jsonRulesInspector = new RequestInspectorDefinedByJson(
-								scenario.getMatchStringArg());
+				if (scenario.hasMatchArgument()) {
+					if (scenario.isMatchStringArgEvaluationRulesFlag()) {
 
-						jsonRulesInspector.analyze(request);
-					
-						if (jsonRulesInspector.hasAnySuccessForAtLeastOneRuleType()) {
-							
-							// No errors, so we have a match.
-							indexValue = 1;
-							// Capture the number of rules being processed
-							tempArgLength = jsonRulesInspector.getRuleCount();
+						try {
+							RequestInspectorDefinedByJson jsonRulesInspector = new RequestInspectorDefinedByJson(
+									scenario.getMatchStringArg());
 
-						} else {
-							logger.debug("No match. Reason: " + jsonRulesInspector.getPostAnalyzeResultMessage());
+							jsonRulesInspector.analyze(request);
+
+							if (jsonRulesInspector.hasAnySuccessForAtLeastOneRuleType()) {
+
+								// No errors, so we have a match.
+								indexValue = 1;
+								// Capture the number of _valid_ rules successfully processed.
+								tempTotalRuleSuccessfulEvaluationCount = jsonRulesInspector.getValidRuleCount();
+
+							} else {
+								logger.debug("No match. Reason: " + jsonRulesInspector.getPostAnalyzeResultMessage());
+							}
+
+						} catch (JSONException e) {
+							String msg = "Unable to parse JSON rules from scenario: " + scenario.getScenarioName();
+							logger.debug(msg, e);
+							// Unable to interpret this, so we assume
+							// no match
 						}
 
-					} catch (JSONException e) {
-						String msg = "Unable to parse JSON rules from scenario: " + scenario.getScenarioName();
-						logger.debug(msg, e);
-						// Unable to interpret this, so we assume
-						// no match
+					} else {
+						// Case insensitive
+						tempTotalRuleSuccessfulEvaluationCount = scenario.getMatchStringArg().trim().length();
+						indexValue = rawRequestData.toLowerCase().indexOf(scenario.getMatchStringArg().toLowerCase());
 					}
-
-				} else {
-					// Case insensitive
-					tempArgLength = scenario.getMatchStringArg().trim().length();
-					indexValue = rawRequestData.toLowerCase().indexOf(scenario.getMatchStringArg().toLowerCase());
 				}
-			}
-			// OK, we have found a match-argument that is in the REQUEST,
-			// via 'indexValue > -1' but is it the longest matching argument
-			// via 'tempArgLength > matchArgLength'?
-			if ((indexValue > -1) && tempArgLength > matchArgLength) {
-				matchArgLength = tempArgLength;
-				bestMatchedScenario = scenario;
+				// OK, we have found a match-argument that is in the REQUEST,
+				// via 'indexValue > -1' but is it the longest matching argument
+				// via 'tempArgLength > matchArgLength'?
+				if ((indexValue > -1) && tempTotalRuleSuccessfulEvaluationCount > matchArgLength) {
+					matchArgLength = tempTotalRuleSuccessfulEvaluationCount;
+					bestMatchedScenario = scenario;
+				}
 			}
 		}
 

@@ -20,8 +20,9 @@ $(document).ready( function() {
         scenario_response_header = $('#scenario_response_header'),
         tag = $('#tag'),
         http_response_status_code = $('#http_response_status_code');
+        http_method_type = $('#http_method_type');
         error_scenario = $('#error_scenario'),
-        allFields = $([]).add(name).add(match).add(match_evaluation_rules_flag).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag).add(http_response_status_code).add(scenario_response_header),
+        allFields = $([]).add(name).add(match).add(match_evaluation_rules_flag).add(http_method_type).add(universal_error_scenario).add(error_scenario).add(responsemsg).add(tag).add(http_response_status_code).add(scenario_response_header),
         tips = $(".validateTips");  
     
     function updateTips(t) {
@@ -86,6 +87,8 @@ $(document).ready( function() {
     
     $('.createScenarioLink').each( function() {
         $(this).click( function() {
+        	// Clear tips
+        	$('#errorInfo').html('');
             var serviceId = this.id.split("_")[1];
             // Clear input
             var serviceName = $('#serviceName_'+serviceId).val();
@@ -111,6 +114,7 @@ $(document).ready( function() {
                                     matchStringArg: match.val(), matchStringArgEvaluationRulesFlag: match_evaluation_rules_flag.is(':checked'),
                                     responseMessage: responsemsg.val(), responseHeader: scenario_response_header.val(),
                                     httpResponseStatusCode: http_response_status_code.val(),
+                                    httpMethodType: http_method_type.val(),
                                     universalErrorScenario: universal_error_scenario.is(':checked'), 
                                     errorScenario: error_scenario.is(':checked')  } ,
                                     function(data){
@@ -148,10 +152,12 @@ $(document).ready( function() {
                     $('#error_scenario').attr('checked', data.scenarioErrorFlag);
                     $('#universal_error_scenario').attr('checked', data.universalScenarioErrorFlag);
                     $('#http_response_status_code').val(data.httpResponseStatusCode);
+                    $('#http_method_type').val(data.httpMethodType);
                     $('#dialog-create-scenario').dialog('open');
                     $('#dialog-create-scenario').dialog({
                         buttons: {
                           "Update scenario": function() {
+                          	   $('#errorInfo').html('');
                                var bValid = true;  
                                allFields.removeClass('ui-state-error');
                                bValid = bValid && checkLength(name,"scenario name",3,1000);
@@ -161,8 +167,9 @@ $(document).ready( function() {
                                         tag: $('input[name=tag]').val(), matchStringArg: match.val(), matchStringArgEvaluationRulesFlag: match_evaluation_rules_flag.is(':checked'), 
                                         responseHeader: scenario_response_header.val(), responseMessage: responsemsg.val(), 
                                         universalErrorScenario: universal_error_scenario.is(':checked'), httpResponseStatusCode: http_response_status_code.val(),
+                                        httpMethodType: http_method_type.val(),
                                         errorScenario: error_scenario.is(':checked')  } ,function(data){
-                                               console.log(data);
+                                               console.log("Saving data: "+data);
                                                $('#view-scenario_'+scenarioId+'_' +serviceId).fadeOut(function(){ $(this).text(name.val()).fadeIn() });
                                                $('#updated').fadeIn('fast').animate({opacity: 1.0}, 300).fadeOut('fast');
                                         }, 'json' );  
@@ -181,6 +188,8 @@ $(document).ready( function() {
     });
     
     $('.save-as-a-service-scenario').button().click(function() {
+    	// Clear tips
+        $('#errorInfo').html('');
         var requestId = this.id.split("_")[1];
         // 1. Get the recorded conversation.
         // 2. Populate the form with the data.
@@ -222,6 +231,7 @@ $(document).ready( function() {
                                 responseMessage: responsemsg.val(), 
                                 universalErrorScenario: universal_error_scenario.val(), 
                                 httpResponseStatusCode: http_response_status_code.val(),
+                                httpMethodType: http_method_type.val(),
                                 errorScenario: error_scenario.val()  } ,
                                 function(data){
                                     $(this).dialog('close');
@@ -242,7 +252,7 @@ $(document).ready( function() {
 
 <div id="dialog-create-scenario" title="Service Scenario">
     <div class="childform">
-    <p class="validateTips"></p>
+    <p id="errorInfo" class="validateTips"></p>
     This scenario belongs to the service called: <br />
     <h2 class="big" id="service-name-for-scenario"></h2>
     <p class="tinyfieldset info_message">For information on these input fields, please read the <a href="<c:url value="/help#scenario"/>"><strong>Help</strong></a> section.</p>
@@ -280,6 +290,22 @@ $(document).ready( function() {
 	        <input type="text" name="tag" id="tag" class="text ui-widget-content ui-corner-all" placeholder="Enter tags here." />
 	        <br />
 	        Optional. Comma seperated tags. Examples 'release-123', 'qa', 'iphone', 'android'
+	        <hr />
+	        <label for="http_response_status_code"><strong>HTTP Method Type</strong></label>
+	        <div style="padding:1em 0 1em 0">
+	        <select class="text ui-widget-content ui-corner-all" id="http_method_type" name="http_method_type" >
+	        
+	         <option class="text ui-widget-content" value="">&#42;</option>
+	         <option class="text ui-widget-content" value="GET">GET</option>
+	         <option class="text ui-widget-content" value="PUT">PUT</option>
+	         <option class="text ui-widget-content" value="POST">POST</option>
+	         <option class="text ui-widget-content" value="DELETE">DELETE</option>
+	        
+	        </select>
+	        </div>	 
+	        This is helpful when you want to ensure your RESTful request (e.g. GET, POST, PUT, DELETE) 
+	        is tied to the right scenario. By default, set to &#42;, which means any HTTP method type will do.
+	        
 	        <hr />
 	        <label for="http_response_status_code"><strong>HTTP Response Status:</strong></label>
 	        <div style="padding:1em 0 1em 0">

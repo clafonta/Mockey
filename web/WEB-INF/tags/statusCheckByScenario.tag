@@ -15,6 +15,7 @@ ${scenario.lastVisitSimple}</span>
 </c:if> 
 
 <br />
+<p>
 <span class="tag_word_lead">Tag(s):</span>
 <c:forEach var="tagArg" items="${scenario.tagList}"  varStatus="status">
 		<span class="tag_word" id="service-scenario-tag-id_${scenario.id}_${scenario.serviceId}_${status.count}" value="${tagArg}">
@@ -22,9 +23,26 @@ ${scenario.lastVisitSimple}</span>
 			${tagArg}
 		</span>	  
 </c:forEach>
- 
+</p>
 <p class="count-box">Service ID: ${service.id}, Scenario ID: ${scenario.id} </p>
-<p class="tiny">Match arguments:  <pre class="match" > ${scenario.matchStringArg} </pre> </p>
+<p class="count-box">Method type: <strong>${scenario.httpMethodType}</strong> </p>
+<hr />
+<%
+String invalidJSONFormatMsg = ""; 
+if (scenario.hasMatchArgument() && scenario.isMatchStringArgEvaluationRulesFlag()) {
+	// Let's provide a visual highlight to the user if JSON format is invalid.
+	try {
+		com.mockey.plugin.RequestInspectorDefinedByJson obj = new com.mockey.plugin.RequestInspectorDefinedByJson(scenario.getMatchStringArg());
+	} catch (org.json.JSONException jsonException) {
+		
+		invalidJSONFormatMsg = "<p class='alert_message'>Invalid JSON Format</p>";
+	}
+}
+%>
+<p class="tiny">Match arguments: <%= invalidJSONFormatMsg%> 
+<pre class="match" > ${scenario.matchStringArg} </pre> 
+</p>
+
 
 <%
 if(service.isResponseSchemaFlag()) {

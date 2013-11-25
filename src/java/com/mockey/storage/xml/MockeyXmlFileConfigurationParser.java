@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.util.List;
 
 import org.apache.commons.digester3.Digester;
@@ -166,6 +165,7 @@ public class MockeyXmlFileConfigurationParser {
 		// fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "last_visit",
 		// "lastVisit");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "http_resp_status_code", "httpResponseStatusCode");
+		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "http_method_type", "httpMethodType");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "tag", "tag");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
 		fullSetDigester.addSetProperties(SCENARIO_MATCH, "scenario_match_evaluation_rules_flag",

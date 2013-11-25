@@ -125,7 +125,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 			.getLogger(RequestInspectorDefinedByJson.class);
 	private Map<RequestRuleType, List<String>> errorMapByKey = new HashMap<RequestRuleType, List<String>>();
 	private Map<RequestRuleType, Boolean> rulesDefinedForType = new HashMap<RequestRuleType, Boolean>();
-	private int ruleCount = 0;
+	private int totalRuleCount = 0; 
+	private int validRuleCount = 0;
 
 	/**
 	 * 
@@ -143,8 +144,16 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 	 * 
 	 * @return the number of rules processed post analysis.
 	 */
-	public int getRuleCount() {
-		return this.ruleCount;
+	public int getTotalRuleCount() {
+		return this.totalRuleCount;
+	}
+	
+	/**
+	 * 
+	 * @return the number of rules that had a positive outcome. 
+	 */
+	public int getValidRuleCount() {
+		return this.validRuleCount;
 	}
 
 	/**
@@ -216,7 +225,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 			for (int i = 0; i < parameterArray.length(); i++) {
 				JSONObject jsonRule = parameterArray.getJSONObject(i);
 
-				this.ruleCount++;
+				this.totalRuleCount++;
 				try {
 					RequestRule requestRule = new RequestRule(jsonRule,
 							ruleType);
@@ -227,6 +236,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 										.toString());
 						if (requestRule.evaluate(values)) {
 							addErrorMessage(ruleType, requestRule);
+						}else {
+							this.validRuleCount++;
 						}
 					} else if (RequestRuleType.RULE_TYPE_FOR_URL
 							.equals(ruleType)) {
@@ -235,6 +246,8 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 										.toString());
 						if (requestRule.evaluate(values)) {
 							addErrorMessage(ruleType, requestRule);
+						}else {
+							this.validRuleCount++;
 						}
 					} else {
 						// For HEADERS and PARAMETERS
@@ -256,15 +269,29 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 									.toArray(new String[allValues.size()]))) {
 								addErrorMessage(ruleType,
 										requestRule);
+							}else {
+								this.validRuleCount++;
 							}
 						} else {
 							// We have non-null, and non-empty keys.
 							// Apply specific rules.
-							String[] values = keyValues.get(requestRule
-									.getKey());
-							if (requestRule.evaluate(values)) {
-								addErrorMessage(ruleType,
-										requestRule);
+							// Keys in RULES and INCOMING maps should 
+							// be case insensitive!
+							Iterator<String> allKeys = keyValues.keySet()
+									.iterator();
+							while (allKeys.hasNext()) {
+								String key = allKeys.next();
+								if(key.equalsIgnoreCase(requestRule
+										.getKey())) {
+									String[] values = keyValues.get(key);
+									if (requestRule.evaluate(values)) {
+										addErrorMessage(ruleType,
+												requestRule);
+									} else {
+										this.validRuleCount++;
+									}
+								}
+								
 							}
 						}
 					}

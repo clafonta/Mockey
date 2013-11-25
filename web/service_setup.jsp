@@ -168,7 +168,7 @@
 	               a Scenario match argument with the appropriate token (in this example, '123'), then Scenario with match argument 123 will be returned. 
 	               <br />
 	               <br />
-	               See <a href="#evaluation_rules_api">Evaluation Rules in JSON</a> in the Help page for directions. 
+	               See <a href="<c:url value="/help#getting_the_right_scenario"/>">Getting the Right Scenario</a> in the Help page for directions. 
 	               </p>
 	            </div>
 	            <div id="invalidUrl" style="display:none;color:red;"><span>Note:</span> </div>

@@ -155,6 +155,15 @@ public class ScenarioServlet extends HttpServlet {
 
 			}
 		}
+		
+		if (req.getParameter("httpMethodType") != null) {
+			try {
+				String v = req.getParameter("httpMethodType");
+				scenario.setHttpMethodType(v);
+			} catch (Exception e) {
+
+			}
+		}
 
 		if (req.getParameter("responseHeader") != null) {
 			String responseHeader = req.getParameter("responseHeader");

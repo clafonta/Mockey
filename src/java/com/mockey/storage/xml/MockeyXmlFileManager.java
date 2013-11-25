@@ -112,6 +112,9 @@ public class MockeyXmlFileManager {
 	}
 
 	public static MockeyXmlFileManager getInstance() {
+		if(MockeyXmlFileManager.mockeyXmlFileManagerInstance == null){
+			MockeyXmlFileManager.createInstance(System.getProperty("user.dir"));
+		}
 		return MockeyXmlFileManager.mockeyXmlFileManagerInstance;
 	}
 

@@ -203,6 +203,7 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 		// scenarioElement.setAttribute("last_visit",
 		// getSafeForXmlOutputString("" + scenario.getLastVisit()));
 		scenarioElement.setAttribute("http_resp_status_code", getSafeForXmlOutputString("" + scenario.getHttpResponseStatusCode()));
+		scenarioElement.setAttribute("http_method_type", getSafeForXmlOutputString("" + scenario.getHttpMethodType()));
 
 		Element scenarioMatchStringElement = document.createElement("scenario_match");
 		scenarioMatchStringElement.setAttribute("scenario_match_evaluation_rules_flag", Boolean.toString(scenario.isMatchStringArgEvaluationRulesFlag()));

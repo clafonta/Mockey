@@ -51,10 +51,11 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	private String responseMessage = "";
 	private String matchStringArg = "";
 	private boolean matchStringArgEvaluationRulesFlag = false;
-
+	private String httpMethodType = "";
 	private String responseHeader = "Accept-Language: en-US | Accept: text/plain";
 	private int httpResponseStatusCode = HttpServletResponse.SC_OK;
 
+	
 	public String getScenarioName() {
 		return scenarioName;
 	}
@@ -213,6 +214,14 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	public void setMatchStringArgEvaluationRulesFlag(
 			boolean matchStringArgEvaluationRulesFlag) {
 		this.matchStringArgEvaluationRulesFlag = matchStringArgEvaluationRulesFlag;
+	}
+
+	public String getHttpMethodType() {
+		return httpMethodType;
+	}
+
+	public void setHttpMethodType(String httpMethodType) {
+		this.httpMethodType = httpMethodType;
 	}
 
 }

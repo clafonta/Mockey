@@ -85,7 +85,7 @@ public class StartUpServlet extends HttpServlet {
 				// since we're not using JettyRunner, which contains
 				// logic to pass/tell HomeServlet _how_ to initialize.
 
-				MockeyXmlFileManager.createInstance(System.getProperty("user.dir"));
+				
 				MockeyXmlFileManager reader = MockeyXmlFileManager.getInstance();
 				reader.loadConfiguration();
 

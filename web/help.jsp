@@ -25,7 +25,8 @@
 		        <li>&#187; <a href="#good_things_to_test">Good Things to Test</a></li>
 		        <li>&#187; <a href="#url_recommendations">URL Config Recommendations</a></li>	        
 		        <li>&#187; <a href="#robots">Robots</a></li>  
-		        <li>&#187; <a href="#evaluation_rules_api">Request Evaluation Rules in JSON</a></li>
+		        <li>&#187; <a href="#service_eval_rules">Service Request Validation Rules</a></li>
+		        <li>&#187; <a href="#getting_the_right_scenario">Getting the Right Scenario</a></li>
 		        <li>&#187; <a href="#response_schema">Response JSON Schema</a></li> 
 		        <li>&#187; <a href="#status">Status</a></li> 
 		        <li>&#187; <a href="#startup">Start Up Configurations</a></li> 
@@ -403,30 +404,24 @@
         Mockey is not only for Humans. Robots can use it too. See <a href="service_api">here</a>.
         </p>
     </div>
-    <a href="#evaluation_rules_api" name="evaluation_rules_api"></a>
+    
+    <a href="#service_eval_rules" name="service_eval_rules"></a>
     <div class="help_section">
-        <h2>Request Evaluation Rules in JSON</h2>
-		<div>Mockey has some hooks for you to evaluate incoming requests defined in a JSON formatted API. These rules can be applied to:
-		<ul>
-		  <li>A <strong>Service</strong> for request validation.</li>
-		  <li>A <strong>Scenario</strong> for matching incoming requests to the appropriate Scenario, when a Service is set to Dynamic.</li>
-		</ul>
+        <h2>Service Request Validation Rules</h2>
+        <p class="quote">"Hey, am I sending garbage over the wall, or am I meeting the intended service API?"</p>
+		<p>Mockey has some hooks for you to evaluate incoming requests defined in a JSON formatted rules. These rules can be applied to incoming 
+			request for the validation. </p>
 		
-		<h3>Service</h3>
 		<p>You can apply evaluation rules at a Service level to help flag potential errors ("<i>Hey, you're missing a required request attribute!</i>") and it works as follows:
 			<ul>
-				<li>A request is made to Mockey. 
-					</li>
+				<li>A request is made to Mockey. </li>
 				<li>Mockey finds the appropriate mock Service. If request validation is <b>enabled</b>, then Mockey will scan
-					the incoming request with your defined rules.  
-					</li>
-				<li>If evaluation errors/issues are found, then they will be logged and viewable in the <a href="<c:url value="/history"/>">History</a> page. 
-					</li>	
-				</ul>
-			</div>
-			<div>Here's an example definition: 
-				</div>
-        <pre class="code" style="font-size:0.9em;">
+				the incoming request with your defined rules. </li>
+				<li>If evaluation errors/issues are found, then they will be logged and viewable in the <a href="<c:url value="/history"/>">History</a> page.</li>	
+			</ul>
+		</p>
+		<p>Here's an example definition: </pre>
+<pre class="code" style="font-size:0.9em;">
 	// EXAMPLE
 {
     "parameters": [
@@ -467,19 +462,22 @@
     ]
 }
 </pre>
-		</p>
+	</div>
 		
-		<h3>Scenario</h3>
+    <a href="#getting_the_right_scenario" name="getting_the_right_scenario"></a>
+    <div class="help_section_zebra">
+		<h2>Getting the Right Scenario (for Dynamic Services)</h2>
+		<p class="quote">"I am writing to a RESTful API, where <b>PUT</b> should get scenario 'A' and <b>DELETE</b> should get scenario 'B', but how do I do this?"</p>
 		<p>
-		When the JSON rules API are applied to a Scenario, they are processd only when the Scenario's parent Service is set to Dynamic. 
-		If the Service is set to Dynamic, and the Scenario has a <i>match</i> argument defined, then the incoming request will be evaluated. 
-		If the request satisfies the Scenario's matching argument or rules, then that Scenario is returned.     
+		When evaluation rules are applied to a Scenario, they are processd only when the Scenario's parent Service is set to <strong>Dynamic</strong>. 
+		If the Service is set to Dynamic, and the Scenario has a simple <i>match</i> argument or evaluation <i>rules</i> defined, then the incoming 
+		request will be evaluated. 	If the request satisfies the Scenario's matching argument or rules, then that Scenario is returned.     
 		<br /><br />For example, if you want your request 
 		<span class="code_text"> http://127.0.0.1:8080/service/customer?customer=111&invoice=222</span> to return Scenario B, 
 		then here's an example setup: 
 		
         <pre class="code" style="font-size:0.9em;">
-	// EXAMPLE Service A with 'Scenario A' 
+// EXAMPLE Service A with 'Scenario A' 
 {
     "parameters": [
         {
@@ -496,7 +494,7 @@
 }
 </pre>
 <pre class="code" style="font-size:0.9em;">
-	// EXAMPLE Service A with 'Scenario B'
+// EXAMPLE Service A with 'Scenario B'
 {
     "parameters": [
         {
@@ -513,7 +511,7 @@
 }
 </pre>
 <pre class="code" style="font-size:0.9em;">
-	// EXAMPLE Service A with 'Scenario C'
+// EXAMPLE Service A with 'Scenario C'
 {
     "url": [
         {
@@ -549,18 +547,18 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
 		</p>
 		<h3>Rules API</h3>
         <p>
-	    The JSON rules API supports an array of evaluation rules per group type. The group type supported are:
-	    <ul>
-	      <li><strong>parameters</strong>: for the purpose of evaluating key value pairs.</li>
-	       <li><strong>headers</strong>: for the purpose of evaluating key value pairs.</li>
-	        <li><strong>body</strong>: for the purpose of evaluating the existence of specific content contained in a POST body payload.</li>
-	         <li><strong>url</strong>: for the purpose of evaluating the existence of specific content related to the incoming request URL, i.e. RESTful URLs containing token identifiers.</li>
-	    </ul>
+		    The JSON rules API supports an array of evaluation rules per group type. The group type supported are:
+		    <ul>
+				<li><strong>parameters</strong>: for the purpose of evaluating key value pairs.</li>
+				<li><strong>headers</strong>: for the purpose of evaluating key value pairs.</li>
+				<li><strong>body</strong>: for the purpose of evaluating the existence of specific content contained in a POST body payload.</li>
+				<li><strong>url</strong>: for the purpose of evaluating the existence of specific content related to the incoming request URL, i.e. RESTful URLs containing token identifiers.</li>
+		    </ul>
 	    </p>
 	    <h4>Are rules handled with AND or OR?<h4>
 	    <ul>
-	    <li>All rules per TYPE will be treated as 'AND'. For example, all key/value pairs in 'parameters' must exist AND be valid.</li>
-		<li>All rules between TYPEs will be treated as 'OR'. For example, all key/value pair rules must be TRUE in 'parameters' OR all key/value rules must be true for 'headers'. </li>
+		    <li>All rules per TYPE will be treated as 'AND'. For example, all key/value pairs in 'parameters' must exist AND be valid.</li>
+			<li>All rules between TYPEs will be treated as 'OR'. For example, all key/value pair rules must be TRUE in 'parameters' OR all key/value rules must be true for 'headers'. </li>
 	    </ul>
 	    <p>
 	    Each evaluation rule includes the following:
@@ -594,9 +592,36 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
         
         </table>
         </p>
+        <p>Here's another example. When working with REST API based web services, you may encounter access limitations on the server and/or client side. 
+        	Here is one way to map a PUT request to a scenario with a header rule and looking for a specific TOKEN. 
+<pre class="code" style="font-size:0.9em;">
+// EXAMPLE  
+{
+    "headers": [
+        {
+            "key": "x-http-method-override",
+            "value_rule_arg": "PUT",
+            "value_rule_type": "string_required"
+        }
+    ],
+    "url": [
+        {
+            "key": "*",
+            "value_rule_arg": "44",
+            "value_rule_type": "string_required"
+        }
+    ]
+}
+</pre>
+	<p>This should work for a Service defined as (/service/customer/{token}), and an incoming request:
+	curl -X POST -d@text.txt http://localhost:8080/service/customer/44 --header "x-http-method-override:POST" 
+	</p>
+    <p>
+    Need a sample file? Start with a clean Mockey and Import this <a href="sample.xml">file</a>. 
+    </p>
         
     </div>
-    <div class="help_section_zebra">
+    <div class="help_section">
 	    <a href="#response_schema" name="response_schema"></a>
         <h2>Response JSON Schema</h2>
         <p>
@@ -606,7 +631,7 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
         
         </p>
     </div>
-    <div class="help_section">
+    <div class="help_section_zebra">
 	    <a href="#status" name="status"></a>
 	    <h2>Status</h2>
 	    <p>

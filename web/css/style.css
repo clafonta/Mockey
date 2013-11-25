@@ -197,13 +197,20 @@ table.tag_word_table tr td {
 	color:#303030;
 	font-size: 12px;
 }
-.code, .code_text {
-font-family:'Courier',serif;
-font-weight:100; font-stretch: ultra-condensed;color:#303030;}
-.code {background:#FFFFCC; padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em;
--moz-box-shadow: 3px 3px 4px #303030; -webkit-box-shadow: 3px 3px 4px #303030; box-shadow: 3px 3px 4px #303030;}
+.code, .code_text {font-family:'Courier',serif;
+font-weight:100; font-stretch: ultra-condensed;color:#FF1493;   
+}
+
+.code, .quote {padding:1em; border:1px solid #CCC; text-align:left; width: 90%;min-width:300px;margin:1em;
+-moz-box-shadow: 3px 3px 4px #303030; -webkit-box-shadow: 3px 3px 4px #303030; box-shadow: 3px 3px 4px #303030;background:#FFFFCC;}
 .code a{text-align:center;}
 .code span a {font-size: 0.8em; text-decoration: none; color: #f00; }
+
+.quote {
+color: #FF1493;
+background: #ffffff;
+}
+
 pre{	
 background-color: White;	
 color: #666;

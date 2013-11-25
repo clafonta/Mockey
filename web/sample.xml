@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mockservice version="1.0" xml:lang="en-US">
+	<proxy_settings proxy_enabled="false" proxy_url="" />
+	<service default_real_url_index="0" default_scenario_id="1"
+		description="" error_scenario_id="0" hang_time="0" name="Customer Directory"
+		request_inspector_name="null" service_response_type="2" tag=""
+		url="customer/{customerId}">
+		<request_inspector_json_rules
+			enable_flag="false" />
+		<response_schema enable_flag="false" />
+		<scenario http_method_type="GET" http_resp_status_code="200"
+			id="1" name="123 Customer GET" tag="">
+			<scenario_match scenario_match_evaluation_rules_flag="true"><![CDATA[{
+    "url": [{
+        "desc": "curl http://localhost:8080/service/customer/123",
+        "value_rule_arg": "\\b123\\b",
+        "value_rule_type": "regex_required"
+    }]
+}]]></scenario_match>
+			<scenario_response><![CDATA[{
+    "id": "123",
+    "firstName": "Jordan",
+    "lastName": "Smith",
+    "type": "GET"
+}]]></scenario_response>
+			<scenario_response_header />
+		</scenario>
+		<scenario http_method_type="POST" http_resp_status_code="200"
+			id="3" name="123 Customer POST" tag="">
+			<scenario_match scenario_match_evaluation_rules_flag="true"><![CDATA[{
+    "url": [{
+        "desc": "curl -X POST -d@text.txt http://localhost:8080/service/customer/123",
+        "value_rule_arg": "\\b123\\b",
+        "value_rule_type": "regex_required"
+    }]
+}]]></scenario_match>
+			<scenario_response><![CDATA[{
+    "id": "123",
+    "firstName": "Jordan",
+    "lastName": "Smith",
+    "type": "POST"
+}]]></scenario_response>
+			<scenario_response_header />
+		</scenario>
+		<scenario http_method_type="POST" http_resp_status_code="200"
+			id="5"
+			name="888 Customer with a POST REST verb and x-http-method-override as PUT"
+			tag="">
+			<scenario_match scenario_match_evaluation_rules_flag="true"><![CDATA[{
+    "desc": "curl -X POST -d@text.txt http://localhost:8080/service/customer/888 --header \"x-http-method-override:PUT\"",
+    "headers": [{
+        "key": "x-http-method-override",
+        "value_rule_arg": "PUT",
+        "value_rule_type": "string_required"
+    }],
+    "url": [{
+        "key": "*",
+        "value_rule_arg": "888",
+        "value_rule_type": "string_required"
+    }]
+}]]></scenario_match>
+			<scenario_response><![CDATA[{
+    "id": "888",
+    "firstName": "Carrol",
+    "lastName": "Burnett",
+    "x-http-method-override": "PUT"
+}]]></scenario_response>
+			<scenario_response_header />
+		</scenario>
+		<scenario http_method_type="POST" http_resp_status_code="200"
+			id="4" name="888 Customer with POST and x-http-method-override as GET"
+			tag="">
+			<scenario_match scenario_match_evaluation_rules_flag="true"><![CDATA[{
+    "desc": "curl -X POST -d@text.txt http://localhost:8080/service/customer/888 --header \"x-http-method-override:GET\"",
+    "headers": [{
+        "key": "x-http-method-override",
+        "value_rule_arg": "GET",
+        "value_rule_type": "string_required"
+    }],
+    "url": [{
+        "key": "*",
+        "value_rule_arg": "888",
+        "value_rule_type": "string_required"
+    }]
+}]]></scenario_match>
+			<scenario_response><![CDATA[{
+    "id": "888",
+    "firstName": "Carrol",
+    "lastName": "Burnett",
+    "x-http-method-override": "GET"
+}]]></scenario_response>
+			<scenario_response_header />
+		</scenario>
+		<scenario http_method_type="" http_resp_status_code="200" id="2"
+			name="Customer 456" tag="">
+			<scenario_match scenario_match_evaluation_rules_flag="true"><![CDATA[{
+    "url": [{
+        "desc": "If the value '456' is in the RESTful URL. For example 'http://127.0.0.1/service/customer/456'",
+        "value_rule_arg": "\\b456\\b",
+        "value_rule_type": "regex_required"
+    }]
+}]]></scenario_match>
+			<scenario_response><![CDATA[{
+    "id": "456",
+    "firstName": "Ron",
+    "lastName": "Burgandy"
+}]]></scenario_response>
+			<scenario_response_header />
+		</scenario>
+	</service>
+</mockservice>
