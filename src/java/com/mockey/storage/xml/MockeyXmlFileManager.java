@@ -74,6 +74,8 @@ import com.mockey.ui.ServiceMergeResults;
 public class MockeyXmlFileManager {
 
 	private static Logger logger = Logger.getLogger(MockeyXmlFileManager.class);
+	private static final char[] VALID_FILE_NAME_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_".toCharArray();
+
 	private File basePathFile = new File(System.getProperty("user.dir"));
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static MockeyXmlFileManager mockeyXmlFileManagerInstance = null;
@@ -112,7 +114,7 @@ public class MockeyXmlFileManager {
 	}
 
 	public static MockeyXmlFileManager getInstance() {
-		if(MockeyXmlFileManager.mockeyXmlFileManagerInstance == null){
+		if (MockeyXmlFileManager.mockeyXmlFileManagerInstance == null) {
 			MockeyXmlFileManager.createInstance(System.getProperty("user.dir"));
 		}
 		return MockeyXmlFileManager.mockeyXmlFileManagerInstance;
@@ -555,10 +557,29 @@ public class MockeyXmlFileManager {
 	/**
 	 * 
 	 * @param arg
-	 * @return replaces spaces with undersore.
+	 * @return a file name safe for a file system. 
+	 * @see MockeyXmlFileManager#VALID_FILE_NAME_CHARS
+	 * 
 	 */
 	private static String getSafeForFileSystemName(String arg) {
-		return arg.replace(" ", "_");
+
+		// Let's make sure we only accept valid characters (AlphaNumberic + '_').
+		StringBuffer safe = new StringBuffer();
+		for (int x = 0; x < arg.length(); x++) {
+			boolean valid = false;
+			for (int i = 0; i < VALID_FILE_NAME_CHARS.length; i++) {
+				if (arg.charAt(x) == VALID_FILE_NAME_CHARS[i]) {
+					valid = true;
+					break;
+				}
+			}
+			if (valid) {
+				safe.append(arg.charAt(x));
+			}
+		}
+		return safe.toString();
+
+		//
 	}
 
 	/**
@@ -569,7 +590,7 @@ public class MockeyXmlFileManager {
 	 */
 	public String getRelativePath(File fileArg) {
 		String relativePath = "";
-		String basePath =  this.getBasePathFile().getAbsolutePath();
+		String basePath = this.getBasePathFile().getAbsolutePath();
 		String filePath = fileArg.getAbsolutePath();
 		int index = filePath.indexOf(basePath);
 		if (index > -1) {

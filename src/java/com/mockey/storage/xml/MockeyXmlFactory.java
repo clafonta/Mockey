@@ -118,7 +118,7 @@ public class MockeyXmlFactory {
 			}
 
 		} catch (Exception e) {
-			logger.debug("Unable to write file", e);
+			logger.error("Unable to write file", e);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class MockeyXmlFactory {
 		FileOutputStream serviceFOP = new FileOutputStream(scenarioFile);
 		MockeyXmlFileConfigurationGenerator xmlGeneratorSupport = new MockeyXmlFileConfigurationGenerator();
 
-		// Yes, hardcoded for now. As of April 18th, 2013
+		// Yes, hard coded for now. As of April 18th, 2013
 		boolean writeScenarioResponseToTxtFile = true;
 		// TRUE means the scenario response will NOT be included in the Scenario
 		// XML definition file. The Scenario response will be written to its
