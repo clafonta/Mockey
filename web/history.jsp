@@ -118,8 +118,8 @@ $(document).ready(function() {
                   $('#requestParameters_'+requestId).val(data.requestParameters);
                   $('#requestHeaders_'+requestId).val(data.requestHeaders);
                   $('#requestCookies_'+requestId).val(data.requestCookies);
-                  
                   $('#requestBody_'+requestId).val(data.requestBody);
+                  $('#responseScenarioName_'+requestId).append(data.responseScenarioName);
                   $('#responseStatus_'+requestId).val(data.responseStatus);
                   $('#responseHeader_'+requestId).val(data.responseHeader);
                   $('#responseBody_'+requestId).val(data.responseBody);
@@ -268,7 +268,8 @@ $(document).ready(function() {
 	                        </div>
                         </div>
                         <div style="background-color: #8AFFAB; padding: 0.2em 0.4em; margin: 0.2em 0.0em;">
-                        <h2>Response</h2>
+                        <h2>Response:</h2> 
+                        <p>Response scenario name: <span id="responseScenarioName_${request.id}"> </span> </p>
                             <div class="tabs">
                                         <ul>
                                             <li><a href="#resp-tabs-2_${request.id}">Headers</a></li>

@@ -410,6 +410,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		try {
 			logger.debug("Initiating request through proxy");
 			response = clientExecuteProxy.execute(proxyServer, realServiceUrl, allowRedirectFollow, request);
+			response.setScenarioName("");
 
 		} catch (ClientExecuteProxyException e) {
 			// We're here for various reasons.
@@ -452,6 +453,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 				response.setBody(msg.toString());
 			}
 		}
+		response.setScenarioName("(No name; proxy response)");
 		return response;
 	}
 
@@ -470,6 +472,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		ResponseFromService response = new ResponseFromService();
 
 		if (scenario != null) {
+			response.setScenarioName(scenario.getScenarioName());
 			response.setBody(scenario.getResponseMessage());
 			response.setHttpResponseStatusCode(scenario.getHttpResponseStatusCode());
 			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
@@ -622,7 +625,9 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			for (String k : headerInfo.keySet()) {
 				headerList.add(new BasicHeader(k, headerInfo.get(k)));
 			}
+			response.setScenarioName(bestMatchedScenario.getScenarioName());
 			response.setHeaders(headerList.toArray(new Header[headerList.size()]));
+			response.setScenarioName(bestMatchedScenario.getScenarioName());
 		}
 		// If we have no matches. Error handling is as follows:
 		// 1) Does service have a default service error defined? If yes, return
@@ -631,6 +636,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		// return, otherwise...
 		// 3) Return a error message.
 		if (messageMatchFound == null) {
+			response.setScenarioName("(No matching scenario)");
 			Scenario u = getErrorScenario();
 			if (u == null) {
 				u = store.getUniversalErrorScenario();
@@ -649,6 +655,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 		response.setRequestUrl(realServiceUrl);
 		response.setBody(messageMatchFound);
 		response.setHttpResponseStatusCode(httpResponseStatus);
+		
 		return response;
 	}
 

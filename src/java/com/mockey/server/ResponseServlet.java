@@ -170,6 +170,7 @@ public class ResponseServlet extends HttpServlet {
 		fcr.setClientRequestHeaders(request.getHeaderInfo());
 		fcr.setClientRequestParameters(request.getParameterInfo());
 		fcr.setResponseMessage(response);
+		fcr.setScenarioName(response.getScenarioName());
 		fcr.setClientRequestCookies(request.getCookieInfoAsString());// response.getRequestCookies());
 		fcr.setClientResponseCookies(response.getResponseCookiesAsString());
 

@@ -57,6 +57,7 @@ public class ResponseFromService {
 	private static final String[] IGNORE_HEADERS = { "Transfer-Encoding" };
 
 	private Log log = LogFactory.getLog(ResponseFromService.class);
+	private String scenarioName = null;
 	private String body;
 	private boolean valid;
 	private String errorMsg;
@@ -356,6 +357,14 @@ public class ResponseFromService {
 
 	public void setRequestInspectionResult(RequestInspectionResult requestInspectionResult) {
 		this.requestInspectionResult = requestInspectionResult;
+	}
+
+	public String getScenarioName() {
+		return scenarioName;
+	}
+
+	public void setScenarioName(String scenarioName) {
+		this.scenarioName = scenarioName;
 	}
 
 }

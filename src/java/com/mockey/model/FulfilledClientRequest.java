@@ -44,6 +44,7 @@ public class FulfilledClientRequest implements PersistableItem {
 	private Long id = null;
 	private Long serviceId = null;
 	private String serviceName = null;
+	private String scenarioName = null;
 	private String clientRequestBody = null;
 	private String clientRequestHeaders = null;
 	private String clientRequestParameters = null;
@@ -207,6 +208,14 @@ public class FulfilledClientRequest implements PersistableItem {
 
 	public void setRequestInspectionResult(RequestInspectionResult requestInspectionResult) {
 		this.requestInspectionResult = requestInspectionResult;
+	}
+
+	public String getScenarioName() {
+		return scenarioName;
+	}
+
+	public void setScenarioName(String scenarioName) {
+		this.scenarioName = scenarioName;
 	}
 
 }
