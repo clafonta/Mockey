@@ -183,8 +183,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 			} else {
 				for (Scenario scenario : mockServiceBean.getScenarios()) {
 					Element include = document.createElementNS("http://www.w3.org/2001/XInclude", "xi:include");
-					File scenarioFile = MockeyXmlFileManager.getInstance().getServiceScenarioFile(mockServiceBean, scenario);
-					include.setAttribute("href", scenarioFile.getPath());
+					String path = MockeyXmlFileManager.getInstance().getServiceScenarioFileRelativePathToDepotFolder(mockServiceBean, scenario);
+					include.setAttribute("href", path);
 					include.setAttribute("parse", "xml");
 					serviceElement.appendChild(include);
 				}

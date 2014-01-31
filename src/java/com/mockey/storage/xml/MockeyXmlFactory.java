@@ -106,7 +106,7 @@ public class MockeyXmlFactory {
 				String serviceOutput = this.getDocumentAsString(serviceDoc);
 				for (Scenario scenario : service.getScenarios()) {
 
-					File scenarioFile = MockeyXmlFileManager.getInstance().getServiceScenarioFile(service, scenario);
+					File scenarioFile = MockeyXmlFileManager.getInstance().getServiceScenarioFileAbsolutePath(service, scenario);
 					this.writeServiceScenarioToXMLFile(scenarioFile, scenario);
 				}
 

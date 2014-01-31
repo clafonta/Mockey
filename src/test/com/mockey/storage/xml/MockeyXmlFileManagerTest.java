@@ -35,7 +35,7 @@ public class MockeyXmlFileManagerTest {
 		happyScenario.setScenarioName("happy");
 		happyScenario.setResponseMessage("HAPPY");
 		happyScenario = feelingService.saveOrUpdateScenario(happyScenario);
-		File scenarioFile = MockeyXmlFileManager.getInstance().getServiceScenarioFile(feelingService, happyScenario);
+		File scenarioFile = MockeyXmlFileManager.getInstance().getServiceScenarioFileAbsolutePath(feelingService, happyScenario);
 		assert(scenarioFile!=null) : "Scenario is null. It should not be.";	
 		String correctPath  = TESTCONFIG_DIR + File.separator + "mockey_def_depot" +File.separator +"feeling" + File.separator +"scenarios" + File.separator +"happy.xml";
 		assert(scenarioFile.getAbsolutePath().equals(correctPath)) : "Invalid scenario file path.  \n    WAS:" + scenarioFile.getAbsolutePath() +"\nCORRECT:" + correctPath;
