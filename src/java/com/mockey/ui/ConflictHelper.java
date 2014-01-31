@@ -30,6 +30,7 @@ import com.mockey.model.ConflictInfo;
 import com.mockey.model.Scenario;
 import com.mockey.model.Service;
 import com.mockey.model.Url;
+import com.mockey.storage.xml.MockeyXmlFileManager;
 
 /**
  * Utility/helper class to help flag 'conflicts', possible problems in the
@@ -40,7 +41,7 @@ import com.mockey.model.Url;
  */
 public class ConflictHelper {
 
-	private static final String MATCH_NAME = "Has the same Service name.";
+	private static final String MATCH_NAME = "Has matching Service name. Evaluation is based on comparing lowercase, alphanumberic values only. Example 'AAAA*' matches 'aaaa' ";
 	private static final String MATCH_REAL_URL = "Has a the same real URL.";
 	private static final String MATCH_SCENARIO = "Has duplicate scenario(s).";
 	private static final String MATCH_MOCK_URL = "Has a matching mock URL(s)";
@@ -63,26 +64,24 @@ public class ConflictHelper {
 				if (!serviceA.getId().equals(serviceB.getId())) {
 
 					// NAME
-					if (serviceA.getServiceName().equals(
-							serviceB.getServiceName())) {
-						conflictInfo
-								.addConflict(serviceA, serviceB, MATCH_NAME);
+					if (MockeyXmlFileManager.getSafeForFileSystemName(serviceA.getServiceName()).equals(
+							MockeyXmlFileManager.getSafeForFileSystemName(serviceB.getServiceName()))) {
+						conflictInfo.addConflict(serviceA, serviceB, "Service with name'" + serviceA.getServiceName()
+								+ "' compared to service with name: '" + serviceB.getServiceName() + "'. Info: " + MATCH_NAME);
 					}
 
 					// REAL URLs
 					for (Url urlA : serviceA.getRealServiceUrls()) {
 						for (Url urlB : serviceB.getRealServiceUrls()) {
 							if (urlA.equals(urlB)) {
-								conflictInfo.addConflict(serviceA, serviceB,
-										MATCH_REAL_URL);
+								conflictInfo.addConflict(serviceA, serviceB, MATCH_REAL_URL);
 							}
 						}
 					}
-					
+
 					// SAME MOCK URL
-					if(serviceA.getUrl()!=null && serviceA.getUrl().equals(serviceB.getUrl())){
-						conflictInfo.addConflict(serviceA, serviceB,
-								MATCH_MOCK_URL);
+					if (serviceA.getUrl() != null && serviceA.getUrl().equals(serviceB.getUrl())) {
+						conflictInfo.addConflict(serviceA, serviceB, MATCH_MOCK_URL);
 					}
 
 				}
@@ -92,10 +91,8 @@ public class ConflictHelper {
 			for (Scenario scenarioA : serviceA.getScenarios()) {
 				for (Scenario scenarioB : serviceA.getScenarios()) {
 
-					if (scenarioA.hasSameNameAndResponse(scenarioB)
-							&& !scenarioA.getId().equals(scenarioB.getId())) {
-						conflictInfo.addConflict(serviceA, serviceA,
-								MATCH_SCENARIO);
+					if (scenarioA.hasSameNameAndResponse(scenarioB) && !scenarioA.getId().equals(scenarioB.getId())) {
+						conflictInfo.addConflict(serviceA, serviceA, MATCH_SCENARIO);
 					}
 				}
 			}

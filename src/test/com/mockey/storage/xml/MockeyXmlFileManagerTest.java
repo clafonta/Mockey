@@ -92,6 +92,7 @@ public class MockeyXmlFileManagerTest {
 	public void validateServiceAdd() {
 		// Clean Store
 		store.deleteEverything();
+		assert(store.getServices().size() == 0) : "Expected store to be empty (0) but got '" + store.getServices().size() +"'";
 		for (Service service : getServiceList()) {
 			store.saveOrUpdateService(service);
 		}
@@ -319,7 +320,8 @@ public class MockeyXmlFileManagerTest {
 		Service s = new Service();
 		s.setServiceName("AnAccountService");
 		File serviceFile = MockeyXmlFileManager.getInstance().getServiceFile(s);
-		assert ("mockey_def_depot/AnAccountService/AnAccountService.xml".equals(mxfm.getRelativePath(serviceFile))) : "Fail in catching invalid child file path. ";
+		assert ("mockey_def_depot/anaccountservice/anaccountservice.xml".equals(mxfm.getRelativePath(serviceFile))) : "Fail in catching invalid child file path. Expected '"
+			+ "mockey_def_depot/anaccountservice/anaccountservice.xml' but got '"+mxfm.getRelativePath(serviceFile)+"'";
 		assert ("ERROR".equals(mxfm.getRelativePath(randomFile))) : "Fail in catching BAD file.";
 	}
 
@@ -399,11 +401,11 @@ public class MockeyXmlFileManagerTest {
 		service.saveOrUpdateRealServiceUrl(new Url("http://www.nbc.com"));
 		serviceList.add(service);
 
-		service = new Service();
-		service.setServiceName("Service 2");
-		service.saveOrUpdateRealServiceUrl(new Url("http://www.abc.com"));
-		service.saveOrUpdateRealServiceUrl(new Url("http://www.nbc.com"));
-		serviceList.add(service);
+		Service serviceB = new Service();
+		serviceB.setServiceName("Service 22");
+		serviceB.saveOrUpdateRealServiceUrl(new Url("http://www.abc.com"));
+		serviceB.saveOrUpdateRealServiceUrl(new Url("http://www.nbc.com"));
+		serviceList.add(serviceB);
 		return serviceList;
 	}
 

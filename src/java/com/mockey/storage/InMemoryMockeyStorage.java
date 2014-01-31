@@ -344,7 +344,19 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public Service saveOrUpdateService(Service mockServiceBean) {
 
+		//Helpful messaging:				
+		// Let's see if ServiceBean's NAME conflicts with other ServiceBeans
+		List<Service> services = this.getServices();
+		List<String> serviceNames = new ArrayList<String>();
+		for(Service service: services){
+			serviceNames.add(service.getServiceName());
+		}
+		checkForDuplicateFileName(serviceNames, mockServiceBean.getServiceName());
+		
 		PersistableItem item = mockServiceStore.save(mockServiceBean);
+		
+		
+		
 		if (mockServiceBean != null && !mockServiceBean.getTransientState()) {
 			this.writeMemoryToFile();
 		}
@@ -357,6 +369,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			if (mockServiceBean != null && !mockServiceBean.getTransientState()) {
 				this.writeMemoryToFile();
 			}
+			
 		}
 	}
 
@@ -886,6 +899,19 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 */
 	public Long getTimeOfCreation() {
 		return this.creationTime;
+	}
+	
+	private void checkForDuplicateFileName(List<String> inStateFileNames, String fileName)  {
+		
+		String safeFileName = MockeyXmlFileManager.getSafeForFileSystemName(fileName);
+		for(String inStateFileName: inStateFileNames) {
+			if(safeFileName.equals( MockeyXmlFileManager.getSafeForFileSystemName(inStateFileName))){
+				String mssg = "DANGER the following names will conflict with each other and potentially "
+						+ "overwrite files. In state name: '" + inStateFileName + "' and '"+fileName+"'";
+				logger.error(mssg);
+				System.out.println(mssg);
+			}
+		}
 	}
 
 }

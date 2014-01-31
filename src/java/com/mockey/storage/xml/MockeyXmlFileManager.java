@@ -595,7 +595,7 @@ public class MockeyXmlFileManager {
 	 * @see MockeyXmlFileManager#VALID_FILE_NAME_CHARS
 	 * 
 	 */
-	private static String getSafeForFileSystemName(String arg) {
+	public static String getSafeForFileSystemName(String arg) {
 
 		// Let's make sure we only accept valid characters (AlphaNumberic +
 		// '_').
@@ -612,7 +612,7 @@ public class MockeyXmlFileManager {
 				safe.append(arg.charAt(x));
 			}
 		}
-		return safe.toString();
+		return safe.toString().toLowerCase();
 
 		//
 	}
