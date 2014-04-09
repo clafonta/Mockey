@@ -320,8 +320,8 @@ public class MockeyXmlFileManagerTest {
 		Service s = new Service();
 		s.setServiceName("AnAccountService");
 		File serviceFile = MockeyXmlFileManager.getInstance().getServiceFile(s);
-		assert ("mockey_def_depot/anaccountservice/anaccountservice.xml".equals(mxfm.getRelativePath(serviceFile))) : "Fail in catching invalid child file path. Expected '"
-			+ "mockey_def_depot/anaccountservice/anaccountservice.xml' but got '"+mxfm.getRelativePath(serviceFile)+"'";
+		assert (("mockey_def_depot" +File.separator +"anaccountservice"+File.separator+"anaccountservice.xml").equals(mxfm.getRelativePath(serviceFile))) : "Fail in catching invalid child file path. Expected '"
+			+ "mockey_def_depo"+File.separator+"anaccountservice"+File.separator+"anaccountservice.xml' but got '"+mxfm.getRelativePath(serviceFile)+"'";
 		assert ("ERROR".equals(mxfm.getRelativePath(randomFile))) : "Fail in catching BAD file.";
 	}
 
