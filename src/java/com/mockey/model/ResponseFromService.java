@@ -58,6 +58,7 @@ public class ResponseFromService {
 
 	private Log log = LogFactory.getLog(ResponseFromService.class);
 	private String scenarioName = null;
+	private String scenarioTagsAsString = null;
 	private String body;
 	private boolean valid;
 	private String errorMsg;
@@ -366,5 +367,14 @@ public class ResponseFromService {
 	public void setScenarioName(String scenarioName) {
 		this.scenarioName = scenarioName;
 	}
+
+	public String getScenarioTagsAsString() {
+		return scenarioTagsAsString;
+	}
+
+	public void setScenarioTagsAsString(String scenarioTagsAsString) {
+		this.scenarioTagsAsString = scenarioTagsAsString;
+	}
+	
 
 }

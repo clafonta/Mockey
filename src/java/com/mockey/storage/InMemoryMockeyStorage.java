@@ -737,7 +737,14 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		} else if (req.getServiceName().indexOf(filterArg) > -1) {
 			tokenFound = true;
 
+		} else if (req.getScenarioTagsAsString().indexOf(filterArg) > -1) {
+			tokenFound = true;
+
+		} else if (req.getServiceTagsAsString().indexOf(filterArg) > -1) {
+			tokenFound = true;
+
 		} else {
+			// Go through the list of HEADERS
 			Header[] headers = req.getResponseMessage().getHeaders();
 			if (headers != null) {
 				for (Header header : headers) {
@@ -751,6 +758,8 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 					}
 				}
 			}
+			
+			// Go through the list of 
 		}
 		return tokenFound;
 

@@ -179,6 +179,8 @@ public class ResponseServlet extends HttpServlet {
 			fcr.setOriginalUrlBeforeTwisting(response.getOriginalRequestUrlBeforeTwisting().toString());
 		}
 		fcr.setRequestInspectionResult(inspectionResult);
+		fcr.setServiceTagsAsString(service.getTag());
+		fcr.setScenarioTagsAsString(response.getScenarioTagsAsString());
 		store.saveOrUpdateFulfilledClientRequest(fcr);
 	}
 }

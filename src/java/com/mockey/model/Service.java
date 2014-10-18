@@ -473,6 +473,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 
 		if (scenario != null) {
 			response.setScenarioName(scenario.getScenarioName());
+			response.setScenarioTagsAsString(scenario.getTag());
 			response.setBody(scenario.getResponseMessage());
 			response.setHttpResponseStatusCode(scenario.getHttpResponseStatusCode());
 			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
@@ -628,6 +629,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			response.setScenarioName(bestMatchedScenario.getScenarioName());
 			response.setHeaders(headerList.toArray(new Header[headerList.size()]));
 			response.setScenarioName(bestMatchedScenario.getScenarioName());
+			response.setScenarioTagsAsString(bestMatchedScenario.getTag());
 		}
 		// If we have no matches. Error handling is as follows:
 		// 1) Does service have a default service error defined? If yes, return
@@ -644,6 +646,8 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			if (u != null) {
 				messageMatchFound = u.getResponseMessage();
 				httpResponseStatus = u.getHttpResponseStatusCode();
+				response.setScenarioName(u.getScenarioName());
+				response.setScenarioTagsAsString(u.getTag());
 			} else {
 				messageMatchFound = "Yikes, no love for you! Why? Well, it could be that this service setting "
 						+ "is set to Dynamic but there is no found matching scenario, nor is there a default "

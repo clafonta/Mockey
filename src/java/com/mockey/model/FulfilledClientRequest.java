@@ -45,6 +45,8 @@ public class FulfilledClientRequest implements PersistableItem {
 	private Long serviceId = null;
 	private String serviceName = null;
 	private String scenarioName = null;
+	private String serviceTagsAsString = null;
+	private String scenarioTagsAsString = null;
 	private String clientRequestBody = null;
 	private String clientRequestHeaders = null;
 	private String clientRequestParameters = null;
@@ -216,6 +218,22 @@ public class FulfilledClientRequest implements PersistableItem {
 
 	public void setScenarioName(String scenarioName) {
 		this.scenarioName = scenarioName;
+	}
+	
+	public String getServiceTagsAsString() {
+		return serviceTagsAsString;
+	}
+
+	public void setServiceTagsAsString(String serviceTagsAsString) {
+		this.serviceTagsAsString = serviceTagsAsString;
+	}
+
+	public String getScenarioTagsAsString() {
+		return scenarioTagsAsString;
+	}
+
+	public void setScenarioTagsAsString(String scenarioTagsAsString) {
+		this.scenarioTagsAsString = scenarioTagsAsString;
 	}
 
 }
