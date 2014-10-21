@@ -75,7 +75,6 @@ public class LatestHistoryAjaxServlet extends HttpServlet {
             if (!fCRequests.isEmpty()) {
                 // Get the last one
                 FulfilledClientRequest fCRequest = fCRequests.get(fCRequests.size() - 1);
-
                 jsonObject.put("serviceId", fCRequest.getServiceId());
                 jsonObject.put("serviceName", fCRequest.getServiceName());
                 jsonObject.put("requestUrl", fCRequest.getRawRequest());
@@ -88,10 +87,10 @@ public class LatestHistoryAjaxServlet extends HttpServlet {
                 jsonObject.put("responseHeader", fCRequest.getResponseMessage().getHeaderInfo());
                 jsonObject.put("responseBody", fCRequest.getResponseMessage().getBody());
                 jsonObject.put("responseScenarioName", fCRequest.getScenarioName());
+                jsonObject.put("responseScenarioTags", fCRequest.getScenarioTagsAsString());
             } else {
                 jsonObject.put("error", "No history for given tags");
             }
-
         } catch (Exception e) {
             logger.info("error encountered while getting history", e);
             try {
