@@ -1,0 +1,37 @@
+README
+
+What is Mockey?
+===================
+
+A testing tool, used to mock end point web services for the purpose of testing web service client applications. 
+
+Features
+====================
+
+ * Use Mockey as a proxy to a real service, to inspect request and response messages
+ * Set up Mockey to go through a corporate proxy server, to reach an endpoint web service
+ * Support for HTTP/s interactions (even if your corporate proxy server has https as an endpoint web service)
+ * Ability to 'play back' conversations for when endpoint services are not available
+ * Ability to run EVERYTHING in a sandbox - your application and the endpoint webservices your application is consuming. 
+
+What is Mockey not good at?
+====================
+
+ * Large payloads used in conversations, e.g. 10MB per message
+ * Transport protocols other than HTTP, e.g. FTP. 
+ * Complicated conversations e.g. if X, then call this database, else if Y, call 'rake FOO', else kick-off-Maven. 
+ * Solving everything
+
+Getting Started - Quick
+====================
+
+Via command line, build Mockey via Ant. 
+ > ant dist 
+
+
+After a successful build, do the following to start the app:
+> cd dist 
+> java -jar Mockey.jar --help
+
+This will start Mockey and fire up your browser pointing at the defaults (port 8080, /home). Use --help for more options. 
+
