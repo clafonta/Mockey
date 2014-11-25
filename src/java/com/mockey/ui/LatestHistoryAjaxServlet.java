@@ -54,7 +54,7 @@ public class LatestHistoryAjaxServlet extends HttpServlet {
 
     private static final long serialVersionUID = 4178219038104708097L;
     private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-    private static Logger logger = Logger.getLogger(HistoryAjaxServlet.class);
+    private static Logger logger = Logger.getLogger(LatestHistoryAjaxServlet.class);
 
     /**
      * Returns the latest conversation sent to the spoofer. If tags are specified, returns the latest conversation
