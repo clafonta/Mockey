@@ -92,7 +92,7 @@ public class LatestHistoryAjaxServlet extends HttpServlet {
                 jsonObject.put("error", "No history for given tags");
             }
         } catch (Exception e) {
-            logger.info("error encountered while getting history", e);
+            logger.error("error encountered while getting history", e);
             try {
                 jsonObject.put("error", "History for the latest conversation is not available.");
             } catch (JSONException e1) {
