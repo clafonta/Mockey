@@ -211,6 +211,14 @@
     </servlet>
     <servlet>
         <servlet-name>
+            LatestHistoryAjaxServlet
+        </servlet-name>
+        <servlet-class>
+            com.mockey.ui.LatestHistoryAjaxServlet
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>
             ApiDocumentationServlet
         </servlet-name>
         <servlet-class>
@@ -492,6 +500,14 @@
         </servlet-name>
         <url-pattern>
             /conversation/record
+        </url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>
+            LatestHistoryAjaxServlet
+        </servlet-name>
+        <url-pattern>
+            /conversation/record/latest
         </url-pattern>
     </servlet-mapping>
     <servlet-mapping>
