@@ -663,7 +663,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public List<FulfilledClientRequest> getFulfilledClientRequest(Collection<String> filterArguments) {
 
 		List<FulfilledClientRequest> rv = new ArrayList<FulfilledClientRequest>();
-		if (filterArguments.size() == 0) {
+		if (filterArguments == null || filterArguments.size() == 0) {
 			rv = this.getFulfilledClientRequests();
 		} else {
 
@@ -699,6 +699,10 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 */
 	private boolean hasToken(FulfilledClientRequest req, String filterArg) {
 
+		// Short circuit incase fitlerTag is null.
+		if(filterArg == null){
+			return false;
+		}
 		boolean notValue = filterArg.startsWith("!");
 		if (notValue) {
 			try {
