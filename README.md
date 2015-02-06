@@ -24,6 +24,9 @@ What is Mockey not good at?
 
 Getting Started - Quick
 ====================
+A pre-built jar: <https://github.com/clafonta/Mockey/wiki/Downloads>
+
+To build one locally, see the following. 
 
 Via command line, build Mockey via Ant. 
  > ant dist 
