@@ -31,10 +31,12 @@ import java.util.regex.Pattern;
  * Represents a URI template. An URI template is a URI-like String that
  * contained variables marked of in braces (<code>{</code>, <code>}</code>),
  * which can be expanded to produce a URI.
+ * 
+ * IMPORTANT: Case insensitive. 
  * <p>
  * See {@link #expand(Map)}, {@link #expand(Object[])}, and
  * {@link #match(String)} for example usages.
- * 
+ * </p>
  * @author Arjen Poutsma
  * @author Juergen Hoeller
  * @since 3.0
@@ -62,8 +64,8 @@ public class UriTemplate {
 	 *            the URI template string
 	 */
 	public UriTemplate(String uriTemplate) {
-		Parser parser = new Parser(uriTemplate);
-		this.uriTemplate = uriTemplate;
+		Parser parser = new Parser(uriTemplate.toLowerCase());
+		this.uriTemplate = uriTemplate.toLowerCase();
 		this.variableNames = parser.getVariableNames();
 		this.matchPattern = parser.getMatchPattern();
 	}
@@ -192,15 +194,39 @@ public class UriTemplate {
 	public Map<String, String> match(String uri) {
 		// Assert.notNull(uri, "'uri' must not be null");
 		Map<String, String> result = new LinkedHashMap<String, String>(this.variableNames.size());
-		Matcher matcher = this.matchPattern.matcher(uri);
+
+		Matcher matcher = this.matchPattern.matcher(uri.toLowerCase());
 		if (matcher.find()) {
 			for (int i = 1; i <= matcher.groupCount(); i++) {
 				String name = this.variableNames.get(i - 1);
 				String value = matcher.group(i);
-				result.put(name, value);
+				// CHECK for a 'forward slash'.
+				int indexOfSlash = value.indexOf('/');
+				if (indexOfSlash > -1) {
+					// We don't want SLASHES in a variable value. 
+					// For example: 
+					//
+					// http://id/23/otherid/23/test
+					// http://id/{ID}/test
+					//
+					// results in an error because {ID} has value '23/otherid/23'
+				} else {
+					result.put(name, value);
+				}
 			}
 		}
-		return result;
+
+		// Final check: the number of 'variables' should match the number of
+		// 'results'.
+		// If YES, then return result map.
+		// Otherwise, return map of size 0.
+
+		if (result.size() == this.variableNames.size()) {
+			return result;
+		} else {
+			return new LinkedHashMap<String, String>(0);
+		}
+
 	}
 
 	@Override
@@ -274,15 +300,27 @@ public class UriTemplate {
 	}
 
 	public static void main(String[] args) {
-		UriTemplate template = new UriTemplate("http://feeling");
+		// UriTemplate template = new UriTemplate("http://feeling");
+		//
+		// if (template.toString().equalsIgnoreCase("http://feeling")) {
+		// System.out.println("Yes, we have a match.");
+		// } else {
+		// Map results = template.match("http://feeling");
+		// System.out.println("Result size: " + results.size());
+		//
+		// }
+		
+		//TEST
+		UriTemplate template1 = new UriTemplate("http://id/{ID}/test");
+		Map results1 = template1.match("http://id/23/otherid/23/test");
+		System.out.println("Result size: " + results1.size());
+		System.out.println("Results: " + results1);
+		
+		UriTemplate template2 = new UriTemplate("http://id/{ID1}/otherId/{ID2}/test");
+		Map results2 = template2.match("http://id/23/otherid/23/test");
+		System.out.println("Result size: " + results2.size());
+		System.out.println("Results: " + results2);
 
-		if (template.toString().equalsIgnoreCase("http://feeling")) {
-			System.out.println("Yes, we have a match.");
-		} else {
-			Map results = template.match("http://feeling");
-			System.out.println("Result size: " + results.size());
-
-		}
 		System.out.println("Done");
 	}
 }

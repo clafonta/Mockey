@@ -926,5 +926,30 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			}
 		}
 	}
+	
+	public static void main(String[] args ) {
+		InMemoryMockeyStorage store = InMemoryMockeyStorage.getInstance();
+		Service service1 = new Service();
+		service1.setUrl("/id/{ID}/test");
+		
+		
+		Service service2 = new Service();
+		service2.setUrl("/id/{ID1}/otherid/{ID2}/test");
+		
+		Service service3 = new Service();
+		service3.setUrl("http://example.com/hotels/{hotel}/bookings/{booking}");
+		
+		String url1 = "/id/1/test";
+		String url2 = "/id/1/otherid/2/test";
+		String url3 = "http://example.com/hotels/XYZ/bookings/PTT";
+		Service serviceMatch1 = store.findServiceBasedOnUrlPattern(url1, service1);
+		Service serviceMatch2 = store.findServiceBasedOnUrlPattern(url2, service2);
+		Service serviceMatch3 = store.findServiceBasedOnUrlPattern(url3, service3);
+		System.out.println("Match1: " + serviceMatch1);
+		System.out.println("Match2: " + serviceMatch2);
+		System.out.println("Match3: " + serviceMatch3);
+		
+		
+	}
 
 }
