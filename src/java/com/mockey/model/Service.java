@@ -646,6 +646,15 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			if (u != null) {
 				messageMatchFound = u.getResponseMessage();
 				httpResponseStatus = u.getHttpResponseStatusCode();
+				
+				// SET RULE_FOR_HEADERS
+				Map<String, String> headerInfo = u.getHeaderInfoHelper();
+				List<Header> headerList = new ArrayList<Header>();
+				for (String k : headerInfo.keySet()) {
+					headerList.add(new BasicHeader(k, headerInfo.get(k)));
+				}
+				
+				response.setHeaders(headerList.toArray(new Header[headerList.size()]));
 				response.setScenarioName(u.getScenarioName());
 				response.setScenarioTagsAsString(u.getTag());
 			} else {
