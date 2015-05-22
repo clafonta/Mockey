@@ -245,7 +245,7 @@ $(document).ready(function() {
                      </div>
                      <div id="letmesee_${request.id}" style="display:none;">
 	                    
-                        <div style="background-color: #FFFFCC; padding: 0.2em 0.4em; margin: 0.2em 0.0em;">
+                        <div style="padding: 0.2em 0.4em; margin: 0.2em 0.0em;">
 	                        <h2>Request</h2>
 	                        <div class="tabs">
 	                                    <ul>
@@ -268,7 +268,7 @@ $(document).ready(function() {
 	                                    </div>
 	                        </div>
                         </div>
-                        <div style="background-color: #8AFFAB; padding: 0.2em 0.4em; margin: 0.2em 0.0em;">
+                        <div style="padding: 0.2em 0.4em; margin: 0.2em 0.0em;">
                         <h2>Response:</h2> 
                         <p>Response scenario name: <span id="responseScenarioName_${request.id}"> </span> </p>
                         <p>Response scenario tags: <span id="responseScenarioTags_${request.id}"> </span> </p>

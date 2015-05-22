@@ -17,7 +17,20 @@ $(document).ready( function() {
     });  
 	$('.invisible-focusable').blur(function() {  
         $(this).removeClass("invisiblefiled-in-focus").addClass("invisiblefield");   
-    }); 
+    });
+    
+    $('.toggle-filter-view').each( function() {
+        $(this).click( function() {
+        	$('#filter_view_div').toggle();
+        });
+     });
+     
+     $('.toggle-service-meta-data').each( function() {
+        $(this).click( function() {
+        	$('.service-meta-data').toggle();
+        });
+     });
+     
     
     $('.manageTagLink').each( function() {
         $(this).click( function() {             
@@ -458,7 +471,8 @@ $(document).ready( function() {
  });
 </script>
     <div id="main">
-    <div id="filter_view_div">
+    <span class="filter-link"><a href="#" class="toggle-filter-view">Filter</a></span>
+    <div id="filter_view_div" style="display:none;">
     
 	<span class="basic_label">Filter services with tags:</span> 
 	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" placeholder="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
@@ -513,7 +527,14 @@ $(document).ready( function() {
 									<li><a href="#tabs-2" style="font-weight:100;">Plans (${fn:length(plans)})</a></li>
 								</ul>
 							  	<div id="tabs-1">
-							  	  <div style="text-align:right;"><span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
+                    <div style="text-align:right;">
+                      <span class="icon-link"><a href="#" class="toggle-service-meta-data"><i class="icon-cog"></i></a></span>
+                    </div>
+							  	  <div class="service-meta-data" style="display:none;">
+                      <span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span>
+                      
+                      
+                    </div>
 							  	  <c:if test="${!empty servicePlan}">
 							  	  <div class="alert_message tiny" id="servicePlanSetMessge">
 							  	  <span style="float:right;">
@@ -526,7 +547,7 @@ $(document).ready( function() {
 							  	  <span class="tiny">Service Plan Id: ${servicePlan.id}</span>
 							  	  </div>
 							  	  </c:if>
-							  	  <div class="info_message tiny">
+							  	  <div class="info_message tiny service-meta-data" style="display:none;">
 							  	  Click one of the following buttons to set 
 							  	  response type for <strong>each service</strong>.
 								  <p> 
@@ -565,10 +586,12 @@ $(document).ready( function() {
 						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>
 						                          </c:if>
 						                        </div>
-												<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>	
-												<div class="tiny" style="font-size: 10px;">
-												Check the box to include this service in a "Save As Plan".  
-												<input type="checkbox" name="service_plan_include_checkbox" value="${mockservice.id}" <mockey-tag:serviceInServicePlanFlag service="${mockservice}" servicePlan="${servicePlan}"/> />
+						                        <div class="service-meta-data" style="display:none;">
+													<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>	
+													<div class="tiny" style="font-size: 10px;">
+													Check the box to include this service in a "Save As Plan".  
+													<input type="checkbox" name="service_plan_include_checkbox" value="${mockservice.id}" <mockey-tag:serviceInServicePlanFlag service="${mockservice}" servicePlan="${servicePlan}"/> />
+													</div>
 												</div>
 											</div>
 								    	</c:forEach>

@@ -33,6 +33,11 @@ $(document).ready(function() {
 		dropShadows: true                            // disable drop shadows
 	});
 	
+   $('.toggle-header-tools').each( function() {
+        $(this).click( function() {
+          $('#header_tool_wrapper').toggle();
+        });
+     });
 	// 
 	$.getJSON('<c:url value="/configuration/info" />', function(data) {
 		if(data.result.proxy_enabled=='true'){
@@ -294,13 +299,17 @@ $(document).ready(function() {
                         </li>
 	            </ul>
 	        </li>
+          <li><a id="flush" href="#" class="toggle-header-tools"><i class="icon-wrench" style="font-size:0.8em;"></i></a></li>
 		</ul>
+
 	<div style="float:right;">
-	    <span style="float:right;"><img style="height:30px; " src="<c:url value="/images/silhouette.png" />" /></span>
+	    <span style="float:right;"><img style="height:30px; " src="<c:url value="/images/logo.png" />" /></span>
 	
 	 <a href="<c:url value="/home" />" class="logo_link">Mockey</a>
 	 </div>
-	<div id="header_tool_wrapper">
+   <div style="clear:both;"/>
+  </div>
+	<div id="header_tool_wrapper" style="display:none;">
 	   
 		<div id="header_tool_wrapper_right" >
             
@@ -335,6 +344,6 @@ $(document).ready(function() {
 	</div>
 	<div style="clear:both;"/>
 		
-</div>
+  </div>
 
 
