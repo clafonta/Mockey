@@ -22,6 +22,7 @@ $(document).ready( function() {
     $('.toggle-filter-view').each( function() {
         $(this).click( function() {
         	$('#filter_view_div').toggle();
+        	$('.filter-toggle-txt').toggle();
         });
      });
      
@@ -471,7 +472,8 @@ $(document).ready( function() {
  });
 </script>
     <div id="main">
-    <span class="filter-link"><a href="#" class="toggle-filter-view">Filter</a></span>
+    <span class="power-link tiny"><a href="#" class="toggle-service-meta-data"><span class="service-meta-data">Show</span><span class="service-meta-data" style="display:none;">Hide</span> Service Details</a></span>
+    <span class="filter-link"><a href="#" class="toggle-filter-view"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none;">Hide</span> Filter</a></span>
     <div id="filter_view_div" style="display:none;">
     
 	<span class="basic_label">Filter services with tags:</span> 
@@ -527,14 +529,10 @@ $(document).ready( function() {
 									<li><a href="#tabs-2" style="font-weight:100;">Plans (${fn:length(plans)})</a></li>
 								</ul>
 							  	<div id="tabs-1">
-                    <div style="text-align:right;">
-                      <span class="icon-link"><a href="#" class="toggle-service-meta-data"><i class="icon-cog"></i></a></span>
-                    </div>
-							  	  <div class="service-meta-data" style="display:none;">
-                      <span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span>
-                      
-                      
-                    </div>
+				                    <div style="text-align:right;">
+				                        <span class="power-link tiny"><a title="Service Setup - create new service" href="<c:url value="/setup" />">Create a Service</a></span> | 
+										<span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span>
+				                    </div>
 							  	  <c:if test="${!empty servicePlan}">
 							  	  <div class="alert_message tiny" id="servicePlanSetMessge">
 							  	  <span style="float:right;">
@@ -588,7 +586,7 @@ $(document).ready( function() {
 						                        </div>
 						                        <div class="service-meta-data" style="display:none;">
 													<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>	
-													<div class="tiny" style="font-size: 10px;">
+													<div class="tiny" style="font-size: 12px;">
 													Check the box to include this service in a "Save As Plan".  
 													<input type="checkbox" name="service_plan_include_checkbox" value="${mockservice.id}" <mockey-tag:serviceInServicePlanFlag service="${mockservice}" servicePlan="${servicePlan}"/> />
 													</div>
@@ -623,8 +621,8 @@ $(document).ready( function() {
 				                                  <hr /> 
 				                                  Default plan upon startup?
 				                                  <a id="save-as-default-plan_${plan.id}" class="save-as-default-plan <c:choose><c:when test="${plan.id eq defaultServicePlanId}">response_green</c:when><c:otherwise>response_not</c:otherwise></c:choose>" style="text-decoration:none;" href="#" title="Set as the default plan upon Mockey startup.">
-				                                  <span id="not-service-plan_${plan.id}" class="not-service-plan" style="<c:if test="${plan.id eq defaultServicePlanId}">display:none;</c:if>">No</span>
-				                                  <span id="yes-service-plan_${plan.id}" class="yes-service-plan" style="<c:choose><c:when test="${plan.id eq defaultServicePlanId}"></c:when><c:otherwise>display:none;</c:otherwise></c:choose>">Yes</span>
+				                                  <span id="not-service-plan_${plan.id}" class="not-service-plan on_off" style="<c:if test="${plan.id eq defaultServicePlanId}">display:none;</c:if>">No</span>
+				                                  <span id="yes-service-plan_${plan.id}" class="yes-service-plan on_off" style="<c:choose><c:when test="${plan.id eq defaultServicePlanId}"></c:when><c:otherwise>display:none;</c:otherwise></c:choose>">Yes</span>
 				                                  </a>
 				                                  </div>
 				                                </div>
@@ -668,30 +666,46 @@ $(document).ready( function() {
                                     
                                    <div class="service-label"><label>Service name:</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div class="service-value big">${mockservice.serviceName}</div>
+                                   <div class="service-meta-data" style="display:none;">
                                    <mockey-tag:statusCheckByService service="${mockservice}" view="detail"/>
+                                   </div>
                                    <div class="service-label border-top"><label>Mock URL:</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
                                    <div><a class="tiny" href="<mockey:url value="${mockservice.url}"/>"><mockey:url value="${mockservice.url}" /></a></div>
                                    <div class="service-def-spacer"></div>
                                    
-                                   <div class="service-label not-top border-top"><label>Real URL(s):</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/></div>
-                                   <c:forEach var="realUrl" items="${mockservice.realServiceUrls}" varStatus="status" >
-								       <p><a class="tiny" href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></p>
-								   </c:forEach>
-								   
-                                   <c:if test="${empty mockservice.realServiceUrls}">
-                                   <div class="info_message">No real URLS defined.</div>
-                                   </c:if>
                                    
-                                   <div class="service-label border-top"><label>This service is set to:</label></div>
-                                   <div class="service-value big">
-                                   	<span class="hide<c:if test="${mockservice.serviceResponseType eq 2}"> show</c:if>" id="dynamicScenario_${mockservice.id}">Dynamic</span>
-							       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 0}"> show</c:if>" id="proxyScenario_${mockservice.id}">Proxy</span>
-			                       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 1}"> show</c:if>" id="staticScenario_${mockservice.id}">Static</span>
+                                   <div class="service-meta-data" style="display:none;">
+	                                   <div class="service-label not-top border-top">
+	                                   <label>Real URL(s):</label> <mockey-tag:editServiceLink serviceId="${mockservice.id}"/>
+	                                   </div>
+	                                   <c:forEach var="realUrl" items="${mockservice.realServiceUrls}" varStatus="status" >
+									       <p><a class="tiny" href="<mockey:url value="${realUrl}"/>"><mockey:url value="${realUrl}" breakpoint="5"/></a></p>
+									   </c:forEach>
+									   
+	                                   <c:if test="${empty mockservice.realServiceUrls}">
+	                                   <div class="info_message">No real URLS defined.</div>
+	                                   </c:if>
                                    </div>
+                                   <div class="service-label border-top"><label>This service is set to:</label>
+                                   	
+                                   </div>
+                                   <table>
+                                   <tr><td>
                                    <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
+                                   </td>
+                                   <td>
+                                   <div class="service-value" style="diplay:inline-block;text-transform:uppercase;">
+	                                   	<span class="hide<c:if test="${mockservice.serviceResponseType eq 2}"> show</c:if>" id="dynamicScenario_${mockservice.id}">Dynamic</span>
+								       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 0}"> show</c:if>" id="proxyScenario_${mockservice.id}">Proxy</span>
+				                       	<span class="hide<c:if test="${mockservice.serviceResponseType eq 1}"> show</c:if>" id="staticScenario_${mockservice.id}">Static</span>
+	                                   </div>
+	                               </td>
+	                               </tr>
+	                               </table>
+                                   
                                    
                                    <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario (${fn:length(mockservice.scenarios)}):</label>
-                                   <span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
+                                   	<span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
                                    <div >
                                    <div id="scenario-list_${mockservice.id}">
@@ -699,8 +713,8 @@ $(document).ready( function() {
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status"  >
 		                                    <div class="service-detail-scenario-list-item" id="service-scenario-info_${scenario.id}_${mockservice.id}">
-			                                    <span style="float:right;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-cancel"></i></a> </span>
-			                                    <div style="padding-top: 0.5em;">
+			                                    <span style="float:right;padding-top:18px;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-cancel"></i></a> </span>
+			                                    <div style="padding-top: 0.5em;padding-bottom:0.5em;">
 			                                      <c:choose>
 			                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
 			                                          <c:set var="off_class" value="hide" />
@@ -711,11 +725,13 @@ $(document).ready( function() {
 			                                          <c:set var="on_class" value="hide" />
 			                                        </c:otherwise>
 			                                      </c:choose>
-			                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;">&nbsp;ON&nbsp;</a>
-			                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;">OFF</a>
-			                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" title="${scenario.scenarioName}" class="viewServiceScenarioLink">${scenario.scenarioName}</a>
+			                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;"><p class="on_off">ON</p></a>
+			                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;"><p class="on_off">OFF</p></a>
+			                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" title="${scenario.scenarioName}" class="viewServiceScenarioLink" style="padding-left:10px;">${scenario.scenarioName}</a>
 			                                    </div>
+			                                    <div class="service-meta-data" style="display:none;">
 			                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" service="${mockservice}"/>
+			                                    </div>
 		                                    </div>
 		                                  </c:forEach>
 		                                  </c:when>
@@ -733,7 +749,7 @@ $(document).ready( function() {
 	                                </div>
                                    </div>
                                  </div>
-                                 <div class="not-top border-top" style="padding-top:1em;">
+                                 <div class="not-top border-top service-meta-data" style="display:none;padding-top:1em;">
 			                       <strong>Hang time (milliseconds):</strong> ${mockservice.hangTime} <mockey-tag:editServiceLink serviceId="${mockservice.id}"/>
 	                             </div>
                               </div>

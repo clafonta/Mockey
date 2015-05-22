@@ -38,6 +38,11 @@ $(document).ready(function() {
           $('#header_tool_wrapper').toggle();
         });
      });
+   $('.toggle-header-search').each( function() {
+        $(this).click( function() {
+          $('#header_search_wrapper').toggle();
+        });
+     });
 	// 
 	$.getJSON('<c:url value="/configuration/info" />', function(data) {
 		if(data.result.proxy_enabled=='true'){
@@ -256,26 +261,27 @@ $(document).ready(function() {
 	<div id="topnav" style="margin-bottom:0.5em;width:100%;">
 		<ul class="sf-menu" >
 			<li class="<c:if test="${currentTab == 'home'}">current</c:if>"><a
-				href="<c:url value="/home" />">Services  <span class="sf-sub-indicator"> &#187;</span></a>
+				href="<c:url value="/home" />">Start here...<span class="sf-sub-indicator"> &#187;</span></a>
 				<ul>
 					<li <c:if test="${currentTab == 'setup'}">class="current"</c:if>><a title="Service Setup - create new service"
-						href="<c:url value="/setup" />"><i aria-hidden="true" class="icon-plus"></i>&nbsp;Create a Service</a></li>
+						href="<c:url value="/setup" />">Create a Service</a></li>
+					<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
+				<a href="<c:url value="/upload" />">Import/Export</a></li>
 					<li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
 					<a title="Merge - combine services" href="<c:url value="/merge" />"
-						style=""><i aria-hidden="true" class="icon-tab-2"></i>&nbsp;Merge Services</a></li>
+						style="">Merge Services</a></li>
 					<li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
 	                <a title="Real URL injecting" href="<c:url value="/inject" />"
-	                    style=""><i aria-hidden="true" class="icon-enter"></i>&nbsp;URL Injection</a></li>
+	                    style="">URL Injection</a></li>
 					<li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
 	                <a title="Twisting" href="<c:url value="/twisting/setup" />"
-	                    style=""><i aria-hidden="true" class="icon-tab"></i>&nbsp;Twisting</a></li>
+	                    style="">Twisting</a></li>
 	                <li <c:if test="${currentTab == 'filesysteminfo'}">class="current"</c:if>>
 	                <a title="Image Depot" href="<c:url value="/filesysteminfo" />"
-	                    style=""><i aria-hidden="true" class="icon-picture"></i>&nbsp;Image Depot</a></li>   
+	                    style="">Image Depot</a></li>   
 				</ul>
 			</li>
-			<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
-				<a href="<c:url value="/upload" />">Import/Export</a></li>
+			
 			<li <c:if test="${currentTab == 'history'}">class="current"</c:if>>
 				<a href="<c:url value="/history" />">History</a></li>
 			<li <c:if test="${currentTab == 'proxy'}">class="current"</c:if>>
@@ -285,6 +291,8 @@ $(document).ready(function() {
 	        <li class="<c:if test="${currentTab == 'help'}">current</c:if>">
 	        <a href="<c:url value="/help" />">Help  <span class="sf-sub-indicator"> &#187;</span></a>
 	            <ul>
+	            	<li><a id="flush" href="#" class="toggle-header-search"><i class="icon-search"></i> Search</a></li>
+	            	<li><a id="flush" href="#" class="toggle-header-tools"><i class="icon-wrench"></i> Advanced controls</a></li>
 	                <li <c:if test="${currentTab == 'api'}">class="current"</c:if>><a title="Configuration API"
 	                    href="<c:url value="/service_api" />"><i aria-hidden="true" class="icon-cog"></i>&nbsp;Configuration API</a></li>
 	                <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="Debug Console"
@@ -299,7 +307,7 @@ $(document).ready(function() {
                         </li>
 	            </ul>
 	        </li>
-          <li><a id="flush" href="#" class="toggle-header-tools"><i class="icon-wrench" style="font-size:0.8em;"></i></a></li>
+          
 		</ul>
 
 	<div style="float:right;">
@@ -309,10 +317,14 @@ $(document).ready(function() {
 	 </div>
    <div style="clear:both;"/>
   </div>
-	<div id="header_tool_wrapper" style="display:none;">
-	   
+    <div id="header_search_wrapper" style="display:none;">
+    	<div id="" >
+		  <input type="text" value="${term}" placeholder="Search" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term"><button id="search_me" style="margin-left:5px;">Search</button> <a href="#" class="toggle-header-search power-link tiny">Close</a>
+		</div>
+    </div> 
+	<div id="header_tool_wrapper">
 		<div id="header_tool_wrapper_right" >
-            
+            Advanced controls:
 		    <span id="memory-only-config" class="configuration-info" style="display:none;">
             <a href="#" id="transient_unknown" class="tiny" style="display: none;">___</a>
             <a href="#" id="transient_true" class="tiny transient-onclick" val="true" style="display: none; color: green;">In Memory Only</a>
@@ -336,10 +348,13 @@ $(document).ready(function() {
 			<a href="#" id="reset-sticky-session" class="tiny" 
 			title="Reset the sticky cookie session that Mockey may be keeping.">Reset Session</a>
 			</span>
+			
+			<span style="float:right;">
+				<a href="#" class="toggle-header-tools tiny power-link">Hide</a>
+			</span>
+			<hr />
 		</div>
-		<div id="header_tool_wrapper_left" >
-		  <input type="text" value="${term}" placeholder="Search" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term"><a  href="#" id="search_me" style="text-decoration:none;"> <img src="<c:url value="/images/search.png" />" /></a>
-		</div>
+		
 		
 	</div>
 	<div style="clear:both;"/>

@@ -31,7 +31,7 @@ $(document).ready( function() {
 		Each tag will be applied to each Service, Scenario, and Plan. This can be useful when merging different files and you want to keep track on the when and where things came from.
 	</p>
 
-	<div id="tabs" class="tiny" style="margin-left: 10%; margin-right: 10%;">
+	<div id="tabs" class="tiny" style="margin-left: 10%; margin-right: 10%; margin-top:30px;">
 		<ul>
 			<li><a href="#tabs-1">File upload</a></li>
 			<li><a href="#tabs-2">URL</a></li>
