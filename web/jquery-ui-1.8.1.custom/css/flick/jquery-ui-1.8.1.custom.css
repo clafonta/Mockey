@@ -50,7 +50,7 @@
 .ui-widget { font-family: Helvetica, Arial, sans-serif; font-size: 1.1em; }
 .ui-widget .ui-widget { font-size: 1em; }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Helvetica, Arial, sans-serif; font-size: 1em; }
-.ui-widget-content { border: 1px solid #BDBDBD; background-color: #ffffff; color: #444444; }
+.ui-widget-content { border: 1px solid #eee; background-color: #ffffff; color: #444444; }
 .ui-widget-content a { color: #7F7F7F;; }
 .ui-widget-header { border: 1px solid #EEEEEE; background-color: #EEEEEE; color: #444444; font-weight: bold; }
 .ui-widget-header a { color: #444444; }
