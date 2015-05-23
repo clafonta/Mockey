@@ -262,103 +262,106 @@ $(document).ready(function() {
 		<ul class="sf-menu" >
 			<li class="<c:if test="${currentTab == 'home'}">current</c:if>"><a
 				href="<c:url value="/home" />">Start here...<span class="sf-sub-indicator"> &#187;</span></a>
-				<ul>
-					<li <c:if test="${currentTab == 'setup'}">class="current"</c:if>><a title="Service Setup - create new service"
-						href="<c:url value="/setup" />">Create a Service</a></li>
-					<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
-				<a href="<c:url value="/upload" />">Import/Export</a></li>
-					<li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
-					<a title="Merge - combine services" href="<c:url value="/merge" />"
-						style="">Merge Services</a></li>
-					<li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
-	                <a title="Real URL injecting" href="<c:url value="/inject" />"
-	                    style="">URL Injection</a></li>
-					<li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
-	                <a title="Twisting" href="<c:url value="/twisting/setup" />"
-	                    style="">Twisting</a></li>
-	                <li <c:if test="${currentTab == 'filesysteminfo'}">class="current"</c:if>>
-	                <a title="Image Depot" href="<c:url value="/filesysteminfo" />"
-	                    style="">Image Depot</a></li>   
-				</ul>
+        <ul>
+
+        <li <c:if test="${currentTab == 'setup'}">class="current"</c:if>><a title="Service Setup - create new service"
+        href="<c:url value="/setup" />">Create a Service</a></li>
+
+
+
+        <li <c:if test="${currentTab == 'merge'}">class="current"</c:if>>
+        <a title="Merge - combine services" href="<c:url value="/merge" />"
+        style="">Merge Services</a></li>
+        
+        <li <c:if test="${currentTab == 'inject'}">class="current"</c:if>>
+        <a title="Real URL injecting" href="<c:url value="/inject" />"
+        style="">URL Injection</a></li>
+        
+        <li <c:if test="${currentTab == 'proxy'}">class="current"</c:if>>
+          <span >
+          <a href="<c:url value="/proxy/settings"/>" id="proxy_unknown" class="tiny" style="display: none;">Proxy Settings (?)</a>
+          <a href="<c:url value="/proxy/settings"/>" id="proxy_on" class="tiny" style="display: none;">Proxy Settings (ON)</a>
+          <a href="<c:url value="/proxy/settings"/>" id="proxy_off" class="tiny"  style="display: none;">Proxy Settings (OFF)</a>
+          </span>
+
+        </li>
+        
+        <li><a id="flush" href="#">Flush</a></li>
+        
+        <li><span id="reset-sticky-cookie-config">
+            <a href="#" id="reset-sticky-session" title="Reset the sticky cookie session that Mockey may be keeping.">Reset Session</a></span></li>
+
+        <li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
+          <span id="twist-config" style="display:none;">
+            <a href="<c:url value="/twisting/setup"/>" id="twisting_unknown" style="display: none;">Twisting (?) </a>
+            <a href="<c:url value="/twisting/setup"/>" id="twisting_on"  style="display: none;">Twisting (ON)</a>
+            <a href="<c:url value="/twisting/setup"/>" id="twisting_off"  style="display: none;">Twisting (OFF)</a> 
+            </span>
+        </li>
+
+        <li>
+          
+        </li>
+        
+        <li <c:if test="${currentTab == 'filesysteminfo'}">class="current"</c:if>>
+        <a title="Image Depot" href="<c:url value="/filesysteminfo" />"
+        style="">Image Depot</a></li>   
+        </ul>
 			</li>
-			
+
+
+
+			<li <c:if test="${currentTab == 'upload'}">class="current"</c:if>>
+        <a href="<c:url value="/upload" />">Import/Export</a></li>
+
+      
 			<li <c:if test="${currentTab == 'history'}">class="current"</c:if>>
 				<a href="<c:url value="/history" />">History</a></li>
-			<li <c:if test="${currentTab == 'proxy'}">class="current"</c:if>>
-				<a href="<c:url value="/proxy/settings" />">
-				Proxy</a></li>
-			<li><a id="flush" href="#">Flush</a></li>
+			
 	        <li class="<c:if test="${currentTab == 'help'}">current</c:if>">
 	        <a href="<c:url value="/help" />">Help  <span class="sf-sub-indicator"> &#187;</span></a>
 	            <ul>
-	            	<li><a id="flush" href="#" class="toggle-header-search"><i class="icon-search"></i> Search</a></li>
-	            	<li><a id="flush" href="#" class="toggle-header-tools"><i class="icon-wrench"></i> Advanced controls</a></li>
-	                <li <c:if test="${currentTab == 'api'}">class="current"</c:if>><a title="Configuration API"
-	                    href="<c:url value="/service_api" />"><i aria-hidden="true" class="icon-cog"></i>&nbsp;Configuration API</a></li>
-	                <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="Debug Console"
-                        href="<c:url value="/console" />"><i aria-hidden="true" class="icon-glasses"></i>&nbsp;Debug Console</a></li>
-                    <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="View for feature phones"
-                        href="<c:url value="/mobi" />">
-                        <i aria-hidden="true" class="icon-mobile"></i>&nbsp;Mobile
-                        </a>
-                        </li>
-                    <li ><a title="JSON Schema Validation" href="<c:url value="/jsonschemavalidate" />">
-                        <i aria-hidden="true" class="icon-power"></i>&nbsp;JSON Schema</a>
-                        </li>
+                <li><a id="flush" href="#" class="toggle-header-search"><i class="icon-search"></i> Search</a></li>
+                <li <c:if test="${currentTab == 'api'}">class="current"</c:if>><a title="Configuration API"
+                href="<c:url value="/service_api" />"><i aria-hidden="true" class="icon-cog"></i>&nbsp;Configuration API</a></li>
+                <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="Debug Console"
+                href="<c:url value="/console" />"><i aria-hidden="true" class="icon-glasses"></i>&nbsp;Debug Console</a></li>
+                <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="View for feature phones"
+                href="<c:url value="/mobi" />"><i aria-hidden="true" class="icon-mobile"></i>&nbsp;Mobile</a></li>
+                <li ><a title="JSON Schema Validation" href="<c:url value="/jsonschemavalidate" />">
+                <i aria-hidden="true" class="icon-power"></i>&nbsp;JSON Schema</a></li>
 	            </ul>
 	        </li>
           
 		</ul>
 
+
 	<div style="float:right;">
-	    <span style="float:right;"><img style="height:30px; " src="<c:url value="/images/logo.png" />" /></span>
-	
-	 <a href="<c:url value="/home" />" class="logo_link">Mockey</a>
-	 </div>
-   <div style="clear:both;"/>
+	   <span style="float:right;"><img style="height:30px; " src="<c:url value="/images/logo.png" />" /></span>
+	   <a href="<c:url value="/home" />" class="logo_link">Mockey</a>
+	</div>
+
+  <div style="display:inline-block; margin-top:10px;">
+      <span id="memory-only-config" style="display:none; padding-left:10px; margin-top:20px;">
+        <a href="#" id="transient_unknown"  style="display: none;">___</a>
+        <a href="#" id="transient_true" class="transient-onclick" val="true" style="display: none; color: #10CF33;">In Memory Only</a>
+        <a href="#" id="transient_false" class="transient-onclick" val="false" style="display: none;color: red; ">Writing to file</a> 
+      </span>
   </div>
+  
+  <div style="clear:both;"/>
+  </div>
+
     <div id="header_search_wrapper" style="display:none;">
     	<div id="" >
 		  <input type="text" value="${term}" placeholder="Search" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term"><button id="search_me" style="margin-left:5px;">Search</button> <a href="#" class="toggle-header-search power-link tiny">Close</a>
-		</div>
+		  </div>
     </div> 
-	<div id="header_tool_wrapper">
-		<div id="header_tool_wrapper_right" >
-            Advanced controls:
-		    <span id="memory-only-config" class="configuration-info" style="display:none;">
-            <a href="#" id="transient_unknown" class="tiny" style="display: none;">___</a>
-            <a href="#" id="transient_true" class="tiny transient-onclick" val="true" style="display: none; color: green;">In Memory Only</a>
-            <a href="#" id="transient_false" class="tiny transient-onclick" val="false" style="display: none;color: red; ">Writing to file</a> 
-            </span>
-            
-			<span class="configuration-info" >
-			<a href="<c:url value="/proxy/settings"/>" id="proxy_unknown" class="tiny" style="display: none;">___</a>
-			<a href="<c:url value="/proxy/settings"/>" id="proxy_on" class="tiny" style="display: none;color: green; ">Internet Proxy is ON</a>
-			<a href="<c:url value="/proxy/settings"/>" id="proxy_off" class="tiny"  style="display: none;color: red; ">Internet Proxy is OFF</a>
-			</span>
-			
-			<span id="twist-config" class="configuration-info" style="display:none;">
-			<a href="<c:url value="/twisting/setup"/>" id="twisting_unknown" class="tiny" style="display: none;">___</a>
-			<a href="<c:url value="/twisting/setup"/>" id="twisting_on" class="tiny"  style="display: none; color: green; ">Twisting is ON</a>
-			<a href="<c:url value="/twisting/setup"/>" id="twisting_off" class="tiny" style="display: none;color: red; ">Twisting is OFF</a> 
-			</span>
-			
-			
-			<span id="reset-sticky-cookie-config" class="configuration-info">
-			<a href="#" id="reset-sticky-session" class="tiny" 
-			title="Reset the sticky cookie session that Mockey may be keeping.">Reset Session</a>
-			</span>
-			
-			<span style="float:right;">
-				<a href="#" class="toggle-header-tools tiny power-link">Hide</a>
-			</span>
-			<hr />
-		</div>
-		
-		
-	</div>
+
 	<div style="clear:both;"/>
 		
   </div>
+
+     
 
 
