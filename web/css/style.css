@@ -1,4 +1,12 @@
-html, body{ padding-top: 0px; background: #FBFBFB;font: 0.9em sans-serif; height:100%;font-weight:100;}
+html, body{ padding-top: 0px; font: 0.9em sans-serif; height:100%;font-weight:100;
+
+  background: -webkit-linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* Chrome 10+, Saf5.1+ */
+  background:    -moz-linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* FF3.6+ */
+  background:     -ms-linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* IE10 */
+  background:      -o-linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* Opera 11.10+ */
+  background:         linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* W3C */
+        
+}
 .big{font-size: 2em;}
 .tiny, .tinyfieldset{font-size: 90%;}
 .tinyfieldset {padding:0.1em 0 2em 0; }
