@@ -63,6 +63,9 @@ div.parentform, div.childform {
 div.parentformselected {
   background-color: #fff;
 }
+.parentform input, .parentform textarea {
+  font-size: 14px;
+}
 .parentform, .centerform, .childform {
   /* background-color: #EEEEEE; */
 }

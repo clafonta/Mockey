@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="mockey-tag" tagdir="/WEB-INF/tags" %>
-<c:set var="pageTitle" value="Service Documentation" scope="request" />
+<c:set var="pageTitle" value="Configuration API" scope="request" />
 <c:set var="currentTab" value="api" scope="request" />
 <jsp:include page="/WEB-INF/common/header.jsp" />
 <div id="main2">

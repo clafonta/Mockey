@@ -11,7 +11,7 @@
 		    <div style="clear:both;"></div>
 		    <ul>
 		        <li>&#187; <a href="#bigpicture">Big Picture</a></li>
-		        <li>&#187; <a href="#transient">Transient</a></li> 
+		        <li>&#187; <a href="#storage">Storage</a></li> 
 		        <li>&#187; <a href="#mockservice">Mock Service</a></li>
 		        <li>&#187; <a href="#plan">Service Plan</a></li>
 		        <li>&#187; <a href="#scenario">Mock Service Scenario</a></li>
@@ -39,21 +39,22 @@
 		   <p><img src="<c:url value="/images/bigpicture.png" />" /></p>
 		</div>
 	</div>
-	<a href="#transient" name="transient"></a>
+	<a href="#storage" name="storage"></a>
 	<div class="help_section">
-        <h2>Transient</h2>
+        <h2>Storage</h2>
         <p>
-        The <i>transient</i> setting toggles Mockey's state between <strong>In Memory Only</strong> or <strong>Writing to File</strong>. If Mockey is in transient mode (<a href="<c:url value="/configuration/info"/>">transient_state=true</a>), then 
-        configuration changes are in-memory <b>only</b> and not persisted to the file system. This is good for people 
+        Mockey can run as <strong>In Memory Only</strong> or <strong>Writing to File</strong>. If in-memory only, all definitions and settings will be lost upon restart of Mockey. If writing-to-file, then all changes will persist upon a restart. 
+    	</p>
+    	<p>
+         Storage state is managed by Mockey's 'transient' configuration flag. If transient is 'true' (<a href="<c:url value="/configuration/info"/>">transient_state=true</a>), then configuration changes are in-memory <b>only</b> and not persisted to the file system. This is good for people 
         or robots who want to play with Mockey settings and not infect any source files that were used to initialized 
-        Mockey. If Mockey is not in transient mode (<a href="<c:url value="/configuration/info"/>">transient_state=false</a>), 
-        then any configuration changes will be written to the file system.  <b>Note:</b> right after the transient 
+        Mockey. If the transient flag is 'false', (<a href="<c:url value="/configuration/info"/>">transient_state=false</a>), 
+        then all configuration definitions and changes will be written to the file system.  <b>Note:</b> right after the transient 
         setting is turned off (<i>set to false</i>), everything in-memory is written to the file system. 
         </p>
         <p class="alert_message" style="position:relative;">
           <img style="float:right;" height="30px" src="<c:url value="/images/skull_and_crossbones.png"/>" />
-          <b>Warning:</b> misunderstanding and misuse of <b>Transient</b> can a huge painful thing. If you're creating services and making changes with the transient
-          setting set to ON (true), then all your work will be lost once you restart Mockey.   
+          <b>Warning:</b> misunderstanding and misuse of this storage configuration (aka <b>transient</b> flag) can result in a huge painful thing. If you're creating services and making changes with the transient setting set to true, then all your work will be lost once you restart Mockey.   
         </p>
         <p>
         Why is <i>transient</i> needed, and why is it a good thing? Creation of data within Mockey is a good thing, and it's especially

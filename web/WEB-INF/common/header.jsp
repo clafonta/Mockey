@@ -57,12 +57,10 @@ $(document).ready(function() {
 	    
 
 		if(data.result.twist_enabled==true){
-            $("#twisting_unknown").hide();
             $("#twisting_on").show();
             $("#twisting_off").hide();
             
          }else {
-             $("#twisting_unknown").hide();
              $("#twisting_on").hide();
              $("#twisting_off").show(); 
          }
@@ -253,7 +251,7 @@ $(document).ready(function() {
 	  <span class="alert_message" style="position:absolute; bottom:0; left:0; width:60px; font-size:0.8em;z-index:100;"><strong>Warning:</strong>This app' isn't designed for <b>Internet Explorer 6.0</b>. You should use another browser.</span>
 	<% } %>
 	<div id="dialog-flush-confirm" class="hide" title="Flush"><div style="text-align: center;"><img src="<c:url value="/images/flush.png" />"/></div> <br />Are you sure? This will delete everything. You may want to <a href="<c:url value="/export" />">export your stuff</a> first.</div>
-	<div id="transient-confirm" class="hide" title="Transient Setting">This will toggle your transient setting. For more information on this, look <a href="<c:url value="/help#transient" />">here</a></div>
+	<div id="transient-confirm" class="hide" title="Storage Setting">This will toggle your storage setting. For more information on this, look <a href="<c:url value="/help#storage" />">here</a></div>
 	<div id="reset-session-confirm" class="hide" title="Reset Session">Are you sure? This will flush out any sticky cookies that Mockey may have kept due to serving up active-session-based proxy requests.
 	<p> <i>Does your brain hurt now?</i></p>
 	</div>
@@ -278,12 +276,7 @@ $(document).ready(function() {
         style="">URL Injection</a></li>
         
         <li <c:if test="${currentTab == 'proxy'}">class="current"</c:if>>
-          <span >
-          <a href="<c:url value="/proxy/settings"/>" id="proxy_unknown" class="tiny" style="display: none;">Proxy Settings (?)</a>
-          <a href="<c:url value="/proxy/settings"/>" id="proxy_on" class="tiny" style="display: none;">Proxy Settings (ON)</a>
-          <a href="<c:url value="/proxy/settings"/>" id="proxy_off" class="tiny"  style="display: none;">Proxy Settings (OFF)</a>
-          </span>
-
+          <a href="<c:url value="/proxy/settings"/>" >Proxy Settings <b id="proxy_off" style="display: none;">(OFF)</b><b id="proxy_on" style="display: none;">(ON)</b></a>
         </li>
         
         <li><a id="flush" href="#">Flush</a></li>
@@ -291,12 +284,8 @@ $(document).ready(function() {
         <li><span id="reset-sticky-cookie-config">
             <a href="#" id="reset-sticky-session" title="Reset the sticky cookie session that Mockey may be keeping.">Reset Session</a></span></li>
 
-        <li <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
-          <span id="twist-config" style="display:none;">
-            <a href="<c:url value="/twisting/setup"/>" id="twisting_unknown" style="display: none;">Twisting (?) </a>
-            <a href="<c:url value="/twisting/setup"/>" id="twisting_on"  style="display: none;">Twisting (ON)</a>
-            <a href="<c:url value="/twisting/setup"/>" id="twisting_off"  style="display: none;">Twisting (OFF)</a> 
-            </span>
+        <li  <c:if test="${currentTab == 'twisting'}">class="current"</c:if>>
+            <a href="<c:url value="/twisting/setup"/>">Twisting <b id="twisting_on" style="display:none;">(ON)</b><b id="twisting_off" style="display:none;">(OFF)</b></a>
         </li>
 
         <li>
@@ -343,9 +332,10 @@ $(document).ready(function() {
 
   <div style="display:inline-block; margin-top:10px;">
       <span id="memory-only-config" style="display:none; padding-left:10px; margin-top:20px;">
+        Storage set to:
         <a href="#" id="transient_unknown"  style="display: none;">___</a>
-        <a href="#" id="transient_true" class="transient-onclick" val="true" style="display: none; color: #10CF33;">In Memory Only</a>
-        <a href="#" id="transient_false" class="transient-onclick" val="false" style="display: none;color: red; ">Writing to file</a> 
+        <a href="#" id="transient_true" class="transient-onclick response_not" val="true" style="display: none; color:red;">In Memory Only</a>
+        <a href="#" id="transient_false" class="transient-onclick response_not" val="false" style="display: none; color: #10CF33;">Writing to file</a> 
       </span>
   </div>
   

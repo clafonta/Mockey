@@ -51,7 +51,8 @@ $(document).ready( function() {
         });
     
 	$('.createPlanLink').each( function() {
-        $(this).click( function() {             
+        $(this).click( function() {      
+            $('#dialog-create-plan').dialog({height: 250, modal: true});       
             $('#dialog-create-plan').dialog('open');
                 $('#dialog-create-plan').dialog({ 
                     buttons: {
@@ -79,9 +80,6 @@ $(document).ready( function() {
                       }
                     }
               }); 
-              // Reset the size.
-              $('#dialog-create-plan').dialog({height: 350 });
-                
               return false;
             });
         });
@@ -564,7 +562,7 @@ $(document).ready( function() {
 				                             	</c:url>
 				                             	
 				                             	
-				                                <span style="float:right;">
+				                                <span style="float:right; display:none;" class="service-meta-data">
 				                                
 				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#"><i aria-hidden="true" class="icon-cancel"></i></a>
 				                                </span>
@@ -713,7 +711,7 @@ $(document).ready( function() {
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status"  >
 		                                    <div class="service-detail-scenario-list-item" id="service-scenario-info_${scenario.id}_${mockservice.id}">
-			                                    <span style="float:right;padding-top:18px;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-cancel"></i></a> </span>
+			                                    <span class="service-meta-data" style="float:right;padding-top:18px; display:none;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-cancel"></i></a> </span>
 			                                    <div style="padding-top: 0.5em;padding-bottom:0.5em;">
 			                                      <c:choose>
 			                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
