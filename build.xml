@@ -61,11 +61,11 @@
 		<mkdir dir="${webapp.dir}/WEB-INF/classes"/>
 		<!-- This is a workaround to support Log4J management in Tomcat and Jetty implementations.-->
 		<copy todir="${webapp.dir}/WEB-INF/classes">
-            <fileset dir="${webapp.dir}/WEB-INF">
-                <include name="**/*.properties"/>
-                <include name="**/*.json"/>
-            </fileset>
-        </copy>
+			<fileset dir="${webapp.dir}/WEB-INF">
+				<include name="**/*.properties"/>
+				<include name="**/*.json"/>
+			</fileset>
+		</copy>
 
 	</target>
 
@@ -93,15 +93,47 @@
 	<!-- =================================================================== -->
 	<!-- Jars up file for distribution                                       -->
 	<!-- =================================================================== -->
-	<target name="dist" depends="clean, build, webapp, create-jar" description="Builds a .war and executable .jar file, e.g. 'java -jar Mockey.jar'">
+	<target name="dist" depends="clean, build, webapp, create-jar" description="Builds an executable .jar file, e.g. 'java -jar Mockey.jar'">
+		
+		<!-- Removing this WAR file; it was created for JETTY, not Tomcat useful. -->
+		<delete file="${dist.dir}/${ant.project.name}.war"/>
 		<echo message="Success! Now try this:"/>
 		<echo message="                    >cd dist"/>
 		<echo message="                    >java -jar Mockey.jar --help"/>
 	</target>
+
+
 	<!-- =================================================================== -->
 	<!-- Jars up a war file for application server                                                                       -->
 	<!-- =================================================================== -->
-	<target name="webapp" depends="compile, jspc" description="Builds a WAR file and places in a dist directory. ">
+	<target name="webapptomcat" depends="compile" description="Builds a WAR file specific for Tomcat, non-precompiled JSPs, and places in a dist directory. ">
+		<property name="WEBINF" value="${webapp.dir}/WEB-INF"/>
+		<copy todir="${build.dir}">
+			<fileset dir="${webapp.dir}" />
+		</copy>
+		<copy todir="${build.dir}/WEB-INF">
+			<fileset dir="${webapp.dir}/WEB-INF">
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+
+			</fileset>
+		</copy>
+		<copy todir="${build.dir}/WEB-INF/classes">
+			<fileset dir="${webapp.dir}/WEB-INF">
+				<include name="**/*.properties"/>
+				<include name="**/*.json"/>
+			</fileset>
+		</copy>
+		<war destfile="${dist.dir}/${ant.project.name}.war" webxml="${build.dir}/WEB-INF/web.xml">
+			<fileset dir="${webapp.dir}">
+				<exclude name="**/web.xml" />
+			</fileset>
+			<classes dir="${classes.dir}"/>
+			<lib dir="${lib.dir}"/>
+		</war>
+	</target>
+
+	<target name="webapp" depends="compile, jspc" description="Builds a WAR file with pre-compiled JSP pages for JETTY usage, and places in a dist directory. ">
 		<property name="WEBINF" value="${webapp.dir}/WEB-INF"/>
 		<copy todir="${build.dir}/WEB-INF">
 			<fileset dir="${webapp.dir}/WEB-INF">
@@ -111,11 +143,11 @@
 			</fileset>
 		</copy>
 		<copy todir="${build.dir}/WEB-INF/classes">
-            <fileset dir="${webapp.dir}/WEB-INF">
-                <include name="**/*.properties"/>				
-                <include name="**/*.json"/>
-            </fileset>
-        </copy>
+			<fileset dir="${webapp.dir}/WEB-INF">
+				<include name="**/*.properties"/>
+				<include name="**/*.json"/>
+			</fileset>
+		</copy>
 		<war destfile="${dist.dir}/${ant.project.name}.war" webxml="${build.dir}/WEB-INF/web.xml">
 			<fileset dir="${webapp.dir}">
 				<exclude name="**/web.xml" />
@@ -186,31 +218,31 @@
 		<copy todir="${build.dir}/WEB-INF" file="${tmp.webapp.dir}/WEB-INF/web.xml" />
 	</target>
 
-    <target name="create-jar">
-        <!-- Will clean up the hard-coded paths, just want to see what needs to be included -->
-        <mkdir dir="build/jar" />
-        <unzip dest="build/jar" overwrite="false">
-            <fileset dir="etc/one-jar" />
-            <fileset dir="web/WEB-INF/lib" />
-        </unzip>
-        <buildnumber file="build.num"/>
-        <jar destfile="dist/Mockey.jar">
-            <manifest>
-                <attribute name="Main-Class" value="com.mockey.runner.JettyRunner"/>
-                <attribute name="Implementation-Version" value="${version.num}.${build.number}"/>
-            </manifest>
-            <fileset dir="build/jar">
-                <exclude name="MANIFEST.MF" />
-                <exclude name="**/*.SF" />
-            </fileset>
-            <fileset dir="build/WEB-INF/classes" />
-            <fileset dir="build">
-                <include name="WEB-INF/*" />                
-            </fileset>
-            <fileset dir="web">
-                <exclude name="WEB-INF/**" />
-                <exclude name="**/*.jsp" />
-            </fileset>
-        </jar>
-    </target>
+	<target name="create-jar">
+		<!-- Will clean up the hard-coded paths, just want to see what needs to be included -->
+		<mkdir dir="build/jar" />
+		<unzip dest="build/jar" overwrite="false">
+			<fileset dir="etc/one-jar" />
+			<fileset dir="web/WEB-INF/lib" />
+		</unzip>
+		<buildnumber file="build.num"/>
+		<jar destfile="dist/Mockey.jar">
+			<manifest>
+				<attribute name="Main-Class" value="com.mockey.runner.JettyRunner"/>
+				<attribute name="Implementation-Version" value="${version.num}.${build.number}"/>
+			</manifest>
+			<fileset dir="build/jar">
+				<exclude name="MANIFEST.MF" />
+				<exclude name="**/*.SF" />
+			</fileset>
+			<fileset dir="build/WEB-INF/classes" />
+			<fileset dir="build">
+				<include name="WEB-INF/*" />
+			</fileset>
+			<fileset dir="web">
+				<exclude name="WEB-INF/**" />
+				<exclude name="**/*.jsp" />
+			</fileset>
+		</jar>
+	</target>
 </project>
