@@ -37,6 +37,7 @@ Via command line, build Mockey via Ant.
 
 After a successful build, do the following to start the app:
 > cd dist 
+
 > java -jar Mockey.jar --help
 
 This will start Mockey (within a Jetty container) and fire up your browser pointing at the defaults (port 8080, /home). Use --help for more options. 
