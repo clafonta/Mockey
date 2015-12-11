@@ -39,5 +39,12 @@ After a successful build, do the following to start the app:
 > cd dist 
 > java -jar Mockey.jar --help
 
-This will start Mockey and fire up your browser pointing at the defaults (port 8080, /home). Use --help for more options. 
+This will start Mockey (within a Jetty container) and fire up your browser pointing at the defaults (port 8080, /home). Use --help for more options. 
+
+For Tomcat users, you'll need to build the app:
+> ant webapptomcat
+
+This will build a WAR file, which you can drop into Tomcat and run. You can set the location of Mockey definition file repot as follows: 
+> export JAVA_OPTS="-DmockeyDefinitionsRepoHome=/Users/your-username/some-directory"
+When Mockey starts up in Tomcat, it will look for the 'mockeyDefinitionsRepoHome' property and read write needed files in that directory. If not defined, it will read write files in the default user directory that Tomcat is started with.
 
