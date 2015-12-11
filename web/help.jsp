@@ -644,15 +644,18 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
 	    <a href="#startup" name="startup"></a>
 	    <h2>Start Up Configuration</h2>
 	    <p>
-	    There are a few options to configure Mockey on startup. Pass in the Help command to see your options:
-	    <div class="code">
-	    java -jar Mockey.jar --help
-	    </div>
+	    There are a few options to configure Mockey on startup. 
+	    <h3>Executable Jar</h3>
+	    If you are running the executable jar, check the Help command to see your options:
+		    <div class="code">
+		    java -jar Mockey.jar --help
+		    </div>
 	    For example, if you want your configuration files to be located in a specific directory, then do the following:
-	    <div class="code">
-	    java -jar Mockey.jar -l /Users/clafonta/Work/Mockey/dist/testme
-	    </div>
+		    <div class="code">
+		    java -jar Mockey.jar -l /Users/clafonta/Work/Mockey/dist/testme
+		    </div>
 	    ..and Mockey will save your files in the 'testme' directory, e.g.:
+	    
 	    <pre>
 >tree /Users/clafonta/Work/Mockey/dist/testme/
 /Users/clafonta/Work/Mockey/dist/testme/
@@ -664,14 +667,16 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
              |--- happy.txt
              |___ happy.xml
 	    </pre>
-	    
+	    <h3>Using Tomcat</h3>
+	    If you are using the WAR file, running in a Tomcat instance, then you can set your preferred Mockey repository location, via command line (Unix) as follows:
+	    <div class="code">
+	    export JAVA_OPTS="-DmockeyDefinitionsRepoHome=/Users/johnsmith/work_repo"
+	    </div>
+	    The variable name is '<i>mockeyDefinitionsRepoHome</i>'. Search the web for more information on JAVA_OPS and Tomcat and how to set it in Windows if necessary.
 	    </p>
 	</div>
-	<div class="help_section">
-	    <h2>Related Read</h2>
-	    <p>
-	    <a href="http://martinfowler.com/bliki/TestDouble.html">http://martinfowler.com/bliki/TestDouble.html</a>
-	    </p>
-	</div>
+	
+	
+	
 </div>	
 <jsp:include page="/WEB-INF/common/footer.jsp" />

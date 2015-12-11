@@ -27,7 +27,7 @@ public class MockeyXmlFileManagerTest {
 	@Test
 	public void validateServiceScenarioFile(){
 		
-		MockeyXmlFileManager.createInstance(TESTCONFIG_DIR);
+		MockeyXmlFileManager.getInstanceWithRepoPath(TESTCONFIG_DIR);
 		Service feelingService = new Service();
 		feelingService.setServiceName("feeling");
 		feelingService.setUrl("/feeling");
@@ -46,7 +46,7 @@ public class MockeyXmlFileManagerTest {
 	@Test
 	public void validateDefaultBasePath() {
 		
-		MockeyXmlFileManager.createInstance(TESTCONFIG_DIR);
+		MockeyXmlFileManager.getInstanceWithRepoPath(TESTCONFIG_DIR);
 		
 		MockeyXmlFileManager fileManager = MockeyXmlFileManager.getInstance();
 		
@@ -59,7 +59,7 @@ public class MockeyXmlFileManagerTest {
 	
 	@Test
 	public void validateNewBasePath() {
-		MockeyXmlFileManager.createInstance(TESTCONFIG_DIR);
+		MockeyXmlFileManager.getInstanceWithRepoPath(TESTCONFIG_DIR);
 		MockeyXmlFileManager fileManager = MockeyXmlFileManager.getInstance();
 		File x = new File(TESTCONFIG_DIR);
 		if(!x.exists()){
@@ -73,7 +73,7 @@ public class MockeyXmlFileManagerTest {
 	
 	@Test
 	public void validateServiceFileWithNewBasePath() {
-		MockeyXmlFileManager.createInstance(TESTCONFIG_DIR);
+		MockeyXmlFileManager.getInstanceWithRepoPath(TESTCONFIG_DIR);
 		
 		Service s = new Service();
 		s.setServiceName("a_service_name");
@@ -315,7 +315,7 @@ public class MockeyXmlFileManagerTest {
 	public void checkForRelativePath() {
 		File randomFile = new File(File.separator + "makebelieve" + File.separator + "somenewfile");
 		File seedFile = new File(File.separator + "seed");
-		MockeyXmlFileManager.createInstance(seedFile.getAbsolutePath());
+		MockeyXmlFileManager.getInstanceWithRepoPath(seedFile.getAbsolutePath());
 		MockeyXmlFileManager mxfm = MockeyXmlFileManager.getInstance();
 		Service s = new Service();
 		s.setServiceName("AnAccountService");
@@ -410,7 +410,7 @@ public class MockeyXmlFileManagerTest {
 	}
 
 	private ServiceMergeResults getMergeResults(String storeAsXml) {
-		MockeyXmlFileManager.createInstance("");
+		MockeyXmlFileManager.getInstanceWithRepoPath("");
 		MockeyXmlFileManager configurationReader = MockeyXmlFileManager.getInstance();
 		ServiceMergeResults mergeResults = null;
 		try {

@@ -41,7 +41,9 @@ public class StartUpServlet extends HttpServlet {
 	private static final long serialVersionUID = -6466436642921760561L;
 	// private static Logger logger = Logger.getLogger(StartUpServlet.class);
 	private static final String SYSTEM_PROPERTY_KEY_DEBUG_FILE = "pathToMockeyDebugFile";
+
 	public static final String MOCKEY_DEBUG = "mockeyDebugFile.log";
+
 	private static File debugFile = null;
 
 	/**
@@ -57,8 +59,23 @@ public class StartUpServlet extends HttpServlet {
 			// JETTY & TOMCAT compatible
 			// Not context
 			// ***************
+			// If no explicit path, then check for a system variable.
+			// Check for SYSTEM PROPERTY
+			String repoHome = System.getProperty(MockeyXmlFileManager.SYSTEM_PROPERTY_MOCKEY_DEF_REPO_HOME);
+			if (repoHome != null) {
+				String msg = "System environment '" + MockeyXmlFileManager.SYSTEM_PROPERTY_MOCKEY_DEF_REPO_HOME
+						+ "' value is provided. Writing debug file here: " + repoHome;
+				System.out.println(msg);
+			}
+			//
 			try {
-				debugFile = new File(MOCKEY_DEBUG);
+				String debugFilePath = null;
+				if (repoHome != null) {
+					debugFilePath = repoHome + File.separatorChar + MOCKEY_DEBUG;
+				} else {
+					debugFilePath = MOCKEY_DEBUG;
+				}
+				debugFile = new File(debugFilePath);
 				debugFile.createNewFile();
 				String abPath = getDebugFile().getAbsolutePath();
 				System.out.println("Created debug file " + abPath);
@@ -75,30 +92,22 @@ public class StartUpServlet extends HttpServlet {
 
 		// Init
 		getDebugFile();
-		boolean ECLIPSE_DEBUG = false;
-		if (ECLIPSE_DEBUG) {
-			try {
 
-				// Doesn't the HomeServlet do this? Yes but
-				// this is one duplicate activity that allows for
-				// sandbox development (i.e. within Eclipse)
-				// since we're not using JettyRunner, which contains
-				// logic to pass/tell HomeServlet _how_ to initialize.
+		try {
 
-				
-				MockeyXmlFileManager reader = MockeyXmlFileManager.getInstance();
-				reader.loadConfiguration();
+			MockeyXmlFileManager reader = MockeyXmlFileManager.getInstance();
+			reader.loadConfiguration();
 
-			} catch (FileNotFoundException fnf) {
+		} catch (FileNotFoundException fnf) {
 
-				System.out.println("File used to initialize Mockey not found. "
-						+ "It's OK; one will be created if Mockey is not in 'memory-mode-only' "
-						+ "meaning you have to tell Mockey to 'write-to-file' via the web browser interface. ");
+			System.out.println("File used to initialize Mockey not found. "
+					+ "It's OK; one will be created if Mockey is not in 'memory-mode-only' "
+					+ "meaning you have to tell Mockey to 'write-to-file' via the web browser interface. ");
 
-			} catch (Exception e) {
-				// logger.error("StartUpServlet:init()", e);
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			// logger.error("StartUpServlet:init()", e);
+			e.printStackTrace();
 		}
+
 	}
 }

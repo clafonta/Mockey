@@ -111,14 +111,7 @@ public class HomeServlet extends HttpServlet {
 					"Will delete everything and configure Mockey with the defined file. "));
 			apiDocRequest.addAttribute(reqAttributeAction);
 
-			// Parameter - 'file'
-			ApiDocAttribute reqAttributeFile = new ApiDocAttribute();
-			reqAttributeFile.setFieldName(BSC.FILE);
-			reqAttributeFile.addFieldValues(new ApiDocFieldValue("[string]",
-					"Relative path to the service definitions configuration file. Required if 'action' is 'init'"));
-			reqAttributeFile.setExample("../some_file.xml or /Users/someuser/Work/some_file.xml");
-			apiDocRequest.addAttribute(reqAttributeFile);
-
+			 
 			// Parameter - 'type'
 			ApiDocAttribute reqAttributeType = new ApiDocAttribute();
 			reqAttributeType.setFieldName(BSC.TYPE);
@@ -155,11 +148,7 @@ public class HomeServlet extends HttpServlet {
 				logger.error("Unabel to build a sample JSON message. ", e);
 			}
 
-			// Response attribute 'file'
-			ApiDocAttribute resAttributeFile = new ApiDocAttribute();
-			resAttributeFile.setFieldName(BSC.FILE);
-			resAttributeFile.setFieldDescription("Name of file used to initialize Mockey.");
-			apiResponse.addAttribute(resAttributeFile);
+		
 
 			// Response attribute 'success'
 			ApiDocAttribute resAttributeSuccess = new ApiDocAttribute();
@@ -233,7 +222,7 @@ public class HomeServlet extends HttpServlet {
 					reader.loadConfigurationWithXmlDef(inputAsString, null);
 					logger.info("Loaded definitions from " + fileName);
 					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
-					jsonResultObject.put(BSC.FILE, fileName);
+					
 				}
 			} catch (Exception e) {
 

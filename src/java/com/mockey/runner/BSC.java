@@ -34,7 +34,6 @@ public interface BSC {
 	public static final String DEFINITION_LOCATION = "location"; 
 	public static final String TRANSIENT = "transientState";
 	public static final String FILTERTAG = "filterTag";
-	public static final String FILE = "file";
 	public static final String INIT = "init";
 	public static final String TYPE = "type";
 	public static final String ACTION = "action";

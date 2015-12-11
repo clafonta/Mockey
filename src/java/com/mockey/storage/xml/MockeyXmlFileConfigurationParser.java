@@ -83,6 +83,7 @@ public class MockeyXmlFileConfigurationParser {
 	private static Digester fullSetDigester = null;
 	static {
 		MockeyXmlFileConfigurationParser.fullSetDigester = new Digester();
+		
 		fullSetDigester.setNamespaceAware(true);
 		fullSetDigester.setXIncludeAware(true);
 		fullSetDigester.setEntityResolver(new EntityResolver() {
@@ -94,12 +95,18 @@ public class MockeyXmlFileConfigurationParser {
 						// "file://value"
 						// Let URI handle the 'file://' pretext
 						
-						File x2 = new File(new URI(systemId));
+						// The real value we're looking for, is RELATIVE to the base directory. 
+						// By default, the base directory is the user directory.
+						String defaultUserDirectory = System.getProperty("user.dir");
+						String basePath = MockeyXmlFileManager.getInstance().getBasePathFile().getAbsolutePath();
+						String updatedSystemId = systemId.replace(defaultUserDirectory, basePath);
+						
+						File x2 = new File(new URI(updatedSystemId));
 						MockeyXmlFileManager mxfm = MockeyXmlFileManager.getInstance();
 						FileInputStream fstream = new FileInputStream(x2);
 						String inputStreamString = mxfm.getFileContentAsString(fstream);
 						InputSource is = new InputSource(new StringReader(inputStreamString));
-						is.setSystemId(systemId);
+						is.setSystemId(updatedSystemId);
 						return is;
 					} catch (URISyntaxException e) {
 						e.printStackTrace();
