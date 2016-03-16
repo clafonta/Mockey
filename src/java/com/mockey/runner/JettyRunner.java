@@ -64,15 +64,21 @@ public class JettyRunner {
 		SimpleJSAP jsap = new SimpleJSAP("java -jar Mockey.jar", "Starts a Jetty server running Mockey");
 		jsap.registerParameter(new FlaggedOption(ARG_PORT, JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p',
 				ARG_PORT, "port to run Jetty on"));
-		
+
+		// TODO: Bring this back....
+		/*
+		jsap.registerParameter(new FlaggedOption(BSC.FILE, JSAP.STRING_PARSER,
+				MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, JSAP.NOT_REQUIRED, 'f', BSC.FILE,
+				"Relative path to a mockey-definitions file to initialize Mockey, relative to where you're starting Mockey"));
+		*/
 		jsap.registerParameter(new FlaggedOption(BSC.URL, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'u', BSC.URL,
 				"URL to a mockey-definitions file to initialize Mockey"));
 
 		jsap.registerParameter(new FlaggedOption(BSC.TRANSIENT, JSAP.BOOLEAN_PARSER, "true", JSAP.NOT_REQUIRED, 't',
 				BSC.TRANSIENT, "Read only mode if set to true, no updates are made to the file system."));
 
-		jsap.registerParameter(new FlaggedOption(BSC.DEFINITION_LOCATION, JSAP.STRING_PARSER, System.getProperty("user.dir"), JSAP.NOT_REQUIRED,
-				'l', BSC.DEFINITION_LOCATION,
+		jsap.registerParameter(new FlaggedOption(BSC.DEFINITION_LOCATION, JSAP.STRING_PARSER,
+				System.getProperty("user.dir"), JSAP.NOT_REQUIRED, 'l', BSC.DEFINITION_LOCATION,
 				"Absolute or relative path/location for Mockey to save it's definitions and configuration. By default, relative to where Mockey is started. "));
 
 		jsap.registerParameter(
@@ -101,16 +107,17 @@ public class JettyRunner {
 			System.exit(1);
 		}
 
-		// #1 ACTION: If user passed in a HOME REPO variable, then let's set this, 
-		// overriding the System.getProperty value, if one existed. 
-		
+		// #1 ACTION: If user passed in a HOME REPO variable, then let's set
+		// this,
+		// overriding the System.getProperty value, if one existed.
+
 		// Check to see if user passed in a MOCKEY REPO HOME path.
 		String configurationPath = String.valueOf(config.getString(BSC.DEFINITION_LOCATION));
 		if (configurationPath != null) {
-			
+
 			// Set as a SYSTEM property.
 			File x = new File(configurationPath);
-			if(x.exists() && !x.isDirectory()){
+			if (x.exists() && !x.isDirectory()) {
 				configurationPath = x.getParent();
 			}
 			System.setProperty(MockeyXmlFileManager.SYSTEM_PROPERTY_MOCKEY_DEF_REPO_HOME, configurationPath);
@@ -170,7 +177,7 @@ public class JettyRunner {
 			URLEncoder.encode(initUrl, "UTF-8");
 			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
 					+ BSC.URL + "=" + URLEncoder.encode(url, "UTF-8") + fTagParam;
-		} 
+		}
 
 		if (!headless) {
 			new Thread(new BrowserThread("http://127.0.0.1", String.valueOf(port), initUrl, 0)).start();

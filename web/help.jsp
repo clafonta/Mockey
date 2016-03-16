@@ -333,7 +333,10 @@
        &gt; java -jar Mockey.jar<br />
        </div>
        By default, Mockey will initialize itself with <b>mock_service_definitions.xml</b>. If the 
-       file isn't there, it will create a new one and write it out. Alternatively, you could pass
+       file isn't there, it will create a new one and write it out. 
+
+       <!-- TODO: Bring this back.
+       Alternatively, you could pass
        it an argument:
        <div class="code code_text">
        &gt; ls <br />
@@ -341,7 +344,10 @@
        &gt; java -jar Mockey.jar -f some_file.xml<br />
        </div>
        Now, Mockey will initialize itself with <b>some_file.xml</b> upon startup <b>but</b> it will
-       continue to write itself out to <b>mock_service_definitions.xml</b> after initialization. For more options,
+       continue to write itself out to <b>mock_service_definitions.xml</b> after initialization. 
+		-->
+
+       For more options,
        try the <span class="code_text">--help</span> argument.
        <div class="code code_text">
        &gt; java -jar Mockey.jar --help
