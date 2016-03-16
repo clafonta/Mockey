@@ -1,4 +1,25 @@
+===============================
+March 15, 2016. Version: 2.0.69
+===============================
 
+-----------------------------------------------------------------------------
+CHANGES:
+-----------------------------------------------------------------------------
+
+C1. Removed -f option from startup. WHY?! I had a bigger value/need to get Mockey 
+to work as a WAR. As a consequence, the process to handle the options and various 
+ways to startup Mockey needs to be visited. If someone still needs this, then make 
+a request and I'll bring it back. 
+
+-----------------------------------------------------------------------------
+ADDITIONS:
+-----------------------------------------------------------------------------
+  
+A1. Added new build to run Mockey as a WAR. 
+A2. Added environment variable for Mockey to find location of mockey_depot for 
+definitions. Example:
+
+>export JAVA_OPTS="-DmockeyDefinitionsRepoHome=/Users/your-username/some-directory"
 
 ============================
 May 1st 2013. Version: 2.0.2
@@ -7,7 +28,7 @@ May 1st 2013. Version: 2.0.2
 -----------------------------------------------------------------------------
 CHANGES:
 -----------------------------------------------------------------------------
-Updated the way URL twisting works. Before, it only worked with Services in
+C1. Updated the way URL twisting works. Before, it only worked with Services in 
 Proxy mode, but now works with Static, Dynamic, and Proxy.
 
 ============================
