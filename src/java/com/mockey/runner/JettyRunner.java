@@ -65,12 +65,11 @@ public class JettyRunner {
 		jsap.registerParameter(new FlaggedOption(ARG_PORT, JSAP.INTEGER_PARSER, "8080", JSAP.NOT_REQUIRED, 'p',
 				ARG_PORT, "port to run Jetty on"));
 
-		// TODO: Bring this back....
-		/*
+
 		jsap.registerParameter(new FlaggedOption(BSC.FILE, JSAP.STRING_PARSER,
 				MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, JSAP.NOT_REQUIRED, 'f', BSC.FILE,
 				"Relative path to a mockey-definitions file to initialize Mockey, relative to where you're starting Mockey"));
-		*/
+
 		jsap.registerParameter(new FlaggedOption(BSC.URL, JSAP.STRING_PARSER, "", JSAP.NOT_REQUIRED, 'u', BSC.URL,
 				"URL to a mockey-definitions file to initialize Mockey"));
 
@@ -121,6 +120,16 @@ public class JettyRunner {
 				configurationPath = x.getParent();
 			}
 			System.setProperty(MockeyXmlFileManager.SYSTEM_PROPERTY_MOCKEY_DEF_REPO_HOME, configurationPath);
+		}
+
+		// #2 ACTION: Check if the user passed in a INITILIZATION file, which
+		// will give state to Mockey. If Mockey already has state, then this
+		// will merge this initialization file.
+		String file = String.valueOf(config.getString(BSC.FILE));
+		MockeyXmlFileManager instance = MockeyXmlFileManager.getInstance();
+		if (!file.startsWith(File.separator + "")) {
+			// No absolute, so we try for a relative path.
+			file = instance.getBasePathFile().getAbsolutePath() + File.separator + file;
 		}
 
 		// Construct the new arguments for jetty-runner
@@ -177,6 +186,16 @@ public class JettyRunner {
 			URLEncoder.encode(initUrl, "UTF-8");
 			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
 					+ BSC.URL + "=" + URLEncoder.encode(url, "UTF-8") + fTagParam;
+
+		} else if (file != null && file.trim().length() > 0) {
+			URLEncoder.encode(initUrl, "UTF-8");
+			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
+					+ BSC.FILE + "=" + URLEncoder.encode(file, "UTF-8") + fTagParam;
+		} else {
+			initUrl = HOMEURL + "?" + BSC.ACTION + "=" + BSC.INIT + "&" + BSC.TRANSIENT + "=" + transientState + "&"
+					+ BSC.FILE + "=" + URLEncoder.encode(MockeyXmlFileManager.MOCK_SERVICE_DEFINITION, "UTF-8")
+					+ fTagParam;
+
 		}
 
 		if (!headless) {

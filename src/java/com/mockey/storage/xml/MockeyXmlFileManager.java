@@ -73,7 +73,16 @@ import com.mockey.ui.ServiceMergeResults;
  */
 public class MockeyXmlFileManager {
 
-	private static Logger logger = Logger.getLogger(MockeyXmlFileManager.class);
+	private static Logger logger;
+	static {
+		try {
+			logger = Logger.getLogger(MockeyXmlFileManager.class);
+        }
+        catch (Exception  e) {
+            System.out.println(e.getMessage());
+        }
+	}
+	 
 	private static final char[] VALID_FILE_NAME_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 			.toCharArray();
 
