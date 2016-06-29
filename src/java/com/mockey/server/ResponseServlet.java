@@ -28,7 +28,7 @@
 package com.mockey.server;
 
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletException;
@@ -145,9 +145,11 @@ public class ResponseServlet extends HttpServlet {
 			} catch (java.lang.IllegalArgumentException iae) {
 				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode() + "'", iae);
 			}
-			byte[] myCharSetBytes = response.getBody().getBytes();
-			new PrintStream(resp.getOutputStream()).write(myCharSetBytes);
-			resp.getOutputStream().flush();
+			
+			PrintWriter out = resp.getWriter();
+			out.println(response.getBody());
+			out.flush();
+			out.close();
 		} else {
 			// RULE_FOR_HEADERS
 			try {

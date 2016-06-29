@@ -56,6 +56,11 @@ public class ScenarioServlet extends HttpServlet {
 	public void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		// Ensure ENCODING is set. This is important. 
+		// The request body will be fully processed only whenever the first call on a getParameterXXX() method is made.
+		// We set encoding to ensure we handle special characters. 
+		req.setCharacterEncoding("UTF-8");
+		
 		// A Service is needed to associate the
 		// scenario to.
 		Long serviceId = new Long(req.getParameter("serviceId"));
@@ -172,9 +177,11 @@ public class ScenarioServlet extends HttpServlet {
 			}
 
 		}
-
-		if (req.getParameter("responseMessage") != null) {
-			scenario.setResponseMessage(req.getParameter("responseMessage"));
+		
+		
+		String respMessage = req.getParameter("responseMessage");
+		if (respMessage != null) {
+			scenario.setResponseMessage(respMessage);
 		}
 		if (req.getParameter("matchStringArg") != null) {
 			scenario.setMatchStringArg(req.getParameter("matchStringArg"));

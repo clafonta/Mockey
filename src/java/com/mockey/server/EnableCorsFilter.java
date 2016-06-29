@@ -55,6 +55,7 @@ public class EnableCorsFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws ServletException, java.io.IOException {
+		
 		HttpServletResponse response = (HttpServletResponse) resp;
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		// response.addHeader("Access-Control-Allow-Credentials", "true");
