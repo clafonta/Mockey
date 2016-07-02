@@ -116,7 +116,8 @@ public class ResponseServlet extends HttpServlet {
 		ResponseFromService response = service.execute(request, serviceUrl);
 
 		// ************************************************************************
-		// STEP #5) If twisting was enabled, let's be sure to set the original URL
+		// STEP #5) If twisting was enabled, let's be sure to set the original
+		// URL
 		// ************************************************************************
 		if (!originalHttpReqURI.equalsIgnoreCase(targetHttpReqURI)) {
 			response.setOriginalRequestUrlBeforeTwisting(new Url(originalHttpReqURI));
@@ -137,15 +138,34 @@ public class ResponseServlet extends HttpServlet {
 			if (response.getHeaders() != null) {
 				for (Header h : response.getHeaders()) {
 					resp.setHeader(h.getName(), h.getValue());
+					if (h.getValue() != null) {
+						int indexOfUTF = h.getValue().toLowerCase().indexOf("utf-8");
+						if (indexOfUTF >= 0) {
+
+							// Why do we do this?
+							// * We don't want to setup utf-8 for all things,
+							// hence we look for the User's scenario with
+							// explicit setting for header information, ex:
+							// 'Content-Type: text/json; charset=utf-8'
+							//
+							// * Setting headers should be sufficient, but
+							// apparently not as seen debugging with Jetty. I
+							// did not have this issue w/ Tomcat.
+							resp.setCharacterEncoding("UTF-8");
+						}
+					}
+
 				}
+
 			}
 
 			try {
 				resp.setStatus(response.getHttpResponseStatusCode());
 			} catch (java.lang.IllegalArgumentException iae) {
-				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode() + "'", iae);
+				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode() + "'",
+						iae);
 			}
-			
+
 			PrintWriter out = resp.getWriter();
 			out.println(response.getBody());
 			out.flush();
@@ -155,7 +175,8 @@ public class ResponseServlet extends HttpServlet {
 			try {
 				resp.setStatus(response.getHttpResponseStatusCode());
 			} catch (java.lang.IllegalArgumentException iae) {
-				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode() + "'", iae);
+				logger.debug("Unable to set the response status to '" + response.getHttpResponseStatusCode() + "'",
+						iae);
 			}
 			response.writeToOutput(resp);
 		}
