@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -62,6 +63,7 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 		Service service = store.getServiceById(serviceId);
 		Scenario scenario = null;
 		resp.setContentType("application/json");
+		resp.setCharacterEncoding(HTTP.UTF_8);
 		PrintWriter out = resp.getWriter();
 		try {
 			scenario = service.getScenario(new Long(scenarioIdAsString));

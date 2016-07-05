@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +60,7 @@ public class ScenarioServlet extends HttpServlet {
 		// Ensure ENCODING is set. This is important. 
 		// The request body will be fully processed only whenever the first call on a getParameterXXX() method is made.
 		// We set encoding to ensure we handle special characters. 
-		req.setCharacterEncoding("UTF-8");
+		req.setCharacterEncoding(HTTP.UTF_8);
 		
 		// A Service is needed to associate the
 		// scenario to.

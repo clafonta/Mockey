@@ -28,7 +28,7 @@
 package com.mockey.ui;
 
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -36,6 +36,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerException;
 
+import org.apache.http.protocol.HTTP;
+
+import com.google.common.net.MediaType;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 import com.mockey.storage.xml.MockeyXmlFactory;
@@ -62,15 +65,20 @@ public class ExportConfigurationServlet extends HttpServlet {
         } catch (TransformerException e) {
             throw new ServletException(e);
         }
-
-        resp.setContentType("application/xml");
+        
+        resp.setContentType(MediaType.XML_UTF_8.toString());
+        resp.setCharacterEncoding(HTTP.UTF_8);
+        resp.setContentLength(fileOutput.getBytes(HTTP.UTF_8).length);
+        
         if(req.getParameter("download")!=null){
         	resp.setHeader("Content-disposition", "attachment; filename=mockservice.xml");
+        	resp.setHeader("Content-type", MediaType.XML_UTF_8.toString());
         }
-        
-        resp.setContentLength(fileOutput.getBytes().length);
 
-        PrintStream out = new PrintStream(resp.getOutputStream());
+        PrintWriter out = resp.getWriter();
         out.println(fileOutput);
+        out.flush();
+		out.close();
+		return;
     }
 }

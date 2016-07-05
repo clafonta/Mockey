@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 
 import com.mockey.model.FulfilledClientRequest;
@@ -151,7 +152,7 @@ public class ResponseServlet extends HttpServlet {
 							// * Setting headers should be sufficient, but
 							// apparently not as seen debugging with Jetty. I
 							// did not have this issue w/ Tomcat.
-							resp.setCharacterEncoding("UTF-8");
+							resp.setCharacterEncoding(HTTP.UTF_8);
 						}
 					}
 
