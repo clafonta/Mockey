@@ -24,6 +24,8 @@
  */
 package com.mockey.server;
 
+import java.util.Date;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -59,6 +61,10 @@ public class EnableCorsFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) resp;
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		// response.addHeader("Access-Control-Allow-Credentials", "true");
+		response.setHeader("Expires", "Tue, 03 Jul 2001 06:00:00 GMT");
+		response.setDateHeader("Last-Modified", new Date().getTime());
+		response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0");
+		response.setHeader("Pragma", "no-cache");
 
 		chain.doFilter(req, resp);
 	}

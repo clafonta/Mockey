@@ -158,7 +158,7 @@ div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid 
 span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;}
 .api_message {  margin: 0.8em;  padding: 0.8em; text-align: left;   color: black;}
 .hint_message, .alert_message, .conflict_message, .addition_message, .info_message {  margin: 0.8em;  padding: 0.8em; text-align: left; color: black;   /* border: thin solid #d3d3d3; */}
-.hint_message{background-color: #3782B6;}
+.hint_message{background-color: #9ECAFF;}
 .alert_message{border: thin solid #FE9EA7; background-color: #FFD7D5;}
 .conflict_message {background-color: rgb(255, 215, 215);}
 .addition_message {background-color: #8AFFAB;}

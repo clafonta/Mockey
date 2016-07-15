@@ -369,6 +369,14 @@
         <servlet-name>JsonSchemaLoadSamplesServlet</servlet-name>
         <servlet-class>com.mockey.ui.JsonSchemaLoadSamplesServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StatisticsForServiceAjaxServlet</servlet-name>
+        <servlet-class>com.mockey.ui.StatisticsForServiceAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StatisticsForServiceAjaxServlet</servlet-name>
+        <url-pattern>/servicestats</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>JsonSchemaLoadSamplesServlet</servlet-name>
         <url-pattern>/loadjsonschemasamples</url-pattern>
