@@ -25,3 +25,4 @@
 <script type="text/javascript" src="<c:url value="/javascript/fileuploader/fileuploader.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/beautify.js" />"></script>
 <script type="text/javascript" src="<c:url value="/javascript/beautify-html.js" />"></script>
+<script type="text/javascript" src="<c:url value="/javascript/chart.min.js" />"></script>

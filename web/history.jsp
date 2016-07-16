@@ -175,7 +175,10 @@ $(document).ready(function() {
 <div id="main">
     <jsp:include page="/WEB-INF/common/inc_scenario_create_dialog.jsp" />
 
-    <h1>Service History</h1>
+    <h1>History</h1>
+    <p>
+    This is the list of service calls made to Mockey.
+    </p>
     <div id="dialog-clear-history-confirm" title="Delete history">Are you sure? This will delete all fulfilled requests for all requesting IPs.</div>
     <form action="<c:url value="/history"/>" method="get">
     <p>

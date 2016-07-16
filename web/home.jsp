@@ -7,6 +7,13 @@
 <jsp:include page="/WEB-INF/common/header.jsp" />
 <script>
 $(document).ready( function() {
+	
+	// When user clicks browser 'back' or 'forward', we
+	// force a reload to ensure we see up-to-date view
+	window.onpopstate = function(e){
+	   window.location.reload(false); 
+	};
+	
 	$('#tabs').tabs().hide();
 	$('#tabs:not(:first)').hide();
     $('#tabs:first').fadeIn('slow');
@@ -273,6 +280,12 @@ $(document).ready( function() {
           var serviceId = this.id.split("_")[1]; 	
           $(".parentform").removeClass("parentformselected");
     	  $("#parentform_"+serviceId).addClass("parentformselected");
+    	  
+    	  // We push the new URL, to ensure the user returns 
+    	  // to this view and is forced a reload (see 'onpopstate')
+    	  // when user uses 'back/forward' browser controls. 
+    	  window.history.pushState('page2', document.title, window.location.pathname + '?serviceId='+serviceId);
+    	  
         });
      });
     
@@ -470,15 +483,15 @@ $(document).ready( function() {
  });
 </script>
     <div id="main">
-    <span class="power-link tiny"><a href="#" class="toggle-service-meta-data"><span class="service-meta-data">Show</span><span class="service-meta-data" style="display:none;">Hide</span> Service Details</a></span>
-    <span class="filter-link"><a href="#" class="toggle-filter-view"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none;">Hide</span> Filter</a></span>
+    <span class="power-link tiny"><a href="javascript:void(0);" class="toggle-service-meta-data"><span class="service-meta-data">Show</span><span class="service-meta-data" style="display:none;">Hide</span> Service Details</a></span>
+    <span class="filter-link"><a href="javascript:void(0);" class="toggle-filter-view"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none;">Hide</span> Filter</a></span>
     <div id="filter_view_div" style="display:none;">
     
 	<span class="basic_label">Filter services with tags:</span> 
 	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" placeholder="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
-	<a href="#" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
-	<a href="#" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
-	<a href="#" class="manageTagLink">Tag Helper</a>
+	<a href="javascript:void(0);" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
+	<a href="javascript:void(0);" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
+	<a href="javascript:void(0);" class="manageTagLink">Tag Helper</a>
 	
 	</div>
         <%@ include file="/WEB-INF/common/message.jsp" %>
@@ -488,7 +501,7 @@ $(document).ready( function() {
             This will remove tag(s) from each Service, Scenario, and Service Plan. 
             <input type="text" name="filter-tag" id="filter-tag" placeholder="Enter tag(s) here" class=" text ui-widget-content ui-corner-all" />
             <ul class="button-list">
-            <li><a href="#" class="hhButtonRed" style="color:#FFFFFF;" id="delete-tag-button">Remove tag(s) from all things.</a></li>
+            <li><a href="javascript:void(0);" class="hhButtonRed" style="color:#FFFFFF;" id="delete-tag-button">Remove tag(s) from all things.</a></li>
             </ul>
             </p>
         </div>
@@ -529,12 +542,12 @@ $(document).ready( function() {
 							  	<div id="tabs-1">
 				                    <div style="text-align:right;">
 				                        <span class="power-link tiny"><a title="Service Setup - create new service" href="<c:url value="/setup" />">Create a Service</a></span> | 
-										<span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span>
+										<span class="power-link tiny"><a href="javascript:void(0);" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span>
 				                    </div>
 							  	  <c:if test="${!empty servicePlan}">
 							  	  <div class="alert_message tiny" id="servicePlanSetMessge">
 							  	  <span style="float:right;">
-							  	  <a href="#" id="servicePlanSetMessgeLink" class="remove_grey" title="Hide this message." style="text-decoration:none;"><i aria-hidden="true" class="icon-cancel"></i></a>
+							  	  <a href="javascript:void(0);" id="servicePlanSetMessgeLink" class="remove_grey" title="Hide this message." style="text-decoration:none;"><i aria-hidden="true" class="icon-cancel"></i></a>
 							  	  </span>
 							  	  Plan that was just set:  
 							  	  <h2>
@@ -547,9 +560,9 @@ $(document).ready( function() {
 							  	  Click one of the following buttons to set 
 							  	  response type for <strong>each service</strong>.
 								  <p> 
-									  <a id="allresponsetype_0" class="allresponsetype response_not" style="text-decoration:none;" href="#"> Proxy </a>
-									  <a id="allresponsetype_1" class="allresponsetype response_not" style="text-decoration:none; margin-left:2px;margin-right:2px;" href="#"> Static </a>
-									  <a id="allresponsetype_2" class="allresponsetype response_not" style="text-decoration:none;" href="#">Dynamic</a>
+									  <a id="allresponsetype_0" class="allresponsetype response_not" style="text-decoration:none;" href="javascript:void(0);"> Proxy </a>
+									  <a id="allresponsetype_1" class="allresponsetype response_not" style="text-decoration:none; margin-left:2px;margin-right:2px;" href="javascript:void(0);"> Static </a>
+									  <a id="allresponsetype_2" class="allresponsetype response_not" style="text-decoration:none;" href="javascript:void(0);">Dynamic</a>
 								  </p>
 								  </div>
 								  
@@ -564,7 +577,7 @@ $(document).ready( function() {
 				                             	
 				                                <span style="float:right; display:none;" class="service-meta-data">
 				                                
-				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="#"><i aria-hidden="true" class="icon-cancel"></i></a>
+				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="javascript:void(0);"><i aria-hidden="true" class="icon-cancel"></i></a>
 				                                </span>
 				                                
 				                                
@@ -573,9 +586,9 @@ $(document).ready( function() {
 												<div class="toggle-buttons" style="margin-bottom:8px;">
 				                                  <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
 				                                  <span class="toggle_button tiny">
-												      <a class="service-view-master-link" onclick="return true;" href="#" id="togglevalue_<c:out value="${mockservice.id}"/>" title="${mockservice.serviceName}">view</a> |
+												      <a class="service-view-master-link" onclick="return true;" href="javascript:void(0);" id="togglevalue_<c:out value="${mockservice.id}"/>" title="${mockservice.serviceName}">view</a> |
 												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> | 
-												      <a class="tiny_service_duplicate" id="duplicateServiceLink_<c:out value="${mockservice.id}"/>" title="Duplicate this service" href="#">dup'</a>
+												      <a class="tiny_service_duplicate" id="duplicateServiceLink_<c:out value="${mockservice.id}"/>" title="Duplicate this service" href="javascript:void(0);">dup'</a>
 												  </span>
 												  <mockey-tag:conflictFlag service="${mockservice}" conflictInfo="${conflictInfo}"/>
 												  <c:if test="${empty mockservice.scenarios}">
@@ -598,7 +611,7 @@ $(document).ready( function() {
 							    <div id="tabs-2">
 							        
 							        <div style="text-align:right;">
-							        <span class="power-link tiny"><a href="#" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
+							        <span class="power-link tiny"><a href="javascript:void(0);" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span></div>
 								    <div class="scroll">
 								         <c:if test="${empty plans}">
 									      <div class="info_message" id="no-plans-msg"> No plans here - yet! You should make one. </div>
@@ -606,19 +619,19 @@ $(document).ready( function() {
 									    <div id="plan-list">
 									    <c:forEach var="plan" items="${plans}"  varStatus="status">	  
 			                                <div id="plan_${plan.id}" class="parentform" >
-				                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_${plan.id}" title="Delete this plan" href="#"><i aria-hidden="true" class="icon-cancel"></i></a></span>
+				                                <span style="float:right;"><a class="delete-plan remove_grey" id="delete-plan_${plan.id}" title="Delete this plan" href="javascript:void(0);"><i aria-hidden="true" class="icon-cancel"></i></a></span>
 				                                
 				                                <input type="text" style="width:90%;" id="servicePlanName_${plan.id}" class="invisible-focusable invisiblefield" name="servicePlanName_${plan.id}" value="${plan.name}"></input>
 				                                <mockey-tag:statusCheckByServicePlan servicePlan="${plan}"/>
 				                                <div style="padding-top:0.6em;"> 
 					                                  
-				                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="#" title="Enable this plan">Enable Plan</a> &nbsp;
-				                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="#" title="Save settings as this plan.">Save As Plan</a>
+				                                  <a id="set-plan_${plan.id}" class="set-plan response_not" style="text-decoration:none;" href="javascript:void(0);" title="Enable this plan">Enable Plan</a> &nbsp;
+				                                  <a id="save-plan_${plan.id}" class="save-plan response_not" style="text-decoration:none;" href="javascript:void(0);" title="Save settings as this plan.">Save As Plan</a>
 				                                  
 				                                  <div style="padding-top:1em;font-size: 0.8em; align:right;" class="tiny">
 				                                  <hr /> 
 				                                  Default plan upon startup?
-				                                  <a id="save-as-default-plan_${plan.id}" class="save-as-default-plan <c:choose><c:when test="${plan.id eq defaultServicePlanId}">response_green</c:when><c:otherwise>response_not</c:otherwise></c:choose>" style="text-decoration:none;" href="#" title="Set as the default plan upon Mockey startup.">
+				                                  <a id="save-as-default-plan_${plan.id}" class="save-as-default-plan <c:choose><c:when test="${plan.id eq defaultServicePlanId}">response_green</c:when><c:otherwise>response_not</c:otherwise></c:choose>" style="text-decoration:none;" href="javascript:void(0);" title="Set as the default plan upon Mockey startup.">
 				                                  <span id="not-service-plan_${plan.id}" class="not-service-plan on_off" style="<c:if test="${plan.id eq defaultServicePlanId}">display:none;</c:if>">No</span>
 				                                  <span id="yes-service-plan_${plan.id}" class="yes-service-plan on_off" style="<c:choose><c:when test="${plan.id eq defaultServicePlanId}"></c:when><c:otherwise>display:none;</c:otherwise></c:choose>">Yes</span>
 				                                  </a>
@@ -703,7 +716,7 @@ $(document).ready( function() {
                                    
                                    
                                    <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario (${fn:length(mockservice.scenarios)}):</label>
-                                   	<span style="float:right;" class="power-link tiny"><a href="#" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
+                                   	<span style="float:right;" class="power-link tiny"><a href="javascript:void(0);" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
                                    <div >
                                    <div id="scenario-list_${mockservice.id}">
@@ -711,7 +724,7 @@ $(document).ready( function() {
 		                                  <c:when test="${not empty mockservice.scenarios}">
 		                                  <c:forEach var="scenario" begin="0" items="${mockservice.scenarios}" varStatus="status"  >
 		                                    <div class="service-detail-scenario-list-item" id="service-scenario-info_${scenario.id}_${mockservice.id}">
-			                                    <span class="service-meta-data" style="float:right;padding-top:18px; display:none;"><a href="#" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-cancel"></i></a> </span>
+			                                    <span class="service-meta-data" style="float:right;padding-top:18px; display:none;"><a href="javascript:void(0);" id="delete-scenario_${scenario.id}_${mockservice.id}" class="deleteScenarioLink remove_grey"><i aria-hidden="true" class="icon-cancel"></i></a> </span>
 			                                    <div style="padding-top: 0.5em;padding-bottom:0.5em;">
 			                                      <c:choose>
 			                                        <c:when test='${mockservice.defaultScenarioId eq scenario.id}'>
@@ -723,9 +736,9 @@ $(document).ready( function() {
 			                                          <c:set var="on_class" value="hide" />
 			                                        </c:otherwise>
 			                                      </c:choose>
-			                                      <a href="#" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;"><p class="on_off">ON</p></a>
-			                                      <a href="#" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;"><p class="on_off">OFF</p></a>
-			                                      <a href="#" id="view-scenario_${scenario.id}_${mockservice.id}" title="${scenario.scenarioName}" class="viewServiceScenarioLink" style="padding-left:10px;">${scenario.scenarioName}</a>
+			                                      <a href="javascript:void(0);" id="serviceScenarioON_${scenario.id}_${mockservice.id}" class="scenariosByServiceId-on_${mockservice.id} ${on_class} response_set" onclick="return false;"><p class="on_off">ON</p></a>
+			                                      <a href="javascript:void(0);" id="serviceScenarioOFF_${scenario.id}_${mockservice.id}" class="serviceScenarioResponseTypeLink scenariosByServiceId-off_${mockservice.id} ${off_class} response_not" onclick="return false;"><p class="on_off">OFF</p></a>
+			                                      <a href="javascript:void(0);" id="view-scenario_${scenario.id}_${mockservice.id}" title="${scenario.scenarioName}" class="viewServiceScenarioLink" style="padding-left:10px;">${scenario.scenarioName}</a>
 			                                    </div>
 			                                    <div class="service-meta-data" style="display:none;">
 			                                    <mockey-tag:statusCheckByScenario scenario="${scenario}" service="${mockservice}"/>
@@ -791,7 +804,7 @@ $(document).ready( function() {
 			    
 			  </p>
 			  
-			  <c:if test="${not empty filterTag}"><p class="info_message">Hey! You're filtering on '<strong>${filterTag}</strong>' <a style="margin-left:40px;" href="#" class="clear-tag-button">Clear Filter by Tag(s)</a> </p></c:if>
+			  <c:if test="${not empty filterTag}"><p class="info_message">Hey! You're filtering on '<strong>${filterTag}</strong>' <a style="margin-left:40px;" href="javascript:void(0);" class="clear-tag-button">Clear Filter by Tag(s)</a> </p></c:if>
 			  
 			</c:otherwise>
         </c:choose>

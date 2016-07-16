@@ -305,7 +305,11 @@ $(document).ready(function() {
 
       
 			<li <c:if test="${currentTab == 'history'}">class="current"</c:if>>
-				<a href="<c:url value="/history" />">History</a></li>
+				<a href="<c:url value="/history" />">History <span class="sf-sub-indicator"> &#187;</span></a>
+				<ul>
+                <li><a id="chart" href="<c:url value="/servicestatschart" />"> History Stats</a></li>
+                </ul>
+			</li>
 			
 	        <li class="<c:if test="${currentTab == 'help'}">current</c:if>">
 	        <a href="<c:url value="/help" />">Help  <span class="sf-sub-indicator"> &#187;</span></a>
