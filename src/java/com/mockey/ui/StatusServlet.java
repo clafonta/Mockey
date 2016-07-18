@@ -27,6 +27,7 @@
  */
 package com.mockey.ui;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
+import com.mockey.storage.xml.MockeyXmlFileManager;
 
 /**
  * Directs you to the "Hey, I'm alive" response, useful for automation to ensure
@@ -59,10 +61,15 @@ public class StatusServlet extends HttpServlet {
 
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		resp.setHeader("Content-Encoding", "UTF-8");
+		resp.setContentType("text/json; charset=UTF-8");
+		
+		File locationOfServicesBeingWritten = MockeyXmlFileManager.getInstance().getBasePathFile();
 		RequestDispatcher dispatch = req.getRequestDispatcher("status.jsp");
 		Long timeOfCreation = store.getTimeOfCreation();
 		String timeOfCreationString = formatter.format(new Date(timeOfCreation)); // .parse(lastvisit);
 		req.setAttribute("since", timeOfCreationString );
+		req.setAttribute("repoPath", locationOfServicesBeingWritten.getAbsolutePath() );
 		dispatch.forward(req, resp);
 	}
 

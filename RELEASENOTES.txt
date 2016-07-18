@@ -1,6 +1,28 @@
 ===============================
+July 17, 2016. Version: 2.0.80
+===============================
+
+
+-----------------------------------------------------------------------------
+CHANGES:
+-----------------------------------------------------------------------------
+
+C1. Updated navigation on home page. Proper handling of back/forward buttons 
+in the browser to ensure proper data is displayed, including link to hide/show
+home page details. 
+
+-----------------------------------------------------------------------------
+ADDITIONS:
+-----------------------------------------------------------------------------
+
+A1. Addition of a stats page, includes a quick filter and export to JSON or 
+CSV to help analyze 'number of service calls' and timestamps made to Mockey.
+
+
+===============================
 March 15, 2016. Version: 2.0.73
 ===============================
+
 
 -----------------------------------------------------------------------------
 CHANGES:

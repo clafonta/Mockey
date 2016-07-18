@@ -483,7 +483,7 @@ $(document).ready( function() {
  });
 </script>
     <div id="main">
-    <span class="power-link tiny"><a href="javascript:void(0);" class="toggle-service-meta-data"><span class="service-meta-data">Show</span><span class="service-meta-data" style="display:none;">Hide</span> Service Details</a></span>
+    <span class="power-link tiny"><a href="javascript:void(0);" class="toggle-service-meta-data"><span class="service-meta-data">Show Service Details</span></a><span class="service-meta-data" style="display:none;"><a href="<c:url value="/home" />">Hide Service Details</a></span> </span>
     <span class="filter-link"><a href="javascript:void(0);" class="toggle-filter-view"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none;">Hide</span> Filter</a></span>
     <div id="filter_view_div" style="display:none;">
     

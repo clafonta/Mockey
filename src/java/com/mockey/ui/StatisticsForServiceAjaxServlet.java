@@ -29,6 +29,7 @@ package com.mockey.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mockey.model.FulfilledClientRequest;
@@ -47,70 +47,102 @@ import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 /**
- * Returns JSON of the fulfilled request, designed to be consumed by an
- * AJAX call.
+ * Returns JSON of the fulfilled request, designed to be consumed by an AJAX
+ * call.
  * 
  */
 public class StatisticsForServiceAjaxServlet extends HttpServlet {
 
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 920822164573080022L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static Logger logger = Logger.getLogger(StatisticsForServiceAjaxServlet.class);
+	private static final SimpleDateFormat DATE_FORMATTER_FOR_EXCEL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    /**
-     * 
-     */
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	/**
+	 * 
+	 */
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Long serviceId = null;
-        JSONObject jsonObject = new JSONObject();
-        try {
-        	
-        	List<FulfilledClientRequest> historyOfServiceRequests =null;
-        	if(req.getParameter("serviceId")!=null){
-        		serviceId = new Long(req.getParameter("serviceId"));
-        		historyOfServiceRequests = store.getFulfilledClientRequestsForService(serviceId);
-        	}else {
-        		historyOfServiceRequests = store.getFulfilledClientRequests();
-        	}
-                        
-            
-            if(historyOfServiceRequests!=null && historyOfServiceRequests.size() > 0){
-            	jsonObject.put("numberOfRequests", historyOfServiceRequests.size());
-            	List<ServiceStat> statList = new ArrayList<ServiceStat>();
-            	for(FulfilledClientRequest requestInstance : historyOfServiceRequests ){
-            		ServiceStat stat = new ServiceStat();
-            		stat.setScenarioName(requestInstance.getScenarioName());
-            		stat.setServiceName(requestInstance.getServiceName());
-            		stat.setTime(requestInstance.getTime());
-            		statList.add(stat);
-            		
-            	}
-            	jsonObject.put("history", statList);
-            }
-            
-            
+		try {
 
+			List<FulfilledClientRequest> historyOfServiceRequests = store.getFulfilledClientRequests();
+			List<ServiceStat> statList = new ArrayList<ServiceStat>();
 
-        } catch (Exception e) {
-        	 try {
-				jsonObject.put("error", ""+"Sorry, history for this service (service ID ="+serviceId
-						 +") is not available.");
-			} catch (JSONException e1) {
-				logger.error("Unable to create JSON", e1);
+			if (historyOfServiceRequests != null && historyOfServiceRequests.size() > 0) {
+
+				for (FulfilledClientRequest requestInstance : historyOfServiceRequests) {
+					ServiceStat stat = new ServiceStat();
+					stat.setScenarioName(requestInstance.getScenarioName());
+					stat.setServiceName(requestInstance.getServiceName());
+					stat.setTime(requestInstance.getTime());
+					stat.setCount(1);
+					statList.add(stat);
+				}
+
 			}
-        } 
 
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-		out.println(jsonObject.toString());
-		out.flush();
-		out.close();
+			// What to return? JSON or CSV?
+			String format = req.getParameter("format");
+			if (format != null && "csv".equalsIgnoreCase(format.trim())) {
 
-    }
+				// CSV
+				resp.setHeader("Content-Encoding", "UTF-8");
+				resp.setContentType("text/csv; charset=UTF-8");
+				// resp.setHeader("Content-Disposition","inline;
+				// filename=serviceStats.csv");
+				StringBuffer sb = getCSV(statList);
+				PrintWriter out = resp.getWriter();
+
+				out.println(sb.toString());
+				out.flush();
+				out.close();
+
+			} else {
+				resp.setHeader("Content-Encoding", "UTF-8");
+				resp.setContentType("text/json; charset=UTF-8");
+				// BUILD a JSON response.
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("numberOfRequests", historyOfServiceRequests.size());
+				jsonObject.put("history", statList);
+
+				PrintWriter out = resp.getWriter();
+
+				out.println(jsonObject.toString());
+				out.flush();
+				out.close();
+			}
+
+		} catch (Exception e) {
+
+			logger.error("Unable to create JSON", e);
+
+		}
+
+	}
+
+	private StringBuffer getCSV(List<ServiceStat> statList) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("Service name");
+		sb.append(",");
+		sb.append("Scenario name");
+		sb.append(",");
+		sb.append("Timestamp");
+		sb.append("\n");
+
+		for (ServiceStat stat : statList) {
+			sb.append(stat.getServiceName());
+			sb.append(",");
+			sb.append(stat.getScenarioName());
+			sb.append(",");
+			sb.append(DATE_FORMATTER_FOR_EXCEL.format(stat.getTime()));
+			sb.append("\n");
+		}
+		return sb;
+	}
+	
+	
 
 }

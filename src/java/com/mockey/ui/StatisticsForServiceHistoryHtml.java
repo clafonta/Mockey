@@ -30,7 +30,6 @@ package com.mockey.ui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,43 +62,47 @@ public class StatisticsForServiceHistoryHtml extends HttpServlet {
 	 */
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		Long serviceId = null;
-		Date startDate = new Date();
-		Date endDate = new Date();
-		
-		
 		try {
 
-			// #1) Check for a filter of Service ID
-			List<FulfilledClientRequest> historyOfServiceRequests = null;
-			if (req.getParameter("serviceId") != null) {
-				serviceId = new Long(req.getParameter("serviceId"));
-				historyOfServiceRequests = store.getFulfilledClientRequestsForService(serviceId);
-			} else {
-				historyOfServiceRequests = store.getFulfilledClientRequests();
-			}
-			
-			// #2) Get default start/end dates by going through the history 
-			for (FulfilledClientRequest requestInstance : historyOfServiceRequests) {
-				if(requestInstance.getTime().before(startDate)){
-					startDate = requestInstance.getTime();
+			// #1) Set default start/end
+			// End date/time is NOW + 1 minute.
+			// Start date/time is the earliest record of a Mockey response.
+			Date rangeEndDate = ServiceStatHelper.getNowPlusOneMinute();
+			Date rangeStartDate = new Date();
+
+			// #2) Go through history, and get the oldest known time from past
+			// fulfilled request, and make this the range start.
+			List<FulfilledClientRequest> historyOfServiceRequests = store.getFulfilledClientRequests();
+			if (historyOfServiceRequests.size() > 0) {
+				for (FulfilledClientRequest requestInstance : historyOfServiceRequests) {
+					rangeStartDate = ServiceStatHelper.getEarlierTime(rangeStartDate, requestInstance.getTime());
 				}
+				req.removeAttribute("statFlag");
+			} else {
+				// Set flag that there are no request.
+				req.setAttribute("statFlag", "nostats");
 			}
-			
-			
 
-			if (historyOfServiceRequests != null && historyOfServiceRequests.size() > 0) {
+			// #3) Check if 'filter' dates are given. If not, then they default
+			// to range dates.
+			String filterStartAsDate = req.getParameter("filterStartDate");
+			String filterEndAsDate = req.getParameter("filterEndDate");
+			Date filterStartDate = ServiceStatHelper.getDateFromString(filterStartAsDate, rangeStartDate);
+			Date filterEndDate = ServiceStatHelper.getDateFromString(filterEndAsDate, rangeEndDate);
 
-				List<ServiceStat> statList = getServiceHitCount(historyOfServiceRequests, startDate, endDate);
-				req.setAttribute("statList", statList);
-				req.setAttribute("startDate", startDate);
-				req.setAttribute("endDate", endDate);
+			// #4) Increment the number of Service visit count.
+			Map<String, ServiceStat> statMap = buildFilteredServiceHitCountMap(filterStartDate, filterEndDate);
 
-			}
+			// #5) Set sate.
+			req.setAttribute("statList", new ArrayList<ServiceStat>(statMap.values()));
+			req.setAttribute("rangeStartDate", ServiceStatHelper.getStringFromDate(rangeStartDate));
+			req.setAttribute("rangeEndDate", ServiceStatHelper.getStringFromDate(rangeEndDate));
+			req.setAttribute("filterStartDate", ServiceStatHelper.getStringFromDate(filterStartDate));
+			req.setAttribute("filterEndDate", ServiceStatHelper.getStringFromDate(filterEndDate));
 
 		} catch (Exception e) {
 			try {
-				Util.saveErrorMessage("Sorry, history for this service (service ID =" + serviceId, req);
+				Util.saveErrorMessage("Sorry, a problem occurred.", req);
 
 			} catch (Exception e1) {
 				logger.error("Unable to create JSON", e1);
@@ -113,29 +116,22 @@ public class StatisticsForServiceHistoryHtml extends HttpServlet {
 
 	/**
 	 * 
-	 * @return a List of service hit counts
+	 * @param filterStartDate
+	 * @param filterEndDate
+	 * @return Map of ServiceStats, with count incremented if timestamp is
+	 *         between and inclusive of filter dates
 	 */
-	private List<ServiceStat> getServiceHitCount(List<FulfilledClientRequest> historyOfServiceRequests, Date startDate, Date endDate) {
-		
-		Map<String, ServiceStat> statMap = new HashMap<String, ServiceStat>();
+	private Map<String, ServiceStat> buildFilteredServiceHitCountMap(Date filterStartDate, Date filterEndDate) {
 
-		for (FulfilledClientRequest requestInstance : historyOfServiceRequests) {
-			ServiceStat stat = statMap.get(requestInstance.getServiceName()); //
-			if (stat == null) {
-				stat = new ServiceStat();
-			}
-			stat.setScenarioName(requestInstance.getScenarioName());
-			stat.setServiceName(requestInstance.getServiceName());
-			// We only update the count if in the timerange. 
-			Date timeOfRequest = requestInstance.getTime();
-			if(timeOfRequest!=null && timeOfRequest.after(startDate) && startDate.before(endDate)) {
-			    // In between the range?
-				stat.setCount(stat.getCount() + 1);
-			}
-			statMap.put(stat.getServiceName(), stat);
-		}
-		List<ServiceStat> statList = new ArrayList<ServiceStat>(statMap.values());
-		return statList;
+		// #1 - Build a list of all possible Service names
+		Map<String, ServiceStat> statMap = ServiceStatHelper.getMapListOfAllServices(store.getServices());
+
+		// #2 - Only increment a service stat count to those Fulfilled Requests
+		// within the matching range time.
+		statMap = ServiceStatHelper.incrementServiceStatCount(statMap, store.getFulfilledClientRequests(),
+				filterStartDate, filterEndDate);
+
+		return statMap;
 
 	}
 

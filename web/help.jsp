@@ -642,7 +642,9 @@ This definition will work for either <span class="code_text">http://127.0.0.1:80
 	    <a href="#status" name="status"></a>
 	    <h2>Status</h2>
 	    <p>
-	    There's a 'status' URL that will give you information on Mockey. See <a href="<c:url value="/status" />">status</a>.
+	    There's a 'status' URL that will give you information on Mockey. See <a href="<c:url value="/status" />">status</a>. You should 
+	    use it if you need to check if Mockey is running, time of start, and location of where it's writing information to. This is 
+	    helpful for your continuous integration/testing server.
 	    
 	    </p>
 	</div>
