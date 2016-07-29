@@ -1,4 +1,5 @@
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="mockey" uri="/WEB-INF/mockey.tld" %>
 <c:set var="pageTitle" value="History" scope="request" />
 <c:set var="currentTab" value="history" scope="request" />
@@ -211,8 +212,10 @@ $(document).ready(function() {
     </c:if>
     <c:choose>
         <c:when test="${!empty requests}">
-        	<c:if test="${requests.size() > 100}">
-                <p style="font-size:1.2em; color: red;"><span>Whoa!</span> There are too many records to display them all (<strong>${requests.size()} records</strong>). Here are a few... </p>
+        
+        
+        	<c:if test="${fn:length(requests) > 100}">
+                <p style="font-size:1.2em; color: red;"><span>Whoa!</span> There are too many records to display them all (<strong>${fn:length(requests)} records</strong>). Here are a few... </p>
             </c:if>
             <c:forEach var="request" items="${requests}" varStatus="status"> 
             	

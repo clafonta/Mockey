@@ -38,8 +38,8 @@ $(document).ready( function() {
 		</ul>
 	  	<div id="tabs-1">
 		  	<form style="border:none;"  action="<c:url value="/upload"/>" method="POST" enctype="multipart/form-data">
-		  	Local file<input class="text ui-corner-all ui-widget-content" type="file" name="file" size="50"/>
-		  	Tag it (Optional) <input placeholder="Add tags here, seperated with spaces. Optional." class="text ui-corner-all ui-widget-content" type="test" name="taglist" size="50"/>
+		  	<p>Local file<input class="text ui-corner-all ui-widget-content" type="file" name="file" size="50"/></p>
+		  	<p>Tag it (Optional) <input placeholder="Add tags here, seperated with spaces. Optional." class="text ui-corner-all ui-widget-content" type="test" name="taglist" size="50"/></p>
 		  	<p align="right"><button id="upload-file" name="viaLocal">Upload local definitions file</button></p>
 		  	</form>
 	  	</div>
