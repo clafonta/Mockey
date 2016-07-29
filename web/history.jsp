@@ -211,7 +211,12 @@ $(document).ready(function() {
     </c:if>
     <c:choose>
         <c:when test="${!empty requests}">
-            <c:forEach var="request" items="${requests}" varStatus="status">            
+        	<c:if test="${requests.size() > 100}">
+                <p style="font-size:1.2em; color: red;"><span>Whoa!</span> There are too many records to display them all (<strong>${requests.size()} records</strong>). Here are a few... </p>
+            </c:if>
+            <c:forEach var="request" items="${requests}" varStatus="status"> 
+            	
+                <c:if test="${status.count < 101}">
                 <div id="fulfilledRequest_${request.id}" class="parentform" style="padding: 0.2em 0.5em; 0.2em 0.5em;">
                    <c:url value="/home" var="serviceUrl">
                           <c:param name="serviceId" value="${request.serviceId}" />                                                                               
@@ -306,6 +311,8 @@ $(document).ready(function() {
                      </div>
                    </div>                   
                 </div>
+                </c:if>
+               
             </c:forEach>
         </c:when>
         <c:otherwise>

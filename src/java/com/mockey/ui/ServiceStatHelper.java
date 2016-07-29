@@ -152,6 +152,18 @@ public class ServiceStatHelper {
 
 			if (ServiceStatHelper.isTimeInBetweenStartAndEnd(timeOfRequest, filterStartDate, filterEndDate)) {
 				stat.setCount(stat.getCount() + 1);
+				
+				// Is this the earliest stat hit?
+				Date earliestTimeSeenFromThisService = stat.getTime();
+				Date timeOfThisRequest = new Date(timeOfRequest.getTime()); 
+				
+				if(earliestTimeSeenFromThisService==null){
+					stat.setTime(timeOfThisRequest);
+				}else if(earliestTimeSeenFromThisService.after(timeOfThisRequest)){
+					stat.setTime(timeOfThisRequest);
+				}else {
+					// Do nothing, we have the earliest time.
+				}
 			}
 			statMap.put(stat.getServiceName(), stat);
 		}

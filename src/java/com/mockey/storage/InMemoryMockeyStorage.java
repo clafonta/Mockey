@@ -635,7 +635,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	private void initHistoryStore() {
 		historyStore = new OrderedMap<FulfilledClientRequest>();
-		historyStore.setMaxSize(new Integer(25));
+		//historyStore.setMaxSize(new Integer(5000));
 	}
 
 	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {

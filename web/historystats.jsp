@@ -37,7 +37,7 @@ $(document).ready(function(){
     	    range: true,
     	    min: min_val,
     	    max: max_val,
-    	    step: 10,
+    	    step: 1,
     	    values: [min_filter_val, max_filter_val],
     	    slide: function (e, ui) {
     	        var dt_cur_from = new Date(ui.values[0]*1000); //.format("yyyy/mm/dd hh:mm:ss");
@@ -93,6 +93,8 @@ $(document).ready(function(){
 </script>	  
 <div id="main">
     <h1>History Stats</h1>
+    
+   
     <p>
     This chart shows the number of Service calls, per Service made during a span of time.  
     Not what you need? Then here's a <a href="<c:url value="/servicestats"/>" >JSON format</a> 
@@ -104,6 +106,19 @@ $(document).ready(function(){
     </c:if>
     
     <c:if test="${empty statFlag}">
+    	<p>
+		    <table class="stat_table" style="min-width:400px;">
+		    	<thead>
+		    	<tr><td>Service</td><td>Count</td><td>Earliest Start Time</td></tr>
+		    	</thead>
+		    	<tbody>
+		    	<c:forEach var="stat" items="${statList}"  varStatus="status">
+							<tr><td>${stat.serviceName}</td><td>${stat.count}</td><td>${stat.timeAsString}</td></tr>
+				</c:forEach>
+		    	
+		    	</tbody>
+		    </table>
+		</p>
 	    <div id="time-range" style="max-width:600px;">		   
 		    <div class="sliders_step1">
 		        

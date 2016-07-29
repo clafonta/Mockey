@@ -27,38 +27,57 @@
  */
 package com.mockey.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ServiceStat {
+
+	// Example: 2014/11/01 00:34:44
+	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	private String serviceName;
 	private Date time;
 	private String scenarioName;
 	private int count = 0;
-	
+
 	public int getCount() {
 		return count;
 	}
+
 	public void setCount(int count) {
 		this.count = count;
 	}
+
 	public String getServiceName() {
 		return serviceName;
 	}
+
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
 	}
+
+	public String getTimeAsString() {
+		if (this.getTime() != null) {
+			return DATE_FORMATTER.format(this.getTime());
+		} else {
+			return "";
+		}
+	}
+
 	public Date getTime() {
 		return time;
 	}
+
 	public void setTime(Date time) {
 		this.time = time;
 	}
+
 	public String getScenarioName() {
 		return scenarioName;
 	}
+
 	public void setScenarioName(String scenarioName) {
 		this.scenarioName = scenarioName;
 	}
-	
+
 }

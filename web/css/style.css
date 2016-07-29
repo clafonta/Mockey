@@ -104,6 +104,11 @@ div.table_of_contents {
     padding: 0.2em 2em 2em 2em;
 }
 
+table.stat_table {border: thin solid #bdbdbd; background: #f1f1f0; padding: 8px;}
+table.stat_table thead {border-style: none; padding: 0px;font-weight:700;}
+table.stat_table th{padding: 0px;border-style: none;text-align: right;}
+table.stat_table tbody td {border-top: 1px solid #ccc; padding-top:2px; }
+
 div.table_of_contents ul {
     list-style: none;
     margin-left: 0;
@@ -242,7 +247,8 @@ div#infotext, div#servicename, div#password {position:relative; float:left; marg
 label.overlabel {color:#999;}
 label.overlabel-apply { position:absolute;top:3px;left:5px; z-index:1;  color:#999;}
 table.basic {border: thin solid #bdbdbd; background: #f1f1f0;}
-table.basic th {padding: 0px;border-style: none;text-align: right;}
+table.basic thead {border-style: none; padding: 0px;font-weight:700;}
+table.basic th{padding: 0px;border-style: none;text-align: right;}
 table.basic td {border-style: none; padding: 0px;}
 table.example {background-color:#E5EECC;background-image:url(images/bgfadegreen.gif);background-repeat:repeat-x;border:1px solid #D4D4D4;color:#000000;padding:8px 10px;}
 table.simple{border-collapse: collapse;border-spacing: 0px; }
