@@ -150,6 +150,9 @@ public class JettyRunner {
 		log4JProperties.load(log4jInputStream);
 		PropertyConfigurator.configure(log4JProperties);
 
+		// To solve: http://stackoverflow.com/questions/3861455/form-too-large-exception
+		// Tried everything else, but only this worked. 
+		System.setProperty("org.eclipse.jetty.server.Request.maxFormContentSize", "500000000");
 		Server server = new Server(port);
 
 		WebAppContext webapp = new WebAppContext();
@@ -163,8 +166,10 @@ public class JettyRunner {
 		contexts.addHandler(resourceHandler);
 
 		contexts.addHandler(webapp);
+		
 
 		server.setHandler(contexts);
+		
 
 		server.start();
 
