@@ -27,26 +27,33 @@ What is Mockey not good at?
 
 Getting Started - Quick
 ====================
-A pre-built jar: <https://github.com/clafonta/Mockey/wiki/Downloads>
+Pre-built jars are located here: <https://github.com/clafonta/Mockey/wiki/Downloads>
 
-To build one locally, see the following. 
+To start: 
+> java -jar Mockey.jar
 
-Via command line, build Mockey via Ant. 
- > ant dist 
+Mockey.jar is an executable jar file, which will start Mockey within a Jetty container and fire up your browser pointing at the defaults (port 8080, /home). You may need to 
+'click' refresh on your Browser to see the home page.  
+
+
+To build one locally, you'll need Ant and then do the following:  
+> cd MOCKEY_HOME // root directory of where you checked out Mockey.
+> ant dist 
 
 
 After a successful build, do the following to start the app:
 > cd dist 
+> java -jar Mockey.jar
 
+For startup options: 
 > java -jar Mockey.jar --help
 
-This will start Mockey (within a Jetty container) and fire up your browser pointing at the defaults (port 8080, /home). Use --help for more options. 
-
-For Tomcat users, you'll need to build the app:
+For those who prefer to run Mockey in a Tomcat instance, you'll need to build the app:
 > ant webapptomcat
 
 This will build a WAR file, which you can drop into Tomcat and run. You can set the location of Mockey definition file repot as follows: 
 > export JAVA_OPTS="-DmockeyDefinitionsRepoHome=/Users/your-username/some-directory"
 
-When Mockey starts up in Tomcat, it will look for the 'mockeyDefinitionsRepoHome' property and read write needed files in that directory. If not defined, it will read write files in the default user directory that Tomcat is started with.
+When Mockey starts up in Tomcat, it will look for the 'mockeyDefinitionsRepoHome' property and read write needed files in that directory. 
+If not defined, it will read write files in the default user directory that Tomcat is started with.
 
