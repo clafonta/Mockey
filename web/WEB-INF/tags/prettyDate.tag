@@ -6,4 +6,7 @@
 <%Calendar now = Calendar.getInstance();
 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 if(lastVisit!=null && lastVisit.trim().length() > 1 ){ Date time = new Date(new Long(lastVisit));%><%=formatter.format(time)%><%}
+else {
+	%> <p class="code_text help_optional">Never visited.</p><%
+}
 %>

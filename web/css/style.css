@@ -8,6 +8,8 @@ html, body{ padding-top: 0px; font: 0.9em sans-serif; height:100%;font-weight:10
         
 }
 .big{font-size: 2em;}
+.field-label-title {font-size:1.4em; font-weight: 500;}
+.field-label-helptxt {font-weight: 200; color: #808080;}
 .tiny, .tinyfieldset{font-size: 90%;}
 .tinyfieldset {padding:0.1em 0 2em 0; }
 .setplan{border: thin solid #bdbdbd; margin-top:0.8em; padding:0.8em; }
@@ -102,6 +104,9 @@ div.table_of_contents {
 }
 .help_section, .help_section_zebra {
     padding: 0.2em 2em 2em 2em;
+}
+.help_optional {
+	color:#FF0084;
 }
 
 table.stat_table {border: thin solid #bdbdbd; background: #f1f1f0; padding: 8px;}
@@ -408,7 +413,7 @@ width:280px;
 
 }
 
-fieldset { padding:0; border:0; margin-top:25px; max-width: 850px; margin: 0 auto; padding-top: 20px;}
+fieldset { padding:0; border:0; margin-top:25px; max-width: 850px; margin: 0 auto;}
 div#users-contain { width: 350px; margin: 20px 0; }
 div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
@@ -449,6 +454,7 @@ padding: 8px;
 .configuration-info a:hover {text-decoration: underline;}
 
 .power-link a:link {color:#FF0084;}
+.power-link a:link span {color:#FF0084;}
 .power-link a:visited {text-decoration: none;color:#FF0084;}
 .power-link a:active {text-decoration: none;color:#FF0084;}
 .power-link a:hover {text-decoration: underline; color:#FF0084;}
