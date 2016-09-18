@@ -38,6 +38,7 @@ Mockey.jar is an executable jar file, which will start Mockey within a Jetty con
 
 To build one locally, you'll need Ant and then do the following:  
 > cd MOCKEY_HOME // root directory of where you checked out Mockey.
+
 > ant dist 
 
 
