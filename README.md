@@ -44,6 +44,7 @@ To build one locally, you'll need Ant and then do the following:
 
 After a successful build, do the following to start the app:
 > cd dist 
+
 > java -jar Mockey.jar
 
 For startup options: 
