@@ -483,17 +483,24 @@ $(document).ready( function() {
  });
 </script>
     <div id="main">
-    <span class="power-link tiny"><a href="javascript:void(0);" class="toggle-service-meta-data"><span class="service-meta-data">Show Service Details</span></a><span class="service-meta-data" style="display:none;"><a href="<c:url value="/home" />">Hide Service Details</a></span> </span>
-    <span class="filter-link"><a href="javascript:void(0);" class="toggle-filter-view"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none;">Hide</span> Filter</a></span>
-    <div id="filter_view_div" style="display:none;">
     
-	<span class="basic_label">Filter services with tags:</span> 
-	<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" placeholder="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
-	<a href="javascript:void(0);" class="clear-tag-button remove_grey" id="" style="margin-left:-20px;">X</a> 
-	<a href="javascript:void(0);" id="filter-tag-update-button" class="hhButton" style="margin-left:10px;">Apply Filter</a> 
-	<a href="javascript:void(0);" class="manageTagLink">Tag Helper</a>
+    <span class="filter-link"><a href="javascript:void(0);" class="toggle-filter-view"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none;">Hide</span> Filter</a></span>
+    <div id="filter_view_div" style="display:none;margin-top: 5px;">
+    
+		<span class="basic_label">Filter services with tags:</span> (<a href="javascript:void(0);" class="manageTagLink power-link tiny">Tag Helper</a>) <br />
+		<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" placeholder="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
+		<button id="filter-tag-update-button" class="hhButton" style="width: 80px;">Filter</button> 
+		<br />
+		
+		<div style="margin-top:5px;">
+	    	<span class="basic_label">Search for services or scenarios by name:</span><br />
+			  <input type="text" style="width:500px;" value="${term}" placeholder="Service or Senario name" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term">
+			  <button class="hhButton" id="search_me" style="width: 80px;">Search</button>
+			  
+	    </div> 
 	
 	</div>
+	<span class="power-link tiny"><a href="javascript:void(0);" class="toggle-service-meta-data"><span class="service-meta-data">Show Service Details</span></a><span class="service-meta-data" style="display:none;"><a href="<c:url value="/home" />">Hide Service Details</a></span> </span>
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <!-- SERVICE PLAN CREATE DIALOG -->
         <div id="dialog-tag-manage" title="Tag Helper">

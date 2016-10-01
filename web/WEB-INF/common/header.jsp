@@ -314,7 +314,6 @@ $(document).ready(function() {
 	        <li class="<c:if test="${currentTab == 'help'}">current</c:if>">
 	        <a href="<c:url value="/help" />">Help  <span class="sf-sub-indicator"> &#187;</span></a>
 	            <ul>
-                <li><a id="flush" href="#" class="toggle-header-search"><i class="icon-search"></i> Search</a></li>
                 <li <c:if test="${currentTab == 'api'}">class="current"</c:if>><a title="Configuration API"
                 href="<c:url value="/service_api" />"><i aria-hidden="true" class="icon-cog"></i>&nbsp;Configuration API</a></li>
                 <li <c:if test="${currentTab == 'console'}">class="current"</c:if>><a title="Debug Console"
@@ -346,11 +345,7 @@ $(document).ready(function() {
   <div style="clear:both;"/>
   </div>
 
-    <div id="header_search_wrapper" style="display:none;">
-    	<div id="" >
-		  <input type="text" value="${term}" placeholder="Search" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term"><button id="search_me" style="margin-left:5px;">Search</button> <a href="#" class="toggle-header-search power-link tiny">Close</a>
-		  </div>
-    </div> 
+    
 
 	<div style="clear:both;"/>
 		

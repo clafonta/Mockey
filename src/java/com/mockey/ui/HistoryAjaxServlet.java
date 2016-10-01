@@ -44,8 +44,8 @@ import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 
 /**
- * Returns JSON of the fulfilled request, designed to be consumed by an
- * AJAX call.
+ * Returns JSON of the fulfilled request, designed to be consumed by an AJAX
+ * call.
  * 
  */
 public class HistoryAjaxServlet extends HttpServlet {
@@ -54,48 +54,65 @@ public class HistoryAjaxServlet extends HttpServlet {
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static Logger logger = Logger.getLogger(HistoryAjaxServlet.class);
 
-    /**
-     * 
-     */
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	/**
+	 * 
+	 */
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Long fulfilledRequestId = null;
-        JSONObject jsonObject = new JSONObject();
-        try {
+		Long fulfilledRequestId = null;
+		JSONObject jsonObject = new JSONObject();
+		PrintStream out = null;
 
-            fulfilledRequestId = new Long(req.getParameter("conversationRecordId"));
-            FulfilledClientRequest fCRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
-            
-            jsonObject.put("conversationRecordId", ""+fulfilledRequestId);
-            jsonObject.put("serviceId", ""+fCRequest.getServiceId());
-            jsonObject.put("serviceName", fCRequest.getServiceName());
-            jsonObject.put("requestUrl", ""+fCRequest.getRawRequest());
-            jsonObject.put("requestHeaders", ""+fCRequest.getClientRequestHeaders());
-            jsonObject.put("requestParameters", ""+fCRequest.getClientRequestParameters());
-            jsonObject.put("requestBody", ""+fCRequest.getClientRequestBody());
-            jsonObject.put("requestCookies", ""+fCRequest.getClientRequestCookies());
-            jsonObject.put("responseCookies", ""+fCRequest.getClientResponseCookies());
-            jsonObject.put("responseStatus", ""+fCRequest.getResponseMessage().getHttpResponseStatusCode());
-            jsonObject.put("responseHeader", ""+fCRequest.getResponseMessage().getHeaderInfo());
-            jsonObject.put("responseBody", ""+fCRequest.getResponseMessage().getBody());
-            jsonObject.put("responseScenarioName", ""+fCRequest.getScenarioName());
-            jsonObject.put("responseScenarioTags", ""+fCRequest.getScenarioTagsAsString());
+		try {
 
+			fulfilledRequestId = new Long(req.getParameter("conversationRecordId"));
+			FulfilledClientRequest fCRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
 
-        } catch (Exception e) {
-        	 try {
-				jsonObject.put("error", ""+"Sorry, history for this conversation (fulfilledRequestId="+fulfilledRequestId
-						 +") is not available.");
+			jsonObject.put("conversationRecordId", "" + fulfilledRequestId);
+			jsonObject.put("serviceId", "" + fCRequest.getServiceId());
+			jsonObject.put("serviceName", fCRequest.getServiceName());
+			jsonObject.put("requestUrl", "" + fCRequest.getRawRequest());
+			jsonObject.put("requestHeaders", "" + fCRequest.getClientRequestHeaders());
+			jsonObject.put("requestParameters", "" + fCRequest.getClientRequestParameters());
+			jsonObject.put("requestBody", "" + fCRequest.getClientRequestBody());
+			jsonObject.put("requestCookies", "" + fCRequest.getClientRequestCookies());
+			jsonObject.put("responseCookies", "" + fCRequest.getClientResponseCookies());
+			jsonObject.put("responseStatus", "" + fCRequest.getResponseMessage().getHttpResponseStatusCode());
+			jsonObject.put("responseHeader", "" + fCRequest.getResponseMessage().getHeaderInfo());
+			jsonObject.put("responseBody", "" + fCRequest.getResponseMessage().getBody());
+			jsonObject.put("responseScenarioName", "" + fCRequest.getScenarioName());
+			jsonObject.put("responseScenarioTags", "" + fCRequest.getScenarioTagsAsString());
+
+			resp.setContentType("application/json");
+
+			out = new PrintStream(resp.getOutputStream());
+			Util.logMemoryFootprint();
+			out.println(jsonObject.toString());
+			out.close();
+
+		} catch (Throwable e) {
+			try {
+				logger.error("Unable to create response: "+ e.getMessage(), e);
+				jsonObject.put("error", "" + "Sorry, history for this conversation (fulfilledRequestId="
+						+ fulfilledRequestId + ") is not available.");
+				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				out = new PrintStream(resp.getOutputStream());
+
+				out.println("System error");
+				out.close();
 			} catch (JSONException e1) {
 				logger.error("Unable to create JSON", e1);
 			}
-        } 
+		} finally {
+			try {
+				if (out != null) {
+					out.close();
+				}
+			} catch (Exception e) {
 
-        resp.setContentType("application/json");
+			}
+		}
 
-        PrintStream out = new PrintStream(resp.getOutputStream());
-
-        out.println(jsonObject.toString());
-    }
+	}
 
 }

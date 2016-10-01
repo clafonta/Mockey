@@ -108,13 +108,20 @@ $(document).ready(function() {
 	$('.viewFulfilledRequestLink').each( function() {
         $(this).click( function() {
             var requestId = this.id.split("_")[1];  
-            $(this).toggle();       
-            $('#hideFulfilledRequest_'+requestId).toggle();
+            var element = this;
+            var timeoutValue = 50000;
+            $('#spinner_'+requestId).toggle();
+            $(element).toggle(); 
             $.ajax({
                 type: 'GET',
                 dataType: 'json',
+                timeout: timeoutValue, 
                 url: '<c:url value="/conversation/record"/>?&conversationRecordId='+requestId,
                 success: function(data) {
+                	
+                        
+                  $('#hideFulfilledRequest_'+requestId).toggle();
+                  $('#spinner_'+requestId).hide();
                   $('#requestUrl_'+requestId).val(data.requestUrl);
                   $('#requestParameters_'+requestId).val(data.requestParameters);
                   $('#requestHeaders_'+requestId).val(data.requestHeaders);
@@ -128,7 +135,12 @@ $(document).ready(function() {
                   $('#responseCookies_'+requestId).val(data.responseCookies);
                   $('#letmesee_'+requestId).show(); 
                   
-                }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                	$('#spinner_'+requestId).hide();
+                	$(element).show(); 
+                    alert("Status: " + textStatus + ". System error or possibly taking longer than " +timeoutValue/1000 + " seconds. Check logs for insight." ); 
+                } 
             });
         });
     });
@@ -236,7 +248,9 @@ $(document).ready(function() {
                      </div>
                      <a href="#" id="viewRequestInspection_${request.id}" class="viewRequestInspectionLink hhButtonRed" onclick="return false;">info</a>
                      </c:if>
+                     <span id="spinner_${request.id}" style="margin-right:5px; display:none;"><img src="<c:url value="/images/ajax-loader.gif" />"/> </span>
                      <a href="#" id="viewFulfilledRequest_${request.id}" class="viewFulfilledRequestLink hhButton" onclick="return false;">view</a>
+                     
                      <a href="#" id="hideFulfilledRequest_${request.id}" class="hideFulfilledRequestLink hhButton" onclick="return false;" style="display:none;">hide</a>   
                      <a href="#" id="tagFulfilledRequestLink_${request.id}" class="tagFulfilledRequestLink hhButton" onclick="return false;"><span class="tag" style="<c:if test="${request.comment ne null}">display:none;</c:if>">flag</span><span class="untag" style="<c:if test="${request.comment eq null}">display:none;</c:if>">unflag</span></a>
                      <a href="#" id="deleteFulfilledRequest_${request.id}" class="deleteFulfilledRequestLink remove_grey" style="margin-left:2em;"><i aria-hidden="true" class="icon-cancel"></i></a>	              
