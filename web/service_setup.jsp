@@ -191,7 +191,13 @@
 	               See <a href="<c:url value="/help#getting_the_right_scenario"/>">Getting the Right Scenario</a> in the Help page for directions. 
 	               </p>
 	            
+	            <!-- 
+	            // REAL service URLs is obsolete. For a 'real' URL, define it for the Mock 
+	            // Service URL. 
+	             -->
+	            <!-- 
 	            <hr>
+	            
 	            <label for="service_url" id="real_service_url_label" class="field-label-title">Real service URLs</label>
 	            <div id="real_service_url_list">
 					<c:forEach var="realServiceUrl" items="${mockservice.realServiceUrls}">
@@ -201,7 +207,7 @@
 				<input type="text" id="service_real_url" placeholder="For example: 'http://www.reddit.com'" class="text ui-corner-all ui-widget-content" name="realServiceUrl" maxlength="1000" size="90%" value="" />
 					<a title="Add row" id="add-row" href="#" style="color:red;text-decoration:none;font-size:1em;">+</a>
                 <div class="field-label-helptxt"><strong class="help_optional">Optional.</strong> You'll need a real service URL if you want Mockey to serve as a proxy to record transactions between your application and the real service.</div>
-                
+                 -->
                 
                 <hr>
                 <label for="service_url" class="field-label-title">Hang Time: </label>
@@ -233,7 +239,7 @@
                <input type="checkbox" name="request_inspector_json_rules_enable_flag" id="request_inspector_json_rules_enable_flag" value="true" <c:if test="${mockservice.requestInspectorJsonRulesEnableFlag}">checked</c:if> />
                
 			   Check this box to run the Evaluation Rules.  Uncheck this box if you want to ignore Evaluation Rules. <br />
-			   <div class="field-label-helptxt" style="margin-top:5px;"><strong class="help_optional">Optional.</strong> For more on this, read the <a href="<c:url value="/help#evaluation_rules_api"/>">help</a> section.
+			   <div class="field-label-helptxt" style="margin-top:5px;"><strong class="help_optional">Optional.</strong> For more on this, read the <a href="<c:url value="/help#service_eval_rules"/>">help</a> section.
 	           </div>
 	           
 	           

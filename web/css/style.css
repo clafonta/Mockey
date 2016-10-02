@@ -1,12 +1,4 @@
-html, body{ padding-top: 0px; font: 0.9em sans-serif; height:100%;font-weight:100;
-
-  background: -webkit-linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* Chrome 10+, Saf5.1+ */
-  background:    -moz-linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* FF3.6+ */
-  background:     -ms-linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* IE10 */
-  background:      -o-linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* Opera 11.10+ */
-  background:         linear-gradient(90deg, #FFFFFF 10%, #ECE9E6 90%); /* W3C */
-        
-}
+html, body{ padding-top: 0px; font: 0.9em sans-serif; height:100%;font-weight:100; background-color: #ffffff;}
 .big{font-size: 2em;}
 .field-label-title {font-size:1.4em; font-weight: 500;}
 .field-label-helptxt {font-weight: 200; color: #808080;}

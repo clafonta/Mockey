@@ -36,9 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import com.google.gson.Gson;
 import com.mockey.model.FulfilledClientRequest;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
@@ -60,47 +59,45 @@ public class HistoryAjaxServlet extends HttpServlet {
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		Long fulfilledRequestId = null;
-		JSONObject jsonObject = new JSONObject();
 		PrintStream out = null;
-
+		Gson gson = new Gson();
+		HistoryHelper hh = new HistoryHelper();
 		try {
 
 			fulfilledRequestId = new Long(req.getParameter("conversationRecordId"));
 			FulfilledClientRequest fCRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
 
-			jsonObject.put("conversationRecordId", "" + fulfilledRequestId);
-			jsonObject.put("serviceId", "" + fCRequest.getServiceId());
-			jsonObject.put("serviceName", fCRequest.getServiceName());
-			jsonObject.put("requestUrl", "" + fCRequest.getRawRequest());
-			jsonObject.put("requestHeaders", "" + fCRequest.getClientRequestHeaders());
-			jsonObject.put("requestParameters", "" + fCRequest.getClientRequestParameters());
-			jsonObject.put("requestBody", "" + fCRequest.getClientRequestBody());
-			jsonObject.put("requestCookies", "" + fCRequest.getClientRequestCookies());
-			jsonObject.put("responseCookies", "" + fCRequest.getClientResponseCookies());
-			jsonObject.put("responseStatus", "" + fCRequest.getResponseMessage().getHttpResponseStatusCode());
-			jsonObject.put("responseHeader", "" + fCRequest.getResponseMessage().getHeaderInfo());
-			jsonObject.put("responseBody", "" + fCRequest.getResponseMessage().getBody());
-			jsonObject.put("responseScenarioName", "" + fCRequest.getScenarioName());
-			jsonObject.put("responseScenarioTags", "" + fCRequest.getScenarioTagsAsString());
+			hh.setConversationRecordId("" + fulfilledRequestId);
+			hh.setServiceId("" + fCRequest.getServiceId());
+			hh.setServiceName(fCRequest.getServiceName());
+			hh.setRequestUrl(fCRequest.getRawRequest());
+			hh.setRequestHeaders(fCRequest.getClientRequestHeaders());
+			hh.setRequestParameters(fCRequest.getClientRequestParameters());
+			hh.setRequestBody(fCRequest.getClientRequestBody());
+			hh.setRequestCookies(fCRequest.getClientRequestCookies());
+			hh.setResponseCookies(fCRequest.getClientResponseCookies());
+			hh.setResponseStatus("" + fCRequest.getResponseMessage().getHttpResponseStatusCode());
+			hh.setResponseHeader(fCRequest.getResponseMessage().getHeaderInfo());
+			hh.setResponseBody(fCRequest.getResponseMessage().getBody());
+			hh.setResponseScenarioName(fCRequest.getScenarioName());
+			hh.setResponseScenarioTags(fCRequest.getScenarioTagsAsString());
 
 			resp.setContentType("application/json");
 
 			out = new PrintStream(resp.getOutputStream());
 			Util.logMemoryFootprint();
-			out.println(jsonObject.toString());
+			out.println(gson.toJson(hh));
 			out.close();
+			hh = null;
 
 		} catch (Throwable e) {
 			try {
-				logger.error("Unable to create response: "+ e.getMessage(), e);
-				jsonObject.put("error", "" + "Sorry, history for this conversation (fulfilledRequestId="
-						+ fulfilledRequestId + ") is not available.");
+				logger.error("Unable to create response: " + e.getMessage(), e);
 				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				out = new PrintStream(resp.getOutputStream());
-
 				out.println("System error");
 				out.close();
-			} catch (JSONException e1) {
+			} catch (Exception e1) {
 				logger.error("Unable to create JSON", e1);
 			}
 		} finally {
@@ -112,6 +109,15 @@ public class HistoryAjaxServlet extends HttpServlet {
 
 			}
 		}
+
+	}
+
+	public static void main(String[] args) {
+		HistoryHelper hh = new HistoryHelper();
+		hh.setConversationRecordId("abc");
+		Gson gson = new Gson();
+		String json = gson.toJson(hh);
+		System.out.println(json);
 
 	}
 
