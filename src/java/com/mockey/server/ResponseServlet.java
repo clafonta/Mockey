@@ -126,9 +126,14 @@ public class ResponseServlet extends HttpServlet {
 		logRequestAsFulfilled(service, request, response, originalHttpReqFromClient.getRemoteAddr(), inspectionMessage);
 
 		try {
+			int hangTime = service.getHangTime();
+			if(response.getServiceScenarioHangTime() >0){
+				//Override the Service's value for sleep
+				hangTime = response.getServiceScenarioHangTime();
+			}
 			// Wait for a X hang time seconds.
-			logger.debug("Waiting..." + service.getHangTime() + " miliseconds ");
-			Thread.currentThread().sleep(service.getHangTime());
+			logger.debug("Waiting..." + hangTime + " miliseconds ");
+			Thread.currentThread().sleep(hangTime);
 			logger.debug("Done Waiting");
 		} catch (Exception e) {
 			// Catch interrupt exception.

@@ -245,6 +245,8 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 				getSafeForXmlOutputString(scenario.getScenarioName()));
 		scenarioElement.setAttribute("tag",
 				getSafeForXmlOutputString(scenario.getTag()));
+		scenarioElement.setAttribute("hang_time",
+				getSafeForXmlOutputString("" + scenario.getHangTime()));
 		// REMOVED March 2013. We don't need this in a repot for persistence.
 		// It's only for a visual/at-run-time queue.
 		// scenarioElement.setAttribute("last_visit",

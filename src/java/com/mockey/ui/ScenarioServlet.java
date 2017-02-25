@@ -151,6 +151,18 @@ public class ScenarioServlet extends HttpServlet {
 		if (req.getParameter("tag") != null) {
 			scenario.setTag(req.getParameter("tag"));
 		}
+		
+		if (req.getParameter("hangTime") != null) {
+			try{
+				String v = req.getParameter("hangTime");
+				int hangtime = Integer.parseInt(v);
+				scenario.setHangTime(hangtime);
+			}catch(Exception e)
+			{
+				scenario.setHangTime(0);
+			}
+			
+		}
 
 		if (req.getParameter("httpResponseStatusCode") != null) {
 			try {

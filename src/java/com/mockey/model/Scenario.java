@@ -54,7 +54,7 @@ public class Scenario extends StatusCheck implements PersistableItem {
 	private String httpMethodType = "";
 	private String responseHeader = "Accept-Language: en-US | Accept: text/plain";
 	private int httpResponseStatusCode = HttpServletResponse.SC_OK;
-
+	private int hangTime = 0;
 	
 	public String getScenarioName() {
 		return scenarioName;
@@ -96,6 +96,7 @@ public class Scenario extends StatusCheck implements PersistableItem {
 		sb.append("Response msg : " + this.getResponseMessage() + "\n");
 		// sb.append("Response code: " + this. + "\n");
 		sb.append("Tag          : " + this.getTag() + "\n");
+		sb.append("Hangtime     : " + this.getHangTime() + "\n");
 		sb.append("Last visit   : " + this.getLastVisitSimple() + "\n");
 		return sb.toString();
 	}
@@ -222,6 +223,13 @@ public class Scenario extends StatusCheck implements PersistableItem {
 
 	public void setHttpMethodType(String httpMethodType) {
 		this.httpMethodType = httpMethodType;
+	}
+	public int getHangTime() {
+		return hangTime;
+	}
+
+	public void setHangTime(int hangTime) {
+		this.hangTime = hangTime;
 	}
 
 }

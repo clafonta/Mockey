@@ -175,6 +175,7 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "http_resp_status_code", "httpResponseStatusCode");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "http_method_type", "httpMethodType");
 		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "tag", "tag");
+		fullSetDigester.addSetProperties(ROOT_SERVICE_SCENARIO, "hang_time", "hangTime");
 		fullSetDigester.addBeanPropertySetter(SCENARIO_MATCH, "matchStringArg");
 		fullSetDigester.addSetProperties(SCENARIO_MATCH, "scenario_match_evaluation_rules_flag",
 				"matchStringArgEvaluationRulesFlag");

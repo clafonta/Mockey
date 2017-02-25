@@ -475,6 +475,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			response.setScenarioName(scenario.getScenarioName());
 			response.setScenarioTagsAsString(scenario.getTag());
 			response.setBody(scenario.getResponseMessage());
+			response.setServiceScenarioHangTime(scenario.getHangTime());
 			response.setHttpResponseStatusCode(scenario.getHttpResponseStatusCode());
 			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
 
@@ -626,6 +627,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			for (String k : headerInfo.keySet()) {
 				headerList.add(new BasicHeader(k, headerInfo.get(k)));
 			}
+			response.setServiceScenarioHangTime(bestMatchedScenario.getHangTime());
 			response.setScenarioName(bestMatchedScenario.getScenarioName());
 			response.setHeaders(headerList.toArray(new Header[headerList.size()]));
 			response.setScenarioName(bestMatchedScenario.getScenarioName());

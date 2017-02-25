@@ -65,6 +65,7 @@ public class ResponseFromService {
 	private Header[] headers;
 	private List<Cookie> cookieList = new ArrayList<Cookie>();
 	private int httpResponseStatusCode;
+	private int serviceScenarioHangTime;
 	private Url originalRequestUrlBeforeTwisting;
 	private Url requestUrl;
 	private RequestInspectionResult requestInspectionResult;
@@ -168,6 +169,15 @@ public class ResponseFromService {
 			}
 		}
 		return sb.toString();
+	}
+
+	
+	public int getServiceScenarioHangTime() {
+		return serviceScenarioHangTime;
+	}
+
+	public void setServiceScenarioHangTime(int serviceScenarioHangTime) {
+		this.serviceScenarioHangTime = serviceScenarioHangTime;
 	}
 
 	public void setHttpResponseStatusCode(int statusCode) {
