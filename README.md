@@ -1,7 +1,6 @@
 README
 
-![Image of Mockey]
-(https://s3-us-west-1.amazonaws.com/mockeybuilds/mockey_20150609_sample_screenshot.png)
+![Image of Mockey](https://s3-us-west-1.amazonaws.com/mockeybuilds/mockey_20150609_sample_screenshot.png "Mockey")
 
 What is Mockey?
 ===================
