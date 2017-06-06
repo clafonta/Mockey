@@ -47,7 +47,7 @@ import com.mockey.model.TwistInfo;
 import com.mockey.model.Url;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.ui.PatternPair;
-
+import java.util.Date;
 /**
  * Builds DOM representing Mockey Service configurations.
  * 
@@ -312,11 +312,13 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 	public Document getStoreAsDocument(IMockeyStorage store,
 			boolean nonRefFullDefinition) {
 
+		Date date = new Date();
 		Document document = this.getDocument();
 		Element rootElement = document.createElement("mockservice");
 		Scenario mssb = store.getUniversalErrorScenario();
 		this.setAttribute(rootElement, "xml:lang", "en-US");
 		this.setAttribute(rootElement, "version", "1.0");
+		this.setAttribute(rootElement, "timestamp", Long.toString(date.getTime()));
 		// Universal Service settings
 		if (mssb != null) {
 			this.setAttribute(rootElement, "universal_error_service_id", ""
