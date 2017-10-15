@@ -63,8 +63,13 @@ public class ServiceUrlTag extends TagSupport {
 			StringBuffer url = new StringBuffer();
 			HttpServletRequest request = (HttpServletRequest) pageContext
 					.getRequest();
+			
+			String protocol = "http://";
+			if(request.isSecure()){
+				protocol = "https://";
+			}
 
-			url.append("http://" + request.getServerName() + ":"
+			url.append(protocol + request.getServerName() + ":"
 					+ request.getServerPort() + request.getContextPath());
 			if (!value.startsWith(Url.MOCK_SERVICE_PATH)) {
 				url.append(Url.MOCK_SERVICE_PATH);
