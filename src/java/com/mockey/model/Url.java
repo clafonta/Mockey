@@ -30,6 +30,8 @@ package com.mockey.model;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -143,13 +145,12 @@ public class Url {
 		}
 		if (hostAndPort.indexOf(":") > 0) {
 			this.host = hostAndPort.substring(0, hostAndPort.indexOf(":"));
-			String portArg = hostAndPort.substring(
-					hostAndPort.indexOf(":") + 1, hostAndPort.length());
+			String portArg = hostAndPort.substring(hostAndPort.indexOf(":") + 1, hostAndPort.length());
 			try {
 				this.port = Integer.valueOf(portArg);
 			} catch (Exception e) {
-				logger.debug("Unable to determine port for URL: " + hostAndPort
-						+ "\n Setting to default based on scheme. ");
+				logger.debug(
+						"Unable to determine port for URL: " + hostAndPort + "\n Setting to default based on scheme. ");
 				if (this.scheme.equalsIgnoreCase("https")) {
 					this.port = 443;
 				} else {
@@ -183,8 +184,7 @@ public class Url {
 	 *         and 80 for HTTPS and HTTP respectively.
 	 */
 	public boolean isDefaultPort() {
-		return ("https".equals(scheme) && 443 == port)
-				|| ("http".equals(scheme) && 80 == port);
+		return ("https".equals(scheme) && 443 == port) || ("http".equals(scheme) && 80 == port);
 	}
 
 	/**
@@ -212,40 +212,36 @@ public class Url {
 	}
 
 	/**
+	 * Why build an absolute path, and not just use relative?
 	 * 
-	 * @param uri
-	 *            - URI
-	 * @param contextRoot
-	 *            - Context path, from HttpServletRequest.getContextPath()
-	 * @return - returns path relative to context. For example, if uri = home,
-	 *         then context aware path is /Mockey/home or /home, depending on
-	 *         context path.
+	 * Here's why:
+	 * 
+	 * <pre>
+	 * https://stackoverflow.com/questions/18891210/how-to-reproduce-sendredirect-issue-https-change-to-http
+	 * </pre>
+	 * 
+	 * @param servletPath
+	 *            - servletPath
+	 * @return - returns absolute URL to the servletPath.
 	 */
-	public static String getContextAwarePath(String uri, String contextRoot) {
-		String relativePath = "";
-		if (contextRoot != null) {
-			if (!contextRoot.startsWith("/")) {
-				contextRoot = "/" + contextRoot;
-			}
-		} else {
-			contextRoot = "/";
+	public static String getAbsoluteURL(HttpServletRequest req, String servletPath) {
+
+		String scheme = req.getScheme(); // http
+		String serverName = req.getServerName(); // hostname.com
+		int serverPort = req.getServerPort(); // 80
+		String contextPath = req.getContextPath(); // /mywebapp
+
+		// Reconstruct original requesting URL
+		StringBuilder url = new StringBuilder();
+		url.append(scheme).append("://").append(serverName);
+
+		if (serverPort != 80 && serverPort != 443) {
+			url.append(":").append(serverPort);
 		}
 
-		if (!contextRoot.endsWith("/") && !uri.startsWith("/")) {
+		url.append(contextPath).append(servletPath);
 
-			relativePath = contextRoot + "/" + uri;
-		} else if (contextRoot.endsWith("/") && !uri.startsWith("/")) {
-			relativePath = contextRoot + uri;
-		} else if (contextRoot.trim().equals("/") && uri.startsWith("/")) {
-
-			relativePath = uri;
-		} else if (contextRoot.endsWith("/") && uri.startsWith("/")) {
-			contextRoot = contextRoot.substring(0, contextRoot.length());
-			relativePath = contextRoot + uri;
-		} else {
-			relativePath = contextRoot + uri;
-		}
-		return relativePath;
+		return url.toString();
 	}
 
 	/**
@@ -257,47 +253,44 @@ public class Url {
 	 * @return
 	 * @throws MalformedURLException
 	 */
-	public static String getSchemeHostPortPathFromURL(String validUrl)
-			throws MalformedURLException {
+	public static String getSchemeHostPortPathFromURL(String validUrl) throws MalformedURLException {
 		URL aURL = new URL(validUrl);
 		String port = "";
 		if (aURL.getPort() > -1) {
 			port = ":" + aURL.getPort();
 		}
-		String schemeHostPortPath = aURL.getProtocol() + "://" + aURL.getHost()
-				+ port + aURL.getPath();
+		String schemeHostPortPath = aURL.getProtocol() + "://" + aURL.getHost() + port + aURL.getPath();
 		return schemeHostPortPath;
 	}
-	
+
 	/**
-	 * Convenience method. When did this get here? 
+	 * Convenience method. When did this get here?
 	 * 
 	 * @return
 	 */
-	public boolean hasSettings(){
-		if( this.getFullUrl()!=null && this.getFullUrl().trim().length() > 0){
+	public boolean hasSettings() {
+		if (this.getFullUrl() != null && this.getFullUrl().trim().length() > 0) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
 
 	public static void main(String[] args) {
-		// What's this? 
-		// URL not Url? 
+		// What's this?
+		// URL not Url?
 		// Ah...we're testing URL for help here.
 		URL aURL;
 		try {
 			Url b = new Url();
-			
+
 			System.out.println(b.hasSettings());
 			b = new Url("http://www.google.com");
 			System.out.println(b.hasSettings());
 			b = new Url("");
 			System.out.println(b.hasSettings() + " '" + b.toString() + "'");
-			
-			aURL = new URL(
-					"http://java.sun.com:80/docs/books/tutorial/index.html////?");
+
+			aURL = new URL("http://java.sun.com:80/docs/books/tutorial/index.html////?");
 
 			System.out.println("protocol = " + aURL.getProtocol());
 			System.out.println("authority = " + aURL.getAuthority());

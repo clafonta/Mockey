@@ -77,8 +77,8 @@ public class HistoryServlet extends HttpServlet {
         if (action != null && "delete_all".equals(action)) {
             store.deleteFulfilledClientRequests();
             // don't allow reloads to re-delete.
-            String contextRoot = req.getContextPath();
-            resp.sendRedirect(Url.getContextAwarePath("/history", contextRoot));
+            String absolutePath = Url.getAbsoluteURL(req, "/history");
+            resp.sendRedirect(absolutePath); 
             return;
         } else if (action != null && "delete".equals(action)) {
             String fulfilledRequestId = req.getParameter("fulfilledRequestId");

@@ -94,8 +94,8 @@ public class HomeServlet extends HttpServlet {
 			ApiDocService apiDocService = new ApiDocService();
 			apiDocService.setName("Initialization");
 			apiDocService.setServicePath("/home");
-			apiDocService
-					.setDescription("If you need to initialize Mockey with a definitions file, then this API may serve your needs. ");
+			apiDocService.setDescription(
+					"If you need to initialize Mockey with a definitions file, then this API may serve your needs. ");
 			// *****************************
 			// REQUEST DEFINITION
 			// *****************************
@@ -111,13 +111,11 @@ public class HomeServlet extends HttpServlet {
 					"Will delete everything and configure Mockey with the defined file. "));
 			apiDocRequest.addAttribute(reqAttributeAction);
 
-			 
 			// Parameter - 'type'
 			ApiDocAttribute reqAttributeType = new ApiDocAttribute();
 			reqAttributeType.setFieldName(BSC.TYPE);
-			reqAttributeType
-					.addFieldValues(new ApiDocFieldValue("json",
-							"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
+			reqAttributeType.addFieldValues(new ApiDocFieldValue("json",
+					"Response will be in JSON. Any other value for 'type' is undefined and you may experience a 302 or get HTML back."));
 			apiDocRequest.addAttribute(reqAttributeType);
 			apiDocService.setApiRequest(apiDocRequest);
 
@@ -138,9 +136,8 @@ public class HomeServlet extends HttpServlet {
 			try {
 				JSONObject jsonResponseObject = new JSONObject();
 				JSONObject jsonResultObject = new JSONObject();
-				jsonResultObject
-						.put(SUCCESS,
-								"Some informative coaching message. If success isn't a value, then maybe you have a 'fail' message.");
+				jsonResultObject.put(SUCCESS,
+						"Some informative coaching message. If success isn't a value, then maybe you have a 'fail' message.");
 				jsonResultObject.put("file", "Some file name");
 				jsonResponseObject.put("result", jsonResultObject);
 				apiResponse.setExample(jsonResponseObject.toString());
@@ -148,19 +145,17 @@ public class HomeServlet extends HttpServlet {
 				logger.error("Unabel to build a sample JSON message. ", e);
 			}
 
-		
-
 			// Response attribute 'success'
 			ApiDocAttribute resAttributeSuccess = new ApiDocAttribute();
 			resAttributeSuccess.setFieldName(SUCCESS);
-			resAttributeSuccess
-					.setFieldDescription("Successfully initialized or deleted service definitions.  You get 'fail' or 'success', not both.");
+			resAttributeSuccess.setFieldDescription(
+					"Successfully initialized or deleted service definitions.  You get 'fail' or 'success', not both.");
 			apiResponse.addAttribute(resAttributeSuccess);
 
 			ApiDocAttribute resAttributeFail = new ApiDocAttribute();
 			resAttributeFail.setFieldName(FAIL);
-			resAttributeFail
-					.setFieldDescription("Failed to initialize or delete service definitions. You get 'fail' or 'success', not both.");
+			resAttributeFail.setFieldDescription(
+					"Failed to initialize or delete service definitions. You get 'fail' or 'success', not both.");
 			apiResponse.addAttribute(resAttributeFail);
 
 			apiDocService.setApiResponse(apiResponse);
@@ -222,14 +217,14 @@ public class HomeServlet extends HttpServlet {
 					reader.loadConfigurationWithXmlDef(inputAsString, null);
 					logger.info("Loaded definitions from " + fileName);
 					jsonResultObject.put(SUCCESS, "Loaded definitions from " + fileName);
-					
+
 				}
 			} catch (Exception e) {
 
 				logger.debug("Unable to load service definitions with name: '" + fileName + "' or URL: " + fileUrl, e);
 				try {
-					jsonResultObject.put(FAIL, "Unable to load service definitions with filename: '" + fileName
-							+ "' or URL: " + fileUrl);
+					jsonResultObject.put(FAIL,
+							"Unable to load service definitions with filename: '" + fileName + "' or URL: " + fileUrl);
 				} catch (Exception ef) {
 					logger.error("Unable to produce a JSON response.", e);
 				}
@@ -258,10 +253,8 @@ public class HomeServlet extends HttpServlet {
 				out.println(jsonResponseObject.toString());
 				return;
 			} else {
-				String contextRoot = req.getContextPath();
-
-				resp.sendRedirect(Url.getContextAwarePath("/home", contextRoot));
-
+				String absolutePath = Url.getAbsoluteURL(req, "/home");
+				resp.sendRedirect(absolutePath);
 				return;
 			}
 
@@ -284,9 +277,7 @@ public class HomeServlet extends HttpServlet {
 				out.println(jsonResponseObject.toString());
 				return;
 			} else {
-				String contextRoot = req.getContextPath();
-				resp.sendRedirect(Url.getContextAwarePath("/home", contextRoot));
-
+				resp.sendRedirect(Url.getAbsoluteURL(req, "/home"));
 				return;
 			}
 		}
