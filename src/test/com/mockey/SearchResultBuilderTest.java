@@ -58,7 +58,7 @@ public class SearchResultBuilderTest {
 		store.saveOrUpdateService(a);
 
 		String term = "scenario";
-		SearchResultBuilder resultBuilder = new SearchResultBuilder();
+		SearchResultBuilder resultBuilder = new SearchResultBuilder("");
 		List<SearchResult> resultList = resultBuilder.buildSearchResults(term,
 				store);
 
@@ -93,7 +93,7 @@ public class SearchResultBuilderTest {
 		store.saveOrUpdateService(a);
 
 		String term = "cats";
-		SearchResultBuilder resultBuilder = new SearchResultBuilder();
+		SearchResultBuilder resultBuilder = new SearchResultBuilder("");
 		List<SearchResult> resultList = resultBuilder.buildSearchResults(term,
 				store);
 
@@ -101,7 +101,7 @@ public class SearchResultBuilderTest {
 				+ resultList.size();
 
 		term = "  lorem   ";
-		resultBuilder = new SearchResultBuilder();
+		resultBuilder = new SearchResultBuilder("");
 		resultList = resultBuilder.buildSearchResults(term, store);
 		assert (resultList.size() == 1) : "Length should be: 1 " + " but was '"
 				+ resultList.size() + "'";
@@ -115,7 +115,7 @@ public class SearchResultBuilderTest {
 		store.saveOrUpdateService(a);
 
 		term = "  lorem   ";
-		resultBuilder = new SearchResultBuilder();
+		resultBuilder = new SearchResultBuilder("");
 		resultList = resultBuilder.buildSearchResults(term, store);
 		// We should have TWO scenarios with 'lorem' in content/
 		assert (resultList.size() == 2) : "Length should be: 2 " + " but was '"
@@ -136,7 +136,7 @@ public class SearchResultBuilderTest {
 		store.saveOrUpdateService(a);
 
 		String term = "cats";
-		SearchResultBuilder resultBuilder = new SearchResultBuilder();
+		SearchResultBuilder resultBuilder = new SearchResultBuilder("");
 		List<SearchResult> resultList = resultBuilder.buildSearchResults(term,
 				store);
 
@@ -144,7 +144,7 @@ public class SearchResultBuilderTest {
 				+ resultList.size();
 
 		term = "tagC";
-		resultBuilder = new SearchResultBuilder();
+		resultBuilder = new SearchResultBuilder("");
 		resultList = resultBuilder.buildSearchResults(term, store);
 		assert (resultList.size() == 1) : "Length should be 1 but was "
 				+ resultList.size();
@@ -174,7 +174,7 @@ public class SearchResultBuilderTest {
 		store.saveOrUpdateServicePlan(servicePlan);
 		
 		String term = "cats";
-		SearchResultBuilder resultBuilder = new SearchResultBuilder();
+		SearchResultBuilder resultBuilder = new SearchResultBuilder("");
 		List<SearchResult> resultList = resultBuilder.buildSearchResults(term,
 				store);
 
@@ -182,7 +182,7 @@ public class SearchResultBuilderTest {
 				+ resultList.size();
 
 		term = "service_plan_tag_123";
-		resultBuilder = new SearchResultBuilder();
+		resultBuilder = new SearchResultBuilder("");
 		resultList = resultBuilder.buildSearchResults(term, store);
 		assert (resultList.size() == 1) : "Length should be 1 but was "
 				+ resultList.size();

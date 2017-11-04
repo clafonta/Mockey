@@ -65,7 +65,7 @@ public class HistoryHtmlServlet extends HttpServlet {
 
             fulfilledRequestId = new Long(req.getParameter("fulfilledRequestId"));
             FulfilledClientRequest fCRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
-            String contextRootScenarioURL = Url.getContextAwarePath("/scenario", req.getContextPath());
+            String contextRootScenarioURL = Url.getAbsoluteURL(req, "/scenario"); 
             
             returnHTML.append("<script type=\"text/javascript\">");
             returnHTML.append("$(document).ready(function() {");
@@ -78,8 +78,7 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("<tr>");
             returnHTML.append("<td>");
             returnHTML.append("<div class=\"conflict_message\">");
-            String contextRoot = req.getContextPath();
-            String doitagainUrl = Url.getContextAwarePath("/doitagain", contextRoot);
+            String doitagainUrl = Url.getAbsoluteURL(req, "/doitagain"); 
             returnHTML.append("<form id=\"child\" action=\""+doitagainUrl+"\" method=\"post\" style=\"background-color:#FFD7D7\" >");
             returnHTML.append("<input type=\"hidden\" name=\"fulfilledClientRequestId\" value=\""+fCRequest.getId()+"\" />");
             returnHTML.append("<h2>Request:</h2>");
@@ -126,7 +125,7 @@ public class HistoryHtmlServlet extends HttpServlet {
             returnHTML.append("</p>");
             returnHTML.append("<p>");
             returnHTML.append("<input type=\"submit\" name=\"Save\" value=\"Save Response as a Scenario\" />");
-            String inspectFulfilledRequestURL = Url.getContextAwarePath("/inspect", req.getContextPath());
+            String inspectFulfilledRequestURL = Url.getAbsoluteURL(req, "/inspect"); 
             returnHTML.append(" View response body as: ");
             returnHTML.append("<a href=\"" + inspectFulfilledRequestURL + "?content_type=text/xml;&fulfilledRequestId="
                     + fulfilledRequestId + "\">XML</a> ");

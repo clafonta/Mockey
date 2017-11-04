@@ -58,18 +58,15 @@ public class ServiceSetupServlet extends HttpServlet {
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
 	private static final Boolean TRANSIENT_STATE = new Boolean(true);
 	private static final String DATE_FORMAT = "MM/dd/yyyy";
-	private static final SimpleDateFormat formatter = new SimpleDateFormat(
-			"MM/dd/yyyy");
+	private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 	private static Logger logger = Logger.getLogger(ServiceSetupServlet.class);
 
 	/**
 	 * 
 	 */
-	public void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		if (req.getParameter("all") != null
-				&& req.getParameter("responseType") != null) {
+		if (req.getParameter("all") != null && req.getParameter("responseType") != null) {
 			List<Service> services = store.getServices();
 			// #1. Get a handle of the original read-only-mode (transient?)
 			Boolean origReadOnlyMode = store.getReadOnlyMode();
@@ -77,10 +74,8 @@ public class ServiceSetupServlet extends HttpServlet {
 				// #2. Put the store in TRANSIENT STATE (memory only)
 				// why? To prevent repeating file writes to the file system
 				store.setReadOnlyMode(TRANSIENT_STATE);
-				int serviceResponseType = Integer.parseInt(req
-						.getParameter("responseType"));
-				for (Iterator<Service> iterator = services.iterator(); iterator
-						.hasNext();) {
+				int serviceResponseType = Integer.parseInt(req.getParameter("responseType"));
+				for (Iterator<Service> iterator = services.iterator(); iterator.hasNext();) {
 					Service service = iterator.next();
 
 					service.setServiceResponseType(serviceResponseType);
@@ -113,8 +108,7 @@ public class ServiceSetupServlet extends HttpServlet {
 			store.deleteService(service);
 			store.deleteFulfilledClientRequestsForService(serviceId);
 
-			Util.saveSuccessMessage("Service '" + service.getServiceName()
-					+ "' was deleted.", req);
+			Util.saveSuccessMessage("Service '" + service.getServiceName() + "' was deleted.", req);
 
 			// Check to see if any plans need an update.
 			String errorMessage = null;
@@ -125,16 +119,12 @@ public class ServiceSetupServlet extends HttpServlet {
 			if (errorMessage != null) {
 				Util.saveErrorMessage(errorMessage, req);
 			}
-			String contextRoot = req.getContextPath();
-			resp.sendRedirect(Url.getContextAwarePath("home", contextRoot));
+			resp.sendRedirect(Url.getAbsoluteURL(req, "/home"));
 			return;
-		} else if (req.getParameter("duplicateService") != null
-				&& serviceId != null) {
+		} else if (req.getParameter("duplicateService") != null && serviceId != null) {
 			Service service = store.getServiceById(serviceId);
 			Service duplicateService = store.duplicateService(service);
-			String contextRoot = req.getContextPath();
-			resp.sendRedirect(Url.getContextAwarePath("setup?serviceId="
-					+ duplicateService.getId(), contextRoot));
+			resp.sendRedirect(Url.getAbsoluteURL(req, "/setup?serviceId=" + duplicateService.getId()));
 			return;
 		}
 
@@ -153,8 +143,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Long serviceId = null;
 		try {
 			serviceId = new Long(req.getParameter("serviceId"));
@@ -172,10 +161,8 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		req.setAttribute("mockservice", service);
 
-		req.setAttribute("requestInspectorList", PluginStore.getInstance()
-				.getRequestInspectorImplClassList());
-		RequestDispatcher dispatch = req
-				.getRequestDispatcher("/service_setup.jsp");
+		req.setAttribute("requestInspectorList", PluginStore.getInstance().getRequestInspectorImplClassList());
+		RequestDispatcher dispatch = req.getRequestDispatcher("/service_setup.jsp");
 		dispatch.forward(req, resp);
 	}
 
@@ -191,8 +178,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	 * @throws IOException
 	 *             basic
 	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String[] realSrvUrl = req.getParameterValues("realServiceUrl[]");
 
 		Service service = new Service();
@@ -260,15 +246,13 @@ public class ServiceSetupServlet extends HttpServlet {
 
 		// REQUEST INSPECTION rules in JSON format. - optional
 		if (req.getParameter("requestInspectorJsonRules") != null) {
-			service.setRequestInspectorJsonRules(req.getParameter(
-					"requestInspectorJsonRules").trim());
+			service.setRequestInspectorJsonRules(req.getParameter("requestInspectorJsonRules").trim());
 		}
 		// REQUEST INSPECTION enable flag - optional
 		if (req.getParameter("requestInspectorJsonRulesEnableFlag") != null) {
 			try {
-				service.setRequestInspectorJsonRulesEnableFlag(new Boolean(req
-						.getParameter("requestInspectorJsonRulesEnableFlag"))
-						.booleanValue());
+				service.setRequestInspectorJsonRulesEnableFlag(
+						new Boolean(req.getParameter("requestInspectorJsonRulesEnableFlag")).booleanValue());
 			} catch (Exception e) {
 				logger.error("Json Rule Enable flag has an invalid format.", e);
 			}
@@ -281,9 +265,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		// RESPONSE SCHEMA enable flag - optional
 		if (req.getParameter("responseSchemaEnableFlag") != null) {
 			try {
-				service.setResponseSchemaFlag(new Boolean(req
-						.getParameter("responseSchemaEnableFlag"))
-						.booleanValue());
+				service.setResponseSchemaFlag(new Boolean(req.getParameter("responseSchemaEnableFlag")).booleanValue());
 			} catch (Exception e) {
 				logger.error("Json Rule Enable flag has an invalid format.", e);
 			}
@@ -292,39 +274,33 @@ public class ServiceSetupServlet extends HttpServlet {
 		if (req.getParameter("lastVisit") != null) {
 			try {
 				String lastvisit = req.getParameter("lastVisit");
-				if (lastvisit.trim().length() > 0
-						&& !"mm/dd/yyyy".equals(lastvisit.trim().toLowerCase())) {
+				if (lastvisit.trim().length() > 0 && !"mm/dd/yyyy".equals(lastvisit.trim().toLowerCase())) {
 					Date f = formatter.parse(lastvisit);
 					service.setLastVisit(f.getTime());
 				} else {
 					service.setLastVisit(null);
 				}
 			} catch (Exception e) {
-				logger.error("Last visit has an invalid format. Should be "
-						+ DATE_FORMAT, e);
+				logger.error("Last visit has an invalid format. Should be " + DATE_FORMAT, e);
 			}
 
 		}
-		String classNameForRequestInspector = req
-				.getParameter("requestInspectorName");
-		if (classNameForRequestInspector != null
-				&& classNameForRequestInspector.trim().length() > 0) {
+		String classNameForRequestInspector = req.getParameter("requestInspectorName");
+		if (classNameForRequestInspector != null && classNameForRequestInspector.trim().length() > 0) {
 			/**
 			 * OPTIONAL See if we can create an instance of a request inspector.
 			 * If yes, then set the service to the name.
 			 */
 			try {
 				Class<?> clazz = Class.forName(classNameForRequestInspector);
-				if (!clazz.isInterface()
-						&& IRequestInspector.class.isAssignableFrom(clazz)) {
+				if (!clazz.isInterface() && IRequestInspector.class.isAssignableFrom(clazz)) {
 					service.setRequestInspectorName(classNameForRequestInspector);
 				} else {
 					service.setRequestInspectorName("");
 				}
 
 			} catch (ClassNotFoundException t) {
-				logger.error("Service setup: unable to find class '"
-						+ classNameForRequestInspector + "'", t);
+				logger.error("Service setup: unable to find class '" + classNameForRequestInspector + "'", t);
 			}
 
 		}
@@ -347,19 +323,16 @@ public class ServiceSetupServlet extends HttpServlet {
 			Service updatedService = store.saveOrUpdateService(service);
 			Util.saveSuccessMessage("Service updated.", req);
 			// ***************** HACK A ****************
-			if (newName != null && oldName != null
-					&& !oldName.trim().equals(newName.trim())) {
+			if (newName != null && oldName != null && !oldName.trim().equals(newName.trim())) {
 				// OK, we had an existing Service Scenario with a name change.
 				// Let's update the appropriate Service Plan.
 				store.updateServicePlansWithNewServiceName(oldName, newName);
 			}
 			// *****************************************
-			String redirectUrl = Url.getContextAwarePath("/setup?serviceId="
-					+ updatedService.getId(), req.getContextPath());
+			String redirectUrl = Url.getAbsoluteURL(req, "/setup?serviceId=" + updatedService.getId()); 
 			resp.setContentType("application/json");
 			PrintWriter out = resp.getWriter();
-			String resultingJSON = "{ \"result\": { \"redirect\": \""
-					+ redirectUrl + "\"}}";
+			String resultingJSON = "{ \"result\": { \"redirect\": \"" + redirectUrl + "\"}}";
 			out.println(resultingJSON);
 			out.flush();
 			out.close();
