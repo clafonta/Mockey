@@ -42,11 +42,18 @@ import com.mockey.storage.IMockeyStorage;
  */
 public class SearchResultBuilder {
 
-	/**
-	 * Basic contructor
-	 */
-	public SearchResultBuilder() {
+	private String baseAppContextPath = null;
 
+	/**
+	 * 
+	 * @param _baseAppContextPath
+	 *            the application context path, which is needed to combine with
+	 *            the mock URL for proper matching, since each service only
+	 *            contains a portion of the full mock url (missing scheme,
+	 *            hostname, port, etc.)
+	 */
+	public SearchResultBuilder(String _baseAppContextPath) {
+		this.baseAppContextPath = _baseAppContextPath;
 	}
 
 	/**
@@ -54,15 +61,14 @@ public class SearchResultBuilder {
 	 * @param term
 	 * @param store
 	 */
-	public List<SearchResult> buildSearchResults(String term,
-			IMockeyStorage store) {
+	public List<SearchResult> buildSearchResults(String term, IMockeyStorage store) {
 		List<SearchResult> searchResultList = new ArrayList<SearchResult>();
 
 		if (term != null && term.trim().length() > 0) {
 			term = term.trim();
-			
+
 			// ******************************
-			// SERVICE PLAN LIST 
+			// SERVICE PLAN LIST
 			// ******************************
 			for (ServicePlan servicePlan : store.getServicePlans()) {
 				SearchResult sr = buildSearchResult(term, servicePlan.getName() + " " + servicePlan.getTag());
@@ -73,15 +79,14 @@ public class SearchResultBuilder {
 					searchResultList.add(sr);
 				}
 			}
-			
+
 			// ******************************
-			// SERVICE LIST 
+			// SERVICE LIST
 			// ******************************
 			for (Service service : store.getServices()) {
 
 				boolean serviceAdded = false;
-				SearchResult sr = buildSearchResult(term,
-						service.getServiceName() + " " +service.getTag() + " ");
+				SearchResult sr = buildSearchResult(term, service.getServiceName() + " " + service.getTag() + " ");
 				if (sr != null) {
 					sr.setType(SearchResultType.SERVICE);
 					sr.setServiceId("" + service.getId());
@@ -92,8 +97,7 @@ public class SearchResultBuilder {
 				if (!serviceAdded) {
 					// No match; lets check RealServiceUrls
 					for (Url url : service.getRealServiceUrls()) {
-						SearchResult subresult = buildSearchResult(term,
-								url.toString());
+						SearchResult subresult = buildSearchResult(term, url.toString());
 						if (subresult != null) {
 							subresult.setType(SearchResultType.SERVICE);
 							subresult.setServiceId("" + service.getId());
@@ -105,9 +109,9 @@ public class SearchResultBuilder {
 				}
 
 				if (!serviceAdded) {
-					// No match; lets check RealServiceUrls
+					// No match; lets check mock urls
 					String mockurl = service.getUrl();
-					SearchResult subresult = buildSearchResult(term, mockurl);
+					SearchResult subresult = buildSearchResult(term, (this.baseAppContextPath + mockurl));
 					if (subresult != null) {
 						subresult.setType(SearchResultType.SERVICE);
 						subresult.setServiceId("" + service.getId());
@@ -126,11 +130,8 @@ public class SearchResultBuilder {
 				for (Scenario scenario : service.getScenarios()) {
 					// Append tags, name, and response...
 					// Why not? It's a hack to jumble all things together
-					SearchResult subresult = buildSearchResult(
-							term,
-							scenario.getResponseMessage() + " "
-									+ scenario.getScenarioName() + " "
-									+ scenario.getTag());
+					SearchResult subresult = buildSearchResult(term,
+							scenario.getResponseMessage() + " " + scenario.getScenarioName() + " " + scenario.getTag());
 
 					if (subresult != null) {
 						subresult.setType(SearchResultType.SERVICE_SCENARIO);
@@ -138,7 +139,7 @@ public class SearchResultBuilder {
 						subresult.setScenarioId("" + scenario.getId());
 						subresult.setScenarioName(scenario.getScenarioName());
 						searchResultList.add(subresult);
-					} 
+					}
 				}
 
 			}
