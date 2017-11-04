@@ -35,6 +35,13 @@
 		<mkdir dir="${dist.dir}"/>
 		<mkdir dir="${classes.dir}"/>
 		<mkdir dir="${build.dir}/WEB-INF/lib"/>
+		<!-- This is a workaround to support Log4J management in Tomcat and Jetty implementations.-->
+		<copy todir="${webapp.dir}/WEB-INF/classes">
+			<fileset dir="${webapp.dir}/WEB-INF">
+				<include name="**/*.properties"/>
+				<include name="**/*.json"/>
+			</fileset>
+		</copy>
 	</target>
 	<!-- =================================================================== -->
 	<!-- Basic compile.                                                                                                                -->
@@ -58,15 +65,6 @@
 		<delete file="${env.CATALINA_HOME}/webapps/${ant.project.name}.war"/>
 		<delete dir="${env.CATALINA_HOME}/work"/>
 		<delete dir="${webapp.dir}/WEB-INF/classes" />
-		<mkdir dir="${webapp.dir}/WEB-INF/classes"/>
-		<!-- This is a workaround to support Log4J management in Tomcat and Jetty implementations.-->
-		<copy todir="${webapp.dir}/WEB-INF/classes">
-			<fileset dir="${webapp.dir}/WEB-INF">
-				<include name="**/*.properties"/>
-				<include name="**/*.json"/>
-			</fileset>
-		</copy>
-
 	</target>
 
 	<target name="one-jar" depends="webapp" description="Generates an executable jar file with the war file embedded">
@@ -94,7 +92,7 @@
 	<!-- Jars up file for distribution                                       -->
 	<!-- =================================================================== -->
 	<target name="dist" depends="clean, build, webapp, create-jar" description="Builds an executable .jar file, e.g. 'java -jar Mockey.jar'">
-		
+
 		<!-- Removing this WAR file; it was created for JETTY, not Tomcat useful. -->
 		<delete file="${dist.dir}/${ant.project.name}.war"/>
 		<echo message="Success! Now try this:"/>

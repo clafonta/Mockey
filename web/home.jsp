@@ -493,8 +493,8 @@ $(document).ready( function() {
 		<br />
 		
 		<div style="margin-top:5px;">
-	    	<span class="basic_label">Search for services or scenarios by name:</span><br />
-			  <input type="text" style="width:500px;" value="${term}" placeholder="Service or Senario name" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term">
+	    	<span class="basic_label">Search for services or scenarios by name or mock url:</span><br />
+			  <input type="text" style="width:500px;" value="${term}" placeholder="Service name, scenario name, or mock url" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term">
 			  <button class="hhButton" id="search_me" style="width: 80px;">Search</button>
 			  
 	    </div> 
