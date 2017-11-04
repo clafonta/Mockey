@@ -1,3 +1,5 @@
+.cvsignore
+.tomcatplugin
 *.class
 .classpath
 .project
