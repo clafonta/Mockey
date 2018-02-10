@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="ant-dotnet-1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/etc/ant-dotnet-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/etc/jetty-jsp-2.1-7.0.0.RC5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/etc/one-jar/jetty-runner.jar!/" />
+      <root url="jar://$PROJECT_DIR$/etc/one-jar/JSAP-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/etc/one-jar/jsp-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/etc/one-jar/servlet-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/etc/one-jar-ant-task.jar!/" />
+      <root url="jar://$PROJECT_DIR$/etc/testng.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/etc/one-jar-ant-task.jar!/" />
+    </SOURCES>
+  </library>
+</component>

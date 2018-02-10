@@ -3,5 +3,6 @@
 *.class
 .classpath
 .project
+out/*
 bin/*
 /bin/
