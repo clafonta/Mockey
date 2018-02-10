@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app id="mockey" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="mockey" version="2.5">
     <display-name>
         Mockey
     </display-name>
@@ -276,7 +277,7 @@
             1
         </load-on-startup>
     </servlet>
-	<servlet>
+    <servlet>
         <servlet-name>
             ConsoleServlet
         </servlet-name>
@@ -357,14 +358,6 @@
         <servlet-name>StatusServlet</servlet-name>
         <servlet-class>com.mockey.ui.StatusServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>StatusServlet</servlet-name>
-        <url-pattern>/status</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>validateSyntax</servlet-name>
-        <url-pattern>/validateSyntax</url-pattern>
-    </servlet-mapping>
     <servlet>
         <servlet-name>JsonSchemaLoadSamplesServlet</servlet-name>
         <servlet-class>com.mockey.ui.JsonSchemaLoadSamplesServlet</servlet-class>
@@ -377,6 +370,32 @@
         <servlet-name>StatisticsForServiceHistoryHtml</servlet-name>
         <servlet-class>com.mockey.ui.StatisticsForServiceHistoryHtml</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>jersey-serlvet</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>com.mockey.api;org.codehaus.jackson.jaxrs</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.disableMoxyJson.server</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jersey-serlvet</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StatusServlet</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>validateSyntax</servlet-name>
+        <url-pattern>/validateSyntax</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>StatisticsForServiceHistoryHtml</servlet-name>
         <url-pattern>/servicestatschart</url-pattern>
@@ -629,9 +648,6 @@
         <url-pattern>
             /home
         </url-pattern>
-        <load-on-startup>
-            1
-        </load-on-startup>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>
@@ -705,15 +721,15 @@
             /export/*
         </url-pattern>
     </servlet-mapping>
-	<filter>
-		<display-name>EnableCorsFilter</display-name>
-		<filter-name>EnableCorsFilter</filter-name>
-		<filter-class>com.mockey.server.EnableCorsFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>EnableCorsFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+    <filter>
+        <display-name>EnableCorsFilter</display-name>
+        <filter-name>EnableCorsFilter</filter-name>
+        <filter-class>com.mockey.server.EnableCorsFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>EnableCorsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <welcome-file-list>
         <welcome-file>
             index.html

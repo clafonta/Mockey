@@ -1,0 +1,62 @@
+/* Show it is fixed to the top */
+body {
+    padding-top: 3.5rem;
+    margin-bottom: 40px;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 40px;
+    line-height: 40px; /* Vertically center the text there */
+    background-color: #f5f5f5;
+}
+
+[v-cloak] {
+    display: none;
+}
+.pickl_bg {
+    background-color: #7E8A68;
+}
+.pickl_wrapper {
+    display: flex;
+    flex-direction: row;
+    font-size: 0.75em;
+    max-height: 88vh;
+}
+
+.pickl_col {
+    flex: 1;
+    background: #95A47B;
+    padding: 4px;
+    max-height: 100%;
+    overflow: scroll;
+}
+.pickl_col:nth-child(1) {
+    width: 230px; /* Or a percentage value */
+    flex:initial;
+    background: #A1B185;
+    
+}
+.pickl_col:nth-child(2) {
+    width: 230px; /* Or a percentage value */
+    flex:initial;
+    background: #BDD09C;
+}
+.pickl_footer_right{
+    text-align: right;
+    padding-right: 1em;
+}
+
+.is-collapsed-dashboard-uber-detail {
+    display: none;
+}
+
+

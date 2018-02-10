@@ -50,6 +50,7 @@ import com.mockey.plugin.RequestInspectorDefinedByJson;
 import com.mockey.storage.IMockeyStorage;
 import com.mockey.storage.StorageRegistry;
 import com.mockey.ui.Util;
+import java.io.Serializable;
 
 /**
  * A Service is a remote url that can be called.
@@ -57,7 +58,7 @@ import com.mockey.ui.Util;
  * @author chad.lafontaine
  * 
  */
-public class Service extends StatusCheck implements PersistableItem, ExecutableService {
+public class Service extends StatusCheck implements PersistableItem, ExecutableService, Serializable {
 
 	public final static int SERVICE_RESPONSE_TYPE_PROXY = 0;
 	public final static int SERVICE_RESPONSE_TYPE_STATIC_SCENARIO = 1;
@@ -850,7 +851,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 
 	/**
 	 * 
-	 * @param requestInspectorJsonRules
+	 * @param _requestInspectorJsonRules
 	 *            can be null or empty or invalid JSON format to be able display
 	 *            to customers invalid input. Validation will be done elsewhere.
 	 *            If not null, argument will be trimmed prior to being set.
