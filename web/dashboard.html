@@ -39,7 +39,7 @@
         </ul>
         <form class="form-inline mt-2 mt-md-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <button class="btn-sm btn-light my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>
 </nav>
@@ -73,11 +73,10 @@
     </div>
     <div v-bind:class="{'is-collapsed-dashboard-uber-detail' : !collapsed }" class="pickl_wrapper" v-cloak>
         <div class="pickl_col">
-            <h2>Lists</h2>
-            <ul class="list-unstyled">
-                <li v-for="post of posts" v-cloak>
-                    <p><a href="#" v-on:click=" collapsed = !collapsed">{{post.serviceName}}</a></p>
-                    <p>{{post.url}}</p>
+            <h2>Service List</h2>
+            <ul class="list-unstyled compact">
+                <li v-for="mockservice of mockservices" v-cloak>
+                    <p><a href="#" v-on:click=" onMockServiceSelection(mockservice)">{{mockservice.serviceName}}</a> {{mockservice.url}}</p>
                 </li>
                 <li>Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</li>
                 <li>Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi.</li>
@@ -91,8 +90,12 @@
             </ul>
         </div>
         <div class="pickl_col">
-            <h2>Sub lists</h2>
-            <ul>
+            <h2>Scenario List</h2>
+            <p><a href="#" class="text-primary" v-on:click=" onMockScenarioCreateForm()">+</a></p>
+            <ul class="list-unstyled compact">
+                <li v-for="mockscenario of mockscenarios" v-cloak>
+                   <p><a href="#" class="text-primary" v-on:click=" onMockScenarioSelection(mockscenario)">{{mockscenario.scenarioName}}</a></p>
+                </li>
                 <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
                 <li>Aliquam tincidunt mauris eu risus.</li>
                 <li>Vestibulum auctor dapibus neque.</li>
@@ -109,8 +112,40 @@
             </ul>
         </div>
         <div class="pickl_col">
-            <h2>Detail</h2>
+            <h2>Scenario Detail</h2>
             <div>
+                <p>{{mockscenario}}</p>
+                <form v-on:submit="onMockScenarioAddAction" action="#" method="post">
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Email address</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" v-model="domain">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Example select</label>
+                        <select class="form-control" id="exampleFormControlSelect1">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect2">Example multiple select</label>
+                        <select multiple class="form-control" id="exampleFormControlSelect2">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Example textarea</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" v-on:click=" onMockScenarioCreateForm()">Submit</button>
+                </form>
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti.</p>
                 <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. Praesent elementum hendrerit tortor. Sed semper lorem at felis. Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna.</p>
                 <p>Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl.</p>
@@ -136,6 +171,7 @@
 <script src="js/jquery-3.2.1.slim.min.js" ></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/vue.js"></script>
+<script src="js/vue-resource.js"></script>
 <script src="js/polyfill.min.js"></script>
 <script src="js/bootstrap-vue.js"></script>
 <script src="js/axios.min.js"></script>

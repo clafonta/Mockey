@@ -28,7 +28,6 @@ html {
 .pickl_wrapper {
     display: flex;
     flex-direction: row;
-    font-size: 0.75em;
     max-height: 88vh;
 }
 
@@ -57,6 +56,9 @@ html {
 
 .is-collapsed-dashboard-uber-detail {
     display: none;
+}
+ul.compact p {
+    white-space: nowrap;
 }
 
 
