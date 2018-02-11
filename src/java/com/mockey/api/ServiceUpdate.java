@@ -16,36 +16,39 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 
-// Plain old Java Object it does not extend as class or implements
-// an interface
-
-// The class registers its methods for the HTTP GET request using the @GET annotation.
-// Using the @Produces annotation, it defines that it can deliver several MIME types,
-// text, XML and HTML.
-
-// The browser requests per default the HTML MIME type.
-
-//Sets the path to base URL + /hello
-@Path("/mockservicelist")
-public class MockServiceList {
-
+@Path("/service")
+public class ServiceUpdate {
     private static IMockeyStorage store = StorageRegistry.MockeyStorage;
     private static Logger logger = Logger.getLogger(HomeServlet.class);
 
     // This method is called if TEXT_PLAIN is request
     @GET
+    @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Service> getServiceList() {
+    public Service updateService() {
 
 
         String filterTagArg = store.getGlobalStateSystemFilterTag();
         FilterHelper filterHelper = new FilterHelper();
-        List<Service> filteredServiceList = filterHelper.getFilteredServices(filterTagArg, store);
-        return filteredServiceList;
+        Service model = new Service();
+
+        return model;
     }
 
     @GET
-    @Path("/{param}")
+    @Path("/list")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getServiceList() {
+
+        String filterTagArg = store.getGlobalStateSystemFilterTag();
+
+        FilterHelper filterHelper = new FilterHelper();
+        List<Service> list = filterHelper.getFilteredServices(filterTagArg, store);
+        return Response.ok(list).build();
+    }
+
+    @GET
+    @Path("/item/{param}")
     public Response getMsg(@PathParam("param") String msg) {
 
         String output = "Jersey say : " + msg;
@@ -53,7 +56,4 @@ public class MockServiceList {
         return Response.status(200).entity(output).build();
 
     }
-
-    
-
 }
