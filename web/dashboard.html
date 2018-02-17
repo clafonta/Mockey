@@ -115,36 +115,20 @@
             <h2>Scenario Detail</h2>
             <div>
                 <p>{{mockscenario}}</p>
-                <form v-on:submit="onMockScenarioAddAction" action="#" method="post">
+                <form v-on:submit.prevent   ="onMockScenarioAddAction" action="#" method="post">
+                    <input id="id" name="id" type="hidden" v-model="id">
+                    <input id="serviceId" name="serviceId" type="hidden" v-model="serviceId">
+
                     <div class="form-group">
-                        <label for="exampleFormControlInput1">Email address</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" v-model="domain">
+                        <label for="scenarioName">Scenario name</label>
+                        <input type="text" class="form-control" id="scenarioName" placeholder="Scenario name" v-model="scenarioName">
                     </div>
+                    
                     <div class="form-group">
-                        <label for="exampleFormControlSelect1">Example select</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
+                        <label for="responseMessage">Response message</label>
+                        <textarea class="form-control" id="responseMessage" rows="5" v-model="responseMessage"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect2">Example multiple select</label>
-                        <select multiple class="form-control" id="exampleFormControlSelect2">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Example textarea</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary" v-on:click=" onMockScenarioCreateForm()">Submit</button>
+                    <button type="submit" class="btn btn-primary" v-on:click="onMockScenarioCreateForm()">Submit</button>
                 </form>
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti.</p>
                 <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. Praesent elementum hendrerit tortor. Sed semper lorem at felis. Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna.</p>

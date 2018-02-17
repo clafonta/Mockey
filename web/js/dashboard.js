@@ -10,27 +10,42 @@ var app = new Vue({
         mockscenarios: [],
         mockscenario:[],
         debug: true,
-        domain: '',
+        scenarioName: '',
+        responseMessage: '',
+        serviceId: '',
+        id: '',
         ajaxRequest: false,
         postResults: []
     },
     methods: {
-        onMockScenarioAddAction: function() {
-            this.mockscenario = [];
+        onMockScenarioAddAction: function(event) {
+
+            alert("yy" + this.scenarioName);
             this.ajaxRequest = true;
-            this.$http.post('http://localhost:8080/api/mockservicelist/', {
-                domain: this.domain
+            this.$http.post('http://localhost:8080/api/scenario/update', {
+
+                scenarioName: this.scenarioName,
+                responseMessage: this.responseMessage,
+                id: this.id,
+                serviceId: this.serviceId
             }, function (data, status, request) {
-                this.postResults = data;
-                this.ajaxRequest = false;
+                alert("Herex");
+                //this.postResults = data;
+                //this.ajaxRequest = false;
             });
-            alert("yeah");
+
+            
+
         },
         onMockScenarioCreateForm: function() {
             this.mockscenario = [];
         },
         onMockScenarioSelection: function(mockScenario) {
             this.mockscenario = mockScenario;
+            this.scenarioName = this.mockscenario.scenarioName;
+            this.responseMessage = this.mockscenario.responseMessage;
+            this.id = this.mockscenario.id;
+            this.serviceId = this.mockscenario.serviceId;
         },
         onMockServiceSelection: function(mockService) {
             
@@ -39,7 +54,7 @@ var app = new Vue({
 
         },
         fetchData() {
-            axios.get('http://localhost:8080/api/mockservicelist').then(response => {
+            axios.get('http://localhost:8080/api/service/list').then(response => {
                 this.mockservices = response.data;
         });
         }
