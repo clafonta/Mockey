@@ -80,7 +80,29 @@ public class TagHelperServlet extends HttpServlet {
 			// PERFORM ACTION (OPTIONAL)
 			if ("filter_tag_on".equals(action)) {
 				// Redirect to Home and SET as session FILTER, your tags.
-				store.setGlobalStateSystemFilterTag(tag);
+				String currentTagJumble = store.getGlobalStateSystemFilterTag();
+				StringBuilder updatedTagJumble = new StringBuilder();
+				if(currentTagJumble!=null) {
+					boolean foundTag = false;
+					String[] tagList = currentTagJumble.split("\\s+");
+					for(String tagItem : tagList){
+						if(tagItem!=null && tagItem.trim().equalsIgnoreCase(tag)){
+							foundTag = true;
+						}else {
+							updatedTagJumble.append(tagItem + " ");
+						}
+					}
+					if(!foundTag){
+						updatedTagJumble.append(tag + " ");
+					}
+					store.setGlobalStateSystemFilterTag(updatedTagJumble.toString());
+					
+				}else {
+					store.setGlobalStateSystemFilterTag(tag);
+				}
+
+
+
 				
 				jsonObject.put("success", "Filter by tag is on.");
 			} else if ("filter_tag_off".equals(action)) {

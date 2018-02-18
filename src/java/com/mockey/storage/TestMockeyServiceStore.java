@@ -30,22 +30,19 @@ package com.mockey.storage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-import com.mockey.model.FulfilledClientRequest;
-import com.mockey.model.PlanItem;
-import com.mockey.model.ProxyServerModel;
-import com.mockey.model.Scenario;
-import com.mockey.model.ScenarioRef;
-import com.mockey.model.Service;
-import com.mockey.model.ServicePlan;
-import com.mockey.model.ServiceRef;
-import com.mockey.model.TwistInfo;
+import com.mockey.model.*;
 import com.mockey.plugin.IRequestInspector;
 
 public class TestMockeyServiceStore implements IMockeyStorage {
 
 	public void deleteService(Service mockServiceBean) {
 
+	}
+	
+	public Set<TagItem> getAllTagsFromStore() {
+		return null;
 	}
 
 	public void deleteFulfilledClientRequestsFromIP(Long scenarioId) {

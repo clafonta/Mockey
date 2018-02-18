@@ -14,26 +14,24 @@
         <ul>
        		<c:forEach var="resultItem" items="${results}"  varStatus="status">     
        		  <li> 
-       		  <mockey:slug text="${resultItem.content}" maxLength="80"/>                    
+
        		  <c:if test="${resultItem.typeAsString eq 'service'}">
            		   <c:url value="/home" var="serviceUrl">
                     <c:param name="serviceId" value="${resultItem.serviceId}" />
                    </c:url>
-                   <a href="${serviceUrl}">[link]</a>
+                   <a href="${serviceUrl}"><mockey:slug text="${resultItem.content}" maxLength="80"/></a>
        		  </c:if>
        		   <c:if test="${resultItem.typeAsString eq 'scenario'}">
                    <c:url value="/home" var="serviceUrl">
                     <c:param name="serviceId" value="${resultItem.serviceId}" />
                    </c:url>
-                   (<b>Scenario</b>: ${resultItem.scenarioName})
-                   <a href="${serviceUrl}">[link]</a>
+                   <a href="${serviceUrl}"><mockey:slug text="${resultItem.content}" maxLength="80"/> (<b>Scenario</b>: ${resultItem.scenarioName})</a>
               </c:if>
               <c:if test="${resultItem.typeAsString eq 'service_plan'}">
                    <c:url value="/home" var="servicePlanUrl">
                     <c:param name="servicePlanId" value="${resultItem.servicePlanId}" />
                    </c:url>
-                   (<b>Service Plan</b>: ${resultItem.servicePlanName})
-                   <a href="${servicePlanUrl}">[link]</a>
+                   <a href="${servicePlanUrl}"><mockey:slug text="${resultItem.content}" maxLength="80"/> (<b>Service Plan</b>: ${resultItem.servicePlanName})</a>
               </c:if>
        		  
        		   </li>

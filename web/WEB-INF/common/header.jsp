@@ -157,6 +157,8 @@ $(document).ready(function() {
         modal: true,
         autoOpen: false
     });
+
+
     
     $("#filter-tag-update-button").click( function() {
            var filterTag = $('#filter-tag-field').val();
@@ -171,6 +173,21 @@ $(document).ready(function() {
 				}, 'json' );
            
         });
+
+    $('.filter-tag-item').each( function() {
+        $(this).click( function() {
+            var  filterTag = this.id;
+            $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_on', tag: filterTag } ,function(data){
+                //console.log(data);
+                if(data.success){
+                    document.location="<c:url value="/home" />";
+                }else {
+                    alert("Hmm...");
+                }
+            }, 'json' );
+        });
+    });
+    
     $('.clear-tag-button').each( function() {
        $(this).click( function() {
            $.post('<c:url value="/taghelp"/>', { action: 'filter_tag_off' } ,function(data){

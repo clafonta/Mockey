@@ -30,6 +30,6 @@ public class ScenarioUpdate {
         FilterHelper filterHelper = new FilterHelper();
         Scenario scenario = new Scenario();
                                  model.toString();
-        return scenario;
+        return model;
     }
 }

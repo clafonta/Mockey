@@ -191,6 +191,10 @@ span#greentext {font: 12pt Arial;letter-spacing: 4pt;color: #00AA00; margin:6px;
     white-space:nowrap;
     line-height:0.9em;
 }
+.tag_word_selected {
+    font-weight: 900;
+    font-size: 1.2em;
+}
 .tag_word a {
     padding-right:10px; 
     style:none;
@@ -416,6 +420,18 @@ overflow: auto;
 border: 0px solid #C0C0C0;
 padding: 8px;
 }
+div.home-left-list-scroll {
+    height: 65vh;
+    overflow: auto;
+    border: 0px solid #C0C0C0;
+    padding: 8px;
+}
+div.home-main-list-scroll {
+    height: 40vh;
+    overflow: auto;
+    border: 0px solid #C0C0C0;
+    padding: 8px;
+}
 #updated, #foo, #deleted, #error-info{
     position: fixed;
     max-width: 850px;
@@ -480,6 +496,7 @@ div.not-top {margin-top:2em;}
 }
 
 /* EDIT SCENARIO FORM */
+.no-scenario-defined-warning {color: red;}
 .edit-scenario-name-label, .edit-scenario-match-label, .edit-scenario-response-label {font-weight:bold; font-size:1.0em;}
 .edit-scenario-name-value, .edit-scenario-match-value {margin:0.8em 0; padding:0.4em; width:95%; }
 .edit-scenario-response-value {display:block;margin-bottom:0pt;width:100%; font-size:0.2em;height: 300px;font-family: Courier New, monospace;font-weight:100; font-stretch: ultra-condensed;}

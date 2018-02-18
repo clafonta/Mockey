@@ -20,6 +20,32 @@ var app = new Vue({
     methods: {
         onMockScenarioAddAction: function(event) {
 
+            // POST /someUrl
+            this.$http.post('http://localhost:8080/api/scenario/update', {
+                    scenarioName: this.scenarioName,
+                    responseMessage: this.responseMessage,
+                    id: this.id,
+                    serviceId: this.serviceId
+                }).then(response => {
+
+                // get status
+                response.status;
+
+            // get status text
+            response.statusText;
+
+            // get 'Expires' header
+            response.headers.get('Expires');
+
+            // get body data
+            this.mockscenario = response.body;
+
+        }, response => {
+                // error callback
+            });
+
+            /*
+
             alert("yy" + this.scenarioName);
             this.ajaxRequest = true;
             this.$http.post('http://localhost:8080/api/scenario/update', {
@@ -34,7 +60,7 @@ var app = new Vue({
                 //this.ajaxRequest = false;
             });
 
-            
+                           */
 
         },
         onMockScenarioCreateForm: function() {

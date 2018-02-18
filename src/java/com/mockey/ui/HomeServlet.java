@@ -296,6 +296,7 @@ public class HomeServlet extends HttpServlet {
 		}
 
 		String filterTagArg = store.getGlobalStateSystemFilterTag();
+
 		FilterHelper filterHelper = new FilterHelper();
 		List<Service> filteredServiceList = filterHelper.getFilteredServices(filterTagArg, store);
 
@@ -305,6 +306,8 @@ public class HomeServlet extends HttpServlet {
 		req.setAttribute("conflictInfo", conflictInfo);
 		req.setAttribute("plans", filterHelper.getFilteredServicePlans(filterTagArg, store));
 		req.setAttribute("filterTag", filterTagArg);
+		req.setAttribute("filterTagList", store.getAllTagsFromStore());
+		
 		if (store.getDefaultServicePlanIdAsLong() != null) {
 			req.setAttribute("defaultServicePlanId", store.getDefaultServicePlanId());
 		} else {

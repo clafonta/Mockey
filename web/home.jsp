@@ -487,16 +487,26 @@ $(document).ready( function() {
     <span class="filter-link"><a href="javascript:void(0);" class="toggle-filter-view"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none;">Hide</span> Filter</a></span>
     <div id="filter_view_div" style="display:none;margin-top: 5px;">
     
-		<span class="basic_label">Filter services with tags:</span> (<a href="javascript:void(0);" class="manageTagLink power-link tiny">Tag Helper</a>) <br />
-		<input type="text" id="filter-tag-field" style="width:500px;" value="${filterTag}" placeholder="Enter space seperated tags here." name="filter-tag-field" class="blur text ui-corner-all ui-widget-content" />
-		<button id="filter-tag-update-button" class="hhButton" style="width: 80px;">Filter</button> 
+		<span class="basic_label">Filter services with tags:</span> (<a href="javascript:void(0);" class="manageTagLink power-link tiny">Tag Helper</a>) 
+
+		
+		<c:forEach var="filterTagItem" items="${filterTagList}"  varStatus="status">
+			<c:choose>
+				<c:when test='${filterTagItem.state}'>
+					<c:set var="toggle_value_class" value="tag_word_selected" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="toggle_value_class" value="" />
+				</c:otherwise>
+			</c:choose>
+			<a href="javascript:void(0);" class="filter-tag-item tiny ${toggle_value_class}" id="${filterTagItem.value}" >${filterTagItem.value}</a>
+		</c:forEach>
+
 		<br />
 		
 		<div style="margin-top:5px;">
-	    	<span class="basic_label">Search for services or scenarios by name or mock url:</span><br />
 			  <input type="text" style="width:500px;" value="${term}" placeholder="Service name, scenario name, or mock url" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term">
 			  <button class="hhButton" id="search_me" style="width: 80px;">Search</button>
-			  
 	    </div> 
 	
 	</div>
@@ -552,9 +562,9 @@ $(document).ready( function() {
 										<span class="power-link tiny"><a href="javascript:void(0);" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span>
 				                    </div>
 							  	  <c:if test="${!empty servicePlan}">
-							  	  <div class="alert_message tiny" id="servicePlanSetMessge">
+							  	  <div class="info_message tiny" id="servicePlanSetMessge">
 							  	  <span style="float:right;">
-							  	  <a href="javascript:void(0);" id="servicePlanSetMessgeLink" class="remove_grey" title="Hide this message." style="text-decoration:none;"><i aria-hidden="true" class="icon-cancel"></i></a>
+							  	  <a href="javascript:void(0);" id="servicePlanSetMessgeLink" class="remove_grey" title="Hide this message." style="text-decoration:none;">Dismiss</a>
 							  	  </span>
 							  	  Plan that was just set:  
 							  	  <h2>
@@ -573,7 +583,7 @@ $(document).ready( function() {
 								  </p>
 								  </div>
 								  
-								  <div class="scroll">
+								  <div class="home-left-list-scroll">
 		                            	<c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 			                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" >
 			                                
@@ -586,24 +596,24 @@ $(document).ready( function() {
 				                                
 				                                <a class="tiny_service_delete remove_grey" id="deleteServiceLink_<c:out value="${mockservice.id}"/>" title="Delete this service" href="javascript:void(0);"><i aria-hidden="true" class="icon-cancel"></i></a>
 				                                </span>
-				                                
-				                                
-												<div style="margin-bottom:0.5em;display:block; word-wrap: break-word;">${mockservice.serviceName}</div>
 												
 												<div class="toggle-buttons" style="margin-bottom:8px;">
-				                                  <mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
+
 				                                  <span class="toggle_button tiny">
-												      <a class="service-view-master-link" onclick="return true;" href="javascript:void(0);" id="togglevalue_<c:out value="${mockservice.id}"/>" title="${mockservice.serviceName}">view</a> |
-												      <a href="<c:out value="${setupUrl}"/>" title="Edit service definition">edit</a> | 
-												      <a class="tiny_service_duplicate" id="duplicateServiceLink_<c:out value="${mockservice.id}"/>" title="Duplicate this service" href="javascript:void(0);">dup'</a>
+													  <c:if test="${empty mockservice.scenarios}">
+														  <span title="No scenarios defined for this service." class="icon-info no-scenario-defined-warning"> </span>
+													  </c:if>
+												      <a class="service-view-master-link" onclick="return true;" href="javascript:void(0);" id="togglevalue_<c:out value="${mockservice.id}"/>" title="${mockservice.serviceName}">${mockservice.serviceName}</a>
 												  </span>
 												  <mockey-tag:conflictFlag service="${mockservice}" conflictInfo="${conflictInfo}"/>
-												  <c:if test="${empty mockservice.scenarios}">
-						                           <div class="warning_no_scenario">No scenarios defined for this service.</div>
-						                          </c:if>
 						                        </div>
 						                        <div class="service-meta-data" style="display:none;">
-													<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>	
+													<mockey:service type="${mockservice.serviceResponseType}" serviceId="${mockservice.id}"/>
+
+													<mockey-tag:statusCheckByService service="${mockservice}" view="master"/>
+													<div>
+													<a class="tiny_service_duplicate" id="duplicateServiceLink_<c:out value="${mockservice.id}"/>" title="Duplicate this service" href="javascript:void(0);">Clone</a>
+													</div>
 													<div class="tiny" style="font-size: 12px;">
 													Check the box to include this service in a "Save As Plan".  
 													<input type="checkbox" name="service_plan_include_checkbox" value="${mockservice.id}" <mockey-tag:serviceInServicePlanFlag service="${mockservice}" servicePlan="${servicePlan}"/> />
@@ -725,7 +735,7 @@ $(document).ready( function() {
                                    <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario (${fn:length(mockservice.scenarios)}):</label>
                                    	<span style="float:right;" class="power-link tiny"><a href="javascript:void(0);" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
-                                   <div >
+                                   <div class="home-main-list-scroll">
                                    <div id="scenario-list_${mockservice.id}">
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">

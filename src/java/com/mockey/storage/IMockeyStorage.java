@@ -28,16 +28,9 @@
 package com.mockey.storage;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-import com.mockey.model.FulfilledClientRequest;
-import com.mockey.model.ProxyServerModel;
-import com.mockey.model.Scenario;
-import com.mockey.model.ScenarioRef;
-import com.mockey.model.Service;
-import com.mockey.model.ServicePlan;
-import com.mockey.model.ServiceRef;
-import com.mockey.model.TwistInfo;
+import com.mockey.model.*;
 
 /**
  * How Mockey stores itself.
@@ -158,6 +151,8 @@ public interface IMockeyStorage {
 	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId);
 
 	public void deleteTagFromStore(String tag);
+
+	public Set<TagItem> getAllTagsFromStore();
 
 	public void setGlobalStateSystemFilterTag(String tag);
 
