@@ -484,7 +484,7 @@ $(document).ready( function() {
 </script>
     <div id="main">
     
-    <span class="filter-link"><a href="javascript:void(0);" class="toggle-filter-view"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none;">Hide</span> Filter</a></span>
+    <span class="filter-link"><a href="javascript:void(0);" class="toggle-filter-view" style="color: red;"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none; ">Hide</span> Search/Filter</a></span>
     <div id="filter_view_div" style="display:none;margin-top: 5px;">
     
 		<span class="basic_label">Filter services with tags:</span> (<a href="javascript:void(0);" class="manageTagLink power-link tiny">Tag Helper</a>) 

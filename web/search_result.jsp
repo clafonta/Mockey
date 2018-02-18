@@ -19,7 +19,7 @@
            		   <c:url value="/home" var="serviceUrl">
                     <c:param name="serviceId" value="${resultItem.serviceId}" />
                    </c:url>
-                   <a href="${serviceUrl}"><mockey:slug text="${resultItem.content}" maxLength="80"/></a>
+                   <a href="${serviceUrl}"><mockey:slug text="${resultItem.content}" maxLength="80"/> (<b>Service</b>)</a>
        		  </c:if>
        		   <c:if test="${resultItem.typeAsString eq 'scenario'}">
                    <c:url value="/home" var="serviceUrl">
