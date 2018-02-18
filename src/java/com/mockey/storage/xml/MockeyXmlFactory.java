@@ -52,10 +52,7 @@ public class MockeyXmlFactory {
 	private static Logger logger = Logger.getLogger(MockeyXmlFactory.class);
 
 	/**
-	 * Convert document to string. Helper method.
-	 * 
-	 * @param document
-	 *            the document object.
+	 * Convert document to string. Helper method. 
 	 * @return String.
 	 * @throws java.io.IOException
 	 *             when unable to write the xml
@@ -83,6 +80,8 @@ public class MockeyXmlFactory {
 	public void writeStoreToXML(IMockeyStorage sourceStore, String destinationFileName) {
 
 		try {
+			// 
+			MockeyXmlFileManager.getInstance().cleanDirectory();
 			// WRITE STORE META FIRST
 			File parentFolder = MockeyXmlFileManager.getInstance().getBasePathFile();
 			File f = new File(parentFolder,destinationFileName);

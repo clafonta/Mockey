@@ -437,14 +437,16 @@ div.home-main-list-scroll {
     max-width: 850px;
     right: 10px;
     margin: 0 auto;
-    background: #FFD7D5;
-    text-align: left;
+    text-align: center;
     top: 10px;
-    color:red;
-    padding: 0.2em;
+    padding: 0.8em;
     z-index:9090;
-    border: thin solid #FE9EA7;
+    font-size: 1.2em;
+    background: #8AFFAB;
+    color: #000;
+    border: thin solid #00AA00;
 }
+
 .configuration-info {
     text-align: center;
     padding: 0.4em; 
