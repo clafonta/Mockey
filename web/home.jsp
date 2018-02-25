@@ -483,11 +483,10 @@ $(document).ready( function() {
  });
 </script>
     <div id="main">
+
+	<div id="filter_view_div">
     
-    <span class="filter-link"><a href="javascript:void(0);" class="toggle-filter-view" style="color: red;"><span class="filter-toggle-txt">Show</span><span class="filter-toggle-txt" style="display:none; ">Hide</span> Search/Filter</a></span>
-    <div id="filter_view_div" style="display:none;margin-top: 5px;">
-    
-		<span class="basic_label">Filter services with tags:</span> (<a href="javascript:void(0);" class="manageTagLink power-link tiny">Tag Helper</a>) 
+		<span class="basic_label">Filter services with tags</span> (<span class="power-link tiny"><a href="javascript:void(0);" class="manageTagLink ">Tag Helper</a></span>):
 
 		
 		<c:forEach var="filterTagItem" items="${filterTagList}"  varStatus="status">
@@ -505,12 +504,12 @@ $(document).ready( function() {
 		<br />
 		
 		<div style="margin-top:5px;">
-			  <input type="text" style="width:500px;" value="${term}" placeholder="Service name, scenario name, or mock url" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term">
+			  <input type="text" style="width:80%;" value="${term}" placeholder="Service name, scenario name, or mock url" class="text ui-corner-all ui-widget-content" name="search_term" id="search_term">
 			  <button class="hhButton" id="search_me" style="width: 80px;">Search</button>
 	    </div> 
 	
 	</div>
-	<span class="power-link tiny"><a href="javascript:void(0);" class="toggle-service-meta-data"><span class="service-meta-data">Show Service Details</span></a><span class="service-meta-data" style="display:none;"><a href="<c:url value="/home" />">Hide Service Details</a></span> </span>
+
         <%@ include file="/WEB-INF/common/message.jsp" %>
         <!-- SERVICE PLAN CREATE DIALOG -->
         <div id="dialog-tag-manage" title="Tag Helper">
@@ -547,10 +546,8 @@ $(document).ready( function() {
 				    </c:otherwise>
 				</c:choose>
 
-		        <table class="simple" width="100%" cellspacing="0">
-	            <tbody>
-		              <tr>                                                                                 
-							<td valign="top" width="33%" style="max-width:220px;padding-left:0;">
+		        <div class="flex_wrapper">
+					<div class="flex_item">
 							<div id="tabs" style="display:none;">
 								<ul>
 									<li><a href="#tabs-1" style="font-weight:100;">Services (${fn:length(services)})</a></li>
@@ -558,7 +555,7 @@ $(document).ready( function() {
 								</ul>
 							  	<div id="tabs-1">
 				                    <div style="text-align:right;">
-				                        <span class="power-link tiny"><a title="Service Setup - create new service" href="<c:url value="/setup" />">Create a Service</a></span> | 
+										<span class="power-link tiny"><a href="javascript:void(0);" class="toggle-service-meta-data"><span class="service-meta-data">Show Service Details</span></a><span class="service-meta-data" style="display:none;"><a href="<c:url value="/home" />">Hide Service Details</a></span> </span> |
 										<span class="power-link tiny"><a href="javascript:void(0);" class="createPlanLink" id="createPlanLink">Create Service Plan</a></span>
 				                    </div>
 							  	  <c:if test="${!empty servicePlan}">
@@ -583,7 +580,7 @@ $(document).ready( function() {
 								  </p>
 								  </div>
 								  
-								  <div class="home-left-list-scroll">
+								  <div class="">
 		                            	<c:forEach var="mockservice" items="${services}"  varStatus="status">	  
 			                                <div id="parentform_${mockservice.id}" class="parentform <c:if test="${mockservice.id eq serviceIdToShowByDefault}">parentformselected</c:if>" >
 			                                
@@ -672,8 +669,8 @@ $(document).ready( function() {
 							    	</div>
 							    </div>
 							</div>
-							</td>
-							<td valign="top" width="380px;">
+					</div>
+					<div class="flex_item">
 							<div id='service_list_container'>
 							<div class="service_div display" style="<c:if test="${! empty serviceIdToShowByDefault}">display:none;</c:if><c:if test="${serviceIdToShowByDefault==null}">display:block;</c:if>text-align:center;">
 							
@@ -735,7 +732,7 @@ $(document).ready( function() {
                                    <div class="service-label border-top" style="margin-top:1em;"><label>Select a static scenario (${fn:length(mockservice.scenarios)}):</label>
                                    	<span style="float:right;" class="power-link tiny"><a href="javascript:void(0);" class="createScenarioLink" id="createScenarioLink_${mockservice.id}">Create Scenario</a></span>
                                    </div>
-                                   <div class="home-main-list-scroll">
+                                   <div id="MAIN_CONTAINER" class="">
                                    <div id="scenario-list_${mockservice.id}">
 		                                <c:choose>
 		                                  <c:when test="${not empty mockservice.scenarios}">
@@ -784,12 +781,8 @@ $(document).ready( function() {
                               </div>
                               </c:forEach>
                               </div>
-                              
-							</td>							
-						</tr>
-						
-		            </tbody>
-		        </table>
+					</div>
+		        </div>
 		        <jsp:include page="/WEB-INF/common/inc_scenario_create_dialog.jsp" />
 		       
 		        <div id="dialog" title="Scenerio Preview">

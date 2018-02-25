@@ -15,6 +15,24 @@ h1, .h1{ font-size:160%; color: #303030;}
 h2 { font-size:140%; color: #303030;}
 h3 { font-size:120%; color: #303030;font-weight:200;}
 h4 {font-size: 100%; color: black;font-weight: 200;margin: 1em 0em 0.5em 0em; padding:1px;}
+.flex_wrapper {
+    display: flex;
+    flex-direction: row;
+    max-height: 80vh;
+}
+.flex_item {
+    flex: 1;
+    padding: 4px;
+    max-height: 100%;
+    overflow: scroll;
+}
+.flex_item:nth-child(1) {
+    width: 330px; /* Or a percentage value */
+    flex:initial;
+}
+.flex_item:nth-child(2) {
+    flex: 2;
+}
 img {border:0;}
 .highlight{color: #ff0073;}
 .highlight_pos{color: #06F;}
@@ -152,8 +170,8 @@ a#fdate{color:blue;text-decoration:none;}
 a#finfo{color:blue;text-decoration:none;}
 a#highlight{font-size:120%;}
 div#container{width:90%;margin:0 auto; min-width:850px; max-width:1600px;}
-div#main{width: 100%; margin-top: 10px;}
-div#main2{/* width: 850px; */ margin: 0 auto; margin-top:10px;}
+div#main{width: 100%;}
+div#main2{ margin: 0 auto; margin-top:10px;}
 div{margin-top: 1px; font-weight:300; }
 div#footer{width: 100%;min-width:600px; margin-top: 10px; border-top: 1px solid #CCC; text-align:left;}
 .spread{margin-left:0.8em; }
@@ -617,17 +635,7 @@ left: 60px; /*position where enlarged image should offset horizontally */
 .control-panel {
   padding: 5px;
 }
-.filter-link a  {
-  text-decoration: none;
-}
-.filter-link {
-  padding: 4px;
-  color: #6E6E6E;
-  font-size: 0.8em;
-  margin-right: 11px;
-  float: right;
-  text-decoration: none;
-}
+
 .on_off{
 	display:inline-block;
 	min-width:30px;
