@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Mockey" default="compile" basedir="."  xmlns:dn="antlib:org.apache.ant.dotnet">
+<project name="Mockey" default="compile" basedir=".">
 	<!-- =================================================================== -->
 	<!-- Base global properties for this build                                                                               -->
 	<!-- =================================================================== -->
