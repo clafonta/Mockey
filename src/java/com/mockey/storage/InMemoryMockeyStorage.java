@@ -28,8 +28,6 @@
 package com.mockey.storage;
 
 import java.net.MalformedURLException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -247,29 +245,21 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 * @return service if url pattern matches
 	 */
 	private Service findServiceBasedOnUrlPattern(String url, Service serviceToEvaluate) {
-		Service foundService = null;
-		String decodedUrl = null;
-		try {
-			decodedUrl = URLDecoder.decode(url, "UTF-8");
-		}catch(Exception e) {
-			System.out.println(e);
-			return foundService;
-		}
 		Url fullUrl = new Url(serviceToEvaluate.getUrl());
-		
+		Service foundService = null;
 		// EXAMPLE: "http://example.com/hotels/{hotel}/bookings/{booking}"
 		UriTemplate template = new UriTemplate(fullUrl.getFullUrl());
 
 		// EXAMPLE: "http://example.com/hotels/1/bookings/42"
 		@SuppressWarnings("rawtypes")
-		Map results = template.match(decodedUrl);
-		if (results.size() > 0 && template.matches(decodedUrl)) {
+		Map results = template.match(url);
+		if (results.size() > 0) {
 			// Possible match
 			foundService = serviceToEvaluate;
 		} else {
 
 			// OK, not found based on template URL.
-			if (fullUrl.getFullUrl().equalsIgnoreCase(decodedUrl)) {
+			if (fullUrl.getFullUrl().equalsIgnoreCase(url)) {
 				foundService = serviceToEvaluate;
 			} else {
 				// Let's look at secondary list of real URLs
@@ -285,8 +275,9 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 					// be
 					// matched against the url of the request instead.
 					template = new UriTemplate(altUrl.getFullUrl());
-					results = template.match(decodedUrl);
-					if (results.size() > 0  && template.matches(decodedUrl)) {
+					results = template.match(url);
+
+					if (results.size() > 0) {
 						// Possible match
 						foundService = serviceToEvaluate;
 						break;
