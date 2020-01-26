@@ -400,7 +400,9 @@ public class MockeyXmlFileManager {
                 // YES, no in-store matching Name.
                 // We null ID, to not write-over on any in-store
                 // services with same ID
-                uploadedServiceBean.setId(null);
+                if(uploadedServiceBean.getId() == null) {
+                	uploadedServiceBean.setId(null);
+                }
 
                 // #TAG HANDLING - BEGIN
                 // Ensure Service, and all it's child scenarios have

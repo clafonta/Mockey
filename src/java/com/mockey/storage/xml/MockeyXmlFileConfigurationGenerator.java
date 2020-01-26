@@ -181,6 +181,11 @@ public class MockeyXmlFileConfigurationGenerator extends XmlGeneratorSupport {
 					getSafeForXmlOutputString(""
 							+ mockServiceBean.getDefaultRealUrlIndex()));
 
+			serviceElement.setAttribute(
+					"id",
+					getSafeForXmlOutputString(""
+							+ mockServiceBean.getId()));
+			
 			// Request validation rules in JSON format definition.
 			Element requestInspectorJsonRulesElement = document
 					.createElement("request_inspector_json_rules");

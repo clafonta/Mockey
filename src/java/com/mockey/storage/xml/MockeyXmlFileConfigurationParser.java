@@ -143,6 +143,7 @@ public class MockeyXmlFileConfigurationParser {
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "hang_time", "hangTime");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "url", "url");
 		fullSetDigester.addSetProperties(ROOT_SERVICE, "tag", "tag");
+		fullSetDigester.addSetProperties(ROOT_SERVICE, "id", "id");
 		// REMOVED March 2013.
 		// No need to persist to a repot'. At run time, visual queue only.
 		// fullSetDigester.addSetProperties(ROOT_SERVICE, "last_visit",
