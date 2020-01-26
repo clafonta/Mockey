@@ -49,7 +49,7 @@ public class UriTemplate {
 	private static final Pattern NAMES_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
 
 	/** Replaces template variables in the URI template. */
-	private static final String VALUE_REGEX = "\\{(.*?)\\}";
+	private static final String VALUE_REGEX = "(.*)";
 
 	private final List<String> variableNames;
 
