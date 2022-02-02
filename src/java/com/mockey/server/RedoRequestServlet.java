@@ -60,7 +60,7 @@ public class RedoRequestServlet extends HttpServlet {
      */
 	public void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		Long fulfilledClientRequestId = new Long(req
+		Long fulfilledClientRequestId = Long.valueOf(req
 				.getParameter("fulfilledClientRequestId"));
 		FulfilledClientRequest pastFulfilledClientRequest = store
 				.getFulfilledClientRequestsById(fulfilledClientRequestId);

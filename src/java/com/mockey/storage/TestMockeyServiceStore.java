@@ -89,7 +89,7 @@ public class TestMockeyServiceStore implements IMockeyStorage {
 		String SCENARIO_B = "456";
 		List<ServicePlan> planList = new ArrayList<ServicePlan>();
 		ServicePlan servicePlan = new ServicePlan();
-		servicePlan.setId(new Long(1));
+		servicePlan.setId(Long.valueOf(1));
 		servicePlan.setName(SERVICENAME_A);
 		servicePlan
 				.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ");

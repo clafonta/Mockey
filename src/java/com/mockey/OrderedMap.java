@@ -109,13 +109,13 @@ public class OrderedMap<T extends PersistableItem> extends ConcurrentHashMap<Lon
     }
 
     private Long getNextValue() {
-        Long nextValue = new Long(0);
+        Long nextValue = 0L;
         for (Long key : this.keySet()) {
             if (key > nextValue) {
                 nextValue = key;
             }
         }
-        nextValue = new Long(nextValue.longValue() + 1);
+        nextValue = nextValue.longValue() + 1;
         return nextValue;
     }
 

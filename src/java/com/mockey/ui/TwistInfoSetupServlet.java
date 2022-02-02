@@ -130,7 +130,7 @@ public class TwistInfoSetupServlet extends HttpServlet implements TwistInfoConfi
 		Long twistInfoId = null;
 		TwistInfo twistInfo = null;
 		try {
-			twistInfoId = new Long(req.getParameter(PARAMETER_KEY_TWIST_ID));
+			twistInfoId = Long.valueOf(req.getParameter(PARAMETER_KEY_TWIST_ID));
 			twistInfo = store.getTwistInfoById(twistInfoId);
 		} catch (Exception e) {
 			// Do nothing. If the value doesn't exist,

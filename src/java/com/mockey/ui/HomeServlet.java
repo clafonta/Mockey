@@ -184,9 +184,9 @@ public class HomeServlet extends HttpServlet {
 			// Or with a URL
 			String fileUrl = req.getParameter(BSC.URL);
 
-			Boolean transientState = new Boolean(true);
+			Boolean transientState = Boolean.valueOf(true);
 			try {
-				transientState = new Boolean(req.getParameter(BSC.TRANSIENT));
+				transientState = Boolean.valueOf(req.getParameter(BSC.TRANSIENT));
 				store.setReadOnlyMode(transientState);
 				logger.debug("In memory-mode (i.e. do not write to file system)? " + transientState);
 			} catch (Exception e) {
@@ -287,7 +287,7 @@ public class HomeServlet extends HttpServlet {
 		String servicePlanId = req.getParameter("plan_id");
 		if (servicePlanId != null) {
 			try {
-				ServicePlan sp = store.getServicePlanById(new Long(servicePlanId));
+				ServicePlan sp = store.getServicePlanById(Long.valueOf(servicePlanId));
 				req.setAttribute("servicePlan", sp);
 
 			} catch (Exception e) {

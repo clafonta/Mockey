@@ -69,7 +69,7 @@ public class ConfigurationInfoAJAXServlet extends HttpServlet {
 
 		try {
 			if (transientState != null) {
-				store.setReadOnlyMode(new Boolean(transientState));
+				store.setReadOnlyMode(Boolean.valueOf(transientState));
 			}
 		} catch (Exception e) {
 			logger.error("Unable to set transient state with value: " + transientState, e);

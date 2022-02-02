@@ -66,7 +66,7 @@ public class TwistInfoDeleteServlet extends HttpServlet implements TwistInfoConf
 		Long twistInfoId = null;
 		TwistInfo twistInfo = null;
 		try {
-			twistInfoId = new Long(req.getParameter(PARAMETER_KEY_TWIST_ID));
+			twistInfoId = Long.valueOf(req.getParameter(PARAMETER_KEY_TWIST_ID));
 			twistInfo = store.getTwistInfoById(twistInfoId);
 			store.deleteTwistInfo(twistInfo);
 		} catch (Exception e) {

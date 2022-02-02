@@ -233,7 +233,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			// *********************
 
 			try {
-				servicePlanId = new Long(servicePlanIdAsString);
+				servicePlanId = Long.valueOf(servicePlanIdAsString);
 				servicePlan = store.getServicePlanById(servicePlanId);
 			} catch (Exception e) {
 				if (req.getParameter(API_SETPLAN_PARAMETER_PLAN_ID) != null) {
@@ -261,7 +261,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			String transientState = req.getParameter(API_TRANSIENT_STATE);
 			try {
 				if (transientState != null) {
-					servicePlan.setTransientState(new Boolean(transientState));
+					servicePlan.setTransientState(Boolean.valueOf(transientState));
 				}
 			} catch (Exception e) {
 				log.debug("ServicePlan not set to transient state but a value was given as: " + transientState);
@@ -413,7 +413,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 		if (serviceIdArray != null) {
 			for (String serviceId : serviceIdArray) {
 
-				Service service = store.getServiceById(new Long(serviceId));
+				Service service = store.getServiceById(Long.valueOf(serviceId));
 
 				PlanItem planItem = new PlanItem();
 				planItem.setHangTime(service.getHangTime());
@@ -426,7 +426,7 @@ public class ServicePlanSetupServlet extends HttpServlet implements ServicePlanC
 			}
 		}
 		servicePlan.setPlanItemList(planItemList);
-		servicePlan.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+		servicePlan.setLastVisit(Long.valueOf(Calendar.getInstance().getTimeInMillis()));
 
 		return store.saveOrUpdateServicePlan(servicePlan);
 

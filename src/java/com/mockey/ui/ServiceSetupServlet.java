@@ -56,7 +56,7 @@ import com.mockey.storage.StorageRegistry;
 public class ServiceSetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 5503460488900643184L;
 	private static IMockeyStorage store = StorageRegistry.MockeyStorage;
-	private static final Boolean TRANSIENT_STATE = new Boolean(true);
+	private static final Boolean TRANSIENT_STATE = Boolean.valueOf(true);
 	private static final String DATE_FORMAT = "MM/dd/yyyy";
 	private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 	private static Logger logger = Logger.getLogger(ServiceSetupServlet.class);
@@ -98,7 +98,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		}
 		Long serviceId = null;
 		try {
-			serviceId = new Long(req.getParameter("serviceId"));
+			serviceId = Long.valueOf(req.getParameter("serviceId"));
 		} catch (Exception e) {
 			// Do nothing
 		}
@@ -146,7 +146,7 @@ public class ServiceSetupServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Long serviceId = null;
 		try {
-			serviceId = new Long(req.getParameter("serviceId"));
+			serviceId = Long.valueOf(req.getParameter("serviceId"));
 		} catch (Exception e) {
 			// Do nothing
 		}
@@ -192,7 +192,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		String oldName = null;
 		String newName = null;
 		try {
-			serviceId = new Long(req.getParameter("serviceId"));
+			serviceId = Long.valueOf(req.getParameter("serviceId"));
 			service = store.getServiceById(serviceId);
 			oldName = service.getServiceName();
 		} catch (Exception e) {
@@ -252,7 +252,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		if (req.getParameter("requestInspectorJsonRulesEnableFlag") != null) {
 			try {
 				service.setRequestInspectorJsonRulesEnableFlag(
-						new Boolean(req.getParameter("requestInspectorJsonRulesEnableFlag")).booleanValue());
+						Boolean.valueOf(req.getParameter("requestInspectorJsonRulesEnableFlag")).booleanValue());
 			} catch (Exception e) {
 				logger.error("Json Rule Enable flag has an invalid format.", e);
 			}
@@ -265,7 +265,7 @@ public class ServiceSetupServlet extends HttpServlet {
 		// RESPONSE SCHEMA enable flag - optional
 		if (req.getParameter("responseSchemaEnableFlag") != null) {
 			try {
-				service.setResponseSchemaFlag(new Boolean(req.getParameter("responseSchemaEnableFlag")).booleanValue());
+				service.setResponseSchemaFlag(Boolean.valueOf(req.getParameter("responseSchemaEnableFlag")).booleanValue());
 			} catch (Exception e) {
 				logger.error("Json Rule Enable flag has an invalid format.", e);
 			}

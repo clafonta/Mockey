@@ -229,7 +229,7 @@ public class RequestInspectorDefinedByJson implements IRequestInspector {
 				try {
 					RequestRule requestRule = new RequestRule(jsonRule,
 							ruleType);
-					this.rulesDefinedForType.put(ruleType, new Boolean(true));
+					this.rulesDefinedForType.put(ruleType, Boolean.valueOf(true));
 					if (RequestRuleType.RULE_TYPE_FOR_BODY.equals(ruleType)) {
 						String[] values = keyValues
 								.get(RequestRuleType.RULE_TYPE_FOR_BODY

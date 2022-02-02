@@ -55,7 +55,7 @@ public class InspectFulfilledRequestServlet extends HttpServlet {
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         
     	String contentType = req.getParameter("content_type");
-    	Long fulfilledRequestId = new Long(req.getParameter("fulfilledRequestId"));
+    	Long fulfilledRequestId = Long.valueOf(req.getParameter("fulfilledRequestId"));
     	FulfilledClientRequest fulfilledClientRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
     	resp.setContentType(contentType);
     	new PrintStream(resp.getOutputStream()).println(fulfilledClientRequest.getResponseMessage().getBody());

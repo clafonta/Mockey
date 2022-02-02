@@ -58,7 +58,7 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 
 	public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		Long serviceId = new Long(req.getParameter("serviceId"));
+		Long serviceId = Long.valueOf(req.getParameter("serviceId"));
 		String scenarioIdAsString = req.getParameter("scenarioId");
 		Service service = store.getServiceById(serviceId);
 		Scenario scenario = null;
@@ -66,7 +66,7 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 		resp.setCharacterEncoding(HTTP.UTF_8);
 		PrintWriter out = resp.getWriter();
 		try {
-			scenario = service.getScenario(new Long(scenarioIdAsString));
+			scenario = service.getScenario(Long.valueOf(scenarioIdAsString));
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("serviceId", "" + serviceId);
 			jsonObject.put("serviceName", "" + service.getServiceName());
@@ -96,7 +96,7 @@ public class ScenarioViewAjaxServlet extends HttpServlet {
 			if (universalError != null) {
 				try {
 					if (serviceId.equals(universalError.getServiceId())
-							&& universalError.getId().equals(new Long(scenarioIdAsString))) {
+							&& universalError.getId().equals(Long.valueOf(scenarioIdAsString))) {
 						universalErrorFlag = true;
 					}
 				} catch (Exception ae) {

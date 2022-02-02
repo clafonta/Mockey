@@ -60,7 +60,7 @@ public class MobiServlet extends HttpServlet {
 
         String serviceId = req.getParameter("serviceId");
         if(serviceId!=null){
-            Long id = new Long(serviceId);
+            Long id = Long.valueOf(serviceId);
             req.setAttribute("filter", "yes");
             List<Service> list = new ArrayList<Service>();
             list.add(store.getServiceById(id));
@@ -80,7 +80,7 @@ public class MobiServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            Long serviceId = new Long(req.getParameter("serviceId"));
+            Long serviceId = Long.valueOf(req.getParameter("serviceId"));
             int hangTime = Integer.parseInt(req.getParameter("hangTime"));
             int serviceResponseType = Integer.parseInt(req.getParameter("serviceResponseType"));
             Long defaultScenarioId = Long.parseLong(req.getParameter("scenario"));

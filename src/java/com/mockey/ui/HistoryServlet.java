@@ -83,7 +83,7 @@ public class HistoryServlet extends HttpServlet {
         } else if (action != null && "delete".equals(action)) {
             String fulfilledRequestId = req.getParameter("fulfilledRequestId");
             try {
-                store.deleteFulfilledClientRequestById(new Long(fulfilledRequestId));
+                store.deleteFulfilledClientRequestById(Long.valueOf(fulfilledRequestId));
             } catch (Exception e) {
                 logger.error("Unable to delete fulfilled request with id:" + fulfilledRequestId, e);
             }
@@ -94,7 +94,7 @@ public class HistoryServlet extends HttpServlet {
             String fulfilledRequestId = req.getParameter("fulfilledRequestId");
             
             try {
-            	FulfilledClientRequest ffcr = store.getFulfilledClientRequestsById(new Long(fulfilledRequestId));
+            	FulfilledClientRequest ffcr = store.getFulfilledClientRequestsById(Long.valueOf(fulfilledRequestId));
             	if(ffcr.getComment()!=null){
             		ffcr.setComment(null);
             	}else {

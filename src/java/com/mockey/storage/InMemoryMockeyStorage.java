@@ -67,7 +67,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	private Long universalErrorScenarioId = null;
 	private static InMemoryMockeyStorage store = new InMemoryMockeyStorage();
 	// Yes, by default, we need this as TRUE.
-	private Boolean transientState = new Boolean(true);
+	private Boolean transientState = Boolean.valueOf(true);
 	private String globalFilterTag = null;
 
 	/**
@@ -115,7 +115,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public void setDefaultServicePlanId(String v) {
 		if (v != null) {
 			try {
-				this.defaultServicePlanId = new Long(v);
+				this.defaultServicePlanId = Long.valueOf(v);
 				this.writeMemoryToFile();
 			} catch (Exception e) {
 				// Do nothing. Leave value as is.
@@ -150,7 +150,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	 */
 	public InMemoryMockeyStorage() {
 		Calendar time = Calendar.getInstance();
-		this.creationTime = new Long(time.getTimeInMillis());
+		this.creationTime = Long.valueOf(time.getTimeInMillis());
 		initHistoryStore(); // Careful, more than ~45
 		// and AJAX /JavaScript
 		// gets funky.
@@ -425,7 +425,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 		if (servicePlan != null) {
 			this.servicePlanStore.remove(servicePlan.getId());
 			// Dont' forget to delete the Default Plan ID
-			if (this.getDefaultServicePlanId().equals(new Long(servicePlan.getId()).toString())) {
+			if (this.getDefaultServicePlanId().equals(Long.valueOf(servicePlan.getId()).toString())) {
 				this.setDefaultServicePlanId(null);
 			}
 			this.writeMemoryToFile();
@@ -533,7 +533,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public void setUniversalErrorScenarioId(String id) {
 		try {
 
-			this.universalErrorScenarioId = new Long(id);
+			this.universalErrorScenarioId = Long.valueOf(id);
 		} catch (Exception e) {
 			// By design, ignore.
 		}
@@ -545,7 +545,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 	public void setUniversalErrorServiceId(String id) {
 		try {
 
-			this.universalErrorServiceId = new Long(id);
+			this.universalErrorServiceId = Long.valueOf(id);
 		} catch (Exception e) {
 			// By design, ignore.
 		}
@@ -634,7 +634,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	private void initHistoryStore() {
 		historyStore = new OrderedMap<FulfilledClientRequest>();
-		//historyStore.setMaxSize(new Integer(5000));
+		//historyStore.setMaxSize(Integer.valueOf(5000));
 	}
 
 	public void deleteFulfilledClientRequestsFromIPForService(String ip, Long serviceId) {
@@ -833,7 +833,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 
 	public Boolean getReadOnlyMode() {
 		if (this.transientState == null) {
-			this.transientState = new Boolean(true);
+			this.transientState = Boolean.valueOf(true);
 		}
 		return this.transientState;
 	}
@@ -944,7 +944,7 @@ public class InMemoryMockeyStorage implements IMockeyStorage {
 			}
 			// Why do we save the Plan here?
 			// To save the lastVisit time
-			servicePlan.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+			servicePlan.setLastVisit(Long.valueOf(Calendar.getInstance().getTimeInMillis()));
 			this.saveOrUpdateServicePlan(servicePlan);
 		}
 	}

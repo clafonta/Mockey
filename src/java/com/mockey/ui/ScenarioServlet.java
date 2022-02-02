@@ -64,10 +64,10 @@ public class ScenarioServlet extends HttpServlet {
 		
 		// A Service is needed to associate the
 		// scenario to.
-		Long serviceId = new Long(req.getParameter("serviceId"));
+		Long serviceId = Long.valueOf(req.getParameter("serviceId"));
 		Long scenarioId = null;
 		try {
-			scenarioId = new Long(req.getParameter("scenarioId"));
+			scenarioId = Long.valueOf(req.getParameter("scenarioId"));
 		} catch (Exception e) {
 			// Do nothing. If the value doesn't exist,
 			// then we'll create a new Scenario
@@ -120,7 +120,7 @@ public class ScenarioServlet extends HttpServlet {
 		String oldName = null;
 		String newName = null;
 		try {
-			scenario = service.getScenario(new Long(req
+			scenario = service.getScenario(Long.valueOf(req
 					.getParameter("scenarioId")));
 			// ***************** HACK A ****************
 			oldName = scenario.getScenarioName();

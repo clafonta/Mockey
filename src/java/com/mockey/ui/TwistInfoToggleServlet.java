@@ -70,7 +70,7 @@ public class TwistInfoToggleServlet extends HttpServlet implements TwistInfoConf
 		JSONObject jsonObject = new JSONObject();
 
 		try {
-			twistInfoId = new Long(req.getParameter(PARAMETER_KEY_TWIST_ID));
+			twistInfoId = Long.valueOf(req.getParameter(PARAMETER_KEY_TWIST_ID));
 			boolean enable = Boolean.parseBoolean(req.getParameter(PARAMETER_KEY_TWIST_ENABLE));
 			twistInfo = store.getTwistInfoById(twistInfoId);
 			if(enable){

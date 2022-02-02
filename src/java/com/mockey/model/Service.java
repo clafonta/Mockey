@@ -67,7 +67,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	private Long id;
 	private String serviceName;
 	private String description;
-	private Boolean transientState = new Boolean(false);
+	private Boolean transientState =  Boolean.valueOf(false);
 	private Long defaultScenarioId;
 	private int defaultRealUrlIndex = 0;
 	private Long errorScenarioId;
@@ -200,8 +200,6 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	 * method signature via reflection. Thank Digester.
 	 * 
 	 * @param realServiceUrl
-	 * @deprecated - this method will call
-	 *             <code>saveOrUpdateRealServiceUrl(Url)</code>
 	 * @see #saveOrUpdateRealServiceUrl(Url)
 	 */
 	public void setRealServiceUrlByString(String realServiceUrl) {
@@ -244,8 +242,6 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	}
 
 	/**
-	 * 
-	 * @deprecated
 	 * @see #getRealServiceUrls()
 	 */
 	public String getRealServiceUrl() {
@@ -373,7 +369,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 	 * Static Scenario.
 	 */
 	public ResponseFromService execute(RequestFromClient request, Url realServiceUrl) {
-		this.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+		this.setLastVisit(Long.valueOf(Calendar.getInstance().getTimeInMillis()));
 		ResponseFromService response = null;
 		if (this.getServiceResponseType() == Service.SERVICE_RESPONSE_TYPE_PROXY) {
 			response = proxyTheRequest(request, realServiceUrl);
@@ -478,7 +474,7 @@ public class Service extends StatusCheck implements PersistableItem, ExecutableS
 			response.setBody(scenario.getResponseMessage());
 			response.setServiceScenarioHangTime(scenario.getHangTime());
 			response.setHttpResponseStatusCode(scenario.getHttpResponseStatusCode());
-			scenario.setLastVisit(new Long(Calendar.getInstance().getTimeInMillis()));
+			scenario.setLastVisit(Long.valueOf(Calendar.getInstance().getTimeInMillis()));
 
 			Map<String, String> headerInfo = scenario.getHeaderInfoHelper();
 			List<Header> headerList = new ArrayList<Header>();

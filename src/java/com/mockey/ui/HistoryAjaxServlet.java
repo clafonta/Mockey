@@ -64,7 +64,7 @@ public class HistoryAjaxServlet extends HttpServlet {
 		HistoryHelper hh = new HistoryHelper();
 		try {
 
-			fulfilledRequestId = new Long(req.getParameter("conversationRecordId"));
+			fulfilledRequestId = Long.valueOf(req.getParameter("conversationRecordId"));
 			FulfilledClientRequest fCRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
 
 			hh.setConversationRecordId("" + fulfilledRequestId);

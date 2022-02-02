@@ -82,20 +82,20 @@ public class LastVisitTagHelperServlet extends HttpServlet {
 		try {
 			if ("clear_last_visit".equalsIgnoreCase(action)) {
 				if (serviceId != null && scenarioId != null) {
-					Service service = store.getServiceById(new Long(serviceId));
+					Service service = store.getServiceById(Long.valueOf(serviceId));
 					Scenario scenario = service
-							.getScenario(new Long(scenarioId));
+							.getScenario(Long.valueOf(scenarioId));
 					scenario.setLastVisit(null);
 					service.saveOrUpdateScenario(scenario);
 					store.saveOrUpdateService(service);
 
 				} else if (serviceId != null) {
-					Service service = store.getServiceById(new Long(serviceId));
+					Service service = store.getServiceById(Long.valueOf(serviceId));
 					service.setLastVisit(null);
 					store.saveOrUpdateService(service);
 				} else if (servicePlanId != null) {
 					ServicePlan servicePlan = store
-							.getServicePlanById(new Long(servicePlanId));
+							.getServicePlanById(Long.valueOf(servicePlanId));
 					servicePlan.setLastVisit(null);
 					store.saveOrUpdateServicePlan(servicePlan);
 				}

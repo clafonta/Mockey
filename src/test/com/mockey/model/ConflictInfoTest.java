@@ -12,11 +12,11 @@ public class ConflictInfoTest {
 
 		Service a = new Service();
 		a.setServiceName("Service Cat");
-		a.setId(new Long(123));
+		a.setId(123L);
 
 		Service b = new Service();
 		b.setServiceName("Service Cat");
-		b.setId(new Long(345));
+		b.setId(345L);
 
 		ConflictInfo conflictInfo = new ConflictInfo();
 		conflictInfo.addConflict(a, b, "Same service name");
@@ -27,7 +27,7 @@ public class ConflictInfoTest {
 
 		Conflict conflict = conflictInfo.getConflictList(a).get(0);
 
-		assert (conflict.getService().getId().equals(new Long(345))) : "Expected conflict Service ID to be 345 but was "
+		assert (conflict.getService().getId().equals(345L)) : "Expected conflict Service ID to be 345 but was "
 				+ conflict.getService().getId();
 
 		assert (conflict.getConflictMessageList().size() == 2) : "Expected conflict message list length to be 2 but was "
@@ -40,7 +40,7 @@ public class ConflictInfoTest {
 
 		Service a = new Service();
 		a.setServiceName("Service Cat");
-		a.setId(new Long(123));
+		a.setId(345L);
 		
 		ConflictInfo conflictInfo = new ConflictInfo();
 		conflictInfo.addConflict(a, a, "Duplicate scenario(s)");

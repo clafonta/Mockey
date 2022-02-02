@@ -185,7 +185,7 @@ public class PluginStore {
 			try {
 				if (!clazz.isInterface()
 						&& IRequestInspector.class.isAssignableFrom(clazz)) {
-					instance = (IRequestInspector) clazz.newInstance();
+					instance = (IRequestInspector) clazz.getDeclaredConstructor().newInstance();
 				}
 			} catch (Exception e) {
 
@@ -230,7 +230,7 @@ public class PluginStore {
 						}
 					}
 
-					Package packageItem = Package.getPackage(pi.getName());
+					Package packageItem =   pi.getClass().getPackage(); // Package.getPackage(pi.getName());
 					if (null != packageItem
 							.getAnnotation(MockeyRequestInspector.class)) {
 						Class<?> x = doesThisImplementIRequestInspector(className);

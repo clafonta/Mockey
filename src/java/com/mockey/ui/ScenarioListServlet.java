@@ -59,7 +59,7 @@ public class ScenarioListServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		Long serviceId = new Long(req.getParameter("serviceId"));
+		Long serviceId = Long.valueOf(req.getParameter("serviceId"));
 		Service service = store.getServiceById(serviceId);
 		req.setAttribute("service", service);
 		RequestDispatcher dispatch = req

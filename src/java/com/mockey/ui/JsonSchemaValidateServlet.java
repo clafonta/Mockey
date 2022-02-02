@@ -90,9 +90,9 @@ public final class JsonSchemaValidateServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
-			Long serviceId = new Long(req.getParameter("serviceId"));
+			Long serviceId = Long.valueOf(req.getParameter("serviceId"));
 			Long scenarioId = null;
-			scenarioId = new Long(req.getParameter("scenarioId"));
+			scenarioId = Long.valueOf(req.getParameter("scenarioId"));
 			Service service = store.getServiceById(serviceId);
 			Scenario scenario = service.getScenario(scenarioId);
 			req.setAttribute("service", service);

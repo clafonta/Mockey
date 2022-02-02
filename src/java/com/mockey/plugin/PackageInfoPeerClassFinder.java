@@ -92,7 +92,9 @@ class PackageInfoPeerClassFinder {
 			
 			String[] packageListToLoad = new String[] { "com.mockey.plugin",  };
 			for (String pName : packageListToLoad) {
-				Package p = Package.getPackage(pName);
+
+				Package p = pName.getClass().getPackage();
+
 
 				if (p != null) {
 					PackageInfo pi = new PackageInfo(p.getName());

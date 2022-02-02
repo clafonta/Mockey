@@ -306,7 +306,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 		JSONObject jsonResultObject = new JSONObject();
 
 		if (serviceId != null) {
-			service = store.getServiceById(new Long(serviceId));
+			service = store.getServiceById(Long.valueOf(serviceId));
 		} else {
 			service = store.getServiceByName(serviceName);
 		}
@@ -376,7 +376,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 
 		try {
 			if (hangTime != null) {
-				service.setHangTime((new Integer(hangTime).intValue()));
+				service.setHangTime((Integer.valueOf(hangTime).intValue()));
 			}
 		} catch (Exception e) {
 			log.debug("Updating service without a 'hang time' value");
@@ -384,7 +384,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 
 		try {
 			if (transientState != null) {
-				service.setTransientState((new Boolean(transientState)));
+				service.setTransientState((Boolean.valueOf(transientState)));
 			}
 		} catch (Exception e) {
 			log.debug("Updating service without a 'transient state' value");
@@ -392,7 +392,7 @@ public class ServiceConfigurationServlet extends HttpServlet {
 
 		try {
 			if (scenarioId != null) {
-				service.setDefaultScenarioId(new Long(scenarioId));
+				service.setDefaultScenarioId(Long.valueOf(scenarioId));
 			} else {
 				service.setDefaultScenarioByName(scenarioName);
 			}

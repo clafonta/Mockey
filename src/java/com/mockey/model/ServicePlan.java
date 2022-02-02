@@ -46,7 +46,7 @@ public class ServicePlan extends StatusCheck implements PersistableItem {
 	private Long id;
 	private String name;
 	private String description;
-	private Boolean transientState = new Boolean(false);
+	private Boolean transientState = Boolean.valueOf(false);
 	private OrderedMap<PlanItem> planItemStore = new OrderedMap<PlanItem>();
 
 	public Long getId() {

@@ -125,14 +125,14 @@ public class TagHelperServlet extends HttpServlet {
 				jsonObject.put("success", "Deleted tag from all things.");
 
 			} else if ("delete_tag_from_service".equals(action)) {
-				Service service = store.getServiceById(new Long(serviceId));
+				Service service = store.getServiceById(Long.valueOf(serviceId));
 
 				service.removeTagFromList(tag);
 				store.saveOrUpdateService(service);
 				jsonObject.put("success", "Deleted tag from Service.");
 
 			} else if ("delete_tag_from_service_plan".equals(action)) {
-				ServicePlan servicePlan = store.getServicePlanById(new Long(
+				ServicePlan servicePlan = store.getServicePlanById(Long.valueOf(
 						servicePlanId));
 
 				servicePlan.removeTagFromList(tag);
@@ -141,16 +141,16 @@ public class TagHelperServlet extends HttpServlet {
 				jsonObject.put("success", "Deleted tag from Service Plan.");
 
 			} else if ("delete_tag_from_scenario".equals(action)) {
-				Service service = store.getServiceById(new Long(serviceId));
+				Service service = store.getServiceById(Long.valueOf(serviceId));
 
-				Scenario scenario = service.getScenario(new Long(scenarioId));
+				Scenario scenario = service.getScenario(Long.valueOf(scenarioId));
 				scenario.removeTagFromList(tag);
 				service.saveOrUpdateScenario(scenario);
 				store.saveOrUpdateService(service);
 				jsonObject.put("success", "Deleted tag from Scenario.");
 
 			} else if ("update_service_tag".equals(action)) {
-				Service service = store.getServiceById(new Long(serviceId));
+				Service service = store.getServiceById(Long.valueOf(serviceId));
 
 				service.clearTagList();
 				service.addTagToList(tag);
@@ -158,9 +158,9 @@ public class TagHelperServlet extends HttpServlet {
 				jsonObject.put("success", "Updated tag(s) for this Service.");
 
 			} else if ("update_scenario_tag".equals(action)) {
-				Service service = store.getServiceById(new Long(serviceId));
+				Service service = store.getServiceById(Long.valueOf(serviceId));
 
-				Scenario scenario = service.getScenario(new Long(scenarioId));
+				Scenario scenario = service.getScenario(Long.valueOf(scenarioId));
 				scenario.clearTagList();
 				scenario.addTagToList(tag);
 				service.saveOrUpdateScenario(scenario);
@@ -176,12 +176,12 @@ public class TagHelperServlet extends HttpServlet {
 			// Why get the Service again? Because, we could have removed/edited
 			// the tag information from one of the steps above.
 			if (serviceId != null) {
-				Service service = store.getServiceById(new Long(serviceId));
+				Service service = store.getServiceById(Long.valueOf(serviceId));
 				jsonObject.put("serviceId", "" + serviceId);
 
 				if (scenarioId != null) {
 					Scenario scenario = service
-							.getScenario(new Long(scenarioId));
+							.getScenario(Long.valueOf(scenarioId));
 					jsonObject.put("scenarioId", "" + scenario.getId());
 					jsonObject.put("tag", "" + scenario.getTag());
 				} else {

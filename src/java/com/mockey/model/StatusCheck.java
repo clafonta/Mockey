@@ -200,7 +200,7 @@ public abstract class StatusCheck {
 		String time = "";
 
 		if (this.getLastVisit() != null && this.getLastVisit() > 0) {
-			time = formatter.format(new Date(new Long(this.getLastVisit())));
+			time = formatter.format(new Date(Long.valueOf(this.getLastVisit())));
 		}
 		return time;
 	}

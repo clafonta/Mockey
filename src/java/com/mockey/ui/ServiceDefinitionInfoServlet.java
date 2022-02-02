@@ -153,7 +153,7 @@ public class ServiceDefinitionInfoServlet extends HttpServlet {
 		JSONObject jsonResultObject = new JSONObject();
 
 		if (serviceId != null) {
-			service = store.getServiceById(new Long(serviceId));
+			service = store.getServiceById(Long.valueOf(serviceId));
 		} else if (serviceName != null) {
 			service = store.getServiceByName(serviceName);
 		}

@@ -63,7 +63,7 @@ public class HistoryHtmlServlet extends HttpServlet {
         Long fulfilledRequestId = null;
         try {
 
-            fulfilledRequestId = new Long(req.getParameter("fulfilledRequestId"));
+            fulfilledRequestId = Long.valueOf(req.getParameter("fulfilledRequestId"));
             FulfilledClientRequest fCRequest = store.getFulfilledClientRequestsById(fulfilledRequestId);
             String contextRootScenarioURL = Url.getAbsoluteURL(req, "/scenario"); 
             
