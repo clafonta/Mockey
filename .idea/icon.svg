@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 2048 2048" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <rect id="_1---White" serif:id="1 - White" x="295.276" y="295.276" width="1457.45" height="1400.43" style="fill:white;"/>
+    <g id="_2---Light-Blue" serif:id="2 - Light Blue" transform="matrix(1.57006,-4.33681e-19,0,1.81774,-253.115,-380.172)">
+        <rect x="444.015" y="464.907" width="740.095" height="582.964" style="fill:rgb(153,153,204);"/>
+    </g>
+    <rect id="_3---Dark-Blue" serif:id="3 - Dark Blue" x="559.054" y="464.907" width="1046.95" height="922.889" style="fill:rgb(34,51,153);"/>
+    <rect id="_4---Fuschia" serif:id="4 - Fuschia" x="852.234" y="464.907" width="753.773" height="695.333" style="fill:rgb(255,0,153);"/>
+    <g transform="matrix(1.26539,0,0,1.44949,-295.371,-208.97)">
+        <rect x="1112.95" y="464.907" width="389.649" height="308.692" style="fill:rgb(255,221,0);"/>
+    </g>
+</svg>
