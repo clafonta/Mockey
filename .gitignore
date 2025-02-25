@@ -56,3 +56,8 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+/.idea/active-tab-highlighter-v2.xml
+/.idea/git_toolbox_blame.xml
+/.idea/git_toolbox_prj.xml
+/.idea/GitLink.xml
+/.idea/graphql-settings.xml
